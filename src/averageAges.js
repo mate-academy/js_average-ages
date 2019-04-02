@@ -33,7 +33,7 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-
+  // write code here
 }
 
 /**
@@ -52,7 +52,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-
+  // write code here
 }
 
 module.exports = {
