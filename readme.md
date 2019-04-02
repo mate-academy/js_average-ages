@@ -1,4 +1,4 @@
-# Boilerplate for JS tasks
+# Average ages
 
 **Read the guideline before start**
 
