@@ -2,12 +2,10 @@
   "name": "js-task-boilerplate",
   "version": "1.0.0",
   "description": "js task boilerplate",
-  "main": "src/sum.js",
+  "main": "src/averageAges.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint **/*.js",
-    "precommit": "lint-staged",
-    "postcommit": "git update-index --again"
+    "lint": "eslint **/*.js"
   },
   "author": "Mate academy",
   "license": "MIT",
@@ -29,6 +27,13 @@
         "eslint",
         "git add"
       ]
+    }
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "git update-index --again",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test"
     }
   }
 }
