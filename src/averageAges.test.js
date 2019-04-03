@@ -8,11 +8,13 @@ const {
 } = require('./averageAges');
 
 test('Average men age', () => {
-    expect(+calculateMenAverageAge(people).toFixed(2)).toBe(61.67);
+  expect(+calculateMenAverageAge(people).toFixed(2))
+    .toBe(61.67);
 });
 
 test('Average men age in 18 century', () => {
-  expect(+calculateMenAverageAge(people, 18).toFixed(2)).toBe(56.50);
+  expect(+calculateMenAverageAge(people, 18).toFixed(2))
+    .toBe(56.50);
 });
 
 test('Average women age', () => {
@@ -20,14 +22,16 @@ test('Average women age', () => {
 });
 
 test('Average mothers age', () => {
-  expect(+calculateWomenAverageAge(people, true).toFixed(2)).toBe(54.15);
+  expect(+calculateWomenAverageAge(people, true).toFixed(2))
+    .toBe(54.15);
 });
 
 test('Average age difference', () => {
-  expect(+calculateAverageAgeDiff(people).toFixed(2)).toBe(31.22);
+  expect(+calculateAverageAgeDiff(people).toFixed(2))
+    .toBe(31.22);
 });
 
 test('Average age difference with son', () => {
-  expect(+calculateAverageAgeDiff(people, true).toFixed(2)).toBe(30.08);
+  expect(+calculateAverageAgeDiff(people, true).toFixed(2))
+    .toBe(30.08);
 });
-
