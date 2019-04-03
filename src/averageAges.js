@@ -3,9 +3,9 @@
 /**
  * Implement calculateMenAverageAge function
  *
- * Function returns average age of men in array
- * If `century` is specified then function calculates average age
- * only for men living in this century
+ * Function returns average age of men in array. If `century` is specified then
+ * function calculates average age only for men living in this century
+ *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
@@ -26,9 +26,8 @@ function calculateMenAverageAge(people, century) {
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array
- * If `withChildren` is specified function calculates average age
- * only for women with children
+ * Function returns average ave of women in array. If `withChildren` is
+ * specified then function calculates average age only for women with children
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
@@ -46,8 +45,8 @@ function calculateWomenAverageAge(people, withChildren) {
  * Function returns average difference in age between all mothers and their
  * children which are presented in the array.
  *
- * If `onlyWithSon` is specified then function calculates age difference
- * only for mothers who have son.
+ * If `onlyWithSon` is specified then function calculates age difference only
+ * for mothers who have son.
  *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
