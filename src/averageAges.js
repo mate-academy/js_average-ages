@@ -14,7 +14,6 @@
  *
  * @return {number}
  */
-
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -34,7 +33,6 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
 }
@@ -53,7 +51,6 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
 }
