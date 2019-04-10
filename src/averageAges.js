@@ -4,7 +4,7 @@
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men living in this century
+ * function calculates average age only for men who died in this century
  *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
