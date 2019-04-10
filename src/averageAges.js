@@ -9,6 +9,19 @@
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
+ */
+
+/**  Моя вспомогательная функция для задач 1, 2, чтобы не повторять код
+ * Возвращает средний возраст людей из переданного массива
+*/
+function averageAge(arr) {
+  const peopleAges = arr.map(human => human['died'] - human['born']);
+  const averageAge = peopleAges.reduce((sum, current) => sum + current) / arr.length;
+
+  return averageAge;
+}
+
+/**
  * @param {object[]} people
  * @param {number} century - optional
  *
@@ -20,6 +33,11 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
   // without nesting
+  const onlyMenArr = people.filter(human => human['sex'] === 'm');
+
+  return !century
+    ? averageAge(onlyMenArr)
+    : averageAge(onlyMenArr.filter(man => Math.ceil(man['died'] / 100) === century));
 }
 
 /**
@@ -34,7 +52,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const onlyWomenArr = people.filter(human => human['sex'] === 'f');
+
+  return !withChildren
+    ? averageAge(onlyWomenArr)
+    : averageAge(onlyWomenArr.filter(woman => people.some(child => child['mother'] === woman['name'])));
 }
 
 /**
@@ -52,7 +74,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const onlyWomenArr = people.filter(human => human['sex'] === 'f');
+  const mothersArr = onlyWomenArr.filter(woman => people.some(child => child['mother'] === woman['name']));
+  const childrensArr = people.filter(child => mothersArr.some(woman => child['mother'] === woman['name']));
+  const differencesChildArr = [];
+  const differencesSonArr = [];
+
+  for (let i = 0; i < childrensArr.length; i++) {
+    for (let j = 0; j < mothersArr.length; j++) {
+      if (mothersArr[j]['name'] === childrensArr[i]['mother']) {
+        if (childrensArr[i]['sex'] === 'm') {
+          differencesSonArr.push(childrensArr[i]['born'] - mothersArr[j]['born']);
+        }
+        differencesChildArr.push(childrensArr[i]['born'] - mothersArr[j]['born']);
+      }
+    }
+  }
+
+  return !onlyWithSon
+    ? differencesChildArr.reduce((sum, current) => sum + current) / differencesChildArr.length
+    : differencesSonArr.reduce((sum, current) => sum + current) / differencesSonArr.length;
 }
 
 module.exports = {
