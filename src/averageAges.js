@@ -22,16 +22,20 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
   // without nesting
   let average = 0;
-  let objectForCheck = {};
 
-  objectForCheck = people.filter(function(item) {
-    let valid = (century !== undefined) ? (item['sex'] === 'm' && item['died'] >= ((century - 1) * 100)) && item['died'] < century * 100 : (item['sex'] === 'm');
+  let objectForCheck = people.filter(function(item) {
+    let valid = (century !== undefined)
+      ? (item['sex'] === 'm' && item['died'] >= ((century - 1) * 100)) && item['died'] < century * 100
+      : (item['sex'] === 'm');
+    if (valid) {
+      average += item['died'] - item['born'];
+    }
     return valid;
   });
 
-  for (let i = 0; i < objectForCheck.length; i++) {
-    average += objectForCheck[i]['died'] - objectForCheck[i]['born'];
-  }
+  // for (let i = 0; i < objectForCheck.length; i++) {
+  //   average += objectForCheck[i]['died'] - objectForCheck[i]['born'];
+  // }
   average = average / objectForCheck.length;
 
   return average;
@@ -51,9 +55,8 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   let average = 0;
-  let women = {};
 
-  women = people.filter(function(item) {
+  let women = people.filter(function(item) {
     let valid = (!withChildren) ? item['sex'] === 'f' : item['sex'] === 'f' && people.some(function(number) {
       return (item['name'] === number['mother']);
     });
@@ -62,7 +65,7 @@ function calculateWomenAverageAge(people, withChildren) {
   women.forEach(item => {
     average += item['died'] - item['born'];
   });
-  return average / Object.keys(women).length;
+  return average / women.length;
 }
 
 /**
@@ -81,34 +84,31 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  let women = {};
-  let children = {};
   let diffBtwnChldsMoms = 0;
+  let amountOfChildren = 0;
 
-  women = people.filter(function(item) {
+  let women = people.filter(function(item) {
     let valid = item['sex'] === 'f' && people.some(function(number) {
-      return (!onlyWithSon) ? item['name'] === number['mother'] : item['name'] === number['mother'] && number['sex'] === 'm';
+      return (!onlyWithSon)
+        ? item['name'] === number['mother']
+        : item['name'] === number['mother'] && number['sex'] === 'm';
     });
     return valid;
   });
 
-  children = people.filter(function(item) {
+  people.forEach(function(item) {
     if (onlyWithSon && item['sex'] === 'f') return false;
-    let mother = item['mother'];
-    var a = women.find(function(element) {
-      return (element['name'] === mother) ? element['name'] : false;
+
+    let objMom = women.find(function(element) {
+      return (element['name'] === item['mother']) ? element : false;
     });
-    var isChild = (a) ? mother === a['name'] : false;
-    return isChild;
+    if (objMom) {
+      diffBtwnChldsMoms += item['born'] - objMom['born'];
+      amountOfChildren++;
+    }
   });
 
-  children.forEach(function(child) {
-    let searchedMom = women.find(function(mom) {
-      return mom['name'] === child['mother'];
-    });
-    diffBtwnChldsMoms += child['born'] - searchedMom['born'];
-  });
-  return diffBtwnChldsMoms / Object.keys(children).length;
+  return diffBtwnChldsMoms / amountOfChildren;
 }
 
 module.exports = {
