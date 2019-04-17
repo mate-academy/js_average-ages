@@ -55,17 +55,18 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   let average = 0;
+  let amountOfWomen = 0;
 
-  let women = people.filter(function(item) {
+  people.forEach(function(item) {
     let valid = (!withChildren) ? item['sex'] === 'f' : item['sex'] === 'f' && people.some(function(number) {
       return (item['name'] === number['mother']);
     });
-    return valid;
+    if (valid) {
+      average += item['died'] - item['born'];
+      amountOfWomen++;
+    };
   });
-  women.forEach(item => {
-    average += item['died'] - item['born'];
-  });
-  return average / women.length;
+  return average / amountOfWomen;
 }
 
 /**
