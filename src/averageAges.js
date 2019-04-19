@@ -54,9 +54,9 @@ function calculateWomenAverageAge(people, withChildren) {
   let average = 0;
 
   let arrayOfWomen = people.filter(function(item) {
-    let valid = (!withChildren) ? item['sex'] === 'f' : item['sex'] === 'f' && people.some(function(number) {
-      return (item['name'] === number['mother']);
-    });
+    let valid = withChildren
+      ? item['sex'] === 'f' && people.some(number => item['name'] === number['mother'])
+      : item['sex'] === 'f';
     if (valid) {
       average += item['died'] - item['born'];
     };
