@@ -33,9 +33,6 @@ function calculateMenAverageAge(people, century) {
     return valid;
   });
 
-  // for (let i = 0; i < objectForCheck.length; i++) {
-  //   average += objectForCheck[i]['died'] - objectForCheck[i]['born'];
-  // }
   average = average / objectForCheck.length;
 
   return average;
@@ -82,33 +79,35 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  let diffBtwnChldsMoms = 0;
   let amountOfChildren = 0;
 
   let women = people.filter(function(item) {
     let valid = item['sex'] === 'f' && people.some(function(number) {
-      return (!onlyWithSon)
-        ? item['name'] === number['mother']
-        : item['name'] === number['mother'] && number['sex'] === 'm';
+      return (onlyWithSon)
+        ? item['name'] === number['mother'] && number['sex'] === 'm'
+        : item['name'] === number['mother'];
     });
     return valid;
   });
 
-  people.forEach(function(item) {
-    if (onlyWithSon && item['sex'] === 'f') return false;
+  let sumOfDiffAges = people.reduce(function(previousValue, item) {
+    if (onlyWithSon && item['sex'] === 'f') return previousValue;
 
     let objMom = women.find(function(element) {
       return (element['name'] === item['mother']) ? element : false;
     });
-    if (objMom) {
-      diffBtwnChldsMoms += item['born'] - objMom['born'];
-      amountOfChildren++;
-    }
-  });
 
-  return diffBtwnChldsMoms / amountOfChildren;
+    if (objMom) {
+      amountOfChildren++;
+      return previousValue + (item['born'] - objMom['born']);
+    }
+    return previousValue;
+  }, 0);
+
+  return sumOfDiffAges / amountOfChildren;
 }
 
 module.exports = {
