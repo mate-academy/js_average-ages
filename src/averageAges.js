@@ -86,7 +86,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let women = people.filter(function(item) {
     let valid = item['sex'] === 'f' && people.some(function(number) {
-      return (onlyWithSon)
+      return onlyWithSon
         ? item['name'] === number['mother'] && number['sex'] === 'm'
         : item['name'] === number['mother'];
     });
