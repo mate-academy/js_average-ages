@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  const allMen = century ? people.filter(person => person['sex'] === 'm' && Math.ceil(person['died'] / 100) === century) :
+    people.filter(person => person['sex'] === 'm');
+
+  if (!allMen.length) return `There are no men from ${century} century`;
+
+  const averageAge = allMen.reduce((sum, currentMan) => {
+    sum += (currentMan['died'] - currentMan['born']);
+    return sum;
+  }, 0);
+
+  return (averageAge / allMen.length).toFixed(2);
 }
 
 /**
@@ -34,7 +40,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = withChildren ? people.filter(person => person['sex'] === "f" && people.some(human => human['mother'] === person['name'])) :
+    people.filter(person => person['sex'] === 'f');
+
+  const averageAge = allWomen.reduce((sum, currentWoman) => {
+    sum += (currentWoman['died'] - currentWoman['born']);
+    return sum
+  }, 0);
+
+  return (averageAge / allWomen.length).toFixed(2);
 }
 
 /**
@@ -52,7 +66,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const allWomen = people.filter(person => person['sex'] === 'f');
+  const allChidren = people.filter(person => allWomen.map(woman => woman['name']).includes(person['mother']));
+  const children = onlyWithSon ? allChidren.filter(child => child['sex'] === 'm') : allChidren;
+
+  const totalAge =  children.reduce((sum, child) => {
+    sum += child['born'] - allWomen.find(woman => woman['name'] === child['mother']).born;
+    return sum;
+  },0);
+ 
+  return (totalAge / children.length).toFixed(2);
 }
 
 module.exports = {
