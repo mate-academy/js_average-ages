@@ -17,16 +17,16 @@
 function calculateMenAverageAge(people, century) {
   let men;
   if (typeof century === 'undefined') {
-    men = people.filter(function(person) {
+    men = people.filter((person) => {
       return person.sex === 'm';
     });
   } else {
-    men = people.filter(function(person) {
+    men = people.filter((person) => {
       return (person.sex === 'm') &&
           (century === Math.ceil(person.died / 100));
     });
   }
-  const ageSum = men.reduce(function(sum, person) {
+  const ageSum = men.reduce((sum, person) => {
     const age = person.died - person.born;
     return sum + age;
   }, 0);
@@ -48,18 +48,18 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let women;
   if ((typeof withChildren === 'undefined') || (!withChildren)) {
-    women = people.filter(function(person) {
+    women = people.filter((person) => {
       return person.sex === 'f';
     });
   } else {
-    women = people.filter(function(person) {
+    women = people.filter((person) => {
       if (person.sex !== 'f') return false;
-      return people.some(function(persona) {
+      return people.some((persona) => {
         return persona.mother === person.name;
       });
     });
   }
-  const ageSum = women.reduce(function(sum, person) {
+  const ageSum = women.reduce((sum, person) => {
     const age = person.died - person.born;
     return sum + age;
   }, 0);
@@ -82,62 +82,46 @@ function calculateWomenAverageAge(people, withChildren) {
  // *
  // * @return {number}
  // */
-// function calculateAverageAge (persons) {
-//  const ageSum = persons.reduce( function(sum, person) {
-//       const age = person.died - person.born;
-//       return sum + age;
-//    }, 0);
-//
-//    const ageCount = persons.length;
-//     return (ageSum/ageCount);
-// }
-//
-// function calculateAverageChildrenAge(mothers, people) {
-// const children = people.filter(function(person) {
-//
-//          return mothers.some(function(mother) {
-//              return mother.name === person.mother;
-//          });
-//
-//       });
-//
-//
-// return calculateAverageAge(children);
-// }
-//
-// function calculateAverageAgeDiff(people, onlyWithSon) {
-//
-// var mothers;
-//
-//  if ((typeof  onlyWithSon === 'undefined') ||  (!onlyWithSon) ) {
-//   mothers = people.filter( function(person) {
-//          if (person.sex !== 'f') return false;
-//
-//          return people.some( function(persona)  {
-//             return persona.mother === person.name;
-//          })
-//       });
-//
-//    } else {
-//   mothers = people.filter( function(person) {
-//          if (person.sex !== 'f') return false;
-//
-//          return people.some( function(persona)  {
-//             return (persona.mother === person.name) && (persona.sex === 'm');
-//          })
-//       });
-// }
-//
-//
-// return calculateAverageAge(mothers) - calculateAverageChildrenAge(mothers, people);
-//
-//
-//
-// }
-//
+function calculateAverageAge(persons) {
+  const ageSum = persons.reduce(function(sum, person) {
+    const age = person.died - person.born;
+    return sum + age;
+  }, 0);
+
+  const ageCount = persons.length;
+  return (ageSum / ageCount);
+}
+
+function calculateAverageChildrenAge(mothers, people) {
+  const children = people.filter(function(person) {
+    return mothers.some(function(mother) {
+      return mother.name === person.mother;
+    });
+  });
+  return calculateAverageAge(children);
+}
+function calculateAverageAgeDiff(people, onlyWithSon) {
+  let mothers;
+  if ((typeof onlyWithSon === 'undefined') || (!onlyWithSon)) {
+    mothers = people.filter(function(person) {
+      if (person.sex !== 'f') return false;
+      return people.some(function(persona) {
+        return persona.mother === person.name;
+      });
+    });
+  } else {
+    mothers = people.filter(function(person) {
+      if (person.sex !== 'f') return false;
+      return people.some(function(persona) {
+        return (persona.mother === person.name) && (persona.sex === 'm');
+      });
+    });
+  }
+  return calculateAverageAge(mothers) - calculateAverageChildrenAge(mothers, people);
+}
 
 module.exports = {
   calculateMenAverageAge,
-  calculateWomenAverageAge
-  // calculateAverageAgeDiff
+  calculateWomenAverageAge,
+  calculateAverageAgeDiff
 };

@@ -3,8 +3,8 @@
 const people = require('./people');
 const {
   calculateMenAverageAge,
-  calculateWomenAverageAge
-  // calculateAverageAgeDiff
+  calculateWomenAverageAge,
+  calculateAverageAgeDiff
 } = require('./averageAges');
 
 test('Average men age', () => {
@@ -23,10 +23,10 @@ test('Average mothers age', () => {
   expect(calculateWomenAverageAge(people, true)).toBeCloseTo(54.15, 2);
 });
 
-// test('Average age difference', () => {
-//   expect(calculateAverageAgeDiff(people)).toBeCloseTo(31.22, 2);
-// });
-//
-// test('Average age difference with son', () => {
-//   expect(calculateAverageAgeDiff(people, true)).toBeCloseTo(30.08, 2);
-// });
+test('Average age difference', () => {
+  expect(calculateAverageAgeDiff(people)).toBeCloseTo(31.22, 2);
+});
+
+test('Average age difference with son', () => {
+  expect(calculateAverageAgeDiff(people, true)).toBeCloseTo(30.08, 2);
+});
