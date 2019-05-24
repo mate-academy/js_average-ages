@@ -15,23 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men;
-  if (typeof century === 'undefined') {
-    men = people.filter((person) => {
-      return person.sex === 'm';
-    });
-  } else {
-    men = people.filter((person) => {
-      return (person.sex === 'm') &&
-          (century === Math.ceil(person.died / 100));
-    });
-  }
+  let men = people.filter((person) => {
+    if (person.sex !== 'm') return false;
+    if (typeof century === 'undefined') return true;
+    return century === Math.ceil(person.died / 100);
+  });
+
   const ageSum = men.reduce((sum, person) => {
     const age = person.died - person.born;
     return sum + age;
   }, 0);
-  const ageCount = men.length;
-  return +(ageSum / ageCount).toFixed(2);
+  return +(ageSum / men.length).toFixed(2);
 }
 
 /**
@@ -46,26 +40,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women;
-  if ((typeof withChildren === 'undefined') || (!withChildren)) {
-    women = people.filter((person) => {
-      return person.sex === 'f';
+  let women = people.filter((person) => {
+    if (person.sex !== 'f') return false;
+    if (!withChildren) return true;
+    return people.some((persona) => {
+      return persona.mother === person.name;
     });
-  } else {
-    women = people.filter((person) => {
-      if (person.sex !== 'f') return false;
-      return people.some((persona) => {
-        return persona.mother === person.name;
-      });
-    });
-  }
+  });
+
   const ageSum = women.reduce((sum, person) => {
     const age = person.died - person.born;
     return sum + age;
   }, 0);
 
-  const ageCount = women.length;
-  return (ageSum / ageCount);
+  return (ageSum / women.length);
 }
 
 /**
