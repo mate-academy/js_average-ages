@@ -14,25 +14,24 @@
  *
  * @return {number}
  */
-const averegeAges = arrayOfAges => {
-  // ОТДЕЛЬНАЯ ФУНКЦИЯ ПО ВЫЧИСЛЕНИЮ СРЕДНЕГО ВОЗРАСТА
-  return arrayOfAges.reduce((sum, person) => sum + person) / arrayOfAges.length;
-};
+
+function averageAge(arrayOfYears) { // АККУМУЛИРУЕМ и ДЕЛИМ НА ДЛИНУ
+  return arrayOfYears.reduce((sum, man) => sum + man) / arrayOfYears.length;
+}
 
 function calculateMenAverageAge(people, century) {
-  const filteredMen = people
+  const filtered = people
     .filter(man => man.sex === 'm')
     .filter(man => {
       if (century) {
-        return Math.ceil(man.died / 100) === century;
+        return century === Math.ceil(man.died / 100);
       } else {
         return man;
       }
     })
-    .map(person => person.died - person.born);
+    .map(man => man.died - man.born);
 
-  /* !century || Math.ceil (person.died / 100) === century) */
-  return averegeAges(filteredMen);
+  return averageAge(filtered);
 }
 
 /**
@@ -47,18 +46,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people
+  const filtered = people
     .filter(woman => woman.sex === 'f')
     .filter(woman => {
       if (withChildren) {
-        return people.some(person => person.mother === woman.name);
+        // обращаемся к основному массиву, чтобы пройтись по детям
+        return people.some(child => woman.name === child.mother);
       } else {
         return woman;
       }
     })
     .map(woman => woman.died - woman.born);
 
-  return averegeAges(filteredWomen);
+  return averageAge(filtered);
 }
 
 /**
@@ -76,20 +76,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  // большая завязка на детей
   const filtered = people
     .filter(child => (onlyWithSon ? child.sex === 'm' : child))
     .filter(child => {
-      // не все мамы есть в массиве,
-      // поэтому мы начинаем перебирать женщин из базового массива
+      // заметим, что не все мамы детей есть в массиве,
+      // поэтому мы начинаем перебирать существующих мам,
+      // у которых есть дети, из базового массива
       return people.some(woman => child.mother === woman.name);
+      // если у чайлда есть мамка
     })
     .map(child => {
-      // find - найдёт первую женщину, подходящую условию
       const motherBorn = people.find(woman => child.mother === woman.name).born;
       return child.born - motherBorn;
     });
 
-  return averegeAges(filtered);
+  return averageAge(filtered);
 }
 
 module.exports = {
