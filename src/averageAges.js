@@ -30,8 +30,8 @@ const calculateWomenAverageAge = (people, withChildren) => {
   return middleValue(filtered);
 };
 
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  const ages = people
+const calculateAverageAgeDiff = (people, onlyWithSon) => {
+  const filtered = people
     .filter(child => onlyWithSon ? child.sex === 'm' : child)
     .filter(child => people.some(person => child.mother === person.name))
     .map(child => {
@@ -39,8 +39,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       return child.born - mother.born;
     });
 
-  return middleValue(ages);
-}
+  return middleValue(filtered);
+};
 
 module.exports = {
   calculateMenAverageAge,
