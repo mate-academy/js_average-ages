@@ -14,12 +14,24 @@
  *
  * @return {number}
  */
+
+function averageAge(arrayOfYears) { // АККУМУЛИРУЕМ и ДЕЛИМ НА ДЛИНУ
+  return arrayOfYears.reduce((sum, man) => sum + man) / arrayOfYears.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  const filtered = people
+    .filter(man => man.sex === 'm')
+    .filter(man => {
+      if (century) {
+        return century === Math.ceil(man.died / 100);
+      } else {
+        return man;
+      }
+    })
+    .map(man => man.died - man.born);
+
+  return averageAge(filtered);
 }
 
 /**
@@ -34,7 +46,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filtered = people
+    .filter(woman => woman.sex === 'f')
+    .filter(woman => {
+      if (withChildren) {
+        // обращаемся к основному массиву, чтобы пройтись по детям
+        return people.some(child => woman.name === child.mother);
+      } else {
+        return woman;
+      }
+    })
+    .map(woman => woman.died - woman.born);
+
+  return averageAge(filtered);
 }
 
 /**
@@ -52,11 +76,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  // большая завязка на детей
+  const filtered = people
+    .filter(child => (onlyWithSon ? child.sex === 'm' : child))
+    .filter(child => {
+      // заметим, что не все мамы детей есть в массиве,
+      // поэтому мы начинаем перебирать существующих мам,
+      // у которых есть дети, из базового массива
+      return people.some(woman => child.mother === woman.name);
+      // если у чайлда есть мамка
+    })
+    .map(child => {
+      const motherBorn = people.find(woman => child.mother === woman.name).born;
+      return child.born - motherBorn;
+    });
+
+  return averageAge(filtered);
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
