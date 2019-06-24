@@ -3,7 +3,7 @@
  * @return {number}
  * @param peopleList
  */
-const average = (people, length, callback) => {
+const average = (people, length) => {
   return people.reduce((sum, item) => {
     return sum + item.died - item.born;
   }, 0) / length;
