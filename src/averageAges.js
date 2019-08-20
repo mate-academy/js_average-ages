@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let filteredMen = [];
+
+  century === undefined
+    ? filteredMen = people.filter(elem => elem.sex === 'm')
+    : filteredMen = people
+      .filter(elem => elem.sex === 'm'
+        && century === Math.ceil(elem.died / 100));
+
+  return (filteredMen.reduce((sum, elem) => sum + (elem.died - elem.born), 0))
+    / filteredMen.length;
 }
 
 /**
@@ -34,7 +39,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let filteredWomen = [];
+
+  withChildren === true
+    ? filteredWomen = people
+      .filter(elem => elem.sex === 'f'
+        && people.some(el => el.mother === elem.name))
+    : filteredWomen = people.filter(elem => elem.sex === 'f');
+
+  return (filteredWomen.reduce((sum, elem) => sum + (elem.died - elem.born), 0))
+    / filteredWomen.length;
 }
 
 /**
@@ -52,11 +66,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let arrayOfAgeDifferences = [];
+
+  const isMotherDefined = kid =>
+    people.find(mother => mother.name === kid.mother) !== undefined;
+
+  const isMotherWithSonDefined = kid => kid.sex === 'm'
+    && people.find(mother => mother.name === kid.mother) !== undefined;
+
+  const ageDifference = (kid) =>
+    kid.born - people.find(mother => mother.name === kid.mother).born;
+
+  onlyWithSon === undefined
+    ? arrayOfAgeDifferences = people
+      .filter(isMotherDefined)
+      .map(ageDifference)
+    : arrayOfAgeDifferences = people
+      .filter(isMotherWithSonDefined)
+      .map(ageDifference);
+
+  return arrayOfAgeDifferences.reduce((sum, item) => sum + item, 0)
+    / arrayOfAgeDifferences.length;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
