@@ -18,18 +18,20 @@ function calculateMenAverageAge(people, century) {
   let countMen = 0;
 
   return people.reduce((acum, person) => {
+    const yearForCentury = Math.ceil(person.died / 100);
+
     !century
       ? person.sex === 'm'
       && countMen++
       : person.sex === 'm'
-      && century === Math.ceil(person.died / 100)
+      && century === yearForCentury
       && countMen++;
 
     const withoutCentury = person.sex === 'm'
       ? acum + (person.died - person.born)
       : acum;
     const withCentury = person.sex === 'm'
-    && century === Math.ceil(person.died / 100)
+    && century === yearForCentury
       ? acum + (person.died - person.born)
       : acum;
 
@@ -51,11 +53,13 @@ function calculateWomenAverageAge(people, withChildren) {
   let countWomen = 0;
 
   return people.reduce((acum, person) => {
+    const foundMother = people.some(child => person.name === child.mother);
+
     !withChildren
       ? person.sex === 'f'
       && countWomen++
       : person.sex === 'f'
-      && people.some(child => person.name === child.mother)
+      && foundMother
       && countWomen++;
 
     const happyMom = person.sex === 'f'
@@ -63,7 +67,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : acum;
     const unHappyMom = person.sex === 'f'
     && withChildren === true
-    && people.some(child => person.name === child.mother)
+    && foundMother
       ? acum + (person.died - person.born)
       : acum;
 
@@ -88,24 +92,25 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let countFamily = 0;
 
   return people.reduce((acum, child) => {
+    const foundMother = people.some(mother => mother.name === child.mother);
+    const foundChild = people.some(mom => child.mother === mom.name);
+    const bornMother = foundMother
+      && people.find(mother => mother.name === child.mother).born;
+
     !onlyWithSon
-      ? people.some(mom => child.mother === mom.name)
+      ? foundChild
         && countFamily++
-      : people.some(mom => child.mother === mom.name)
+      : foundChild
         && child.sex === 'm'
         && countFamily++;
 
-    const multiplateMother = people
-      .some(mother => mother.name === child.mother) !== false
-      ? acum + child.born - people
-        .find(mother => mother.name === child.mother).born
+    const multiplateMother = foundMother !== false
+      ? acum + child.born - bornMother
       : acum;
 
-    const withSonMother = people
-      .some(mother => mother.name === child.mother) !== false
+    const withSonMother = foundMother !== false
       && child.sex === 'm'
-      ? acum + child.born - people
-        .find(mother => mother.name === child.mother).born
+      ? acum + child.born - bornMother
       : acum;
 
     return onlyWithSon === undefined ? multiplateMother : withSonMother;
