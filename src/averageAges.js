@@ -18,7 +18,7 @@ function calculateMenAverageAge(people, century) {
   let countMen = 0;
 
   return people.reduce((acum, person) => {
-    century === undefined
+    !century
       ? person.sex === 'm'
       && countMen++
       : person.sex === 'm'
@@ -51,7 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
   let countWomen = 0;
 
   return people.reduce((acum, person) => {
-    withChildren === undefined
+    !withChildren
       ? person.sex === 'f'
       && countWomen++
       : person.sex === 'f'
@@ -88,7 +88,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let countFamily = 0;
 
   return people.reduce((acum, child) => {
-    onlyWithSon === undefined
+    !onlyWithSon
       ? people.some(mom => child.mother === mom.name)
         && countFamily++
       : people.some(mom => child.mother === mom.name)
