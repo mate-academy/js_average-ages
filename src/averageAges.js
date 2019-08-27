@@ -30,8 +30,8 @@ function calculateMenAverageAge(people, century) {
     const withoutCentury = person.sex === 'm'
       ? acum + (person.died - person.born)
       : acum;
-    const withCentury = person.sex === 'm'
-    && century === yearForCentury
+    const withCentury = century === yearForCentury
+    && person.sex === 'm'
       ? acum + (person.died - person.born)
       : acum;
 
@@ -65,8 +65,8 @@ function calculateWomenAverageAge(people, withChildren) {
     const happyMom = person.sex === 'f'
       ? acum + (person.died - person.born)
       : acum;
-    const unHappyMom = person.sex === 'f'
-    && withChildren === true
+    const unHappyMom = withChildren === true
+    && person.sex === 'f'
     && foundMother
       ? acum + (person.died - person.born)
       : acum;
@@ -108,8 +108,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       ? acum + child.born - bornMother
       : acum;
 
-    const withSonMother = foundMother !== false
-      && child.sex === 'm'
+    const withSonMother = child.sex === 'm'
+      && foundMother !== false
       ? acum + child.born - bornMother
       : acum;
 
