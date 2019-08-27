@@ -27,7 +27,8 @@ function calculateMenAverageAge(people, century) {
       }
     }, 0)
     : people.reduce((acc, person) => {
-      if (person.sex === 'm' && century === Math.ceil(person.died / 100)) {
+      if (person.sex === 'm'
+        && century === Math.ceil(person.died / 100)) {
         sum += (person.died - person.born);
       } else {
         counter++;
@@ -51,11 +52,12 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let sum = 0;
   let counter = 0;
+  const mapOfPeople = people
+    .reduce((acc, person) => ({ ...acc, [person.mother]: person }), {});
 
   withChildren === true
     ? people.reduce((acc, person) => {
-      if (person.sex === 'f'
-        && people.some(kid => kid.mother === person.name)) {
+      if (person.sex === 'f' && mapOfPeople[person.name] !== undefined) {
         sum += (person.died - person.born);
       } else {
         counter++;
@@ -89,21 +91,21 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let sum = 0;
   let counter = 0;
+  const mapOfPeople = people
+    .reduce((acc, person) => ({ ...acc, [person.name]: person }), {});
 
   onlyWithSon === undefined
     ? people.reduce((acc, kid) => {
-      if (people.find(mother => mother.name === kid.mother) !== undefined) {
-        sum += kid.born - people
-          .find(mother => mother.name === kid.mother).born;
+      if (kid.mother !== null && mapOfPeople[kid.mother] !== undefined) {
+        sum += kid.born - mapOfPeople[kid.mother].born;
       } else {
         counter++;
       }
     }, 0)
     : people.reduce((acc, kid) => {
       if (kid.sex === 'm'
-        && people.find(mother => mother.name === kid.mother) !== undefined) {
-        sum += kid.born - people
-          .find(mother => mother.name === kid.mother).born;
+        && kid.mother !== null && mapOfPeople[kid.mother] !== undefined) {
+        sum += kid.born - mapOfPeople[kid.mother].born;
       } else {
         counter++;
       }
