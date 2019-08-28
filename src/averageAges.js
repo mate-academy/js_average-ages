@@ -16,23 +16,26 @@
  */
 function calculateMenAverageAge(people, century) {
   let counter = 0;
-  let sum = 0;
 
-  century === undefined
+  const sum = century === undefined
     ? people.reduce((acc, person) => {
       if (person.sex === 'm') {
-        sum += (person.died - person.born);
+        return acc + (person.died - person.born);
       } else {
         counter++;
       }
+
+      return acc;
     }, 0)
     : people.reduce((acc, person) => {
       if (person.sex === 'm'
         && century === Math.ceil(person.died / 100)) {
-        sum += (person.died - person.born);
+        return acc + (person.died - person.born);
       } else {
         counter++;
       }
+
+      return acc;
     }, 0);
 
   return sum / (people.length - counter);
@@ -50,25 +53,28 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let sum = 0;
   let counter = 0;
   const mapOfPeople = people
     .reduce((acc, person) => ({ ...acc, [person.mother]: person }), {});
 
-  withChildren === true
+  const sum = withChildren === true
     ? people.reduce((acc, person) => {
-      if (person.sex === 'f' && mapOfPeople[person.name] !== undefined) {
-        sum += (person.died - person.born);
+      if (person.sex === 'f' && !!mapOfPeople[person.name]) {
+        return acc + (person.died - person.born);
       } else {
         counter++;
       }
+
+      return acc;
     }, 0)
     : people.reduce((acc, person) => {
       if (person.sex === 'f') {
-        sum += (person.died - person.born);
+        return acc + (person.died - person.born);
       } else {
         counter++;
       }
+
+      return acc;
     }, 0);
 
   return sum / (people.length - counter);
@@ -89,26 +95,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let sum = 0;
   let counter = 0;
   const mapOfPeople = people
     .reduce((acc, person) => ({ ...acc, [person.name]: person }), {});
 
-  onlyWithSon === undefined
+  const sum = onlyWithSon === undefined
     ? people.reduce((acc, kid) => {
-      if (kid.mother !== null && mapOfPeople[kid.mother] !== undefined) {
-        sum += kid.born - mapOfPeople[kid.mother].born;
+      if (kid.mother !== null && !!mapOfPeople[kid.mother]) {
+        return acc + kid.born - mapOfPeople[kid.mother].born;
       } else {
         counter++;
       }
+
+      return acc;
     }, 0)
     : people.reduce((acc, kid) => {
       if (kid.sex === 'm'
-        && kid.mother !== null && mapOfPeople[kid.mother] !== undefined) {
-        sum += kid.born - mapOfPeople[kid.mother].born;
+        && kid.mother !== null && !!mapOfPeople[kid.mother]) {
+        return acc + kid.born - mapOfPeople[kid.mother].born;
       } else {
         counter++;
       }
+
+      return acc;
     }, 0);
 
   return sum / (people.length - counter);
