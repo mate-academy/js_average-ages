@@ -15,15 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  return people.reduce((ageSum, man) => {
-    if (man.sex === 'm' && (century === undefined
-      || (man.died < century * 100 && man.died >= (century - 1) * 100))) {
-      return ageSum + man.died - man.born;
-    }
+  const filteredPeople = people
+    .filter(man => (man.sex === 'm' && (century === undefined
+      || (man.died < century * 100 && man.died >= (century - 1) * 100))));
 
-    return ageSum;
-  }, 0) / people.filter(man => (man.sex === 'm' && (century === undefined
-    || (man.died < century * 100 && man.died >= (century - 1) * 100)))).length;
+  return filteredPeople
+    .reduce((ageSum, man) => ageSum + man.died - man.born, 0)
+      / filteredPeople.length;
 }
 
 /**
@@ -42,18 +40,13 @@ function calculateWomenAverageAge(people, withChildren) {
     obj[item.mother] = '';
     return obj;
   }, {});
-
-  return people.reduce((ageSum, woman) => {
-    if (woman.sex === 'f'
-      && (withChildren === undefined
-        || mothers[woman.name] !== undefined)) {
-      return ageSum + woman.died - woman.born;
-    }
-
-    return ageSum;
-  }, 0) / people.filter(woman => woman.sex === 'f'
+  const filteredMothers = people.filter(woman => woman.sex === 'f'
     && (withChildren === undefined
-      || mothers[woman.name] !== undefined)).length;
+      || mothers[woman.name] !== undefined));
+
+  return filteredMothers
+    .reduce((ageSum, woman) => ageSum + woman.died - woman.born, 0)
+      / filteredMothers.length;
 }
 
 /**
@@ -76,16 +69,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return obj;
   }, {});
 
-  return people.reduce((age, child) => {
-    if ((onlyWithSon === undefined || child.sex === 'm')
-      && mothers[child.mother] !== undefined) {
-      return age + child.born - mothers[child.mother];
-    }
-
-    return age;
-  }, 0) / people
+  const filterdePeople = people
     .filter(child => (onlyWithSon === undefined || child.sex === 'm')
-      && mothers[child.mother]).length;
+      && mothers[child.mother]);
+
+  return filterdePeople
+    .reduce((age, child) => age + child.born - mothers[child.mother], 0)
+        / filterdePeople.length;
 }
 
 module.exports = {
