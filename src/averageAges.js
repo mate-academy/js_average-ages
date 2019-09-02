@@ -25,9 +25,9 @@ function calculateWomenAverageAge(people, withChildren) {
   const listOfWomen = people.filter(person => {
     if (!withChildren) {
       return person.sex === 'f';
-    } else {
-      return people.some(child => child.mother === person.name);
     }
+
+    return people.some(child => child.mother === person.name);
   });
 
   return getAverageAge(listOfWomen);
@@ -37,11 +37,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const motherWithChildren = people.filter(person => {
     if (!onlyWithSon) {
       return people.some(mother => mother.name === person.mother);
-    } else {
-      return people.some(
-        mother => mother.name === person.mother && person.sex === 'm'
-      );
     }
+
+    return people.some(
+      mother => mother.name === person.mother && person.sex === 'm'
+    );
   });
 
   return motherWithChildren.reduce((acc, child, i, arr) => {
