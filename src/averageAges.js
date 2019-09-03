@@ -15,11 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let menArray = [];
-  century === undefined
-    ? menArray = people.filter(person => person.sex === 'm')
-    : menArray = people.filter(person => person.sex === 'm')
-      .filter(man => century === Math.ceil(man.died / 100));
+  const menArray = century === undefined
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => person.sex === 'm'
+      && century === Math.ceil(person.died / 100));
 
   return menArray
     .reduce((sum, man) => sum + (man.died - man.born), 0) / menArray.length;
@@ -37,12 +36,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenArray = [];
-  withChildren ? womenArray = people.filter(person => person.sex === 'f')
-    .filter(woman => {
-      return people.some(person => person.mother === woman.name);
-    })
-    : womenArray = people.filter(person => person.sex === 'f');
+  const womenArray = withChildren
+    ? people.filter((person, index, arr) => person.sex === 'f'
+        && arr.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
 
   return womenArray
     .reduce((sum, woman) => sum + (woman.died - woman.born), 0)
@@ -65,13 +62,13 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenMapping = new Map();
-  onlyWithSon ? people.filter(person => person.sex === 'f')
-    .map(woman => {
-      people.filter(person => person.sex === 'm')
-        .filter(man => man.mother === woman.name)
-        .forEach(man => childrenMapping.set(man, woman));
-    }) : people.filter(person => person.sex === 'f')
-    .map(woman => {
+  const womenArray = people.filter(person => person.sex === 'f');
+  onlyWithSon ? womenArray.forEach(woman => {
+    people.filter(person => person.sex === 'm'
+        && person.mother === woman.name)
+      .forEach(man => childrenMapping.set(man, woman));
+  })
+    : womenArray.forEach(woman => {
       people.filter(person => person.mother === woman.name)
         .forEach(person => childrenMapping.set(person, woman));
     });
