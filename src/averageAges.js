@@ -15,30 +15,26 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let counter = 0;
-
   const sum = century === undefined
     ? people.reduce((acc, person) => {
       if (person.sex === 'm') {
-        return acc + (person.died - person.born);
-      } else {
-        counter++;
+        acc[0] += (person.died - person.born);
+        return [...acc, (person.died - person.born)];
       }
 
       return acc;
-    }, 0)
+    }, [0])
     : people.reduce((acc, person) => {
       if (person.sex === 'm'
         && century === Math.ceil(person.died / 100)) {
-        return acc + (person.died - person.born);
-      } else {
-        counter++;
+        acc[0] += (person.died - person.born);
+        return [...acc, (person.died - person.born)];
       }
 
       return acc;
-    }, 0);
+    }, [0]);
 
-  return sum / (people.length - counter);
+  return sum[0] / (sum.length - 1);
 }
 
 /**
@@ -53,31 +49,28 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let counter = 0;
   const mapOfPeople = people
     .reduce((acc, person) => ({ ...acc, [person.mother]: person }), {});
 
   const sum = withChildren === true
     ? people.reduce((acc, person) => {
       if (person.sex === 'f' && !!mapOfPeople[person.name]) {
-        return acc + (person.died - person.born);
-      } else {
-        counter++;
+        acc[0] += (person.died - person.born);
+        return [...acc, (person.died - person.born)];
       }
 
       return acc;
-    }, 0)
+    }, [0])
     : people.reduce((acc, person) => {
       if (person.sex === 'f') {
-        return acc + (person.died - person.born);
-      } else {
-        counter++;
+        acc[0] += (person.died - person.born);
+        return [...acc, (person.died - person.born)];
       }
 
       return acc;
-    }, 0);
+    }, [0]);
 
-  return sum / (people.length - counter);
+  return sum[0] / (sum.length - 1);
 }
 
 /**
@@ -95,32 +88,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let counter = 0;
   const mapOfPeople = people
     .reduce((acc, person) => ({ ...acc, [person.name]: person }), {});
 
   const sum = onlyWithSon === undefined
     ? people.reduce((acc, kid) => {
       if (kid.mother !== null && !!mapOfPeople[kid.mother]) {
-        return acc + kid.born - mapOfPeople[kid.mother].born;
-      } else {
-        counter++;
+        acc[0] += kid.born - mapOfPeople[kid.mother].born;
+        return [...acc, kid.born - mapOfPeople[kid.mother].born];
       }
 
       return acc;
-    }, 0)
+    }, [0])
     : people.reduce((acc, kid) => {
       if (kid.sex === 'm'
         && kid.mother !== null && !!mapOfPeople[kid.mother]) {
-        return acc + kid.born - mapOfPeople[kid.mother].born;
-      } else {
-        counter++;
+        acc[0] += kid.born - mapOfPeople[kid.mother].born;
+        return [...acc, kid.born - mapOfPeople[kid.mother].born];
       }
 
       return acc;
-    }, 0);
+    }, [0]);
 
-  return sum / (people.length - counter);
+  return sum[0] / (sum.length - 1);
 }
 
 module.exports = {
