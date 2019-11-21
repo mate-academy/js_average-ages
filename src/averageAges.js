@@ -16,11 +16,11 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people
-    .filter(person => person['sex'] === 'm')
-    .filter(man => (century) ? Math.ceil(man.died / 100) === century : true);
+    .filter(person => person['sex'] === 'm'
+    && ((century) ? Math.ceil(person.died / 100) === century : true));
 
   const sumOfAge = men
-    .reduce((sum, man) => { return sum + (man.died - man.born); }, 0);
+    .reduce((sum, man) => sum + man.died - man.born, 0);
 
   return sumOfAge / men.length;
 }
@@ -41,11 +41,11 @@ function calculateWomenAverageAge(people, withChildren) {
     .mother !== null).map(el => el.mother);
 
   const women = people
-    .filter(person => person.sex === 'f')
-    .filter(el => (withChildren) ? mothers.includes(el.name) : true);
+    .filter(person => person.sex === 'f'
+      && ((withChildren) ? mothers.includes(person.name) : true));
 
   const sumOfAge = women
-    .reduce((sum, woman) => { return sum + (woman.died - woman.born); }, 0);
+    .reduce((sum, woman) => sum + woman.died - woman.born, 0);
 
   return sumOfAge / women.length;
 }
@@ -68,6 +68,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const allMothersArr = people
     .filter(person => person.mother !== null)
     .map(el => el.mother);
+
   const peopleArr = people.map(el => el.name);
   const mothersWithAgeArr = allMothersArr
     .filter(mother => peopleArr.includes(mother));
@@ -79,13 +80,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(person => mothersWithAgeArr.includes(person.mother))
     .map(child => {
       const mom = womenMothers.find(el => el.name === child.mother);
-      child['motherBorn'] = mom.born;
+      child.motherBorn = mom.born;
       return child;
     })
     .filter(child => (onlyWithSon) ? child.sex === 'm' : true);
 
   const sumOfAgeDiff = children
-    .reduce((sum, child) => { return sum + child.born - child.motherBorn; }, 0);
+    .reduce((sum, child) => sum + child.born - child.motherBorn, 0);
 
   return sumOfAgeDiff / children.length;
 }
