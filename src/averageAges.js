@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 'use strict';
 
 /**
@@ -15,11 +16,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let men = people.filter(item => item.sex === 'm');
+
+  if (century) {
+    men = men.filter(item => Math.ceil(item.died / 100) === century);
+  };
+
+  return men.map(item => item.died - item.born)
+            .reduce((acc, item) => acc + item) / men.length;
 }
 
 /**
@@ -34,7 +38,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(item => item.sex === 'f');
+
+  if (withChildren) {
+    women = women.filter(item =>
+            people.some(elem => item.name === elem.mother));
+  }
+
+  return women.map(item => item.died - item.born)
+              .reduce((acc, item) => acc + item) / women.length;
 }
 
 /**
@@ -52,11 +64,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  const mothers = people.filter(item => item.sex === 'f')
+                        .filter(item =>
+                        people.some(elem => item.name === elem.mother));
+
+  let children = people.filter(item =>
+                 mothers.some(elem => item.mother === elem.name));
+
+  if (onlyWithSon) {
+    children = children.filter(item => item.sex === 'm');
+  }
+
+  return children.map(item =>
+          mothers.map(elem => item.mother === elem.name
+            ? item.born - elem.born
+            : 0)
+          .filter(i => i !== 0))
+          .reduce((acc, item) => acc + item[0], 0) / children.length;
+  };
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
