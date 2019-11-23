@@ -15,11 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let man = sexFilter(people, 'm');
+  man = century
+    ? man.filter(person => Math.ceil(person.died / 100) === century)
+    : man;
+  return arrayAverage(man);
 }
 
 /**
@@ -34,7 +34,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = sexFilter(people, 'f');
+  woman = withChildren
+    ? people.filter(
+      person => people.some(
+        someOne => someOne.mother === person.name,
+      ),
+    )
+    : woman;
+  return arrayAverage(woman);
 }
 
 /**
@@ -52,11 +60,47 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(person => person.sex === 'f' && people.some(
+    someOne => someOne.mother === person.name,
+  ));
+  const children = people.filter(person => mothers.some(
+    someOne => person.mother === someOne.name,
+  ));
+  let family = children.map(child => {
+    const childMother = mothers.find(mother => child.mother === mother.name);
+    return [child, childMother];
+  });
+  family = onlyWithSon ? family.filter(([child]) => child.sex === 'm') : family;
+  return (family.reduce(
+    (sum, [child, mother]) => sum + (child.born - mother.born)
+    , 0) / family.length);
+}
+
+/**
+ * This function allows to filter incoming array by gender.
+ *
+ * @param {array} array
+ * @param {'m' || 'f'} sex
+ * @returns {array}
+ */
+function sexFilter(array, sex) {
+  return array.filter(person => person.sex === sex);
+}
+
+/**
+ * This function allows to calculate incoming array values average.
+ *
+ * @param {array} array
+ * @returns {number}
+ */
+function arrayAverage(array) {
+  return (array.reduce(
+    (sum, current) => sum + (current.died - current.born)
+    , 0) / array.length);
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
