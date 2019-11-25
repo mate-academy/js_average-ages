@@ -1,33 +1,25 @@
 'use strict';
 
 /**
- * @param {[]} arrayOfObjects
- * @param {string} objectProperty
+ * @param {[]} people
+ * @param {string} sex
  *
  * @return {[]}
  */
-function filteredPersonsBySex(arrayOfObjects, objectProperty) {
-  return arrayOfObjects.filter(item => item.sex === objectProperty);
+function filteredPersonsBySex(people, sex) {
+  return people.filter(item => item.sex === sex);
 }
 
 /**
- * @param {[]} array
+ * @param {[]} people
  *
  * @return {number}
  */
-function addAllYears(array) {
-  return array.reduce((prevYear, nextYear) => (prevYear + nextYear), 0);
-}
-
-/**
- * @param {number} sumYearsDied
- * @param {number} sumYearsBorn
- * @param {number} divider
- *
- * @return {number}
- */
-function returnRoundedAverageResult(sumYearsDied, sumYearsBorn, divider) {
-  return Math.round(((sumYearsDied - sumYearsBorn) / divider) * 100) / 100;
+function countAverageAge(people) {
+  return (
+    people.reduce((total, person) =>
+      total + (person.died - person.born), 0) / people.length
+  );
 }
 
 /**
@@ -46,40 +38,12 @@ function returnRoundedAverageResult(sumYearsDied, sumYearsBorn, divider) {
  */
 
 function calculateMenAverageAge(people, century) {
-  const allMen = filteredPersonsBySex(people, 'm');
-
-  function returnResultWithoutCentury() {
-    const dataMenDied = allMen.map(men => men.died);
-    const dataMenBorn = allMen.map(men => men.born);
-
-    return returnRoundedAverageResult(
-      addAllYears(dataMenDied),
-      addAllYears(dataMenBorn),
-      allMen.length
-    );
+  let allMen = filteredPersonsBySex(people, 'm');
+  if (century) {
+    allMen = allMen.filter(person => Math.ceil(person.died / 100) === century);
   }
 
-  function returnResultWithCentury() {
-    const filteredAllMenByCentury = allMen.filter(
-      men => century === Math.ceil(men.died / 100)
-    );
-    const dataMenDiedInSpecifiedCentury = filteredAllMenByCentury.map(
-      men => men.died
-    );
-    const dataMenBornInSpecifiedCentury = filteredAllMenByCentury.map(
-      men => men.born
-    );
-
-    return returnRoundedAverageResult(
-      addAllYears(dataMenDiedInSpecifiedCentury),
-      addAllYears(dataMenBornInSpecifiedCentury),
-      filteredAllMenByCentury.length
-    );
-  }
-
-  return century === undefined
-    ? returnResultWithoutCentury()
-    : returnResultWithCentury();
+  return countAverageAge(allMen);
 }
 
 /**
@@ -93,46 +57,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  const allWomen = filteredPersonsBySex(people, 'f');
-
-  function returnResultMotherStatusNotSpecified() {
-    const dataWomenDied = allWomen.map(
-      women => women.died
-    );
-    const dataWomenBorn = allWomen.map(
-      women => women.born
-    );
-
-    return returnRoundedAverageResult(
-      addAllYears(dataWomenDied),
-      addAllYears(dataWomenBorn),
-      allWomen.length
-    );
-  }
-
-  function returnResultMotherStatusSpecified() {
-    const filteredWomenWithChildren = people.filter(function(mother) {
-      return people.find(function(children) {
-        return children.mother === mother.name;
-      });
+  let allWomen = filteredPersonsBySex(people, 'f');
+  if (withChildren) {
+    allWomen = allWomen.filter(women => {
+      return people.find(child => child.mother === women.name);
     });
-    const dataWomenDied = filteredWomenWithChildren.map(
-      women => women.died
-    );
-    const dataWomenBorn = filteredWomenWithChildren.map(
-      women => women.born);
-
-    return returnRoundedAverageResult(
-      addAllYears(dataWomenDied),
-      addAllYears(dataWomenBorn),
-      filteredWomenWithChildren.length
-    );
   }
 
-  return withChildren
-    ? returnResultMotherStatusSpecified()
-    : returnResultMotherStatusNotSpecified();
+  return countAverageAge(allWomen);
 }
 
 /**
@@ -149,45 +83,30 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(function(child) {
+  let children = people.filter(function(child) {
     return people.find(function(mother) {
       return child.mother === mother.name;
     });
   });
-
-  function returnResultOnlyWithSonNotSpecified() {
-    const motherOfChildren = children.map(child => {
+  let motherOfChildren = children.map(child => {
+    return people.find(person => person.name === child.mother);
+  });
+  if (onlyWithSon) {
+    children = filteredPersonsBySex(children, 'm');
+    motherOfChildren = children.map(child => {
       return people.find(person => person.name === child.mother);
     });
-    const dataChildrenBorn = children.map(child => child.born);
-    const dataMotherBorn = motherOfChildren.map(child => child.born);
-
-    return returnRoundedAverageResult(
-      addAllYears(dataChildrenBorn),
-      addAllYears(dataMotherBorn),
-      children.length
-    );
   }
-
-  function returnResultOnlyWithSonSpecified() {
-    const childrenSun = filteredPersonsBySex(children, 'm');
-    const dataMotherOfSun = childrenSun.map(child => {
-      return people.find(person => person.name === child.mother);
-    });
-    const dataChildrenBorn = childrenSun.map(child => child.born);
-    const dataMotherBorn = dataMotherOfSun.map(child => child.born);
-
-    return returnRoundedAverageResult(
-      addAllYears(dataChildrenBorn),
-      addAllYears(dataMotherBorn),
-      childrenSun.length
-    );
-  }
-
-  return onlyWithSon
-    ? returnResultOnlyWithSonSpecified()
-    : returnResultOnlyWithSonNotSpecified();
+  return (
+    (children.reduce(
+      (total, child) =>
+        total + (child.born), 0)
+      - motherOfChildren.reduce((total, mother) =>
+        total + (mother.born), 0))
+    / children.length
+  );
 }
 
 module.exports = {
