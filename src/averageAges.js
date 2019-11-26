@@ -26,7 +26,9 @@ function calculateMenAverageAge(people, century = 0) {
     return accum + (curVal.died - curVal.born);
   }, 0);
 
-  return sumAge / onlyMen.length;
+  const getAverage = sumAge / onlyMen.length;
+
+  return getAverage;
 }
 
 /**
@@ -52,7 +54,9 @@ function calculateWomenAverageAge(people, withChildren) {
     return accum + (curVal.died - curVal.born);
   }, 0);
 
-  return sumAge / onlyWomen.length;
+  const getAverage = sumAge / onlyWomen.length;
+
+  return getAverage;
 }
 
 /**
@@ -89,7 +93,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   }));
 
-  return ages / children.length;
+  const getAverage = ages / children.length;
+
+  return getAverage;
 }
 
 module.exports = {
