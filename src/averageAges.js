@@ -101,13 +101,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     child => {
       const momOfChild = people
         .find(mother => mother['name'] === child['mother']);
-      child['momBorn'] = momOfChild['born'];
+      child['diffWithMom'] = child['born'] - momOfChild['born'];
     },
   );
 
   const diff = [];
   children.map((person) => {
-    diff.push(person['born'] - person['momBorn']);
+    diff.push(person['diffWithMom']);
   });
 
   return getAverage(diff);
