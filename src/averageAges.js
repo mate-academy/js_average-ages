@@ -1,5 +1,11 @@
 'use strict';
+function getPersonAge(person) {
+  return person['died'] - person['born'];
+}
 
+function getAverage(array) {
+  return array.reduce((sum, item) => sum + item, 0) / array.length;
+}
 /**
  * Implement calculateMenAverageAge function
  *
@@ -47,13 +53,6 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function getPersonAge(person) {
-  return person['died'] - person['born'];
-}
-
-function getAverage(array) {
-  return array.reduce((sum, item) => sum + item, 0) / array.length;
-}
 
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
