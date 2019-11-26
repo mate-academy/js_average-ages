@@ -64,24 +64,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(person => person.sex === 'f' && people.some(
-    someOne => someOne.mother === person.name,
+  const agesDiff = [];
+  people.forEach(person => people.some(
+    someOne => {
+      const hasMother = person.mother === someOne.name;
+      hasMother
+      && (onlyWithSon
+        ? (person.sex === 'm' && agesDiff.push(person.born - someOne.born))
+        : agesDiff.push(person.born - someOne.born));
+      return hasMother;
+    },
   ));
 
-  const children = people.filter(person => mothers.some(
-    someOne => person.mother === someOne.name,
-  ));
-
-  let family = children.map(child => {
-    const childMother = mothers.find(mother => child.mother === mother.name);
-    return [child, childMother];
-  });
-
-  family = onlyWithSon ? family.filter(([child]) => child.sex === 'm') : family;
-
-  return (family.reduce(
-    (sum, [child, mother]) => sum + (child.born - mother.born)
-    , 0) / family.length);
+  return (agesDiff.reduce((sum, ages) => sum + ages, 0) / agesDiff.length);
 }
 
 /**
