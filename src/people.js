@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable */
 const people = [
   { 'name': 'Carolus Haverbeke', 'sex': 'm', 'born': 1832, 'died': 1905, 'father': 'Carel Haverbeke', 'mother': 'Maria van Brussel' },
   { 'name': 'Emma de Milliano', 'sex': 'f', 'born': 1876, 'died': 1956, 'father': 'Petrus de Milliano', 'mother': 'Sophia van Damme' },
@@ -39,7 +39,7 @@ const people = [
   { 'name': 'Jan Haverbeke', 'sex': 'm', 'born': 1671, 'died': 1731, 'father': 'Lieven Haverbeke', 'mother': 'Elisabeth Hercke' },
   { 'name': 'Anna van Hecke', 'sex': 'f', 'born': 1607, 'died': 1670, 'father': 'Paschasius van Hecke', 'mother': 'Martijntken Beelaert' },
   { 'name': 'Maria Sturm', 'sex': 'f', 'born': 1835, 'died': 1917, 'father': 'Charles Sturm', 'mother': 'Seraphina Spelier' },
-  { 'name': 'Jacobus Bernardus van Brussel', 'sex': 'm', 'born': 1736, 'died': 1809, 'father': 'Jan van Brussel', 'mother': 'Elisabeth Haverbeke' }
+  { 'name': 'Jacobus Bernardus van Brussel', 'sex': 'm', 'born': 1736, 'died': 1809, 'father': 'Jan van Brussel', 'mother': 'Elisabeth Haverbeke' },
 ];
 
 module.exports = people;
