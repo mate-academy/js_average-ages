@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let man = sexFilter(people, 'm');
+
+  man = century
+    ? man.filter(person => Math.ceil(person.died / 100) === century)
+    : man;
+
+  return arrayAverageAges(man);
 }
 
 /**
@@ -34,7 +36,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = sexFilter(people, 'f');
+
+  woman = withChildren
+    ? people.filter(
+      person => people.some(
+        someOne => someOne.mother === person.name,
+      ),
+    )
+    : woman;
+
+  return arrayAverageAges(woman);
 }
 
 /**
@@ -52,11 +64,57 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const agesDiff = [];
+  people.forEach(person => people.some(
+    someOne => {
+      const hasMother = person.mother === someOne.name;
+      hasMother
+      && (onlyWithSon
+        ? (person.sex === 'm' && agesDiff.push(person.born - someOne.born))
+        : agesDiff.push(person.born - someOne.born));
+      return hasMother;
+    },
+  ));
+
+  return arrayAverage(agesDiff);
+}
+
+/**
+ * This function allows to filter incoming array by gender.
+ *
+ * @param {array} array
+ * @param {'m' || 'f'} sex
+ * @returns {array}
+ */
+function sexFilter(array, sex) {
+  return array.filter(person => person.sex === sex);
+}
+
+/**
+ * This function allows to calculate incoming array values average ages.
+ *
+ * @param {array} array
+ * @returns {number}
+ */
+function arrayAverageAges(array) {
+  return (array.reduce(
+    (sum, current) => sum + (current.died - current.born)
+    , 0) / array.length);
+}
+
+/**
+ * This function allows to calculate incoming array values average.
+ *
+ * @param {array} array
+ * @returns {number}
+ */
+function arrayAverage(array) {
+  return (array.reduce(
+    (sum, current) => sum + current, 0) / array.length);
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
