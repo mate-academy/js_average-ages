@@ -18,8 +18,20 @@ function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
+  // replace `if ()` statement with logical operators (&&, ||)
+  // or ternary operator (?:)
   // without nesting
+  let mans;
+
+  century !== undefined
+    ? mans = people.filter(person => person.sex === 'm')
+      .filter(man => Math.ceil(man.died / 100) === century)
+    : mans = people.filter(person => person.sex === 'm');
+
+  const mansAge = mans.map(man => man.died - man.born);
+  const averageAge = mansAge.reduce((a, b) => a + b) / mansAge.length;
+
+  return averageAge;
 }
 
 /**
@@ -34,7 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let womens;
+
+  withChildren
+    ? womens = people.filter(person => person.sex === 'f')
+      .filter(women => people.find(person => person.mother === women.name))
+    : womens = people.filter(person => person.sex === 'f');
+
+  const womensAge = womens.map(women => women.died - women.born);
+  const averageAge = womensAge.reduce((a, b) => a + b) / womensAge.length;
+
+  return averageAge;
 }
 
 /**
@@ -52,11 +74,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => (onlyWithSon
+    ? child.sex === 'm' : true)
+    && people.find(mother => {
+      if (child.mother === mother.name) {
+        child.motherBorn = mother.born;
+        return true;
+      }
+      return false;
+    }));
+
+  const ageDiff = children.map(child => child.born - child.motherBorn);
+  const averageAgeDiff = ageDiff.reduce((a, b) => a + b) / ageDiff.length;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
