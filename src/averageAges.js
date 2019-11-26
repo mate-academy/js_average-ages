@@ -28,11 +28,12 @@ function calculateMenAverageAge(people, century) {
     : men.filter(person => person['sex'] === 'm')
       .filter(person => Math.ceil(person['died'] / 100) === century);
 
-  let menAvgAge = men
-    .reduce((ageSum, person) => ageSum + (person['died'] - person['born']), 0);
-  menAvgAge = menAvgAge / men.length;
+  const ages = [];
+  men.map((person) => {
+    ages.push(getPersonAge(person));
+  });
 
-  return menAvgAge;
+  return getAverage(ages);
 }
 
 /**
@@ -46,19 +47,28 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+function getPersonAge(person) {
+  return person['died'] - person['born'];
+}
+
+function getAverage(array) {
+  return array.reduce((sum, item) => sum + item, 0) / array.length;
+}
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   let women = [...people];
   women = withChildren
-    ? women.filter(person => person['sex'] === 'f')
-      .filter(person => women.some(child => child['mother'] === person['name']))
+    ? women.filter(person => person['sex'] === 'f'
+      && women.some(child => child['mother'] === person['name']))
     : women.filter(person => person['sex'] === 'f');
 
-  let womenAvgAge = women
-    .reduce((ageSum, person) => ageSum + (person['died'] - person['born']), 0);
-  womenAvgAge = womenAvgAge / women.length;
+  const ages = [];
+  women.map((person) => {
+    ages.push(getPersonAge(person));
+  });
 
-  return womenAvgAge;
+  return getAverage(ages);
 }
 
 /**
@@ -81,8 +91,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ? children
       .filter(person => people
         .some(mother => mother['name'] === person['mother'])
+        && (person['sex'] === 'm')
       )
-      .filter(person => person['sex'] === 'm')
     : children
       .filter(person => people
         .some(mother => mother['name'] === person['mother'])
@@ -96,9 +106,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     },
   );
 
-  return children
-    .reduce((sum, child) => sum + child['born'] - child['momBorn'], 0)
-    / children.length;
+  const diff = [];
+  children.map((person) => {
+    diff.push(person['born'] - person['momBorn']);
+  });
+
+  return getAverage(diff);
 }
 
 module.exports = {
