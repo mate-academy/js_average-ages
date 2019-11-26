@@ -84,24 +84,31 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenWithMother = people.filter((child) => {
-    return child.mother !== null && people.some((mother) => {
+    return people.some((mother) => {
       return mother.name === child.mother;
     });
   });
-  const ageDiff = childrenWithMother.reduce((acc, child) => {
-    return acc + (child.born) - (people.find((mother) => {
-      return mother.name === child.mother;
-    }).born);
-  }, 0) / childrenWithMother.length;
 
-  const menWithMother = childrenWithMother.filter((kid) => kid.sex === 'm');
-  const ageDiffOfMenAndMother = menWithMother.reduce((acc, child) => {
-    return acc + (child.born) - (people.find((mother) => {
-      return mother.name === child.mother;
-    }).born);
-  }, 0) / menWithMother.length;
+  switch (onlyWithSon === undefined) {
+    case true:
+      const ageDiff = childrenWithMother.reduce((acc, child) => {
+        return acc + (child.born) - (people.find((mother) => {
+          return mother.name === child.mother;
+        }).born);
+      }, 0) / childrenWithMother.length;
 
-  return onlyWithSon === undefined ? ageDiff : ageDiffOfMenAndMother;
+      return ageDiff;
+
+    case false:
+      const menWithMother = childrenWithMother.filter((kid) => kid.sex === 'm');
+      const ageDiffOfMenAndMother = menWithMother.reduce((acc, child) => {
+        return acc + (child.born) - (people.find((mother) => {
+          return mother.name === child.mother;
+        }).born);
+      }, 0) / menWithMother.length;
+
+      return ageDiffOfMenAndMother;
+  }
 }
 
 module.exports = {
