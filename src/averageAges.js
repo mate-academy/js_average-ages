@@ -21,7 +21,7 @@ function calculateMenAverageAge(people, century) {
     ? man.filter(person => Math.ceil(person.died / 100) === century)
     : man;
 
-  return arrayAverage(man);
+  return arrayAverageAges(man);
 }
 
 /**
@@ -46,7 +46,7 @@ function calculateWomenAverageAge(people, withChildren) {
     )
     : woman;
 
-  return arrayAverage(woman);
+  return arrayAverageAges(woman);
 }
 
 /**
@@ -76,7 +76,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     },
   ));
 
-  return (agesDiff.reduce((sum, ages) => sum + ages, 0) / agesDiff.length);
+  return arrayAverage(agesDiff);
 }
 
 /**
@@ -91,6 +91,18 @@ function sexFilter(array, sex) {
 }
 
 /**
+ * This function allows to calculate incoming array values average ages.
+ *
+ * @param {array} array
+ * @returns {number}
+ */
+function arrayAverageAges(array) {
+  return (array.reduce(
+    (sum, current) => sum + (current.died - current.born)
+    , 0) / array.length);
+}
+
+/**
  * This function allows to calculate incoming array values average.
  *
  * @param {array} array
@@ -98,8 +110,7 @@ function sexFilter(array, sex) {
  */
 function arrayAverage(array) {
   return (array.reduce(
-    (sum, current) => sum + (current.died - current.born)
-    , 0) / array.length);
+    (sum, current) => sum + current, 0) / array.length);
 }
 
 module.exports = {
