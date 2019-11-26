@@ -3,11 +3,11 @@
 /**
  * Implement calculateMenAverageAge function
  *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
+ * Function returns a
+ * function calculates
  *
  * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
+ * Divide year of person's de
  *
  * @param {object[]} people
  * @param {number} century - optional
@@ -15,11 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  const men = people
+    .filter(person => person.sex === 'm'
+      && (century ? Math.ceil(person.died / 100) === century : true));
+
+  return getAverage(men);
 }
 
 /**
@@ -34,7 +34,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people
+    .filter(woman => woman.sex === 'f'
+      && (withChildren ? people
+        .some(person => woman.name === person.mother) : true));
+
+  return getAverage(women);
 }
 
 /**
@@ -52,11 +57,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const ageDiference = people
+    .filter(child => onlyWithSon ? child.sex === 'm' : true)
+    .map(child => {
+      const isMother = people.find(mother => mother.name === child.mother);
+
+      return isMother ? child.born - isMother.born : undefined;
+    })
+    .filter(differ => differ);
+
+  return ageDiference
+    .reduce((sum, ageDiff) => sum + ageDiff, 0)
+    / ageDiference.length;
+}
+
+function getPersonAge(individual) {
+  return individual
+    .reduce((sum, person) => sum + (person.died - person.born), 0);
+}
+
+function getAverage(array) {
+  return getPersonAge(array) / array.length;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
