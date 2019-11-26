@@ -22,7 +22,7 @@ function calculateMenAverageAge(people, century) {
   // or ternary operator (?:)
   // without nesting
 
-  const men = arguments.length > 1
+  const men = century > 0 && century < 21
     ? people.filter(person => Math.ceil(person.died / 100) === century
       && person.sex === 'm')
     : people.filter(person => person.sex === 'm');
@@ -45,9 +45,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = arguments.length > 1
+  const women = withChildren
     ? people.filter((person) => person.sex === 'f'
-      && people.some(isChild => isChild.mother === person.name))
+      && people.some(child => child.mother === person.name))
     : people.filter(person => person.sex === 'f');
 
   return women.reduce(
@@ -71,27 +71,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(person => person.sex === 'f'
-      && people.some(isChild => isChild.mother === person.name));
+  const children = people.filter(child => people
+    .some(mother => mother.name === child.mother));
 
-  const children = people.filter(function(isChild) {
-    return mothers.some(mother => mother.name === isChild.mother);
-  });
+  const mothers = people.filter(mother => children
+    .some(child => child.mother === mother.name));
 
-  let childrenWithTheirMothers = children.map(function(child) {
-    const motherOfChild = mothers
-      .find(isMother => isMother.name === child.mother);
-    return [child, motherOfChild];
-  });
+  const differences = onlyWithSon
+    ? children.filter(child => child.sex === 'm'
+      && mothers.some(mother => mother.name === child.mother))
+      .map(child => {
+        const currentMother = mothers
+          .find(mother => mother.name === child.mother);
 
-  onlyWithSon && (childrenWithTheirMothers = childrenWithTheirMothers
-    .filter(function(pair) {
-      return pair[0].sex === 'm';
-    }));
+        return child.born - currentMother.born;
+      })
+    : children.map(child => {
+      const currentMother = mothers
+        .find(mother => mother.name === child.mother);
 
-  return childrenWithTheirMothers.reduce(function(sum, childWithMother) {
-    return sum + (childWithMother[0].born - childWithMother[1].born);
-  }, 0) / childrenWithTheirMothers.length;
+      return child.born - currentMother.born;
+    });
+
+  return differences.reduce((sum, diff) => sum + diff, 0) / differences.length;
 }
 
 module.exports = {
