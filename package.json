@@ -29,7 +29,6 @@
   "husky": {
     "hooks": {
       "post-commit": "git update-index --again",
-      "pre-commit": "lint-staged",
       "pre-push": "npm run test"
     }
   }
