@@ -14,19 +14,25 @@
  *
  * @return {number}
  */
+/* eslint-disable */
+Array.prototype.getAverage = function() {
+  return this.reduce((acc, person) => {
+    return acc + (person.died - person.born);
+  }, 0) / this.length;
+};
+
+/* eslint-enable */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  return people
+    .filter((person) => person.sex === 'm')
+    .filter(man => century === undefined
+      ? true : Math.ceil(man.died / 100) === century)
+    .getAverage();
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
@@ -34,7 +40,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  return people
+    .filter((person) => person.sex === 'f')
+    .filter((woman) => withChildren === undefined
+      ? true : people.some((child) => child.mother === woman.name))
+    .getAverage();
 }
 
 /**
@@ -52,11 +62,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const ageDifferences = people
+    .filter((person) => people.some((mother) => mother.name === person.mother))
+    .filter((child) => onlyWithSon === undefined ? true : child.sex === 'm')
+    .map(child => child.born
+    - people.find((mother) => mother.name === child.mother).born);
+
+  return ageDifferences.reduce((a, b) => a + b) / ageDifferences.length;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
