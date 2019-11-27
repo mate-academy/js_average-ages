@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 'use strict';
 
 /**
@@ -14,12 +15,23 @@
  *
  * @return {number}
  */
+
+function getAge(params) {
+  return params.map(item => item.died - item.born);
+}
+
+function gateAverage(params) {
+  return params.reduce((acc, item) => acc + item) / params.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let men = people.filter(item => item.sex === 'm');
+
+  if (century) {
+    men = men.filter(item => Math.ceil(item.died / 100) === century);
+  };
+
+  return gateAverage(getAge(men));
 }
 
 /**
@@ -34,7 +46,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(item => item.sex === 'f');
+
+  if (withChildren) {
+    women = women.filter(item =>
+            people.some(elem => item.name === elem.mother));
+  }
+
+  return gateAverage(getAge(women));
 }
 
 /**
@@ -52,11 +71,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  const mothers = people.filter(item => item.sex === 'f'
+                  && people.some(elem => item.name === elem.mother));
+
+  const children = people.filter(item => (onlyWithSon ? item.sex === 'm' : item)
+                  && mothers.some(elem => item.mother === elem.name));
+
+  return children.map(item =>
+          mothers.map(elem => item.mother === elem.name
+            ? item.born - elem.born
+            : null)
+          .filter(i => i !== null))
+          .reduce((acc, item) => acc + item[0], 0) / children.length;
+  };
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
