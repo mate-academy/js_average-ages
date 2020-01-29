@@ -18,8 +18,20 @@ function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  // replace `if ()` statement with logical operators (&&, ||) or
+  // ternary operator (?:) without nesting
+  const apropriateMen = people.filter(item => {
+    return century
+      ? Math.ceil(item.died / 100) === century && item.sex === 'm'
+      : item.sex === 'm';
+  });
+
+  const sumAge = apropriateMen.reduce(
+    (previoseValue, item) => previoseValue + item.died - item.born,
+    0
+  );
+
+  return sumAge / apropriateMen.length;
 }
 
 /**
@@ -34,7 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const apropriateWomen = people.filter(item => {
+    return withChildren
+      ? item.sex === 'f' && people.some(item2 => item2.mother === item.name)
+      : item.sex === 'f';
+  });
+
+  const sumAge = apropriateWomen.reduce(
+    (previoseValue, item) => previoseValue + item.died - item.born,
+    0);
+
+  return sumAge / apropriateWomen.length;
 }
 
 /**
@@ -52,11 +74,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const apropriateChild = people.filter(item => {
+    return onlyWithSon
+      ? people.some(item2 => item2.name === item.mother) && item.sex === 'm'
+      : people.some(item2 => item2.name === item.mother);
+  });
+
+  const sum = apropriateChild.reduce((initialValue, item) => {
+    return initialValue
+      + item.born
+      - people.find(item2 => item2.name === item.mother).born;
+  },
+  0);
+
+  return sum / apropriateChild.length;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
