@@ -15,11 +15,26 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  const mans = people.filter((personDatas) => personDatas.sex === 'm');
+  let bornAgeSum = 0;
+  let diedAgeSum = 0;
+  let count = 0;
+
+  mans.forEach((person) => {
+    if (century) {
+      if (Math.ceil(person.died / 100) === century) {
+        bornAgeSum += person.born;
+        diedAgeSum += person.died;
+        count++;
+      }
+    } else {
+      bornAgeSum += person.born;
+      diedAgeSum += person.died;
+      count++;
+    }
+  });
+
+  return Math.round((diedAgeSum - bornAgeSum) / count * 100) / 100;
 }
 
 /**
@@ -34,7 +49,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((personDatas) => personDatas.sex === 'f');
+  let bornAgeSum = 0;
+  let diedAgeSum = 0;
+  let count = 0;
+
+  women.forEach((person) => {
+    if (withChildren) {
+      if (people.some((human) => person.name === human.mother)) {
+        bornAgeSum += person.born;
+        diedAgeSum += person.died;
+        count++;
+      };
+    } else {
+      bornAgeSum += person.born;
+      diedAgeSum += person.died;
+      count++;
+    }
+  });
+
+  return Math.round((diedAgeSum - bornAgeSum) / count * 100) / 100;
 }
 
 /**
@@ -52,11 +86,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenWithChild = people.filter((personDatas) => personDatas.sex === 'f'
+    && people.some((human) => personDatas.name === human.mother));
+  let maternityAgeSum = 0;
+  let countForChild = 0;
+
+  womenWithChild.forEach((person) => {
+    people.forEach((human) => {
+      if (onlyWithSon) {
+        if (person.name === human.mother && human.sex === 'm') {
+          maternityAgeSum += human.born - person.born;
+          countForChild++;
+        }
+      } else if (person.name === human.mother) {
+        maternityAgeSum += human.born - person.born;
+        countForChild++;
+      }
+    });
+  });
+
+  return Math.round((maternityAgeSum / countForChild) * 100) / 100;
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
