@@ -65,15 +65,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const womanChildBirth = [];
   const womanSonsBirth = [];
 
-  people.map(kid => people.find(mother => {
-    if (kid.mother === mother.name) {
-      womanChildBirth.push(kid.born - mother.born);
-    }
-  }));
+  people.forEach(child => people.find(mother => {
+    const birthAge = child.born - mother.born;
 
-  people.map(kid => people.find(mother => {
-    if (kid.mother === mother.name && kid.sex === 'm') {
-      womanSonsBirth.push(kid.born - mother.born);
+    if (child.mother === mother.name) {
+      womanChildBirth.push(birthAge);
+    }
+
+    if (child.mother === mother.name && child.sex === 'm') {
+      womanSonsBirth.push(birthAge);
     }
   }));
 
@@ -83,9 +83,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 }
 
 function calcSumAge(list) {
-  return list.reduce((sum, person) => {
-    return sum + (person.died - person.born);
-  }, 0);
+  return list.reduce((sum, person) => sum + (person.died - person.born), 0);
 }
 
 function calcAverageAge(ages) {
