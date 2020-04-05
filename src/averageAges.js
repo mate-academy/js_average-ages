@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
-  // without nesting
+  let man = people.filter(person => person.sex === 'm');
+
+  man = (century)
+    ? man.filter(person => Math.ceil(person.died / 100) === century)
+    : man;
+
+  return formatingNum(calcSumAge(man) / man.length);
 }
 
 /**
@@ -34,7 +36,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = people.filter(person => person.sex === 'f');
+
+  woman = (withChildren)
+    ? woman.filter(person => {
+      return people.find((child) => child.mother === person.name);
+    })
+    : woman;
+
+  return formatingNum(calcSumAge(woman) / woman.length);
 }
 
 /**
@@ -52,11 +62,42 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womanChildBirth = [];
+  const womanSonsBirth = [];
+
+  people.forEach(child => people.find(mother => {
+    const birthAge = child.born - mother.born;
+
+    if (child.mother === mother.name) {
+      womanChildBirth.push(birthAge);
+    }
+
+    if (child.mother === mother.name && child.sex === 'm') {
+      womanSonsBirth.push(birthAge);
+    }
+  }));
+
+  return (onlyWithSon)
+    ? calcAverageAge(womanSonsBirth)
+    : calcAverageAge(womanChildBirth);
+}
+
+function calcSumAge(list) {
+  return list.reduce((sum, person) => sum + (person.died - person.born), 0);
+}
+
+function calcAverageAge(ages) {
+  const average = ages.reduce((sum, i) => sum + i) / ages.length;
+
+  return formatingNum(average);
+}
+
+function formatingNum(num) {
+  return +(num.toFixed(2));
 }
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
