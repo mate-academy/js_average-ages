@@ -15,10 +15,31 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  if (century) {
+    const mens = people.filter(function(human) {
+      return human.sex === 'm'
+        && Math.ceil(human.died / 100) === century;
+    });
+    const sumOfAges = mens.reduce(function(accum, men) {
+      return +accum + men.died - men.born;
+    }, 0);
+
+    return sumOfAges / mens.length;
+  } else {
+    const mens = people.filter(function(human) {
+      return human.sex === 'm';
+    });
+    const sumOfAges = mens.reduce(function(accum, men) {
+      return accum + men.died - men.born;
+    }, 0);
+
+    return sumOfAges / mens.length;
+  };
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
+  // replace `if ()` statement with logical operators (&&, ||)
   // without nesting
 }
 
@@ -34,7 +55,28 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  if (withChildren) {
+    const womens = people.filter(function(human) {
+      return human.sex === 'f'
+        && people.find(function(child) {
+          return child.mother === human.name;
+        });
+    });
+    const sumOfAges = womens.reduce(function(accum, women) {
+      return accum + women.died - women.born;
+    }, 0);
+
+    return sumOfAges / womens.length;
+  } else {
+    const womens = people.filter(function(human) {
+      return human.sex === 'f';
+    });
+    const sumOfAges = womens.reduce(function(accum, women) {
+      return accum + women.died - women.born;
+    }, 0);
+
+    return sumOfAges / womens.length;
+  };
 }
 
 /**
@@ -52,11 +94,53 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  if (onlyWithSon) {
+    const womens = people.filter(function(human) {
+      return human.sex === 'f'
+        && people.find(function(child) {
+          return child.mother === human.name
+            && child.sex === 'm';
+        });
+    });
+    const children = people.filter(function(human) {
+      return womens.find(function(mother) {
+        return mother.name === human.mother && human.sex === 'm';
+      });
+    });
+
+    const sumOfAges = children.reduce(function(accum, child) {
+      return accum - womens.find(function(mother) {
+        return mother.name === child.mother;
+      }).born + child.born;
+    }, 0);
+
+    return sumOfAges / children.length;
+  } else {
+    const womens = people.filter(function(human) {
+      return human.sex === 'f'
+        && people.find(function(child) {
+          return child.mother === human.name;
+        });
+    });
+
+    const children = people.filter(function(human) {
+      return womens.find(function(mother) {
+        return mother.name === human.mother;
+      });
+    });
+
+    const sumOfAges = children.reduce(function(accum, child) {
+      return accum - womens.find(function(mother) {
+        return mother.name === child.mother;
+      }).born + child.born;
+    }, 0);
+
+    return sumOfAges / children.length;
+  };
+};
 
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };

@@ -1,4 +1,6 @@
+/*eslint-disable*/
 'use strict';
+
 
 const people = [
   { 'name': 'Carolus Haverbeke', 'sex': 'm', 'born': 1832, 'died': 1905, 'father': 'Carel Haverbeke', 'mother': 'Maria van Brussel' },
