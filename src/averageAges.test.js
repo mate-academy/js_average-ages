@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable */
 
 const people = require('./people');
 const {
