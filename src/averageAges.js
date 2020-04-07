@@ -18,7 +18,7 @@ function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
-  // replace `if ()` statement with logical operators (&&, ||) or ternary operator (?:)
+  // replace `if ()` statement with &&, || or ?:
   // without nesting
 }
 
@@ -40,8 +40,8 @@ function calculateWomenAverageAge(people, withChildren) {
 /**
  * Implement calculateAverageAgeDiff function.
  *
- * Function returns average difference in age between all mothers and their
- * children which are presented in the array.
+ * The function returns an average age difference between a mother and her
+ * child in the array. (A mother's age at child birth)
  *
  * If `onlyWithSon` is specified then function calculates age difference only
  * for mothers who have son.
@@ -58,5 +58,5 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
-  calculateAverageAgeDiff
+  calculateAverageAgeDiff,
 };
