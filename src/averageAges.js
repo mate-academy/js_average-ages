@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = [];
+
+  if (century) {
+    men = people.filter(person => {
+      return person['sex'] === 'm'
+        && Math.ceil(person['died'] / 100) === century;
+    });
+  } else {
+    men = people.filter(person => person['sex'] === 'm');
+  }
+
+  const avarageMenAge = men.map(person => person['died'] - person['born'])
+    .reduce((totalAge, currentAge) => (totalAge + currentAge)) / men.length;
+
+  return avarageMenAge;
 }
 
 /**
@@ -34,7 +44,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = [];
+
+  if (withChildren) {
+    women = people.filter(person => {
+      return people.find(child => child.mother === person.name);
+    });
+  } else {
+    women = people.filter(person => person['sex'] === 'f');
+  }
+
+  const avarageWomenAge = women.map(person => person['died'] - person['born'])
+    .reduce((totalAge, currentAge) => (totalAge + currentAge)) / women.length;
+
+  return avarageWomenAge;
 }
 
 /**
@@ -52,7 +75,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const AgeOnBirth = [];
+  const AgeOnBirthMale = [];
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+  people.filter(person => people.find(child => {
+    if (child.mother === person.name) {
+      AgeOnBirth.push(child.born - person.born);
+    }
+
+    if (child.mother === person.name && child.sex === 'm') {
+      AgeOnBirthMale.push(child.born - person.born);
+    }
+  }));
+
+  if (onlyWithSon) {
+    return AgeOnBirthMale.reduce(reducer) / AgeOnBirthMale.length;
+  }
+
+  return AgeOnBirth.reduce(reducer) / AgeOnBirth.length;
 }
 
 module.exports = {
