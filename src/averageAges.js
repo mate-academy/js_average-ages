@@ -81,7 +81,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       : arr.find(child => (child.mother === person.name) && child.sex === 'm'));
 
   const arrayAgeDiff = [];
-  const sumOfAverageAge = arrayAgeDiff.reduce((acu, cur) => acu + cur);
 
   for (const mother of arrayOfMothers) {
     for (const child of people) {
@@ -95,6 +94,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       }
     }
   }
+
+  const sumOfAverageAge = arrayAgeDiff.reduce((acu, cur) => acu + cur);
 
   return sumOfAverageAge / arrayAgeDiff.length;
 }
