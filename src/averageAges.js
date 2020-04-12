@@ -28,6 +28,10 @@ function calcAverageAge(arr) {
     .reduce((sum, item) => item + sum, 0) / arr.length;
 }
 
+function calcAverage(arr) {
+  return arr.reduce((sum, item) => item + sum, 0) / arr.length;
+}
+
 function filterGender(arr, gender) {
   return arr.filter(person => person.sex === gender);
 }
@@ -74,8 +78,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const childAgeDiff = filteredChildren.map(child =>
       child.born - (people.find(mom => mom.name === child.mother)).born);
 
-    return childAgeDiff
-      .reduce((sum, diff) => sum + diff, 0) / childAgeDiff.length;
+    return calcAverage(childAgeDiff);
   } else {
     const filteredSons = people
       .filter(child => people
@@ -83,8 +86,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const sonsAgeDiff = filteredSons.map(child =>
       child.born - (people.find(person => child.mother === person.name)).born);
 
-    return sonsAgeDiff
-      .reduce((sum, diff) => sum + diff, 0) / sonsAgeDiff.length;
+    return calcAverage(sonsAgeDiff);
   }
 }
 
