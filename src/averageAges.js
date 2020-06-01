@@ -15,26 +15,31 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter(person => person.sex === 'm');
+
+  men = (century)
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
+  return calcPersonsAverageAge(men);
+
+
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average ave of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(person => person.sex === 'f');
+  const arrAllMother = people.map(person => person.mother);
+
+  women = (withChildren)
+    ? women.filter(person => arrAllMother.includes(person.name))
+    : women;
+
+  return calcPersonsAverageAge(women);
 }
 
 /**
@@ -52,7 +57,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let arrChildren = people.filter(child => people.some(mum => mum.name === child.mother));
+  const arrOnlySon = people.filter(child => child.sex === 'm' && people.some(mum => mum.name === child.mother));
+
+  arrChildren = (onlyWithSon) ? arrOnlySon : arrChildren;
+
+  const ageDiff = arrChildren.map(child => {
+    const mum = people.find(mum => mum.name === child.mother);
+
+    return child.born - mum.born;
+  });
+  
+  const averageAgeDiff = ageDiff.reduce((sum, age) => sum + age, 0) / arrChildren.length;
+
+  return roundValue(averageAgeDiff);
+}
+
+function calcPersonsAverageAge(arr) {
+  const result = arr.reduce((prev, person) => prev + (person.died - person.born), 0) / arr.length;
+
+  return roundValue(result);
+}
+
+function roundValue(value) {
+  return Math.round(value * 100) / 100;
 }
 
 module.exports = {
