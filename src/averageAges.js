@@ -50,6 +50,10 @@ function calculateWomenAverageAge(people, withChildren) {
     average = people.filter(woman => woman.sex === 'f').reduce(
       (sum, woman) => sum + (woman.died - woman.born), 0)
       / people.filter(woman => woman.sex === 'f').length;
+  } else {
+    const women = people.filter(woman => woman.sex === 'f');
+    const children = people.filter(mother => mother !== null);
+    console.log (children)
   }
 
   return average;
