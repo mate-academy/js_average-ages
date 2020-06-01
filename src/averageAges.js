@@ -83,12 +83,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   if (onlyWithSon === undefined) {
     const children = people.filter(child => child.mother !== null);
-
-    return mothersFullData.reduce((sum, woman) =>
-      sum + (woman.died - woman.born), 0) / mothersFullData.length;
   }
 
-  return average;
+  console.log(children)
 }
 
 module.exports = {
