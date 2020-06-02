@@ -20,6 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const mans = century
+    ? people.filter(person => {
+      return person.sex === 'm' && Math.ceil(person.died / 100) === century;
+    })
+    : people.filter(person => person.sex === 'm');
+
+  return mans.reduce((age, person) => {
+    return age + (person.died - person.born);
+  }, 0) / mans.length;
 }
 
 /**
@@ -35,6 +44,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const women = withChildren
+    ? people.filter(person => {
+      return people.find(child => child.mother === person.name) !== undefined;
+    })
+    : people.filter(person => person.sex === 'f');
+
+  return women.reduce((age, person) => {
+    return age + (person.died - person.born);
+  }, 0) / women.length;
 }
 
 /**
@@ -53,6 +71,39 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const women = onlyWithSon
+    ? people.filter(person => {
+      return people.find(child => {
+        return child.mother === person.name && child.sex === 'm';
+      }) !== undefined;
+    })
+    : people.filter(person => {
+      return people.find(child => child.mother === person.name) !== undefined;
+    });
+
+  const children = onlyWithSon
+    ? people.filter(child => {
+      return women.find(mother => {
+        return child.mother === mother.name && child.sex === 'm';
+      });
+    })
+    : people.filter(child => {
+      return women.find(mother => child.mother === mother.name);
+    });
+
+  return women.reduce((age, person) => {
+    let diff = 0;
+
+    children.forEach(child => {
+      diff += child.mother === person.name
+        ? child.born - person.born
+        : 0;
+
+      return child.mother === person.name;
+    });
+
+    return diff + age;
+  }, 0) / children.length;
 }
 
 module.exports = {
@@ -60,3 +111,9 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+// const people = require('./people');
+
+// console.log(calculateMenAverageAge(people));
+// console.log(calculateWomenAverageAge(people));
+// console.log(calculateAverageAgeDiff(people));
