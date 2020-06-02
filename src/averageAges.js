@@ -111,9 +111,3 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
-
-// const people = require('./people');
-
-// console.log(calculateMenAverageAge(people));
-// console.log(calculateWomenAverageAge(people));
-// console.log(calculateAverageAgeDiff(people));
