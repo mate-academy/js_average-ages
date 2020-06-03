@@ -60,15 +60,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const momsInTheList = childWithMom.map(kid => kid.mother);
   const momFullData = people
     .filter(person => momsInTheList.includes(person.name));
-  const kidAverageBirth = childWithMom.reduce((sum, child) =>
-    sum + child.born, 0) / childWithMom.length;
+  const kidAverageBirth = childWithMom
+    .reduce((sum, child) => sum + child.born, 0)
+    / childWithMom.length;
   const momYearsOfBirth = momsInTheList
-    .map(lady =>
-      momFullData.map((element) => {
-        if (element.name === lady) {
-          return element.born;
-        }
-      }));
+    .map(lady => momFullData.map((element) => {
+      if (element.name === lady) {
+        return element.born;
+      }
+    }));
 
   const momAverageBirth = momYearsOfBirth
     .flat()
