@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMan = people.filter(person =>
+    century === undefined
+      ? person.sex === 'm'
+      : person.sex === 'm' && Math.ceil(person.died / 100) === century
+  );
+  const totalAge = onlyMan
+    .reduce(function(accumulator, person) {
+      return accumulator + person.died - person.born;
+    }, 0);
+
+  return Number((totalAge / onlyMan.length).toFixed(2));
 }
 
 /**
