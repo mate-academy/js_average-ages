@@ -84,16 +84,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const mom = people.filter(person => womenArrNum.includes(person.name));
   const kidfullyears = child.reduce((sum, childs) =>
   sum + childs.born, 0) / child.length;
-  const momyears = mom.reduce((sum, ma) =>
-  sum + ma.born, 0) / mom.length;
   const momYear = (Array.from(womenArrNum, lady => mom.map(function(element) {
     if (element.name === lady) {
       return element.born;
     }
   })));
+  const years = momYear.flat().filter(item=>item!==undefined)
+  const aver = years.reduce((sum,item)=>sum+item,0)/18
 
-  console.log( momYear, momYear.length, kidfullyears);
-return momyears;
+  console.log( kidfullyears-aver);
+return kidfullyears-aver;
 
 }
 
