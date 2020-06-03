@@ -1,6 +1,5 @@
 'use strict';
 
-// const people1 = require('./people');
 /**
  * Implement calculateMenAverageAge function
  *
@@ -97,39 +96,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childern = {};
+  const archive = {};
   let counter = 0;
+  const hasDaughter = (item) => !onlyWithSon && archive[item.mother];
+  const hasSon = (item) => onlyWithSon
+  && archive[item.mother]
+  && item.sex === 'm';
 
   people.forEach(item => {
-    childern[item.mother] = 0;
+    archive[item.mother] = 0;
   });
 
   people.forEach(item => {
-    if (item.name in childern) {
-      childern[item.name] = item.born;
+    if (item.name in archive) {
+      archive[item.name] = item.born;
     }
   });
 
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    if (childern[person.mother]) {
-      if (!onlyWithSon) {
-        newAccum += person.born - childern[person.mother];
-        counter++;
-      } else {
-        if (person.sex === 'm') {
-          newAccum += person.born - childern[person.mother];
-          counter++;
-        }
-      }
-    }
+    hasDaughter(person) || hasSon(person)
+      ? (newAccum += person.born - archive[person.mother]) && counter++
+      : newAccum = accum;
 
     return newAccum;
   }, 0) / counter;
 }
-
-// console.log(calculateAverageAgeDiff(people1, true));
 
 module.exports = {
   calculateMenAverageAge,
