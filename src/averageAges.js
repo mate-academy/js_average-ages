@@ -53,37 +53,34 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
   let counter = 0;
 
-  const childern = {};
+  const withoutChildren = (item) => !withChildren && item.sex === 'f';
 
-  people.forEach((item) => {
-    if (item.mother) {
-      childern[item.mother] = item.name;
-    }
-  });
+  const withChild = (item) => withChildren
+  && (item.name in archive)
+  && item.sex === 'f';
+
+  const archive = people.reduce((accum, current) => {
+    let newAccum = accum;
+
+    current.mother
+      ? newAccum[current.mother] = current.name
+      : newAccum = accum;
+
+    return newAccum;
+  }, {});
 
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    if (person.sex === 'f') {
-      if (!withChildren) {
-        newAccum += person.died - person.born;
-        counter++;
-      } else {
-        if (person.name in childern) {
-          newAccum += person.died - person.born;
-          counter++;
-        }
-      }
-    }
+    withoutChildren(person) || withChild(person)
+      ? (newAccum += person.died - person.born) && counter++
+      : newAccum = accum;
 
     return newAccum;
   }, 0) / counter;
 }
-
-// console.log(calculateWomenAverageAge(people1, true));
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -112,8 +109,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       childern[item.name] = item.born;
     }
   });
-
-  // console.log(childern);
 
   return people.reduce((accum, person) => {
     let newAccum = accum;
