@@ -15,11 +15,28 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const countAge = (counter, person) => {
+    counter.averageAge += (person.died - person.born);
+    counter.count++;
+  };
+
+  const averageValue = (average) =>
+    Math.round((average.averageAge / average.count * 100)) / 100;
+
+  const sumOfAges = people.reduce((counter, person) => {
+    century
+      ? (person.sex === 'm')
+        && (Math.ceil(person.died / 100) === century)
+        && countAge(counter, person)
+      : (person.sex === 'm') && countAge(counter, person);
+
+    return counter;
+  }, {
+    averageAge: 0,
+    count: 0,
+  });
+
+  return averageValue(sumOfAges);
 }
 
 /**
@@ -34,7 +51,29 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const countAge = (counter, person) => {
+    counter.averageAge += (person.died - person.born);
+    counter.count++;
+  };
+
+  const averageValue = (average) =>
+    Math.round((average.averageAge / average.count * 100)) / 100;
+
+  const isMother = (person) =>
+    people.some((human) => human.mother === person.name);
+
+  const sumOfAges = people.reduce((counter, person) => {
+    withChildren
+      ? (person.sex === 'f') && isMother(person) && countAge(counter, person)
+      : (person.sex === 'f') && countAge(counter, person);
+
+    return counter;
+  }, {
+    averageAge: 0,
+    count: 0,
+  });
+
+  return averageValue(sumOfAges);
 }
 
 /**
@@ -52,7 +91,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter((child) => child.mother && child.sex === 'm')
+    : people.filter((child) => child.mother);
+
+  function sumDiff(sum, child, mother) {
+    sum.averageAge += child.born - mother.born;
+    sum.count++;
+
+    return sum;
+  }
+
+  const agesDiff = children.reduce((sum, child) => {
+    const mother = people.find(person => child.mother === person.name);
+
+    mother && sumDiff(sum, child, mother);
+
+    return sum;
+  }, {
+    averageAge: 0,
+    count: 0,
+  });
+
+  function averageValue() {
+    return Math.round(agesDiff.averageAge / agesDiff.count * 100) / 100;
+  }
+
+  return averageValue();
 }
 
 module.exports = {
