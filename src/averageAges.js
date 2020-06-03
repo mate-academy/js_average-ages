@@ -5,7 +5,6 @@
 /**
  * @param {object[]} people
  * @param {number} century - optional
- *
  * @return {number}
  */
 
@@ -23,10 +22,8 @@ function calculateMenAverageAge(people, century) {
   return average;
 }
 /**
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
- *
  * @return {number}
  */
 
@@ -47,10 +44,8 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 /**
- *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
- *
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
@@ -61,16 +56,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : children = [...people];
 
   const momsNames = (Array.from(children, kid => kid.mother));
-  const mothersData = people.filter(woman => momsNames.includes(woman.name));
-  const momsNamesFiltered = (Array.from(mothersData, lady => lady.name));
+  const momsNamesFiltered = (Array.from(people.filter(woman =>
+    momsNames.includes(woman.name)), lady => lady.name));
   const childWithMom = children.filter(person => momsNamesFiltered
     .includes(person.mother));
-  const momsRequiredNumber = (Array.from(childWithMom, kid => kid.mother));
-  const mom = people.filter(person => momsRequiredNumber.includes(person.name));
+  const momsInTheList = (Array.from(childWithMom, kid => kid.mother));
+  const momFullData = people.filter(person => momsInTheList
+    .includes(person.name));
   const kidAverageBirth = childWithMom.reduce((sum, child) =>
     sum + child.born, 0) / childWithMom.length;
-  const momYearsOfBirth = (Array.from(momsRequiredNumber, lady =>
-    mom.map(function(element) {
+  const momYearsOfBirth = (Array.from(momsInTheList, lady =>
+    momFullData.map(function(element) {
       if (element.name === lady) {
         return element.born;
       }
