@@ -73,18 +73,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(woman => woman.sex === 'f'
-    && people.some(person => woman.name === person.mother));
+  const children = people.filter(kid => kid.mother !== null);
+  const mothersNames = (Array.from(children, kid => kid.mother));
+  const women = people.filter(person => mothersNames.includes(person.name));
+  const womenArr = (Array.from(
+    women, lady => lady.name));
+  const child = people.filter(person => womenArr.includes(person.mother));
+  const womenArrNum = (Array.from(
+    child, kid => kid.mother));
+  const mom = people.filter(person => womenArrNum.includes(person.name));
+  const kidfullyears = child.reduce((sum, childs) =>
+  sum + childs.born, 0) / child.length;
+  const momyears = mom.reduce((sum, ma) =>
+  sum + ma.born, 0) / mom.length;
+  const momYear = (Array.from(womenArrNum, lady => mom.map(function(element) {
+    if (element.name === lady) {
+      return element.born;
+    }
+  })));
 
-  const children = people.filter(person =>
-    (onlyWithSon ? person.sex === 'm' : person)
-    && mothers.some(mom => person.mother === mom.name));
+  console.log( momYear, momYear.length);
+return momyears;
 
-  const deltaAge = children.map(child => mothers.map(mom => {
-    return child.mother === mom.name ? child.born - mom.born : null;
-  }).filter(item => item !== null));
-
-  return deltaAge.reduce((sum, elem) => sum + elem[0], 0) / deltaAge.length;
 }
 
 module.exports = {
