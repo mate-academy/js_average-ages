@@ -1,5 +1,6 @@
 'use strict';
 
+// const people1 = require('./people');
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,14 +15,36 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let counter = 0;
+
+  return people.reduce((accum, person) => {
+    let newAccum = accum;
+
+    if (person.sex === 'm') {
+      if (!century) {
+        newAccum += person.died - person.born;
+        counter++;
+      } else {
+        if (century === Math.ceil(person.died / 100)) {
+          newAccum += person.died - person.born;
+          counter++;
+        }
+      }
+    }
+
+    return newAccum;
+  }, 0) / counter;
 }
 
+// console.log(length)
+// console.log(calculateMenAverageAge(people1, 18));
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -35,7 +58,36 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let counter = 0;
+
+  const childern = {};
+
+  people.forEach((item) => {
+    if (item.mother) {
+      childern[item.mother] = item.name;
+    }
+  });
+
+  return people.reduce((accum, person) => {
+    let newAccum = accum;
+
+    if (person.sex === 'f') {
+      if (!withChildren) {
+        newAccum += person.died - person.born;
+        counter++;
+      } else {
+        if (person.name in childern) {
+          newAccum += person.died - person.born;
+          counter++;
+        }
+      }
+    }
+
+    return newAccum;
+  }, 0) / counter;
 }
+
+// console.log(calculateWomenAverageAge(people1, true));
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -52,8 +104,41 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childern = {};
+  let counter = 0;
+
+  people.forEach(item => {
+    childern[item.mother] = 0;
+  });
+
+  people.forEach(item => {
+    if (item.name in childern) {
+      childern[item.name] = item.born;
+    }
+  });
+
+  // console.log(childern);
+
+  return people.reduce((accum, person) => {
+    let newAccum = accum;
+
+    if (childern[person.mother]) {
+      if (!onlyWithSon) {
+        newAccum += person.born - childern[person.mother];
+        counter++;
+      } else {
+        if (person.sex === 'm') {
+          newAccum += person.born - childern[person.mother];
+          counter++;
+        }
+      }
+    }
+
+    return newAccum;
+  }, 0) / counter;
 }
+
+// console.log(calculateAverageAgeDiff(people1, true));
 
 module.exports = {
   calculateMenAverageAge,
