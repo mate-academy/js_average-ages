@@ -66,18 +66,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let quantity = children.length;
 
-  const amount = children.reduce((previous, child) => {
+  const amount = children.reduce((sum, child) => {
     const mother = people.find(mom => child.mother === mom.name);
 
     if (!mother) {
       quantity--;
 
-      return previous;
+      return sum;
     }
 
-    const sum = previous + (child.born - mother.born);
-
-    return sum;
+    return sum + (child.born - mother.born);
   }, 0);
 
   return amount / quantity;
