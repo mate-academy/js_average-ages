@@ -15,14 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let filtered = people.filter(person => person.sex === 'm');
+  const men = !century
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century);
 
-  if (century) {
-    filtered = filtered.filter(person =>
-      Math.ceil(person.died / 100) === century);
-  }
-
-  return getAverageAge(filtered);
+  return men.map(person => person.died - person.born)
+    .reduce((sum, current) => sum + current) / men.length;
 };
 
 /**
@@ -37,14 +36,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let filtered = people.filter(person => person.sex === 'f');
+  const women = !withChildren
+    ? people.filter(person => person.sex === 'f')
+    : people.filter(person => person.sex === 'f'
+      && people.find(child => person.name === child.mother));
 
-  if (withChildren) {
-    filtered = filtered.filter(mother =>
-      people.find(child => mother.name === child.mother));
-  }
-
-  return getAverageAge(filtered);
+  return women.map(person => person.died - person.born)
+    .reduce((sum, current) => sum + current) / women.length;
 }
 
 /**
@@ -62,11 +60,9 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(child => child.mother);
-
-  if (onlyWithSon) {
-    children = children.filter(child => child.sex === 'm');
-  }
+  const children = !onlyWithSon
+    ? people.filter(child => child.mother)
+    : people.filter(child => child.mother && child.sex === 'm');
 
   let quantity = children.length;
 
@@ -85,14 +81,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   }, 0);
 
   return amount / quantity;
-}
-
-function getAverageAge(people) {
-  return people.reduce((previous, person) => {
-    const sum = previous + (person.died - person.born);
-
-    return sum;
-  }, 0) / people.length;
 }
 
 module.exports = {
