@@ -92,7 +92,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   })));
 
-  console.log( momYear, momYear.length);
+  console.log( momYear, momYear.length, kidfullyears);
 return momyears;
 
 }
