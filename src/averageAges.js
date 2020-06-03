@@ -28,14 +28,12 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let mothersData;
   const children = people.filter(childWithMom => childWithMom.mother !== null);
   const momsNames = Array.from(new Set(Array.from(
     children, childWithMom => childWithMom.mother)));
-
-  (withChildren === undefined)
-    ? mothersData = people.filter(woman => woman.sex === 'f')
-    : mothersData = people.filter(person => momsNames.includes(person.name));
+  const mothersData = (withChildren === undefined)
+    ? people.filter(woman => woman.sex === 'f')
+    : people.filter(person => momsNames.includes(person.name));
 
   const average = mothersData.reduce((sum, woman) =>
     sum + (woman.died - woman.born), 0) / mothersData.length;
@@ -49,28 +47,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children;
+  const children = (onlyWithSon)
+    ? people.filter(person => person.sex === 'm')
+    : [...people];
 
-  (onlyWithSon)
-    ? children = people.filter(person => person.sex === 'm')
-    : children = [...people];
+  const momsNames = children.map(kid => kid.mother);
+  const momsNamesFiltered = (people.filter(woman =>
+    momsNames.includes(woman.name))).map(lady => lady.name);
 
-  const momsNames = (Array.from(children, kid => kid.mother));
-  const momsNamesFiltered = (Array.from(people.filter(woman =>
-    momsNames.includes(woman.name)), lady => lady.name));
   const childWithMom = children.filter(person => momsNamesFiltered
     .includes(person.mother));
-  const momsInTheList = (Array.from(childWithMom, kid => kid.mother));
+  const momsInTheList = childWithMom.map(kid => kid.mother);
   const momFullData = people.filter(person => momsInTheList
     .includes(person.name));
   const kidAverageBirth = childWithMom.reduce((sum, child) =>
     sum + child.born, 0) / childWithMom.length;
-  const momYearsOfBirth = (Array.from(momsInTheList, lady =>
+  const momYearsOfBirth = momsInTheList.map(lady =>
     momFullData.map(function(element) {
       if (element.name === lady) {
         return element.born;
       }
-    })));
+    }));
+
   const momAverageBirth = momYearsOfBirth.flat()
     .filter(item => item !== undefined)
     .reduce((sum, item) => sum + item, 0) / momYearsOfBirth.length;
