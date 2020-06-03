@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -30,15 +29,13 @@ function calculateMenAverageAge(people, century) {
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    withoutCentury(person) || withCentury(person)
-      ? (newAccum += person.died - person.born) && counter++
-      : newAccum = accum;
+    (withoutCentury(person) || withCentury(person))
+      && ((newAccum += person.died - person.born) && counter++);
 
     return newAccum;
   }, 0) / counter;
 }
 
-// console.log(length)
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -61,11 +58,9 @@ function calculateWomenAverageAge(people, withChildren) {
   && item.sex === 'f';
 
   const archive = people.reduce((accum, current) => {
-    let newAccum = accum;
+    const newAccum = accum;
 
-    current.mother
-      ? newAccum[current.mother] = current.name
-      : newAccum = accum;
+    (current.mother) && (newAccum[current.mother] = current.name);
 
     return newAccum;
   }, {});
@@ -73,9 +68,8 @@ function calculateWomenAverageAge(people, withChildren) {
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    withoutChildren(person) || withChild(person)
-      ? (newAccum += person.died - person.born) && counter++
-      : newAccum = accum;
+    (withoutChildren(person) || withChild(person))
+      && (newAccum += person.died - person.born) && counter++;
 
     return newAccum;
   }, 0) / counter;
@@ -116,9 +110,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    hasDaughter(person) || hasSon(person)
-      ? (newAccum += person.born - archive[person.mother]) && counter++
-      : newAccum = accum;
+    (hasDaughter(person) || hasSon(person))
+      && ((newAccum += person.born - archive[person.mother]) && counter++);
 
     return newAccum;
   }, 0) / counter;
