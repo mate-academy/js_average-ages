@@ -29,8 +29,7 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const children = people.filter(childWithMom => childWithMom.mother !== null);
-  const momsNames = Array.from(new Set(Array.from(
-    children, childWithMom => childWithMom.mother)));
+  const momsNames = children.map(childWithMom => childWithMom.mother);
   const mothersData = (withChildren === undefined)
     ? people.filter(woman => woman.sex === 'f')
     : people.filter(person => momsNames.includes(person.name));
@@ -52,24 +51,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : [...people];
 
   const momsNames = children.map(kid => kid.mother);
-  const momsNamesFiltered = (people.filter(woman =>
-    momsNames.includes(woman.name))).map(lady => lady.name);
+  const momsNamesFiltered = people
+    .filter(woman => momsNames.includes(woman.name))
+    .map(lady => lady.name);
 
-  const childWithMom = children.filter(person => momsNamesFiltered
-    .includes(person.mother));
+  const childWithMom = children
+    .filter(person => momsNamesFiltered.includes(person.mother));
   const momsInTheList = childWithMom.map(kid => kid.mother);
-  const momFullData = people.filter(person => momsInTheList
-    .includes(person.name));
+  const momFullData = people
+    .filter(person => momsInTheList.includes(person.name));
   const kidAverageBirth = childWithMom.reduce((sum, child) =>
     sum + child.born, 0) / childWithMom.length;
-  const momYearsOfBirth = momsInTheList.map(lady =>
-    momFullData.map(function(element) {
-      if (element.name === lady) {
-        return element.born;
-      }
-    }));
+  const momYearsOfBirth = momsInTheList
+    .map(lady =>
+      momFullData.map((element) => {
+        if (element.name === lady) {
+          return element.born;
+        }
+      }));
 
-  const momAverageBirth = momYearsOfBirth.flat()
+  const momAverageBirth = momYearsOfBirth
+    .flat()
     .filter(item => item !== undefined)
     .reduce((sum, item) => sum + item, 0) / momYearsOfBirth.length;
 
