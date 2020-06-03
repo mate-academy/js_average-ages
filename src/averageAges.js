@@ -24,27 +24,22 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   let counter = 0;
 
+  const withoutCentury = (item) => !century && item.sex === 'm';
+  const withCentury = (item) => century === Math.ceil(item.died / 100)
+  && item.sex === 'm';
+
   return people.reduce((accum, person) => {
     let newAccum = accum;
 
-    if (person.sex === 'm') {
-      if (!century) {
-        newAccum += person.died - person.born;
-        counter++;
-      } else {
-        if (century === Math.ceil(person.died / 100)) {
-          newAccum += person.died - person.born;
-          counter++;
-        }
-      }
-    }
+    withoutCentury(person) || withCentury(person)
+      ? (newAccum += person.died - person.born) && counter++
+      : newAccum = accum;
 
     return newAccum;
   }, 0) / counter;
 }
 
 // console.log(length)
-// console.log(calculateMenAverageAge(people1, 18));
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -56,6 +51,7 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   let counter = 0;
