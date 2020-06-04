@@ -21,9 +21,8 @@ function calculateMenAverageAge(people, century) {
   const onlyMan = people.filter(callBack);
 
   const totalAge = onlyMan
-    .reduce(function(accumulator, person) {
-      return accumulator + person.died - person.born;
-    }, 0);
+    .reduce((accumulator, person) =>
+      accumulator + person.died - person.born, 0);
 
   return totalAge / onlyMan.length;
 }
