@@ -22,9 +22,9 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   let counter = 0;
 
-  const withoutCentury = (item) => !century && item.sex === 'm';
-  const withCentury = (item) => century === Math.ceil(item.died / 100)
-  && item.sex === 'm';
+  const withoutCentury = (person) => !century && person.sex === 'm';
+  const withCentury = (person) => century === Math.ceil(person.died / 100)
+  && person.sex === 'm';
 
   return people.reduce((accum, person) => {
     let newAccum = accum;
@@ -51,11 +51,11 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let counter = 0;
 
-  const withoutChildren = (item) => !withChildren && item.sex === 'f';
+  const withoutChildren = (person) => !withChildren && person.sex === 'f';
 
-  const withChild = (item) => withChildren
-  && (item.name in archive)
-  && item.sex === 'f';
+  const withChild = (person) => withChildren
+  && (person.name in archive)
+  && person.sex === 'f';
 
   const archive = people.reduce((accum, current) => {
     const newAccum = accum;
@@ -92,10 +92,10 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const archive = {};
   let counter = 0;
-  const hasDaughter = (item) => !onlyWithSon && archive[item.mother];
-  const hasSon = (item) => onlyWithSon
-  && archive[item.mother]
-  && item.sex === 'm';
+  const hasDaughter = (person) => !onlyWithSon && archive[person.mother];
+  const hasSon = (person) => onlyWithSon
+  && archive[person.mother]
+  && person.sex === 'm';
 
   people.forEach(item => {
     archive[item.mother] = 0;
@@ -107,7 +107,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   });
 
-  return people.reduce((accum, person) => {
+  return people.reduce((accum, person, index) => {
     let newAccum = accum;
 
     (hasDaughter(person) || hasSon(person))
