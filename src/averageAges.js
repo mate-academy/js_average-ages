@@ -44,8 +44,11 @@ function calculateWomenAverageAge(people, withChildren) {
     : people.filter(person => person.sex === 'f'
   && people.find(child => person.name === child.mother));
 
-  // eslint-disable-next-line no-return-assign
-  return women.map(person => person.age = person.died - person.born)
+  return women.map(person => {
+    person.age = person.died - person.born;
+
+    return person.age;
+  })
     .reduce((prevAge, currentAge) => prevAge + currentAge) / women.length;
 }
 
