@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter((person) => {
+    const centuryOfDeath = Math.ceil(person.died / 100);
+
+    return person.sex === 'm' && (century ? centuryOfDeath === century : true);
+  });
+
+  const menAverageAge = men.reduce((accum, curr) => {
+    const age = curr.died - curr.born;
+
+    return accum + age;
+  }, 0) / men.length;
+
+  return menAverageAge;
 }
 
 /**
@@ -34,7 +42,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((person) => {
+    const hasChildren = people.some((child) => child.mother === person.name);
+
+    return person.sex === 'f' && (withChildren ? hasChildren : true);
+  });
+
+  const wonenAverageAge = women.reduce((accum, curr) => {
+    const age = curr.died - curr.born;
+
+    return accum + age;
+  }, 0) / women.length;
+
+  return wonenAverageAge;
 }
 
 /**
@@ -52,7 +72,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenWithChildren = people.filter((person) => {
+    const hasChildren = people.some((child) => child.mother === person.name);
+
+    return person.sex === 'f' && hasChildren;
+  });
+
+  let numberOfChildren = 0;
+
+  const ageDiff = womenWithChildren.reduce((acc, woman) => {
+    const children = people.filter((person) => {
+      return person.mother === woman.name
+        && (onlyWithSon ? person.sex === 'm' : true);
+    });
+    let totallAgeDiff = 0;
+
+    children.map((child) => {
+      totallAgeDiff += child.born - woman.born;
+      numberOfChildren++;
+    });
+
+    return (acc + totallAgeDiff);
+  }, 0);
+
+  const averegeAgeDiff = ageDiff / numberOfChildren;
+
+  return averegeAgeDiff;
 }
 
 module.exports = {
