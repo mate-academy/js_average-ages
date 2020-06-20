@@ -20,6 +20,23 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  if (!century) {
+    const ages = people
+      .filter(person => person.sex === 'm')
+      .map(person => person.died - person.born);
+    const sumAges = ages.reduce((accum, value) => accum + value, 0);
+
+    return sumAges / ages.length;
+  }
+
+  const agesWithCerntury = people
+    .filter(person => Math
+      .ceil(person.died / 100) === century && person.sex === 'm')
+    .map(person => person.died - person.born);
+  const sumAgesWithCentury = agesWithCerntury
+    .reduce((accum, value) => accum + value, 0);
+
+  return sumAgesWithCentury / agesWithCerntury.length;
 }
 
 /**
@@ -34,7 +51,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  if (!withChildren) {
+    const ages = people
+      .filter(person => person.sex === 'f')
+      .map(person => person.died - person.born);
+    const sumAges = ages.reduce((accum, value) => accum + value, 0);
+
+    return sumAges / ages.length;
+  }
+
+  const womenAgeWithChildrens = people
+    .filter(person => (
+      person.sex === 'f' && people.some(child => child.mother === person.name
+      )))
+    .map(person => person.died - person.born);
+  const sumWomenAgeWithChildrens = womenAgeWithChildrens
+    .reduce((accum, value) => accum + value, 0);
+
+  return sumWomenAgeWithChildrens / womenAgeWithChildrens.length;
 }
 
 /**
@@ -53,6 +87,35 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  function motherFinder(child) {
+    const findMother = people.filter(mom => mom.name === child.mother);
+
+    return ((findMother.map(childMother => childMother.born))[0]);
+  }
+
+  const updatedPeople = people.map(child => {
+    return {
+      ...child,
+      motherAge: motherFinder(child),
+    };
+  });
+
+  const childWithKnownMother = (onlyWithSon)
+    ? updatedPeople
+      .filter(
+        child => child.motherAge !== undefined && child.sex === 'm'
+      )
+    : updatedPeople
+      .filter(
+        child => (
+          child.motherAge !== undefined
+        ));
+  const ageDifference = childWithKnownMother
+    .reduce(
+      (sum, child) => child.born - child.motherAge + sum, 0
+    );
+
+  return ageDifference / childWithKnownMother.length;
 }
 
 module.exports = {
