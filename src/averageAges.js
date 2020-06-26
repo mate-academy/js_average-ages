@@ -19,8 +19,7 @@ function calculateMenAverageAge(people, century) {
     person => person.sex === 'm'
       && (century === undefined
         ? true
-        : Math.ceil(person.died / 100) === century
-      )
+        : Math.ceil(person.died / 100) === century)
   );
 
   const menAge = menArr.map(man => man.died - man.born);
@@ -83,8 +82,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     )
     .map(child => {
       child.bornOfMother = mothers.find(
-        mother => mother.name === child.mother
-      ).born;
+        mother => mother.name === child.mother).born;
 
       return child;
     });
