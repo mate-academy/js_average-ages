@@ -23,8 +23,8 @@ function calculateMenAverageAge(people, century) {
   );
 
   const menAge = menArr.map(man => man.died - man.born);
-  const totalAge = menAge.reduce((sum, age) => sum + age, 0);
-  const avgAge = totalAge / menAge.length;
+  const avgAge = (menAge.reduce((sum, age) => sum + age, 0))
+    / menAge.length;
 
   return avgAge;
 }
@@ -48,8 +48,8 @@ function calculateWomenAverageAge(people, withChildren) {
   );
 
   const womenAge = womenArr.map(woman => woman.died - woman.born);
-  const totalAge = womenAge.reduce((sum, age) => sum + age, 0);
-  const avgAge = totalAge / womenAge.length;
+  const avgAge = (womenAge.reduce((sum, age) => sum + age, 0))
+    / womenAge.length;
 
   return avgAge;
 }
@@ -69,27 +69,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(
-    mother => mother.sex === 'f' && people.some(
-      child => (onlyWithSon ? child.sex === 'm' : true)
-        && child.mother === mother.name)
+  const childrenWithMother = people.filter((person) =>
+    onlyWithSon
+      ? people.some(
+        (mother) => person.mother === mother.name && person.sex === 'm'
+      )
+      : people.some((mother) => person.mother === mother.name)
   );
 
-  const children = people
-    .filter(child =>
-      (onlyWithSon ? child.sex === 'm' : true)
-      && mothers.some(mother => mother.name === child.mother)
-    )
-    .map(child => {
-      child.bornOfMother = mothers.find(
-        mother => mother.name === child.mother).born;
+  const avgDiff = childrenWithMother.reduce((accumulator, child) => {
+    const mother = people.find((person) => person.name === child.mother);
 
-      return child;
-    });
-
-  const totalAgeDiff = children.reduce(
-    (sum, child) => sum + child.born - child.bornOfMother, 0);
-  const avgDiff = totalAgeDiff / children.length;
+    return accumulator + (child.born - mother.born);
+  }, 0) / childrenWithMother.length;
 
   return avgDiff;
 }
