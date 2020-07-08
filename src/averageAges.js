@@ -21,16 +21,11 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const men = (century === undefined)
-    ? people.filter((human) => human.sex === 'm')
-    : people.filter((human) => (human.sex === 'm')
-    && (Math.ceil(human.died / 100) === century));
+    ? people.filter((person) => person.sex === 'm')
+    : people.filter((person) => (person.sex === 'm')
+    && (Math.ceil(person.died / 100) === century));
 
-  const ageMen = men.map((man) => man.died - man.born);
-
-  const middleAgeOfMen = ageMen.reduce((prev, current) => prev + current)
-  / ageMen.length;
-
-  return middleAgeOfMen;
+  return getAverage(getAges(men));
 }
 
 /**
@@ -46,17 +41,12 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const women = (withChildren === undefined)
+  const women = !withChildren
     ? people.filter((human) => (human.sex === 'f'))
     : people.filter((human) => (human.sex === 'f')
     && (people.find((child) => child.mother === human.name)));
 
-  const ageWomen = women.map((woman) => woman.died - woman.born);
-
-  const middleOfWomen = ageWomen.reduce((prev, current) =>
-    (prev + current)) / ageWomen.length;
-
-  return middleOfWomen;
+  return getAverage(getAges(women));
 }
 
 /**
@@ -75,7 +65,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const children = (onlyWithSon === undefined)
+  const children = !onlyWithSon
     ? people.filter((child) => (people.find((mother) =>
       (child.mother === mother.name))))
     : people.filter((child) => (people.find((mother) =>
@@ -92,6 +82,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   return middleAgesOfMamys;
 }
+
+const getAges = (men) => {
+  return men.map((person) => person.died - person.born);
+};
+
+const getAverage = (callback) => {
+  return callback.reduce((prev, current) => prev + current) / callback.length;
+};
 
 module.exports = {
   calculateMenAverageAge,
