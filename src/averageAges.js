@@ -83,7 +83,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     let mother;
     let found = false;
 
-    people.forEach(supposedMother => {
+    people.map(supposedMother => {
       if (supposedMother.name === pepl.mother) {
         found = true;
         mother = supposedMother;
