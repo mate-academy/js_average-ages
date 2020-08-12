@@ -15,7 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const male = people.filter(sex => sex.sex === 'm');
+
+  const maleYearOfDeath = male.filter(filterByYearOfDeath);
+
+  function filterByYearOfDeath(year) {
+    return (year.died > (century - 1) * 100
+    && year.died < century * 100) ? year.died : 0;
+  }
+
+  return (century)
+    ? (+(maleYearOfDeath.reduce((a, b) => a + b.died - b.born, 0)
+    / maleYearOfDeath.length).toFixed(2))
+    : (+(male.reduce((a, b) => a + b.died - b.born, 0)
+    / male.length).toFixed(2));
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -34,7 +48,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const female = people.filter(sex => sex.sex === 'f');
+
+  const moms = people.filter(wom => people.some(person =>
+    person.mother === wom.name));
+
+  return (withChildren)
+    ? (+(moms.reduce((a, b) => a + b.died - b.born, 0)
+    / moms.length).toFixed(2))
+    : (+(female.reduce((a, b) => a + b.died - b.born, 0)
+    / female.length).toFixed(2));
 }
 
 /**
@@ -52,7 +75,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const moms = people.filter(wom => people.some(person =>
+    wom.mother === person.name));
+
+  const ageDiff = moms.map(ageDifference);
+
+  const momsOfSon = people.filter(pers => people.some(person =>
+    pers.mother === person.name && pers.sex === 'm'));
+
+  const ageDiffSon = momsOfSon.map(ageDifference);
+
+  function ageDifference(child) {
+    return (child.born - people.find(mother =>
+      mother.name === child.mother).born);
+  }
+
+  return (onlyWithSon)
+    ? (+(ageDiffSon.reduce((a, b) => a + b, 0)
+    / ageDiffSon.length).toFixed(2))
+    : (+(ageDiff.reduce((a, b) => a + b, 0)
+    / ageDiff.length).toFixed(2));
 }
 
 module.exports = {
