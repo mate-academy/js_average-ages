@@ -99,10 +99,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   return agesDifference
     .reduce((sum, elem) => sum + elem, 0) / agesDifference.length;
-
-  // return arguments.length === 1
-  //   ? averageAgeDifference
-  //   : averageAgeDifferenceWithSons;
 }
 
 module.exports = {
