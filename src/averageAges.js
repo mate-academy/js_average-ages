@@ -1,5 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -21,11 +19,13 @@ function calculateMenAverageAge(people, century) {
   let men = people.filter(person => person.sex === 'm');
 
   if (century) {
-    men = men.filter(man => Math.ceil(man.died / 100) === century);
+    men = men.filter(man =>
+      Math.ceil(man.died / 100) === century);
   }
 
   return men.reduce((sum, man) =>
-    sum + (man.died - man.born), 0) / men.length;
+    sum + (man.died - man.born), 0
+  ) / men.length;
 }
 
 /**
@@ -43,11 +43,13 @@ function calculateWomenAverageAge(people, withChildren) {
   let women = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
-    women = women.filter(w => people.some(o => o.mother === w.name));
+    women = women.filter(woman =>
+      people.some(person => person.mother === woman.name));
   }
 
   return women.reduce((sum, woman) =>
-    sum + (woman.died - woman.born), 0) / women.length;
+    sum + (woman.died - woman.born), 0
+  ) / women.length;
 }
 
 /**
@@ -68,15 +70,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const ageDiffs = [];
 
   if (onlyWithSon) {
-    people.forEach(w => people.map(p => {
-      if (p.mother === w.name && p.sex === 'm') {
-        ageDiffs.push(p.born - w.born);
+    people.forEach(woman => people.map(person => {
+      if (person.mother === woman.name && person.sex === 'm') {
+        ageDiffs.push(person.born - woman.born);
       }
     }));
   } else {
-    people.forEach(w => people.map(p => {
-      if (p.mother === w.name) {
-        ageDiffs.push(p.born - w.born);
+    people.forEach(woman => people.map(person => {
+      if (person.mother === woman.name) {
+        ageDiffs.push(person.born - woman.born);
       }
     }));
   }
