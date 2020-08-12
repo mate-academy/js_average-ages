@@ -26,13 +26,13 @@ function calculateMenAverageAge(people, century) {
     return (Math.ceil(elem.died / 100) === century);
   });
 
-  const averageAgeMen = century
+  const sumAverageAge = century
     ? deadMen.reduce((middleAge, age) => middleAge + (age.died - age.born), 0)
     : allMen.reduce((middleAge, age) => middleAge + (age.died - age.born), 0);
 
-  const amountMen = century ? deadMen : allMen;
+  const targetMenArr = century ? deadMen : allMen;
 
-  return (averageAgeMen / amountMen.length);
+  return (sumAverageAge / targetMenArr.length);
 }
 
 /**
@@ -47,19 +47,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const mothers = people.filter(elem => elem.sex === 'f');
+  const women = people.filter(elem => elem.sex === 'f');
   const children = people.filter(mother =>
     people.some(child => {
       return child.mother === mother.name;
     }));
 
-  const averageAgeWomen = withChildren
+  const sumAverageWomen = withChildren
     ? children.reduce((sum, elem) => sum + (elem.died - elem.born), 0)
-    : mothers.reduce((sum, elem) => sum + (elem.died - elem.born), 0);
+    : women.reduce((sum, elem) => sum + (elem.died - elem.born), 0);
 
-  const amountWomen = withChildren ? children : mothers;
+  const targetWomenArr = withChildren ? children : women;
 
-  return (averageAgeWomen / amountWomen.length);
+  return (sumAverageWomen / targetWomenArr.length);
 }
 
 /**
@@ -78,17 +78,17 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const result = [];
-  let averageAge;
+  let sumAverageAge;
 
   if (!onlyWithSon) {
     people.forEach(mother =>
-      people.map(child => {
+      people.forEach(child => {
         if (mother.name === child.mother) {
           result.push(child.born - mother.born);
         }
       })
     );
-    averageAge = result.reduce((accum, elem) => accum + elem, 0);
+    sumAverageAge = result.reduce((accum, elem) => accum + elem, 0);
   } else {
     people.forEach(mother =>
       people.forEach(son => {
@@ -97,10 +97,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         }
       })
     );
-    averageAge = result.reduce((accum, elem) => accum + elem, 0);
+    sumAverageAge = result.reduce((accum, elem) => accum + elem, 0);
   }
 
-  return averageAge / result.length;
+  return sumAverageAge / result.length;
 }
 
 module.exports = {
