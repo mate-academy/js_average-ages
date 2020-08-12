@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter(person => person.sex === 'm'); // sex discrimination
+
+  if (century) { // century of death discrimination
+    men = men.filter(man => Math.ceil(man.died / 100) === century);
+  }
+
+  const avarageAge = men.reduce(
+    (sum, currentMan) => sum + currentMan.died - currentMan.born, 0
+  ) / men.length; // ages sum / count of persons
+
+  return avarageAge;
 }
 
 /**
@@ -34,7 +40,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(person => person.sex === 'f'); // sex discrimination
+
+  if (withChildren) {
+    women = women // has children discrimination
+      .filter(currentPerson => people
+        .some(children => children.mother === currentPerson.name));
+  }
+
+  const avarageAge = women.reduce(
+    (sum, currentMan) => sum + currentMan.died - currentMan.born, 0
+  ) / women.length; // ages sum / count of persons
+
+  return avarageAge;
 }
 
 /**
@@ -52,7 +70,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const birthAges = [];
+
+  if (onlyWithSon) { // only son borning ages
+    for (const child of people) {
+      const currentChildMotherName = child.mother;
+
+      for (const mother of people) {
+        if (mother.name === currentChildMotherName && child.sex === 'm') {
+          birthAges.push(child.born - mother.born);
+        }
+      }
+    }
+  } else { // every child borning ages
+    for (const child of people) {
+      const currentChildMotherName = child.mother;
+
+      for (const mother of people) {
+        if (mother.name === currentChildMotherName) {
+          birthAges.push(child.born - mother.born);
+        }
+      }
+    }
+  }
+
+  // get avarage
+  return birthAges.reduce((sum, currentBirthAge) => sum + currentBirthAge)
+  / birthAges.length;
 }
 
 module.exports = {
