@@ -16,6 +16,22 @@
  */
 function calculateMenAverageAge(people, century) {
   // write code here
+  let average;
+  let man;
+
+  if (century !== undefined) {
+    man = people.filter(x => x.sex === 'm'
+    && Math.floor(x.died / 100) + 1 === century);
+    average = man.reduce((sum, x) => sum + (x.died - x.born), 0);
+
+    return average / man.length;
+  } else {
+    man = people.filter(x => x.sex === 'm');
+    average = man.reduce((sum, x) => sum + (x.died - x.born), 0);
+
+    return average / man.length;
+  }
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -35,6 +51,24 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let average;
+  let woman;
+
+  if (withChildren) {
+    woman = people.filter(x => x.sex === 'f');
+
+    const mother = woman.filter(x => people.find(
+      a => a.mother === x.name));
+
+    average = mother.reduce((sum, x) => sum + (x.died - x.born), 0);
+
+    return average / mother.length;
+  } else {
+    woman = people.filter(x => x.sex === 'f');
+    average = woman.reduce((sum, x) => sum + (x.died - x.born), 0);
+
+    return average / woman.length;
+  }
 }
 
 /**
@@ -53,6 +87,31 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const between = [];
+
+  if (onlyWithSon) {
+    people.filter(x => x.sex === 'f').filter(x =>
+      people.filter(a => {
+        if (x.name === a.mother && a.sex === 'm') {
+          between.push(a.born - x.born);
+        }
+      }));
+
+    const average = between.reduce((sum, x) => sum + x, 0);
+
+    return average / between.length;
+  } else {
+    people.filter(x => x.sex === 'f').filter(x =>
+      people.filter(a => {
+        if (x.name === a.mother) {
+          between.push(a.born - x.born);
+        }
+      }));
+
+    const average = between.reduce((sum, x) => sum + x, 0);
+
+    return average / between.length;
+  }
 }
 
 module.exports = {
