@@ -20,6 +20,19 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const allMen = people.filter(elem => elem.sex === 'm');
+  const deadMean = allMen.filter(elem => {
+    return (Math.ceil(elem.died / 100) === century);
+  });
+
+  const averageAgeMen = century
+    ? deadMean.reduce((middleAge, age) => middleAge + (age.died - age.born), 0)
+    : allMen.reduce((middleAge, age) => middleAge + (age.died - age.born), 0);
+
+  const amountMen = century ? deadMean : allMen;
+
+  return (averageAgeMen / amountMen.length);
 }
 
 /**
@@ -34,7 +47,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter(elem => elem.sex === 'f');
+  const childWomen = people.filter(mother =>
+    people.some(child => {
+      return child.mother === mother.name;
+    }));
+
+  const averAge = withChildren
+    ? childWomen.reduce((sum, elem) => sum + (elem.died - elem.born), 0)
+    : allWomen.reduce((sum, elem) => sum + (elem.died - elem.born), 0);
+
+  const amountWomen = withChildren ? childWomen : allWomen;
+
+  return (averAge / amountWomen.length);
 }
 
 /**
@@ -52,7 +77,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const result = [];
+  let sum;
+
+  if (!onlyWithSon) {
+    people.forEach(mother =>
+      people.map(child => {
+        if (mother.name === child.mother) {
+          result.push(child.born - mother.born);
+        }
+      })
+    );
+    sum = result.reduce((accum, elem) => accum + elem, 0);
+  } else {
+    people.forEach(mother =>
+      people.forEach(son => {
+        if (mother.name === son.mother && son.sex === 'm') {
+          result.push(son.born - mother.born);
+        }
+      })
+    );
+    sum = result.reduce((accum, elem) => accum + elem, 0);
+  }
+
+  return sum / result.length;
 }
 
 module.exports = {
