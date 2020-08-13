@@ -17,7 +17,7 @@
 function calculateMenAverageAge(people, century) {
   let count = 0;
 
-  const func = (sum, man) => {
+  const sumAge = (sum, man) => {
     if (man.sex === 'm' && Math.ceil(man.died / 100) === century) {
       count++;
 
@@ -31,7 +31,7 @@ function calculateMenAverageAge(people, century) {
     return sum;
   };
 
-  return people.reduce(func, 0) / count;
+  return people.reduce(sumAge, 0) / count;
 }
 
 /**
@@ -48,9 +48,9 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let count = 0;
 
-  const func = (sum, woman, index, arr) => {
+  const sumAge = (sum, woman) => {
     if (woman.sex === 'f' && withChildren
-      && arr.find(person => person.mother === woman.name)) {
+      && people.find(person => person.mother === woman.name)) {
       count++;
 
       return sum + (woman.died - woman.born);
@@ -63,7 +63,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return sum;
   };
 
-  return people.reduce(func, 0, 0, this) / count;
+  return people.reduce(sumAge, 0) / count;
 };
 
 /**
@@ -96,8 +96,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       count += childrenBoys.length;
 
       const diff = childrenBoys.reduce((prev, child) => (
-        prev + child.born - mother.born
-      ), 0);
+        prev + child.born - mother.born), 0
+      );
 
       return sum + diff;
     } else if (mother.sex === 'f' && !onlyWithSon
