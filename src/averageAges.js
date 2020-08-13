@@ -20,15 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let maleArr = people.filter(x => x.sex === 'm');
+  let maleArr = people.filter(person => person.sex === 'm');
 
-  if (century !== undefined) {
-    maleArr = maleArr.filter(x =>
-      Math.ceil((x.died - 0.5) / 100) === century);
+  if (century) {
+    maleArr = maleArr.filter(male =>
+      Math.ceil((male.died - 0.5) / 100) === century);
   }
 
-  const averageAge = maleArr.reduce((sum, item) =>
-    sum + (item.died - item.born), 0) / maleArr.length;
+  const averageAge = maleArr.reduce((sum, maleAge) =>
+    sum + (maleAge.died - maleAge.born), 0) / maleArr.length;
 
   return averageAge;
 }
@@ -45,16 +45,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let femaleArr = people.filter(x => x.sex === 'f');
+  let femaleArr = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
-    femaleArr = femaleArr.filter((x, i, arr) => {
-      return people.some(ch => ch.mother === x.name);
+    femaleArr = femaleArr.filter(female => {
+      return people.some(child => child.mother === female.name);
     });
   }
 
-  const averageAge = femaleArr.reduce((sum, item) =>
-    sum + (item.died - item.born), 0) / femaleArr.length;
+  const averageAge = femaleArr.reduce((sum, female) =>
+    sum + (female.died - female.born), 0
+  ) / femaleArr.length;
 
   return averageAge;
 }
@@ -74,14 +75,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const femaleArr = people.filter(
-    mother => mother.sex === 'f' && people.some(
+  const clonePeople = people.map(person => ({ ...person }));
+  const femaleArr = clonePeople.filter(
+    mother => mother.sex === 'f' && clonePeople.some(
       child => (onlyWithSon ? child.sex === 'm' : true)
         && child.mother === mother.name
     )
   );
 
-  const children = people.filter(
+  const children = clonePeople.filter(
     child => (onlyWithSon ? child.sex === 'm' : true)
       && femaleArr.some(mother => mother.name === child.mother)
   )
