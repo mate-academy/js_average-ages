@@ -50,7 +50,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const func = (sum, woman, index, arr) => {
     if (woman.sex === 'f' && withChildren
-    && arr.find(person => person.mother === woman.name)) {
+      && arr.find(person => person.mother === woman.name)) {
       count++;
 
       return sum + (woman.died - woman.born);
