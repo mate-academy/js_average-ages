@@ -88,7 +88,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         }
       })
     );
-    sumAge = result.reduce((accum, elem) => accum + elem, 0);
+    sumAge = result.reduce((sum, elem) => sum + elem, 0);
   } else {
     people.forEach(mother =>
       people.forEach(son => {
@@ -97,7 +97,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         }
       })
     );
-    sumAge = result.reduce((accum, elem) => accum + elem, 0);
+    sumAge = result.reduce((sum, elem) => sum + elem, 0);
   }
 
   return sumAge / result.length;
