@@ -76,7 +76,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       ).born
     );
 
-  return arrOfAgeDiff.reduce((sum, item) => sum + item, 0) / arrOfAgeDiff.length;
+  return arrOfAgeDiff
+    .reduce((sum, item) => sum + item, 0) / arrOfAgeDiff.length;
 }
 
 module.exports = {
