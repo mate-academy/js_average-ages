@@ -22,7 +22,7 @@ function calculateMenAverageAge(people, century) {
 
   const manAges = man.map(men => men.died - men.born);
 
-  return manAges.reduce((a, b) => a + b) / manAges.length;
+  return manAges.reduce((a, b) => a + b, 0) / manAges.length;
 }
 
 /**
@@ -44,7 +44,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const womenAges = women.map(woman => woman.died - woman.born);
 
-  return womenAges.reduce((a, b) => a + b) / womenAges.length;
+  return womenAges.reduce((a, b) => a + b, 0) / womenAges.length;
 }
 
 /**
