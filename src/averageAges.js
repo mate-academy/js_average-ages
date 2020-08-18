@@ -21,9 +21,7 @@ function calculateMenAverageAge(people, century = 0) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const peoples = (century === 0)
-
     ? people.filter(x => x.sex === 'm')
-
     : people.filter(x => (Math.ceil(x.died / 100) === century
       && x.sex === 'm'));
 
@@ -45,13 +43,11 @@ function calculateMenAverageAge(people, century = 0) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   let mothers;
+  const mothersNames = people.map(x => x.mother);
 
-  if (withChildren) {
-    mothers = people.map(x => x.mother);
-    mothers = people.filter(x => mothers.includes(x.name));
-  } else {
-    mothers = people.filter(x => x.sex === 'f');
-  }
+  withChildren
+    ? mothers = people.filter(x => mothersNames.includes(x.name))
+    : mothers = people.filter(x => x.sex === 'f');
 
   mothers = mothers.map(x => x.died - x.born);
 
@@ -73,30 +69,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let mothers;
+  const mothersNames = people.map(x => x.mother);
+  const mothers = people.filter(x => mothersNames.includes(x.name));
+  const peoples = onlyWithSon ? people.filter(x => x.sex === 'm') : [...people];
+  const result = [];
 
-  mothers = people.map(x => x.mother);
-  mothers = people.filter(x => mothers.includes(x.name));
-
-  let res = people.map((x) => {
-    for (const value of mothers) {
-      if (value.name === x.mother) {
-        if (onlyWithSon) {
-          if (x.sex === 'm') {
-            return x.born - value.born;
-          }
-        } else {
-          return x.born - value.born;
-        }
-      }
-    }
-
-    return '';
+  mothers.map(mother => {
+    return peoples.map(children => {
+      return children.mother === mother.name
+        ? result.push(children.born - mother.born)
+        : 0;
+    });
   });
 
-  res = res.filter(x => x !== '');
-
-  return res.reduce((a, b) => a + b, 0) / res.length;
+  return result.reduce((a, b) => a + b, 0) / result.length;
 }
 
 module.exports = {
