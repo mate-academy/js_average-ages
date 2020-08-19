@@ -77,31 +77,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const mothers = people.filter(
-    mother => mother.sex === 'f' && people.some(
-      child => (onlyWithSon ? child.sex === 'm' : true)
- && child.mother === mother.name
-    )
-  );
+  const allChild = people.filter(person => people.find(
+    mother => mother.name === person.mother));
+  const motherSon = people.filter(person => people.find(
+    mother => mother.name === person.mother && person.sex === 'm'));
 
-  const children = people
-    .filter(child => (onlyWithSon ? child.sex === 'm' : true)
-        && mothers.some(mother => mother.name === child.mother)
-    )
-    .map(child => {
-      child.bornOfMother = mothers.find(
-        mother => mother.name === child.mother
-      ).born;
+  const result = allChild.reduce((sum, child) => {
+    const mother = people.find(mother1 => child.mother === mother1.name);
 
-      return child;
-    });
+    return sum + (child.born - mother.born);
+  }, 0) / allChild.length;
 
-  const totalAgeDiff = children.reduce(
-    (sum, child) => sum + child.born - child.bornOfMother, 0
-  );
-  const avgDiff = totalAgeDiff / children.length;
+  const result2 = motherSon.reduce((sum, child) => {
+    const mother = people.find(mother2 => child.mother === mother2.name);
 
-  return avgDiff;
+    return sum + (child.born - mother.born);
+  }, 0) / motherSon.length;
+
+  return onlyWithSon === undefined ? result : result2;
 }
 
 module.exports = {
