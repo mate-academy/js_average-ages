@@ -17,9 +17,8 @@
 function calculateMenAverageAge(people, century) {
   return people
     .filter(man => century
-      ? Math.ceil(man.died / 100) === century
-      : man)
-    .filter(man => man.sex === 'm')
+      ? man.sex === 'm' && Math.ceil(man.died / 100) === century
+      : man.sex === 'm')
     .map(man => man.died - man.born)
     .reduce((accum, prev, index, array) => accum + prev / array.length, 0);
 }
