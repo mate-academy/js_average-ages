@@ -15,11 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => {
+    return person.sex === 'm'
+      && (!century || Math.ceil(person.died / 100) === century);
+  });
+
+  return getAverageAge(men);
 }
 
 /**
@@ -34,7 +35,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(({ name, sex }, i, arr) => {
+    const hasChildren = arr.some(person => person.mother === name);
+
+    return sex === 'f' && (!withChildren || hasChildren);
+  });
+
+  return getAverageAge(women);
 }
 
 /**
@@ -52,7 +59,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childrenWithMother = people.filter(({ sex, mother }, i, arr) => {
+    const hasMotherInList = arr.some(person => person.name === mother);
+
+    return hasMotherInList && (!onlyWithSon || sex === 'm');
+  });
+
+  return getAverageAgeBabyBirth(childrenWithMother, people);
+}
+
+function getAverageAge(people) {
+  const personAge = person => person.died - person.born;
+
+  const totalAges = people.reduce((prevPersonAge, nextPerson) => {
+    return prevPersonAge + personAge(nextPerson);
+  }, 0);
+
+  return totalAges / people.length;
+}
+
+function getAverageAgeBabyBirth(children, people) {
+  const MotherAgeWithBabyBirth = ({ born, mother }) => {
+    const personMother = people.find(person => person.name === mother);
+
+    return born - personMother.born;
+  };
+
+  const totalAges = children.reduce((prevAge, nextChild) => {
+    return prevAge + MotherAgeWithBabyBirth(nextChild);
+  }, 0);
+
+  return totalAges / children.length;
 }
 
 module.exports = {
