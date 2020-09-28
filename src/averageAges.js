@@ -15,11 +15,25 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let male;
+
+  if (century !== undefined) {
+    male = people.filter(person => {
+      if (
+        person.sex === 'm' && Math.ceil(person.died / 100) === century
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else {
+    male = people.filter(person => person.sex === 'm');
+  }
+
+  const age = male.reduce((sum, cur) => sum + (cur.died - cur.born), 0);
+
+  return age / male.length;
 }
 
 /**
@@ -34,7 +48,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let female;
+
+  if (withChildren !== undefined) {
+    female = people.filter(person => {
+      if (
+        person.sex === 'f' && people.some(man => man.mother === person.name)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else {
+    female = people.filter(person => person.sex === 'f');
+  }
+
+  const age = female.reduce((sum, cur) => sum + (cur.died - cur.born), 0);
+
+  return age / female.length;
 }
 
 /**
@@ -52,7 +84,56 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let female;
+  const ageGap = [];
+
+  if (onlyWithSon !== undefined) {
+    female = people.filter(person => {
+      if (
+        person.sex === 'f' && people.some(man => {
+          return man.mother === person.name && man.sex === 'm';
+        })
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    female.map(mother => {
+      const children = people.filter(man => {
+        return man.mother === mother.name;
+      });
+
+      children.map(child => {
+        if (child.sex === 'm') {
+          ageGap.push(child.born - mother.born);
+        }
+      });
+    });
+  } else {
+    female = people.filter(person => {
+      if (
+        person.sex === 'f' && people.some(man => man.mother === person.name)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    female.map(mother => {
+      const children = people.filter(man => {
+        return man.mother === mother.name;
+      });
+
+      children.map(child => {
+        ageGap.push(child.born - mother.born);
+      });
+    });
+  };
+
+  return (ageGap.reduce((sum, age) => sum + age)) / ageGap.length;
 }
 
 module.exports = {
