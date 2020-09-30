@@ -16,16 +16,16 @@
  */
 function calculateMenAverageAge(people, century) {
   let averageAge = 0;
-  let diedMans = people.filter(person => person.sex === 'm');
+  let diedMen = people.filter(person => person.sex === 'm');
 
   if (century) {
-    diedMans = people.filter(person =>
+    diedMen = people.filter(person =>
       person.sex === 'm'
       && Math.ceil(person.died / 100) === century);
   }
 
-  averageAge = diedMans.reduce((sum, man) =>
-    sum + man.died - man.born, 0) / diedMans.length;
+  averageAge = diedMen.reduce((sum, man) =>
+    sum + man.died - man.born, 0) / diedMen.length;
 
   return averageAge;
 
@@ -48,16 +48,16 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   let averageWomanAge = 0;
-  let diedWomans = people.filter(person => person.sex === 'f');
+  let diedWomen = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
-    diedWomans = people.filter(person =>
+    diedWomen = people.filter(person =>
       person.sex === 'f'
       && people.filter(children => children.mother === person.name).length > 0);
   }
 
-  averageWomanAge = diedWomans.reduce((sum, woman) =>
-    sum + woman.died - woman.born, 0) / diedWomans.length;
+  averageWomanAge = diedWomen.reduce((sum, woman) =>
+    sum + woman.died - woman.born, 0) / diedWomen.length;
 
   return averageWomanAge;
 }
@@ -79,7 +79,7 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const gapInAge = [];
 
-  const womans = people.filter(person =>
+  const women = people.filter(person =>
     person.sex === 'f'
     && people.filter(child => child.mother === person.name));
 
@@ -91,7 +91,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     && people.filter(son => son.mother === person.name));
 
   if (onlyWithSon) {
-    womans.map(woman =>
+    women.map(woman =>
       sons.map(son => {
         if (son.mother === woman.name) {
           gapInAge.push(son.born - woman.born);
@@ -100,7 +100,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       )
     );
   } else {
-    womans.map(woman =>
+    women.map(woman =>
       children.map(child => {
         if (child.mother === woman.name) {
           gapInAge.push(child.born - woman.born);
