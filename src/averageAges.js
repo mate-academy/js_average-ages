@@ -23,12 +23,12 @@ function calculateMenAverageAge(people, century) {
   }
 
   !century
-    ? (people.filter(person => {
+    ? (people.forEach(person => {
       person.sex === 'm'
         ? menTotalAge += person.died - person.born
         : count--;
     }))
-    : (people.filter(person => {
+    : (people.forEach(person => {
       person.sex === 'm' && calculateCentury(person.died) === 18
         ? menTotalAge += person.died - person.born
         : count--;
@@ -53,12 +53,12 @@ function calculateWomenAverageAge(people, withChildren) {
   let count = people.length;
 
   !withChildren
-    ? (people.filter(person => {
+    ? (people.forEach(person => {
       person.sex === 'f'
         ? womenTotalAge += person.died - person.born
         : count--;
     }))
-    : (people.filter(person => {
+    : (people.forEach(person => {
       person.sex === 'f'
       && people.find(child => child.mother === person.name)
         ? womenTotalAge += person.died - person.born
@@ -88,13 +88,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let count = people.length;
 
   !onlyWithSon
-    ? people.filter(person => {
+    ? people.forEach(person => {
       people.find(mom => person.mother === mom.name)
         ? womenTotalAge += person.born - people.find(mom =>
           person.mother === mom.name).born
         : count--;
     })
-    : people.filter(person => {
+    : people.forEach(person => {
       people.find(mom => person.mother === mom.name && person.sex === 'm')
         ? womenTotalAge += person.born - people.find(mom =>
           person.mother === mom.name).born
