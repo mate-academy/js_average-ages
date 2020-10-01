@@ -15,18 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let averageAge = 0;
-  let diedMen;
+  const men = people.filter(person => person.sex === 'm');
+  const diedMen = century
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
 
-  century
-    ? diedMen = people.filter(person => person.sex === 'm'
-       && Math.ceil(person.died / 100) === century)
-    : diedMen = people.filter(person => person.sex === 'm');
+  const age = diedMen.reduce((sum, man) => sum + man.died - man.born, 0);
 
-  averageAge = diedMen.reduce((sum, man) =>
-    sum + man.died - man.born, 0) / diedMen.length;
-
-  return averageAge;
+  return age / diedMen.length;
 
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -46,15 +42,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let averageWomanAge = 0;
-  let diedWomen;
+  const women = people.filter(person => person.sex === 'f');
 
-  withChildren
-    ? diedWomen = people.filter(person => person.sex === 'f'
-        && people.filter(child => child.mother === person.name).length > 0)
-    : diedWomen = people.filter(person => person.sex === 'f');
+  const diedWomen = withChildren
+    // eslint-disable-next-line max-len
+    ? people.filter(person => people.filter(child => child.mother === person.name).length > 0)
+    : women;
 
-  averageWomanAge = diedWomen.reduce((sum, woman) =>
+  const averageWomanAge = diedWomen.reduce((sum, woman) =>
     sum + woman.died - woman.born, 0) / diedWomen.length;
 
   return averageWomanAge;
@@ -89,12 +84,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     && people.filter(son => son.mother === person.name));
 
   onlyWithSon
-    ? women.map(woman => sons.map(son => (
+    ? women.forEach(woman => sons.forEach(son => (
       son.mother === woman.name
         ? gapInAge.push(son.born - woman.born)
         : gapInAge
     )))
-    : women.map(woman => children.map(child => (
+    : women.forEach(woman => children.forEach(child => (
       child.mother === woman.name
         ? gapInAge.push(child.born - woman.born)
         : gapInAge
