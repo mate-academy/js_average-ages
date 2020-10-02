@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const ages = [];
+  const man = people.filter(({ sex, died }) => sex === 'm');
+
+  if (century) {
+    const averAgeOfMansArray = man
+      .filter(({ died }) => Math.ceil(died / 100) === century);
+
+    averAgeOfMansArray.forEach(({ born, died }) => ages.push(died - born));
+  } else {
+    man.forEach(({ born, died }) => ages.push(died - born));
+  }
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
 }
 
 /**
@@ -34,7 +42,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women;
+
+  if (withChildren !== undefined) {
+    women = people.filter(person => {
+      if (
+        person.sex === 'f' && people.some(human => human.mother === person.name)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else {
+    women = people.filter(person => person.sex === 'f');
+  }
+
+  const age = women.reduce((sum, cur) => sum + (cur.died - cur.born), 0);
+
+  return age / women.length;
 }
 
 /**
@@ -52,7 +78,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const kid = people.filter(person => !onlyWithSon
+    ? people.find(mother => person.mother === mother.name)
+    : people.find(mother => person.mother === mother.name && person.sex === 'm')
+  );
+
+  const agesDifference = kid.map(person => person.born
+    - people.find(mother => person.mother === mother.name).born);
+  const agesDifferenceSum = agesDifference.reduce((a, b) => a + b, 0);
+
+  return agesDifferenceSum / agesDifference.length;
 }
 
 module.exports = {
