@@ -19,8 +19,7 @@ function calculateMenAverageAge(people, century) {
 
   if (century) {
     filteredMen = people.filter(person =>
-      person.sex === 'm'
-      && (Math.ceil(person.died / 100) === century));
+      person.sex === 'm' && (Math.ceil(person.died / 100) === century));
   } else {
     filteredMen = people.filter(person => person.sex === 'm');
   }
@@ -44,15 +43,16 @@ function calculateWomenAverageAge(people, withChildren) {
   let filteredWomen = [];
 
   if (withChildren) {
-    filteredWomen = people.filter(person =>
-      person.sex === 'f' && people.some(human =>
-        human.mother === person.name));
+    filteredWomen = people.filter(
+      person => person.sex === 'f' && people.some(
+        human => human.mother === person.name));
   } else {
     filteredWomen = people.filter(person => person.sex === 'f');
   }
 
-  return filteredWomen.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / filteredWomen.length;
+  return filteredWomen.reduce(
+    (sum, person) => sum + (person.died - person.born), 0)
+    / filteredWomen.length;
 }
 
 /**
@@ -73,17 +73,18 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let filteredDifferentAge = [];
 
   if (onlyWithSon) {
-    filteredDifferentAge = people.filter(person =>
-      people.some(human =>
-        human.name === person.mother)
+    filteredDifferentAge = people.filter(
+      person => people.some(
+        human => human.name === person.mother)
         && person.sex === 'm');
   } else {
-    filteredDifferentAge = people.filter(person =>
-      people.some(human => human.name === person.mother));
+    filteredDifferentAge = people.filter(
+      person => people.some(human => human.name === person.mother));
   }
 
-  const age = filteredDifferentAge.map(person =>
-    person.born - people.find(mother => mother.name === person.mother).born
+  const age = filteredDifferentAge.map(
+    person => person.born - people.find(
+      mother => mother.name === person.mother).born
   );
 
   return age.reduce((a, b) => a + b) / age.length;
