@@ -14,12 +14,17 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const mens = people.filter(person => century
+  // eslint-disable-next-line max-len
+    ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+    : person.sex === 'm'
+  );
+  // eslint-disable-next-line max-len
+  const menAvgAge = mens.reduce((acc, person) => acc + (person.died - person.born), 0) / mens.length;
+
+  return menAvgAge;
 }
 
 /**
@@ -34,7 +39,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womens = people.filter(person => withChildren
+    // eslint-disable-next-line max-len
+    ? people.some(children => children.mother === person.name) && person.sex === 'f'
+    : person.sex === 'f'
+  );
+    // eslint-disable-next-line max-len
+  const womenAvgAge = womens.reduce((acc, person) => acc + (person.died - person.born), 0) / womens.length;
+
+  return womenAvgAge;
 }
 
 /**
