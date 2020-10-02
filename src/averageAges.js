@@ -84,23 +84,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     && people.filter(son => son.mother === person.name));
 
   if (onlyWithSon) {
-    womans.forEach(woman =>
-      sons.some(son => {
-        if (son.mother === woman.name) {
-          gapInAge.push(son.born - woman.born);
-        }
+    womans.forEach(woman => sons.some(son => {
+      if (son.mother === woman.name) {
+        gapInAge.push(son.born - woman.born);
       }
-      )
-    );
+    }));
   } else {
-    womans.forEach(woman =>
-      children.some(child => {
-        if (child.mother === woman.name) {
-          gapInAge.push(child.born - woman.born);
-        }
+    womans.forEach(woman => children.some(child => {
+      if (child.mother === woman.name) {
+        gapInAge.push(child.born - woman.born);
       }
-      )
-    );
+    }));
   }
 
   return gapInAge.reduce((sum, gap) => sum + gap, 0) / gapInAge.length;
