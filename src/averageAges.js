@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(({ sex }) => sex === 'm');
-
-  if (century) {
-    men = men.filter(({ died }) => Math.ceil(died / 100) === century);
-  }
+  const men = people.filter(({ died, sex }) => {
+    if (century) {
+      return sex === 'm' && Math.ceil(died / 100) === century;
+    } else {
+      return sex === 'm';
+    }
+  });
 
   const yearsLived = men.map(({ died, born }) => died - born);
 
@@ -42,15 +44,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(({ sex }) => sex === 'f');
-
-  if (withChildren) {
-    const mothers = people.map(({ mother }) => mother);
-
-    women = women.filter(({ name }) => {
-      return mothers.includes(name);
-    });
-  }
+  const women = people.filter(({ sex, name }) => {
+    if (withChildren) {
+      return sex === 'f' && people.some(({ mother }) => {
+        return mother === name;
+      });
+    } else {
+      return sex === 'f';
+    }
+  });
 
   const yearsLived = women.map(({ died, born }) => died - born);
 
@@ -76,26 +78,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const allMothers = people.map(({ mother }) => mother);
+  const childrens = people.filter(({ mother, sex }) => {
+    if (onlyWithSon) {
+      return people.some(({ name }) => {
+        return name === mother && sex === 'm';
+      });
+    } else {
+      return people.some(({ name }) => name === mother);
+    }
+  });
 
-  const mothers = people.filter(({ name }) => allMothers.includes(name));
-
-  const mothersName = mothers.map(({ name }) => name);
-
-  let childrens = people.filter(({ mother }) => mothersName.includes(mother));
-
-  if (onlyWithSon) {
-    childrens = childrens.filter(({ sex }) => sex === 'm');
-  }
-
-  const mothersKey = mothers.reduce((acc, file, index) => {
-    acc[file.name] = file;
-
-    return acc;
-  }, {});
-
-  const ageDifference = childrens.map(children => {
-    return children.born - mothersKey[children.mother].born;
+  const ageDifference = childrens.map(({ born, mother }) => {
+    return born - people.find(({ name }) => name === mother).born;
   });
 
   const averageAge = ageDifference.reduce((prev, item) => prev + item);
