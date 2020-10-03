@@ -17,12 +17,11 @@
 
 function calculateMenAverageAge(people, century) {
   const mens = people.filter(person => century
-  // eslint-disable-next-line max-len
     ? Math.ceil(person.died / 100) === century && person.sex === 'm'
     : person.sex === 'm'
   );
-  // eslint-disable-next-line max-len
-  const menAvgAge = mens.reduce((acc, person) => acc + (person.died - person.born), 0) / mens.length;
+  const menAvgAge = mens.reduce(
+    (acc, person) => acc + (person.died - person.born), 0) / mens.length;
 
   return menAvgAge;
 }
@@ -40,12 +39,11 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womens = people.filter(person => withChildren
-    // eslint-disable-next-line max-len
-    ? people.some(children => children.mother === person.name) && person.sex === 'f'
+    ? people.some(children => children.mother === person.name)
     : person.sex === 'f'
   );
-    // eslint-disable-next-line max-len
-  const womenAvgAge = womens.reduce((acc, person) => acc + (person.died - person.born), 0) / womens.length;
+  const womenAvgAge = womens.reduce((acc, person) => acc + (
+    person.died - person.born), 0) / womens.length;
 
   return womenAvgAge;
 }
@@ -65,7 +63,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  // eslint-disable-next-line max-len
+  const mothers = people.filter(person => people.some(
+    children => children.mother === person.name));
+
+  const diffAge = [];
+
+  if (onlyWithSon) {
+    mothers.map(woman => people.map(person => {
+      if (person.mother === woman.name && person.sex === 'm') {
+        diffAge.push(person.born - woman.born);
+      }
+    }));
+  } else {
+    mothers.map(woman => people.map(person => {
+      if (person.mother === woman.name) {
+        diffAge.push(person.born - woman.born);
+      }
+    }));
+  }
+
+  return diffAge.reduce((sum, age) => sum + age, 0) / diffAge.length;
 }
 
 module.exports = {
