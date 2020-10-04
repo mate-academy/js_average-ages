@@ -15,12 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const filteredPeople = century
+    ? people.filter(person => Math.ceil(person.died / 100) === century)
+    : people;
+
+  const male = filteredPeople.filter(person => person.sex === 'm');
+
+  const ages = male.reduce((sum, man) => sum + (man.died - man.born), 0);
+
+  return ages / male.length;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -34,7 +38,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeople = withChildren
+    // eslint-disable-next-line max-len
+    ? people.filter(person => people.some(child => child.mother === person.name))
+    : people;
+
+  const female = filteredPeople.filter(person => person.sex === 'f');
+  // eslint-disable-next-line max-len
+  const ages = female.reduce((sum, woman) => sum + (woman.died - woman.born), 0);
+
+  return ages / female.length;
 }
 
 /**
@@ -52,7 +65,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const female = people
+    .filter(person => person.sex === 'f')
+    .filter(person => people.some(child => child.mother === person.name));
+
+  const agePerson = [];
+
+  if (onlyWithSon) {
+    female.map(mother => people.map(child => {
+      if (child.sex === 'm' && child.mother === mother.name) {
+        agePerson.push(child.born - mother.born);
+      }
+    }));
+  } else {
+    female.map(mother => people.map(child => {
+      if (child.mother === mother.name) {
+        agePerson.push(child.born - mother.born);
+      }
+    }));
+  }
+
+  return agePerson.reduce((sum, gap) => sum + gap) / agePerson.length;
 }
 
 module.exports = {
