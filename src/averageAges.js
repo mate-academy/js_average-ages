@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const ages = [];
+  const men = people.filter(({ sex }) => sex === 'm');
+
+  if (century) {
+    // eslint-disable-next-line max-len
+    const generation = men.filter(({ died }) => Math.ceil(died / 100) === century);
+
+    generation.forEach(({ born, died }) => ages.push(died - born));
+  } else {
+    men.forEach(({ born, died }) => ages.push(died - born));
+  }
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
 }
 
 /**
@@ -35,6 +49,26 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const womens = people.filter(({ sex }) => sex === 'f');
+  const ages = [];
+
+  if (withChildren) {
+    const mothers = [];
+
+    for (const women of womens) {
+      people.forEach(person => {
+        if (women.name === person.mother && !mothers.includes(women)) {
+          mothers.push(women);
+        }
+      });
+    }
+
+    mothers.forEach(({ born, died }) => ages.push(died - born));
+  } else {
+    womens.forEach(({ born, died }) => ages.push(died - born));
+  }
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
 }
 
 /**
@@ -53,6 +87,28 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const women = people.filter(({ sex }) => sex === 'f');
+  const ages = [];
+  const mothers = [];
+
+  for (const woman of women) {
+    people.forEach(person => {
+      if (woman.name === person.mother && !mothers.includes(woman)) {
+        mothers.push(woman);
+      }
+    });
+  }
+
+  mothers.forEach(mother => {
+    const children = onlyWithSon
+      // eslint-disable-next-line max-len
+      ? people.filter(child => child.mother === mother.name && child.sex === 'm')
+      : people.filter(child => child.mother === mother.name);
+
+    children.forEach(child => ages.push(child.born - mother.born));
+  });
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
 }
 
 module.exports = {
