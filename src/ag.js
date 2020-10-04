@@ -15,11 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  return +people.filter(person => century
-    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-    : person.sex === 'm')
-    .reduce((prev, person, i, arr) =>
-      prev + (person.died - person.born) / arr.length, 0)
+  return +people
+    .filter(person => (century > 0)
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm')
+    .map(person => person.died - person.born)
+    .reduce((prev, value, i, array) => prev + value / array.length, 0)
     .toFixed(2);
 }
 
@@ -35,11 +36,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  return +people.filter(mother => withChildren
-    ? people.some(child => child.mother === mother.name)
-    : mother.sex === 'f')
-    .reduce((prev, person, i, arr) =>
-      prev + (person.died - person.born) / arr.length, 0)
+  return +people
+    .filter(person => withChildren
+      ? people.some(child => child.mother === person.name)
+      : person.sex === 'f')
+    .map(person => person.died - person.born)
+    .reduce((prev, value, i, arr) => prev + value / arr.length, 0)
     .toFixed(2);
 }
 
@@ -58,14 +60,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  return +people
+  const arr = people
     .filter(child =>
       people.some(mother => onlyWithSon ? child.mother === mother.name
         && child.sex === 'm'
-        : child.mother === mother.name))
-    .map(person => person.born - people.find(pers =>
-      pers.name === person.mother).born)
-    .reduce((prev, age, i, arr) => prev + age / arr.length, 0)
+        : child.mother === mother.name));
+
+  return +arr
+    .map(person => person.born - people
+      .find(pers => pers.name === person.mother).born)
+    .reduce((prev, item, i, array) => prev + item / array.length, 0)
     .toFixed(2);
 }
 
