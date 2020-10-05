@@ -76,12 +76,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : people.find(mother => person.mother === mother.name && person.sex === 'm')
   );
 
-  const totalAgesDifferences = children.map(person => person.born
+  const ageDifferencesList = children.map(person => person.born
     - people.find(mother => person.mother === mother.name).born);
     // eslint-disable-next-line max-len
-  const totalAgesDifferencesSum = totalAgesDifferences.reduce((a, b) => a + b, 0);
+  const totalAgeDifferences = ageDifferencesList.reduce((a, b) => a + b, 0);
 
-  return totalAgesDifferencesSum / totalAgesDifferences.length;
+  return totalAgeDifferences / ageDifferencesList.length;
 }
 
 module.exports = {
