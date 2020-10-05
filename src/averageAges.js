@@ -1,3 +1,7 @@
+/* eslint-disable object-curly-spacing */
+/* eslint-disable quotes */
+/* eslint-disable object-curly-newline */
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -61,7 +65,8 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const differenceInAge = [];
+  let differenceInAge = 0;
+  let counter = 0;
 
   const women = people.filter(person => person.sex === 'f');
 
@@ -70,19 +75,20 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   if (onlyWithSon) {
     women.forEach(woman => sons.forEach(son => {
       if (son.mother === woman.name) {
-        differenceInAge.push(son.born - woman.born);
+        differenceInAge += (son.born - woman.born);
+        counter++;
       }
     }));
   } else {
     women.forEach(woman => people.forEach(child => {
       if (child.mother === woman.name) {
-        differenceInAge.push(child.born - woman.born);
+        differenceInAge += (child.born - woman.born);
+        counter++;
       }
     }));
   }
 
-  return differenceInAge
-    .reduce((sum, diff) => sum + diff, 0) / differenceInAge.length;
+  return differenceInAge / counter;
 }
 
 module.exports = {
