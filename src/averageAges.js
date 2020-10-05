@@ -67,23 +67,26 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = people.filter(person => people.some(
     children => children.mother === person.name));
 
-  const diffAge = [];
+  let ageSum = 0;
+  let personCount = 0;
 
   if (onlyWithSon) {
     mothers.map(woman => people.map(person => {
       if (person.mother === woman.name && person.sex === 'm') {
-        diffAge.push(person.born - woman.born);
+        ageSum += person.born - woman.born;
+        personCount++;
       }
     }));
   } else {
     mothers.map(woman => people.map(person => {
       if (person.mother === woman.name) {
-        diffAge.push(person.born - woman.born);
+        ageSum += person.born - woman.born;
+        personCount++;
       }
     }));
   }
 
-  return diffAge.reduce((sum, age) => sum + age, 0) / diffAge.length;
+  return ageSum / personCount;
 }
 
 module.exports = {
