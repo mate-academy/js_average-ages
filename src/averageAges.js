@@ -21,37 +21,44 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const menLength = people.filter(person => person.sex === 'm').length;
+  const menLength = people.filter(person => person.sex === 'm')
+    .length;
 
   const menCenturyLength = people.filter(person =>
-    person.sex === 'm' && Math.ceil(person.died / 100) === century).length;
+    person.sex === 'm' && Math.ceil(person.died / 100) === century)
+    .length;
 
   const menAgeSum = people.reduce((acc, person) =>
-    person.sex === 'm' ? acc + (person.died - person.born) : acc + 0, 0);
+    person.sex === 'm'
+      ? acc + (person.died - person.born)
+      : acc + 0
+  , 0);
 
   const menAverage = menAgeSum / menLength;
 
   const menAgeCentury = people.reduce((acc, person) =>
     person.sex === 'm' && Math.ceil(person.died / 100) === century
-      ? acc + (person.died - person.born) : acc + 0, 0);
+      ? acc + (person.died - person.born)
+      : acc + 0
+  , 0);
 
   const menAverageCentury = menAgeCentury / menCenturyLength;
 
-  return century === undefined ? menAverage : menAverageCentury;
+  return century ? menAverageCentury : menAverage;
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withpersonren` is
+ * Function returns average ave of women in array. If `withChildren` is
  * specified then function calculates average age only for women with personren
  *
  * @param {object[]} people
- * @param {boolean} withpersonren - optional
+ * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withpersonren) {
+function calculateWomenAverageAge(people, withChildren) {
   const womenMap = people.filter(person => person.sex === 'f');
 
   const womenLength = womenMap.length;
@@ -61,7 +68,7 @@ function calculateWomenAverageAge(people, withpersonren) {
 
   const womenAverage = womenAgeSum / womenLength;
 
-  const womenWithChildren = withpersonren
+  const womenWithChildren = withChildren
     ? womenMap.filter(woman => {
       return people.find(person => woman.name === person.mother);
     })
@@ -70,7 +77,7 @@ function calculateWomenAverageAge(people, withpersonren) {
   const womenWithChildrenAverage = womenWithChildren.reduce((acc, woman) =>
     acc + (woman.died - woman.born), 0) / womenWithChildren.length;
 
-  return withpersonren === undefined ? womenAverage : womenWithChildrenAverage;
+  return withChildren ? womenWithChildrenAverage : womenAverage;
 }
 
 /**
