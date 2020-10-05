@@ -14,10 +14,10 @@ function calculateMenAverageAge(people, century = 0) {
       Math.ceil(person.died / 100) === century);
   };
 
-  const summa = men.reduce((sum, person) =>
+  const sumAge = men.reduce((sum, person) =>
     sum + person.died - person.born, 0);
 
-  return summa / men.length;
+  return sumAge / men.length;
 }
 
 /**
@@ -60,11 +60,14 @@ function calculateAverageAgeDiff(people, onlyWithSon = 0) {
     }));
 
   mothers.forEach(mother => {
-    const children = onlyWithSon
-      ? people.filter(child =>
-        child.mother === mother.name && child.sex === 'm')
-      : people.filter(child => child.mother === mother.name);
+    let children;
 
+    if (onlyWithSon) {
+      children = people.filter(child =>
+        child.mother === mother.name && child.sex === 'm');
+    } else {
+      children = people.filter(child => child.mother === mother.name);
+    }
     children.forEach(child => ages.push(child.born - mother.born));
   });
 
