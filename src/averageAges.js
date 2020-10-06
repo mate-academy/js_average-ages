@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let filteredPeople;
+
+  if (century !== undefined) {
+    filteredPeople = people.filter(human => {
+      if (human.sex === 'm' && Math.ceil(human.died / 100) === century) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else {
+    filteredPeople = people.filter(human => human.sex === 'm');
+  }
+
+  const callback = (sum, cur) => sum + (cur.died - cur.born);
+
+  return filteredPeople.reduce(callback, 0) / filteredPeople.length;
 }
 
 /**
@@ -34,7 +46,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+
 }
 
 /**
