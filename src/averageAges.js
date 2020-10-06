@@ -21,8 +21,8 @@ function calculateMenAverageAge(people, century) {
     return Math.ceil(person.died / 100) === century;
   }) : men;
 
-  const callback = (sum, x) => {
-    return sum + (x.died - x.born);
+  const callback = (sum, addition) => {
+    return sum + (addition.died - addition.born);
   };
 
   const ages = men.reduce(callback, 0);
@@ -48,8 +48,8 @@ function calculateWomenAverageAge(people, withChildren) {
     return people.some(child => child.mother === person.name);
   }) : women;
 
-  const callback = (sum, x) => {
-    return sum + x.died - x.born;
+  const callback = (sum, addition) => {
+    return sum + addition.died - addition.born;
   };
 
   const ages = women.reduce(callback, 0);
@@ -93,7 +93,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   }));
 
-  ages = ages.reduce((sum, x) => sum + x, 0);
+  ages = ages.reduce((sum, addition) => sum + addition, 0);
 
   return ages / children.length;
 }
