@@ -23,14 +23,13 @@ function calculateMenAverageAge(people, century) {
   let count = 0;
 
   const totalAge = (sum, man) => {
-    if (man.sex === 'm' && Math.ceil(man.died / 100) === century) {
+    const lifeDuration = man.died - man.born;
+
+    // eslint-disable-next-line max-len
+    if (man.sex === 'm' && (Math.ceil(man.died / 100) === century || century === undefined)) {
       count++;
 
-      return sum + (man.died - man.born);
-    } else if (man.sex === 'm' && century === undefined) {
-      count++;
-
-      return sum + (man.died - man.born);
+      return sum + lifeDuration;
     }
 
     return sum;
@@ -54,15 +53,17 @@ function calculateWomenAverageAge(people, withChildren) {
   let count = 0;
 
   const totalAge = (sum, woman) => {
-    if (woman.sex === 'f' && withChildren
-      && people.find(person => person.mother === woman.name)) {
+    const lifeDurationTotal = sum + woman.died - woman.born;
+
+    // eslint-disable-next-line max-len
+    if (woman.sex === 'f' && withChildren && people.find(person => person.mother === woman.name)) {
       count++;
 
-      return sum + (woman.died - woman.born);
+      return lifeDurationTotal;
     } else if (woman.sex === 'f' && withChildren === undefined) {
       count++;
 
-      return sum + (woman.died - woman.born);
+      return lifeDurationTotal;
     }
 
     return sum;
@@ -100,21 +101,21 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
       count += childrenBoys.length;
 
-      const diff = childrenBoys.reduce((sumAge, child) => (
+      const diffBoys = childrenBoys.reduce((sumAge, child) => (
         sumAge + child.born - mother.born), 0
       );
 
-      return sum + diff;
+      return sum + diffBoys;
     } else if (mother.sex === 'f' && !onlyWithSon
         && people.find(person => person.mother === mother.name)) {
       const children = people.filter(person => person.mother === mother.name);
 
       count += children.length;
 
-      const diff = children.reduce((sumAge, child) =>
-        sumAge + child.born - mother.born, 0);
+      const diffAllChildren = children.reduce((sumAge, child) =>
+        sumAge + child.born - mother.born, 0) + sum;
 
-      return sum + diff;
+      return diffAllChildren;
     }
 
     return sum;
