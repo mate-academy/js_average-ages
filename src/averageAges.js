@@ -27,8 +27,8 @@ function calculateMenAverageAge(people, century) {
   const men = people.filter(person => person.sex === 'm');
 
   if (century) {
-    const diedInCentury = men.filter(person =>
-      Math.ceil(person.died / 100) === century);
+    const diedInCentury = men.filter(
+      person => Math.ceil(person.died / 100) === century);
 
     return countAvaregeAge(diedInCentury);
   } else {
@@ -50,16 +50,15 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
+  const womenWithChildren = people.filter(woman => {
+    return people.some(child => child.mother === woman.name);
+  });
 
-  if (withChildren) {
-    const womenWithChildren = people.filter(woman => {
-      return people.some(child => child.mother === woman.name);
-    });
-
-    return countAvaregeAge(womenWithChildren);
-  } else {
-    return countAvaregeAge(women);
-  }
+  return countAvaregeAge(
+    withChildren
+      ? womenWithChildren
+      : women
+  );
 }
 
 /**
@@ -77,25 +76,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const women = people
-    .filter(person => person.sex === 'f')
-    .filter(woman => people.some(child => child.mother === woman.name));
-
   const ageDiff = [];
 
-  if (onlyWithSon) {
-    women.map(woman => people.map(child => {
-      if (child.sex === 'm' && child.mother === woman.name) {
-        ageDiff.push(child.born - woman.born);
-      }
-    }));
-  } else {
-    women.map(woman => people.map(child => {
-      if (child.mother === woman.name) {
-        ageDiff.push(child.born - woman.born);
-      }
-    }));
-  }
+  people.map(woman => {
+    const childres = people.filter(child => onlyWithSon
+      ? woman.name === child.mother && child.sex === 'm'
+      : woman.name === child.mother);
+
+    childres.map(singleChild => ageDiff
+      .push(singleChild.born - woman.born));
+  });
 
   return ageDiff.reduce((acc, age) => acc + age) / ageDiff.length;
 }
