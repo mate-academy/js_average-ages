@@ -22,11 +22,7 @@ function calculateMenAverageAge(people, century) {
     ? men.filter(person => Math.ceil(person.died / 100) === century)
     : men;
 
-  const callback = (sum, addition) => {
-    return sum + (addition.died - addition.born);
-  };
-
-  const ages = men.reduce(callback, 0);
+  const ages = men.reduce((sum, addition) => sum + (addition.died - addition.born), 0);
 
   return ages / men.length;
 }
