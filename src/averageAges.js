@@ -15,19 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const mens = people.filter(person => person.sex === 'm');
+  let mens = people.filter(person => person.sex === 'm');
 
   if (century) {
-    const mensOfCentury = mens
+    mens = mens
       .filter(person => Math.ceil(person.died / 100) === century);
-
-    const sumAgesOfCentury = mensOfCentury.reduce((sum, { born, died }) => {
-      const personAge = (died - born);
-
-      return sum + personAge;
-    }, 0);
-
-    return sumAgesOfCentury / mensOfCentury.length;
   }
 
   const sumAges = mens.reduce((sum, { born, died }) => {
@@ -45,7 +37,7 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const womens = people.filter(person => person.sex === 'f');
+  let womens = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
     const mothers = [];
@@ -58,13 +50,7 @@ function calculateWomenAverageAge(people, withChildren) {
       });
     });
 
-    const sumAgesWithChildren = mothers.reduce((sum, { born, died }) => {
-      const personAge = (died - born);
-
-      return sum + personAge;
-    }, 0);
-
-    return sumAgesWithChildren / mothers.length;
+    womens = mothers;
   }
 
   const sumAges = womens.reduce((sum, { born, died }) => {
@@ -85,7 +71,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const womens = people.filter(person => person.sex === 'f');
-  const mothersAndChildren = [];
+  let mothersAndChildren = [];
 
   womens.forEach(women => {
     people.forEach(person => {
@@ -96,14 +82,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   });
 
   if (onlyWithSon) {
-    const mothersWithSons = mothersAndChildren
+    mothersAndChildren = mothersAndChildren
       .filter(element => element[1].sex === 'm');
-
-    const sumAgesWithSon = mothersWithSons.map(element => {
-      return element[1].born - element[0].born;
-    }).reduce((sum, current) => sum + current, 0);
-
-    return sumAgesWithSon / mothersWithSons.length;
   }
 
   const sumAges = mothersAndChildren.map(element => {
