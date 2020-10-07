@@ -21,19 +21,22 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const ages = [];
-  const men = people.filter(({ sex }) => sex === 'm');
+  let mensQuantity = 0;
+  const averageAgeOfMen = people.reduce((acc, person) => {
+    if (person.sex === 'm' && century === undefined) {
+      mensQuantity++;
 
-  if (century) {
-    // eslint-disable-next-line max-len
-    const generation = men.filter(({ died }) => Math.ceil(died / 100) === century);
+      return acc + person.died - person.born;
+    } else if (person.sex === 'm' && century === Math.ceil(person.died / 100)) {
+      mensQuantity++;
 
-    generation.forEach(({ born, died }) => ages.push(died - born));
-  } else {
-    men.forEach(({ born, died }) => ages.push(died - born));
-  }
+      return acc + person.died - person.born;
+    } else {
+      return acc;
+    }
+  }, 0);
 
-  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
+  return averageAgeOfMen / mensQuantity;
 }
 
 /**
@@ -49,26 +52,24 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const womens = people.filter(({ sex }) => sex === 'f');
-  const ages = [];
+  const womens = people.filter(person => person.sex === 'f');
+
+  const womenWithChildren = people.filter(person =>
+    people.some(child => child.mother === person.name));
 
   if (withChildren) {
-    const mothers = [];
+    const ageWomenWithChildren = womenWithChildren.reduce((acc, person) => {
+      return acc + person.died - person.born;
+    }, 0);
 
-    for (const women of womens) {
-      people.forEach(person => {
-        if (women.name === person.mother && !mothers.includes(women)) {
-          mothers.push(women);
-        }
-      });
-    }
-
-    mothers.forEach(({ born, died }) => ages.push(died - born));
+    return ageWomenWithChildren / womenWithChildren.length;
   } else {
-    womens.forEach(({ born, died }) => ages.push(died - born));
-  }
+    const ageWomen = womens.reduce((acc, person) => {
+      return acc + person.died - person.born;
+    }, 0);
 
-  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
+    return ageWomen / womens.length;
+  }
 }
 
 /**
