@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -17,9 +18,9 @@
 function calculateMenAverageAge(people, century) {
   let men = people.filter(person => person.sex === 'm');
 
-  men = century ? men.filter(person => {
-    return Math.ceil(person.died / 100) === century;
-  }) : men;
+  men = century
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
 
   const callback = (sum, addition) => {
     return sum + (addition.died - addition.born);
@@ -44,15 +45,11 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let women = people.filter(person => person.sex === 'f');
 
-  women = withChildren ? people.filter(person => {
-    return people.some(child => child.mother === person.name);
-  }) : women;
+  women = withChildren
+    ? people.filter(person => people.some(child => child.mother === person.name))
+    : women;
 
-  const callback = (sum, addition) => {
-    return sum + addition.died - addition.born;
-  };
-
-  const ages = women.reduce(callback, 0);
+  const ages = women.reduce((sum, addition) => sum + addition.died - addition.born, 0);
 
   return ages / women.length;
 }
@@ -72,26 +69,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let ages = [];
   let women = people.filter(person => person.sex === 'f');
 
-  women = people.filter(person => {
-    return people.some(child => child.mother === person.name);
+  women = people.filter(person => (
+    people.some(child => child.mother === person.name)
+  ));
+
+  let children = people.filter(person => (
+    people.some(mother => mother.name === person.mother)
+  ));
+
+  children = onlyWithSon
+    ? children.filter(child => child.sex === 'm')
+    : children;
+
+  let ages = children.map(({ mother, born }) => {
+    const woman = women.find(({ name }) => name === mother);
+
+    return born - woman.born;
   });
-
-  let children = people.filter(person => {
-    return people.some(mother => mother.name === person.mother);
-  });
-
-  children = onlyWithSon ? children.filter(child => {
-    return child.sex === 'm';
-  }) : children;
-
-  women.forEach(woman => children.some(child => {
-    if (child.mother === woman.name) {
-      ages.push(child.born - woman.born);
-    }
-  }));
 
   ages = ages.reduce((sum, addition) => sum + addition, 0);
 
