@@ -50,8 +50,8 @@ function calculateWomenAverageAge(people, withChildren) {
 
   if (withChildren) {
     filteredPeople = people.filter(human => {
-      /* eslint max-len: ["error", { "code": 83}] */
-      if (human.sex === 'f' && people.some(child => child.mother === human.name)) {
+      if (human.sex === 'f'
+      && people.some(child => child.mother === human.name)) {
         return true;
       } else {
         return false;
@@ -93,8 +93,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       people.some(mother => mother.name === child.mother));
   }
 
-  /* eslint max-len: ["error", { "code": 200}] */
-  const callback = (sum, cur) => sum + cur.born - people.find(mother => mother.name === cur.mother).born;
+  const callback = (sum, cur) => (
+    sum + cur.born - people.find(mother => mother.name === cur.mother)
+      .born
+  );
 
   return filteredPeople.reduce(callback, 0) / filteredPeople.length;
 }
