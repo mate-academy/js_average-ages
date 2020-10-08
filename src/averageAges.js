@@ -23,17 +23,14 @@ function calculateMenAverageAge(people, century) {
 
   let mensQuantity = 0;
   const averageAgeOfMen = people.reduce((acc, person) => {
-    if (person.sex === 'm' && century === undefined) {
+    if (person.sex === 'm'
+    && (century === undefined || century === Math.ceil(person.died / 100))) {
       mensQuantity++;
 
       return acc + person.died - person.born;
-    } else if (person.sex === 'm' && century === Math.ceil(person.died / 100)) {
-      mensQuantity++;
-
-      return acc + person.died - person.born;
-    } else {
-      return acc;
     }
+
+    return acc;
   }, 0);
 
   return averageAgeOfMen / mensQuantity;
