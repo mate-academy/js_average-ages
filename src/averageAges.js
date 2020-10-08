@@ -54,8 +54,8 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const womens = people.filter(person => person.sex === 'f');
 
-  const womenWithChildren = people.filter(person =>
-    people.some(child => child.mother === person.name));
+  const womenWithChildren = people.filter(
+    person => people.some(child => child.mother === person.name));
 
   if (withChildren) {
     const ageWomenWithChildren = womenWithChildren.reduce((acc, person) => {
@@ -88,28 +88,28 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const women = people.filter(({ sex }) => sex === 'f');
-  const ages = [];
-  const mothers = [];
+  const ageDiff = [];
+  let mothers = people.filter(
+    person => person.sex === 'f' && people.some(
+      child => child.mother === person.name));
 
-  for (const woman of women) {
-    people.forEach(person => {
-      if (woman.name === person.mother && !mothers.includes(woman)) {
-        mothers.push(woman);
-      }
-    });
+  if (onlyWithSon) {
+    mothers = mothers.filter(
+      mother => people.some(
+        child => child.mother === mother.name && child.sex === 'm'));
   }
 
-  mothers.forEach(mother => {
+  mothers.map(mother => {
     const children = onlyWithSon
-      // eslint-disable-next-line max-len
-      ? people.filter(child => child.mother === mother.name && child.sex === 'm')
-      : people.filter(child => child.mother === mother.name);
+      ? people.filter(
+        child => child.mother === mother.name && child.sex === 'm')
+      : people.filter(
+        child => child.mother === mother.name);
 
-    children.forEach(child => ages.push(child.born - mother.born));
+    children.map(child => ageDiff.push(child.born - mother.born));
   });
 
-  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
+  return ageDiff.reduce((sum, age) => sum + age, 0) / ageDiff.length;
 }
 
 module.exports = {
