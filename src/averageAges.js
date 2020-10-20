@@ -20,7 +20,26 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-}
+
+  const arrCorrected = (people.map(person => {
+    const collectPerson = [];
+
+    century
+      ? (person.sex === 'm')
+        && (Math.ceil(person.died / 100) === century)
+        && (collectPerson.push(person.died - person.born))
+      : (person.sex === 'm')
+        && (collectPerson.push(person.died - person.born));
+
+    return +collectPerson;
+  }));
+
+  let result = arrCorrected.filter(personAge => personAge > 0);
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -35,7 +54,28 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-}
+
+  const arrCorrected = (people.map(person => {
+    const collectPerson = [];
+    const isMother = (persons) => people.some((human) => human.mother
+                  === persons.name);
+
+    withChildren
+      ? (person.sex === 'f')
+        && (isMother(person))
+        && (collectPerson.push(person.died - person.born))
+      : (person.sex === 'f')
+        && (collectPerson.push(person.died - person.born));
+
+    return +collectPerson;
+  }));
+
+  let result = arrCorrected.filter(personAge => personAge > 0);
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -53,7 +93,27 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-}
+  const arrCorrected = [];
+
+  people.some(function(itemMother) {
+    onlyWithSon !== undefined
+      ? people.some(function(itemSon) {
+        itemSon.mother === itemMother.name
+      && itemSon.sex === 'm'
+      && arrCorrected.push(itemSon.born - itemMother.born);
+      })
+      : people.some(function(itemChild) {
+        itemChild.mother === itemMother.name
+      && arrCorrected.push(itemChild.born - itemMother.born);
+      });
+  });
+
+  let result = arrCorrected.filter(personAge => personAge > 0);
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 module.exports = {
   calculateMenAverageAge,
