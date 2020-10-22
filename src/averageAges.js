@@ -21,20 +21,20 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const arrCorrected = (people.map(person => {
-    const collectPerson = [];
+  const peopleLifeExpectancy = [];
 
-    century
-      ? (person.sex === 'm')
-        && (Math.ceil(person.died / 100) === century)
-        && (collectPerson.push(person.died - person.born))
-      : (person.sex === 'm')
-        && (collectPerson.push(person.died - person.born));
+  century
+    ? people.some(function(itemMan) {
+      itemMan.sex === 'm'
+    && Math.ceil(itemMan.died / 100) === century
+    && peopleLifeExpectancy.push(itemMan.died - itemMan.born);
+    })
+    : people.some(function(itemMan) {
+      itemMan.sex === 'm'
+    && peopleLifeExpectancy.push(itemMan.died - itemMan.born);
+    });
 
-    return +collectPerson;
-  }));
-
-  let result = arrCorrected.filter(personAge => personAge > 0);
+  let result = peopleLifeExpectancy;
 
   result = result.reduce((sum, x) => sum + x, 0) / result.length;
 
@@ -55,22 +55,22 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
 
-  const arrCorrected = (people.map(person => {
-    const collectPerson = [];
-    const isMother = (persons) => people.some((human) => human.mother
-                  === persons.name);
+  const peopleLifeExpectancy = [];
+  const isMother = (woman) => people.some(
+    (human) => human.mother === woman.name);
 
-    withChildren
-      ? (person.sex === 'f')
-        && (isMother(person))
-        && (collectPerson.push(person.died - person.born))
-      : (person.sex === 'f')
-        && (collectPerson.push(person.died - person.born));
+  withChildren
+    ? people.some(function(itemWoman) {
+      itemWoman.sex === 'f'
+      && isMother(itemWoman)
+        && peopleLifeExpectancy.push(itemWoman.died - itemWoman.born);
+    })
+    : people.some(function(itemWoman) {
+      itemWoman.sex === 'f'
+        && peopleLifeExpectancy.push(itemWoman.died - itemWoman.born);
+    });
 
-    return +collectPerson;
-  }));
-
-  let result = arrCorrected.filter(personAge => personAge > 0);
+  let result = peopleLifeExpectancy;
 
   result = result.reduce((sum, x) => sum + x, 0) / result.length;
 
@@ -93,22 +93,22 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const arrCorrected = [];
+  const peopleLifeExpectancy = [];
 
   people.some(function(itemMother) {
     onlyWithSon !== undefined
       ? people.some(function(itemSon) {
         itemSon.mother === itemMother.name
       && itemSon.sex === 'm'
-      && arrCorrected.push(itemSon.born - itemMother.born);
+      && peopleLifeExpectancy.push(itemSon.born - itemMother.born);
       })
       : people.some(function(itemChild) {
         itemChild.mother === itemMother.name
-      && arrCorrected.push(itemChild.born - itemMother.born);
+      && peopleLifeExpectancy.push(itemChild.born - itemMother.born);
       });
   });
 
-  let result = arrCorrected.filter(personAge => personAge > 0);
+  let result = peopleLifeExpectancy;
 
   result = result.reduce((sum, x) => sum + x, 0) / result.length;
 
