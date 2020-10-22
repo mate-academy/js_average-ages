@@ -20,7 +20,26 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-}
+
+  const peopleLifeExpectancy = [];
+
+  century
+    ? people.some(function(itemMan) {
+      itemMan.sex === 'm'
+    && Math.ceil(itemMan.died / 100) === century
+    && peopleLifeExpectancy.push(itemMan.died - itemMan.born);
+    })
+    : people.some(function(itemMan) {
+      itemMan.sex === 'm'
+    && peopleLifeExpectancy.push(itemMan.died - itemMan.born);
+    });
+
+  let result = peopleLifeExpectancy;
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -35,7 +54,28 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-}
+
+  const peopleLifeExpectancy = [];
+  const isMother = (woman) => people.some(
+    (human) => human.mother === woman.name);
+
+  withChildren
+    ? people.some(function(itemWoman) {
+      itemWoman.sex === 'f'
+      && isMother(itemWoman)
+        && peopleLifeExpectancy.push(itemWoman.died - itemWoman.born);
+    })
+    : people.some(function(itemWoman) {
+      itemWoman.sex === 'f'
+        && peopleLifeExpectancy.push(itemWoman.died - itemWoman.born);
+    });
+
+  let result = peopleLifeExpectancy;
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -53,7 +93,27 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-}
+  const peopleLifeExpectancy = [];
+
+  people.some(function(itemMother) {
+    onlyWithSon !== undefined
+      ? people.some(function(itemSon) {
+        itemSon.mother === itemMother.name
+      && itemSon.sex === 'm'
+      && peopleLifeExpectancy.push(itemSon.born - itemMother.born);
+      })
+      : people.some(function(itemChild) {
+        itemChild.mother === itemMother.name
+      && peopleLifeExpectancy.push(itemChild.born - itemMother.born);
+      });
+  });
+
+  let result = peopleLifeExpectancy;
+
+  result = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+  return result;
+};
 
 module.exports = {
   calculateMenAverageAge,
