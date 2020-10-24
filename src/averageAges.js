@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 'use strict';
 
 function calculateMenAverageAge(people, century) {
@@ -5,7 +6,6 @@ function calculateMenAverageAge(people, century) {
     return person.sex === 'm';
   });
 
-  // eslint-disable-next-line operator-linebreak
   century &&
     (list = list.filter((person) => {
       const centuryOfDeath = Math.ceil(person.died / 100);
@@ -24,20 +24,19 @@ function calculateWomenAverageAge(people, withChildren) {
   let list = people.filter((person) => {
     return person.sex === 'f';
   });
+  let womenWithChildren;
 
-  if (withChildren) {
-    const womenWithChildren = people.reduce((result, person) => {
+  withChildren &&
+    (womenWithChildren = people.reduce((result, person) => {
       if (person.mother) {
         return [...result, person.mother];
       }
 
       return result;
-    }, []);
-
-    list = list.filter((person) => {
+    }, [])) &&
+    (list = list.filter((person) => {
       return womenWithChildren.includes(person.name);
-    });
-  }
+    }));
 
   const res = list.reduce((sum, person) => {
     return sum + person.died - person.born;
