@@ -53,17 +53,14 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
 
   const women = people.filter(person => person.sex === 'f');
-  // console.log(women);
 
   const womenWithChildren = women.filter(person =>
     people.some(women => women.mother === person.name));
-  // console.log(womenWithChildren);
 
   const sumAges = arguments.length < 2
     ? women.reduce((sum, person) => sum + (person.died - person.born), 0)
     : womenWithChildren.reduce((sum, person) =>
       sum + (person.died - person.born), 0);
-  // console.log(sumAges);
 
   const womenAverageAge = arguments.length < 2
     ? sumAges / women.length : sumAges / womenWithChildren.length;
