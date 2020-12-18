@@ -62,8 +62,8 @@ function calculateWomenAverageAge(people, withChildren) {
     ? allWomen(people)
     : allWomenWithChild(people);
 
-  return ages.reduce((r, e) =>
-    r + e, 0) / ages.length;
+  return ages.reduce((sum, age) =>
+    sum + age, 0) / ages.length;
 }
 
 /**
@@ -95,8 +95,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ? allWomenWithChild(people)
     : allWomenWithSon(people);
 
-  return ages.reduce((r, e) =>
-    r + e) / ages.length;
+  return ages.reduce((sum, age) =>
+    sum + age, 0) / ages.length;
 }
 
 module.exports = {
