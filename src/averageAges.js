@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  function menFilter(el) {
+    return el.sex === 'm';
+  }
+
+  function deathFilter(el) {
+    const deathCentury = Math.ceil(el.died / 100);
+
+    return century ? deathCentury === century : el.died !== century;
+  }
+
+  const men = people.filter(menFilter).filter(deathFilter);
+
+  function callback(acc, curV) {
+    return acc + (curV.died - curV.born);
+  }
+
+  return (men.reduce(callback, 0) / men.length);
 }
 
 /**
@@ -34,7 +46,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  function womenFilter(el) {
+    return el.sex === 'f';
+  }
+
+  function motherFilter(el) {
+    function isMother(element) {
+      return el.name === element.mother;
+    }
+
+    return withChildren ? people.find(isMother) : true;
+  }
+
+  const women = people.filter(womenFilter).filter(motherFilter);
+
+  function callback(acc, curV) {
+    return acc + (curV.died - curV.born);
+  }
+
+  return (women.reduce(callback, 0) / women.length);
 }
 
 /**
@@ -52,7 +82,36 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function motherFilter(el) {
+    function isMother(element) {
+      return onlyWithSon
+        ? el.name === element.mother && element.sex === 'm'
+        : el.name === element.mother;
+    }
+
+    return people.find(isMother);
+  }
+
+  const mothers = people.filter(motherFilter);
+  let totalChildNumber = 0;
+
+  function callback(acc, curV) {
+    function isChild(element) {
+      return onlyWithSon
+        ? curV.name === element.mother && element.sex === 'm'
+        : curV.name === element.mother;
+    }
+
+    const childs = people.filter(isChild);
+
+    const diferences = childs.map(el => el.born - curV.born);
+
+    totalChildNumber += diferences.length;
+
+    return acc + diferences.reduce((ac, el) => el + ac, 0);
+  }
+
+  return +(mothers.reduce(callback, 0) / totalChildNumber).toFixed(2);
 }
 
 module.exports = {
