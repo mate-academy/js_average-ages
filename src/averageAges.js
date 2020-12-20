@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const allMen = people.filter((person) => century
+    ? person.sex === 'm' && (century === Math.ceil(person.died / 100))
+    : person.sex === 'm');
+
+  const menAge = allMen.map(person => person.died - person.born);
+
+  const averageAge = menAge.reduce((sum, age) => sum + age, 0) / menAge.length;
+
+  return averageAge;
 }
 
 /**
@@ -34,7 +38,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter((person) => person.sex === 'f');
+  let selectedWomen;
+
+  withChildren
+    ? selectedWomen = allWomen.filter(woman =>
+      people.some(person => person.mother === woman.name))
+    : selectedWomen = allWomen;
+
+  const womenAge = selectedWomen.map(person => person.died - person.born);
+
+  const averageAge = womenAge
+    .reduce((sum, age) => sum + age, 0) / womenAge.length;
+
+  return averageAge;
 }
 
 /**
@@ -52,8 +69,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => onlyWithSon
+    ? people.some(woman => woman.name === child.mother) && child.sex === 'm'
+    : people.some(woman => woman.name === child.mother));
+
+  const childBirthAge = children.map(child =>
+    child.born - people.find(mother => mother.name === child.mother).born);
+
+  const averageAge = childBirthAge.reduce((sum, age) => sum + age, 0);
+
+  return averageAge / childBirthAge.length;
 }
+
+module.exports = {
+  calculateMenAverageAge,
+  calculateWomenAverageAge,
+  calculateAverageAgeDiff,
+};
 
 module.exports = {
   calculateMenAverageAge,
