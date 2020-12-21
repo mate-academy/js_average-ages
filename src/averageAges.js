@@ -88,11 +88,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       people.some(woman => woman.name === child.mother));
   }
 
-  const diffOfMumAndSunAge = children.map(child =>
+  const diffOfMumAndChildAge = children.map(child =>
     child.born - people.find(woman => woman.name === child.mother).born);
 
-  return diffOfMumAndSunAge.reduce((sum, diffAge) => sum + diffAge, 0)
-  / diffOfMumAndSunAge.length;
+  return diffOfMumAndChildAge.reduce((sum, diffAge) => sum + diffAge, 0)
+  / diffOfMumAndChildAge.length;
 }
 
 module.exports = {
