@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const allMen = people.filter((element) => element.sex === 'm');
+  const menOfTheCentury = allMen.filter((element) =>
+    Math.ceil(element.died / 100) === century);
+  let men;
+
+  arguments.length === 1
+    ? men = allMen
+    : men = menOfTheCentury;
+
+  const ages = men.map((element) => element.died - element.born);
+
+  const average = +(ages.reduce((a, b) => a + b) / men.length).toFixed(2);
+
+  return average;
 }
 
 /**
@@ -34,7 +43,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter((element) => element.sex === 'f');
+  const womenWithChildren = people.filter((mother) => {
+    return people.some(child => mother.name === child.mother);
+  });
+
+  let women;
+
+  arguments.length === 1
+    ? women = allWomen
+    : women = womenWithChildren;
+
+  const ages = women.map((element) => element.died - element.born);
+  const average = +(ages.reduce((a, b) => a + b) / women.length)
+    .toFixed(2);
+
+  return average;
 }
 
 /**
@@ -46,13 +70,35 @@ function calculateWomenAverageAge(people, withChildren) {
  * If `onlyWithSon` is specified then function calculates age difference only
  * for mothers who have son.
  *
+ *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
  *
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const motherWithChild = people.filter((mother) => {
+    return people.some((child) => mother.name === child.mother);
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  let children;
+
+  const boysAndGirls = people.filter((child) => {
+    return people.some((mother) => child.mother === mother.name);
+  }).sort((a, b) => a.mother.localeCompare(b.mother));
+
+  const boys = boysAndGirls.filter(boy => boy.sex === 'm');
+
+  onlyWithSon ? children = boys : children = boysAndGirls;
+
+  const ageOfBirth = children.map((child) => {
+    return child.born - motherWithChild
+      .find(mother => mother.name === child.mother).born;
+  });
+
+  const average = +(ageOfBirth.reduce((a, b) => a + b) / children.length)
+    .toFixed(2);
+
+  return average;
 }
 
 module.exports = {
