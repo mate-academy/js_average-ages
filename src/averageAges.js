@@ -15,26 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let womenWithChildren = [];
+  const menOfCentury = people.filter(
+    (man) => century ? Math.ceil(man.died / 100) === century
+    && man.sex === 'm' : man.sex === 'm');
 
-  womenWithChildren = people.filter(
-    (woman) => Math.ceil(woman.died / 100) === century
-    && woman.sex === 'm');
-
-  (century === undefined)
-  && (womenWithChildren = people.filter((woman) => woman.sex === 'm'));
-
-  function countSum(sum, woman) {
-    const age = woman.died - woman.born;
+  function countSum(sum, man) {
+    const age = man.died - man.born;
 
     return sum + age;
   }
 
-  const summ = womenWithChildren.reduce(countSum, 0);
+  const summ = menOfCentury.reduce(countSum, 0);
 
-  const averageAge = summ / womenWithChildren.length;
-
-  return Math.round(averageAge * 100) / 100;
+  return summ / menOfCentury.length;
 }
 
 /**
@@ -49,13 +42,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenWithChildren = [];
-
-  womenWithChildren = people.filter((woman) => woman.sex === 'f'
-  && people.some((item) => item.mother === woman.name));
-
-  withChildren
-  || (womenWithChildren = people.filter((woman) => woman.sex === 'f'));
+  const womenWithChildren = people.filter(
+    (woman) => withChildren ? woman.sex === 'f'
+    && people.some((person) => person.mother === woman.name)
+      : woman.sex === 'f');
 
   function countSum(sum, woman) {
     const age = woman.died - woman.born;
@@ -65,9 +55,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const summ = womenWithChildren.reduce(countSum, 0);
 
-  const averageAge = summ / womenWithChildren.length;
-
-  return Math.round(averageAge * 100) / 100;
+  return summ / womenWithChildren.length;
 }
 
 /**
@@ -100,9 +88,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return prev + diff;
   }
 
-  const averageDiff = sum / children.length;
-
-  return Math.round(averageDiff * 100) / 100;
+  return sum / children.length;
 }
 
 module.exports = {
