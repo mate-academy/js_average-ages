@@ -48,7 +48,7 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let womenList = people.filter((person) => person.sex === 'f');
 
-  womenList = (withChildren === true)
+  womenList = (withChildren)
     ? womenList = womenList.filter(({ name }) => (
       people.some(({ mother }) => mother === name)
     ))
@@ -91,7 +91,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   });
 
   const totalAge = ageDiffList.reduce((total, diff) =>
-    total + (diff),
+    total + diff,
   0);
 
   return totalAge / ageDiffList.length;
