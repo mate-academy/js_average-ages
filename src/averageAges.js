@@ -15,12 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const male = people.filter(man => man.sex === 'm');
-  let finalMale;
-
-  century
-    ? finalMale = male.filter(man => Math.ceil(man.died / 100) === century)
-    : finalMale = male;
+  const finalMale = people.filter(man =>
+    century
+      ? Math.ceil(man.died / 100) === century && man.sex === 'm'
+      : man.sex === 'm'
+  );
 
   const menAges = finalMale.map(man => man.died - man.born);
 
@@ -42,13 +41,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const female = people.filter(woman => woman.sex === 'f');
-  let finalFemale;
-
-  withChildren
-    ? finalFemale = female
-      .filter(woman => people.some(person => person.mother === woman.name))
-    : finalFemale = female;
+  const finalFemale = people.filter(woman =>
+    withChildren
+      ? woman.sex === 'f' && people.some(person => person.mother === woman.name)
+      : woman.sex === 'f'
+  );
 
   const femaleAges = finalFemale.map(woman => woman.died - woman.born);
 
@@ -77,19 +74,18 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     woman.sex === 'f'
     && people.some(person => person.mother === woman.name));
 
-  const averageAges = [];
   let children;
 
   onlyWithSon !== undefined
     ? children = people.filter(person => person.sex === 'm'
-      && female.map(woman => person.mother === woman.name))
+      && female.find(woman => person.mother === woman.name))
     : children = people.filter(person =>
-      female.map(woman => person.mother === woman.name));
+      female.find(woman => person.mother === woman.name));
 
-  children.map(child => female.map(woman => child.mother === woman.name
-    ? averageAges.push(child.born - woman.born) : child));
+  const ages = children.map(child =>
+    child.born - female.find(mother => mother.name === child.mother).born);
 
-  return averageAges.reduce((a, b) => a + b, 0) / averageAges.length;
+  return ages.reduce((a, b) => a + b, 0) / ages.length;
 }
 
 module.exports = {
