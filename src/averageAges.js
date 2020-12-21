@@ -15,11 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let persons;
-
-  century === undefined
-    ? persons = people.filter((n) => n.sex === 'm')
-    : persons = people.filter((person) => person.sex === 'm'
+  const persons = century === undefined
+    ? people.filter((n) => n.sex === 'm')
+    : people.filter((person) => person.sex === 'm'
       && Math.ceil(person.died / 100) === century);
 
   const sum = persons.reduce((s, n) => s + n.died - n.born, 0);
@@ -40,15 +38,11 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.map((n) => n.mother);
-  let persons;
+  const persons = withChildren === undefined
+    ? people.filter(n => n.sex === 'f')
+    : people.filter(n => mothers.includes(n.name));
 
-  withChildren === undefined
-    ? persons = (people.filter(n => n.sex === 'f'))
-    : persons = people.filter((n) => mothers.includes(n.name));
-
-  const sum = persons.reduce((s, n) => s + n.died - n.born, 0);
-
-  return sum / persons.length;
+  return persons.reduce((s, n) => s + n.died - n.born, 0) / persons.length;
 }
 
 /**
@@ -66,43 +60,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothersNamesArray
-  = people.map((child) => child.mother);
+  const kids = onlyWithSon
+    ? people.filter(kid => people.some(mother => mother.name === kid.mother
+      && mother.name !== null)
+      && kid.sex === 'm')
+    : people.filter(kid => people.some(mother => mother.name === kid.mother
+      && mother.name !== null));
 
-  const mInfo
-  = people.filter(mother => mothersNamesArray.includes(mother.name)
-  && mother.name !== null);
+  const differences = kids.map(kid => {
+    const kidsMother = people.find(mother => mother.name === kid.mother);
 
-  const peopleWithMothersInList
-  = people.filter(child => mInfo.find(mother => mother.name === child.mother));
-
-  const validPeopleWithMothersInList
-  = peopleWithMothersInList.filter(child => child.mother !== null);
-
-  const fullInfoValidPeopleWithMothersInList
-  = validPeopleWithMothersInList.map(child => {
-    child.mothersBirthYear
-    = mInfo.find(mother => mother.name === child.mother).born;
-
-    return child;
+    return kid.born - kidsMother.born;
   });
 
-  const fullInfoValidMansWithMothersInList
-  = fullInfoValidPeopleWithMothersInList.filter(child => child.sex === 'm');
-
-  let diferences;
-
-  onlyWithSon === undefined
-    ? diferences
-    = fullInfoValidPeopleWithMothersInList.map(child => child.born
-      - child.mothersBirthYear)
-    : diferences
-    = fullInfoValidMansWithMothersInList.map(child => child.born
-      - child.mothersBirthYear);
-
-  const sum = diferences.reduce((s, difference) => s + difference, 0);
-
-  return sum / diferences.length;
+  return (differences.reduce((sum, diference) => sum + diference, 0))
+    / differences.length;
 }
 
 module.exports = {
