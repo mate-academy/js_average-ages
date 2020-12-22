@@ -15,12 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men;
-
-  century
-    ? men = people.filter(person =>
-      person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : men = people.filter(person => person.sex === 'm');
+  const men = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm');
 
   return men.reduce((sum, y) => sum + (y.died - y.born), 0) / men.length;
 }
@@ -37,15 +35,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women;
-  const children = Object.values(people.filter(person =>
-    person.mother !== null));
+  const children = people.filter(person =>
+    person.mother !== null);
   const mothers = children.map(child => child.mother);
 
-  withChildren
-    ? women = people.filter(person =>
-      person.sex === 'f' && mothers.includes(person.name))
-    : women = people.filter(person => person.sex === 'f');
+  const women = people.filter(person =>
+    withChildren
+      ? person.sex === 'f' && mothers.includes(person.name)
+      : person.sex === 'f');
 
   return women.reduce((sum, y) => sum + (y.died - y.born), 0) / women.length;
 }
@@ -65,14 +62,11 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children;
-
-  onlyWithSon
-    ? children = people.filter(person =>
-      people.some(mother =>
-        person.mother === mother.name) && person.sex === 'm')
-    : children = people.filter(person => people.some(mother =>
-      person.mother === mother.name));
+  const children = people.filter(person =>
+    onlyWithSon
+      ? people.some(mother => person.mother === mother.name)
+        && person.sex === 'm'
+      : people.some(mother => person.mother === mother.name));
 
   const ageDiff = children.map(child =>
     child.born - people.find(mother => child.mother === mother.name).born);
