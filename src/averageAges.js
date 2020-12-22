@@ -16,14 +16,14 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  const man = people.filter((person) => person.sex === 'm'
-    && ((!century)
-      ? true
-      : Math.ceil(person.died / 100) === century)
+  const men = people.filter(person =>
+    !century
+      ? person.sex === 'm'
+      : Math.ceil(person.died / 100) === century && person.sex === 'm'
   );
-  const averageAge = (man
-    .reduce((acc, person) => acc + (person.died - person.born), 0)
-  ) / man.length;
+  const averageAge = (men
+    .reduce((acc, person) =>
+      acc + (person.died - person.born), 0)) / men.length;
 
   return averageAge;
 }
@@ -41,15 +41,15 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = people.filter(person => person.sex === 'f'
-  && (!withChildren)
-    ? true
-    : people.some(potentialChild => potentialChild.mother === person.name)
+  const woman = people.filter(person =>
+    !withChildren
+      ? person.sex === 'f'
+      : people.some(potentialChild => potentialChild.mother === person.name)
   );
 
   const averageAge = (woman
-    .reduce((acc, person) => acc + (person.died - person.born), 0)
-  ) / woman.length;
+    .reduce((acc, person) =>
+      acc + (person.died - person.born), 0)) / woman.length;
 
   return averageAge;
 }
@@ -70,8 +70,8 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const woman = people.filter(child =>
-    (!onlyWithSon)
+  const women = people.filter(child =>
+    !onlyWithSon
       ? people.some(person =>
         child.mother === person.name
       )
@@ -80,10 +80,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       )
   );
 
-  const averageAge = woman
+  const averageAge = women
     .map(child => (child.born) - (people
       .find(mother => mother.name === child.mother)).born)
-    .reduce((acc, age) => acc + age, 0) / woman.length;
+    .reduce((acc, age) => acc + age, 0) / women.length;
 
   return averageAge;
 }
