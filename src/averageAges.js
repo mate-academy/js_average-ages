@@ -15,23 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  function menFilter(el) {
-    return el.sex === 'm';
+  function menFilter(person) {
+    const deathCentury = Math.ceil(person.died / 100);
+
+    return century
+      ? person.sex === 'm' && deathCentury === century
+      : person.sex === 'm';
   }
 
-  function deathFilter(el) {
-    const deathCentury = Math.ceil(el.died / 100);
+  const men = people.filter(menFilter);
 
-    return century ? deathCentury === century : el.died !== century;
+  function agesAccumulator(acc, person) {
+    return acc + (person.died - person.born);
   }
 
-  const men = people.filter(menFilter).filter(deathFilter);
-
-  function callback(acc, curV) {
-    return acc + (curV.died - curV.born);
-  }
-
-  return (men.reduce(callback, 0) / men.length);
+  return (men.reduce(agesAccumulator, 0) / men.length);
 }
 
 /**
@@ -46,25 +44,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  function womenFilter(el) {
-    return el.sex === 'f';
+  function womenFilter(person) {
+    return person.sex === 'f';
   }
 
-  function motherFilter(el) {
-    function isMother(element) {
-      return el.name === element.mother;
+  function motherFilter(person) {
+    function isMother(child) {
+      return person.name === child.mother;
     }
 
     return withChildren ? people.find(isMother) : true;
   }
 
-  const women = people.filter(womenFilter).filter(motherFilter);
+  const women = people.filter(withChildren ? motherFilter : womenFilter);
 
-  function callback(acc, curV) {
-    return acc + (curV.died - curV.born);
+  function agesAccumulator(acc, person) {
+    return acc + (person.died - person.born);
   }
 
-  return (women.reduce(callback, 0) / women.length);
+  return (women.reduce(agesAccumulator, 0) / women.length);
 }
 
 /**
@@ -82,36 +80,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  function motherFilter(el) {
-    function isMother(element) {
-      return onlyWithSon
-        ? el.name === element.mother && element.sex === 'm'
-        : el.name === element.mother;
-    }
+  function hasMother(person) {
+    const motherInList = !!(people.find(possibleMother =>
+      possibleMother.name === person.mother));
 
-    return people.find(isMother);
+    return onlyWithSon
+      ? motherInList && person.sex === 'm' : motherInList;
   }
 
-  const mothers = people.filter(motherFilter);
-  let totalChildNumber = 0;
+  const children = people.filter(hasMother);
 
-  function callback(acc, curV) {
-    function isChild(element) {
-      return onlyWithSon
-        ? curV.name === element.mother && element.sex === 'm'
-        : curV.name === element.mother;
-    }
+  function ageDifferencecAcc(acc, child) {
+    const mother = people.find(possibleMother =>
+      possibleMother.name === child.mother);
 
-    const childs = people.filter(isChild);
-
-    const diferences = childs.map(el => el.born - curV.born);
-
-    totalChildNumber += diferences.length;
-
-    return acc + diferences.reduce((ac, el) => el + ac, 0);
+    return acc + child.born - mother.born;
   }
 
-  return +(mothers.reduce(callback, 0) / totalChildNumber).toFixed(2);
+  return +(children.reduce(ageDifferencecAcc, 0) / children.length).toFixed(2);
 }
 
 module.exports = {
