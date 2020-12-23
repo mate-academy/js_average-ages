@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  function menFilter(person) {
+    const deathCentury = Math.ceil(person.died / 100);
+
+    return century
+      ? person.sex === 'm' && deathCentury === century
+      : person.sex === 'm';
+  }
+
+  const men = people.filter(menFilter);
+
+  function agesAccumulator(acc, person) {
+    return acc + (person.died - person.born);
+  }
+
+  return (men.reduce(agesAccumulator, 0) / men.length);
 }
 
 /**
@@ -37,7 +47,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  function womenFilter(person) {
+    return person.sex === 'f';
+  }
+
+  function motherFilter(person) {
+    function isMother(child) {
+      return person.name === child.mother;
+    }
+
+    return withChildren ? people.find(isMother) : true;
+  }
+
+  const women = people.filter(withChildren ? motherFilter : womenFilter);
+
+  function agesAccumulator(acc, person) {
+    return acc + (person.died - person.born);
+  }
+
+  return (women.reduce(agesAccumulator, 0) / women.length);
 }
 
 /**
@@ -55,7 +83,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function hasMother(person) {
+    const motherInList = !!(people.find(possibleMother =>
+      possibleMother.name === person.mother));
+
+    return onlyWithSon
+      ? motherInList && person.sex === 'm' : motherInList;
+  }
+
+  const children = people.filter(hasMother);
+
+  function ageDifferencecAcc(acc, child) {
+    const mother = people.find(possibleMother =>
+      possibleMother.name === child.mother);
+
+    return acc + child.born - mother.born;
+  }
+
+  return +(children.reduce(ageDifferencecAcc, 0) / children.length).toFixed(2);
 }
 
 module.exports = {
