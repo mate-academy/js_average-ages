@@ -28,8 +28,8 @@ function calculateMenAverageAge(people, century) {
  * Function returns average ave of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
- * Hint: To check if a woman has children you should find the other people in
- * the array who mention her as mother.
+ * Hint: To check if a woman has children you should find the other people
+ * among `people` who mention her as mother.
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
