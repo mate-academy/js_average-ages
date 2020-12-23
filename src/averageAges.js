@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century === undefined
+    ? people.filter(person => person.sex === 'm') : people
+      .filter(person => person.sex === 'm')
+      .filter(person => Math.ceil(person.died / 100) === century);
+
+  const years = men.map(person => person.died - person.born);
+  const manAge = years.reduce((sum, year) => sum + year);
+
+  return manAge / years.length;
 }
 
 /**
@@ -37,7 +41,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  const womenWithChildren = women
+    .filter(person => people
+      .findIndex(human => human.mother === person.name) !== -1);
+
+  function averageAge(typeWomen) {
+    const years = typeWomen.map(person => person.died - person.born);
+    const womenAge = years.reduce((sum, age) => sum + age);
+
+    return womenAge / years.length;
+  }
+
+  return withChildren === undefined
+    ? averageAge(women) : averageAge(womenWithChildren);
 }
 
 /**
@@ -55,7 +73,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const sons = people.filter(child => people
+    .some(mother => mother.name === child.mother) && child.sex === 'm');
+
+  const allChildren = people.filter(child => people
+    .some(mother => mother.name === child.mother));
+
+  function averageAge(children) {
+    const years = children.map(child => child.born - people
+      .find(mother => child.mother === mother.name).born);
+    const childrenAge = years.reduce((sum, year) => sum + year);
+
+    return childrenAge / years.length;
+  }
+
+  return onlyWithSon !== undefined
+    ? averageAge(sons) : averageAge(allChildren);
 }
 
 module.exports = {
