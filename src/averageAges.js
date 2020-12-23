@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrMen = people
+    .filter(person => person.sex === 'm')
+    .filter(person => Math.ceil(person.died / 100) === century || !century)
+    .map(person => person.died - person.born);
+
+  const sumAge = arrMen.reduce((prev, currentValue) => {
+    return prev + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrMen.length;
+
+  return averAge;
 }
 
 /**
@@ -37,7 +44,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+
+  const arrWomen = people
+    .filter(person => person.sex === 'f')
+    .filter(woman => people.some(child =>
+      child.mother === woman.name) || !withChildren)
+    .map(person => person.died - person.born);
+
+  const sumAge = arrWomen.reduce((prev, currentValue) => {
+    return prev + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrWomen.length;
+
+  return averAge;
 }
 
 /**
@@ -55,7 +75,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+
+  const arrWomen = people
+    .filter(person => person.sex === 'f')
+    .filter(woman => people.some(child =>
+      child.mother === woman.name));
+
+  const arrChildren = people.filter(person =>
+    arrWomen.find(woman => woman.name === person.mother))
+    .filter(child => child.sex === 'm' || !onlyWithSon);
+
+  const arrDiff = arrChildren.map(child => {
+    const motherOfChild = arrWomen.find(mother => child.mother === mother.name);
+
+    return child.born - motherOfChild.born;
+  });
+
+  const sumAge = arrDiff.reduce((prev, currentValue) => {
+    return prev + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrDiff.length;
+
+  return averAge;
 }
 
 module.exports = {
