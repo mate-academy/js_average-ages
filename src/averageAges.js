@@ -10,7 +10,7 @@
  * @return {number} the average age of men.
  */
 function calculateMenAverageAge(people, century) {
-  const men = century === undefined
+  const men = !century
     ? people.filter(person => person.sex === 'm')
     : people
       .filter(person => person.sex === 'm')
@@ -20,7 +20,7 @@ function calculateMenAverageAge(people, century) {
     .map(person => person.died - person.born)
     .reduce((accumulator, current) => accumulator + current) / men.length;
 
-  return Math.round(result * 100) / 100;
+  return result;
 }
 
 /**
@@ -38,7 +38,7 @@ function calculateWomenAverageAge(people, withChildren) {
     .filter(person => people
       .findIndex(element => element.mother === person.name) !== -1);
 
-  const result = withChildren === undefined
+  const result = !withChildren
     ? allWomen
       .map(person => person.died - person.born)
       .reduce((accumulator, current) => accumulator + current) / allWomen.length
@@ -46,7 +46,7 @@ function calculateWomenAverageAge(people, withChildren) {
       .map(person => person.died - person.born)
       .reduce((accumulator, current) => accumulator + current) / mothers.length;
 
-  return Math.round(result * 100) / 100;
+  return result;
 }
 
 /**
@@ -68,17 +68,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(person => mothers
       .findIndex(element => element.name === person.mother) !== -1);
 
-  const mothersWithSons = people
-    .filter(person => person.sex === 'f')
+  const mothersWithSons = mothers
     .filter(person => people
       .findIndex(element => element.mother === person.name
-        && element.sex === 'm') !== -1);
+      && element.sex === 'm') !== -1);
   const sons = people
     .filter(person => mothersWithSons
       .findIndex(element => element.name === person.mother) !== -1)
     .filter(person => person.sex === 'm');
 
-  const result = onlyWithSon === undefined
+  const result = !onlyWithSon
     ? allChildren
       .map(child => {
         const motherBorn = mothers
@@ -97,7 +96,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       })
       .reduce((accumulator, current) => accumulator + current) / sons.length;
 
-  return Math.round(result * 100) / 100;
+  return result;
 }
 
 module.exports = {
