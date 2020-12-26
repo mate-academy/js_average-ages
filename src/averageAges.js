@@ -14,7 +14,27 @@
  *
  * @return {number}
  */
+function calculateAverageAge(people) {
+  return (
+    people
+      .map((person) => person.died - person.born)
+      .reduce((acc, curr) => acc + curr, 0) / people.length
+  );
+}
+
 function calculateMenAverageAge(people, century) {
+  if (!century) {
+    const men = people.filter((person) => person.sex === 'm');
+
+    return calculateAverageAge(men);
+  } else {
+    const men = people.filter(
+      (person) => person.sex === 'm' && Math.ceil(person.died / 100) === century
+    );
+
+    return calculateAverageAge(men);
+  }
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +57,27 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  if (!withChildren) {
+    const women = people.filter((person) => person.sex === 'f');
+
+    return calculateAverageAge(women);
+  } else {
+    const women = [];
+
+    for (let i = 0; i < people.length; i++) {
+      for (let y = 0; y < people.length; y++) {
+        if (people[i].name === people[y].mother) {
+          women.push(people[i]);
+        }
+      }
+    }
+
+    return calculateAverageAge(
+      women.filter((value, index, self) => {
+        return self.indexOf(value) === index;
+      })
+    );
+  }
 }
 
 /**
@@ -55,7 +95,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersAges = [];
+
+  if (!onlyWithSon) {
+    for (let i = 0; i < people.length; i++) {
+      for (let y = 0; y < people.length; y++) {
+        if (people[i].name === people[y].mother) {
+          mothersAges.push(people[y].born - people[i].born);
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < people.length; i++) {
+      for (let y = 0; y < people.length; y++) {
+        if (people[i].name === people[y].mother && people[y].sex === 'm') {
+          mothersAges.push(people[y].born - people[i].born);
+        }
+      }
+    }
+  }
+
+  return (mothersAges
+    .reduce((acc, curr) => acc + curr, 0))
+     / mothersAges.length;
 }
 
 module.exports = {
