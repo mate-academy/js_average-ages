@@ -22,13 +22,13 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   let arrAges = [];
   let averageAge = [];
-  const man = people.filter(el => el.sex === 'm');
+  const men = people.filter(el => el.sex === 'm');
 
-  if (century === undefined) {
-    arrAges = man.map(el => el.died - el.born);
-    averageAge = arrAges.reduce((a, b) => a + b) / man.length;
+  if (!century) {
+    averageAge = men.map(el =>
+      el.died - el.born).reduce((a, b) => a + b) / men.length;
   } else {
-    const centuryMen = man.filter(el =>
+    const centuryMen = men.filter(el =>
       century === Math.ceil(el.died / 100));
 
     arrAges = centuryMen.map(el => el.died - el.born);
@@ -57,12 +57,10 @@ function calculateWomenAverageAge(people, withChildren) {
   let averageAge = [];
   const women = people.filter(el => el.sex === 'f');
 
-  if (withChildren === false || withChildren === undefined) {
+  if (!withChildren) {
     arrAges = women.map(el => el.died - el.born);
     averageAge = arrAges.reduce((a, b) => a + b) / women.length;
-  }
-
-  if (withChildren) {
+  } else {
     const mothers = women.filter(el =>
       people.some(person => person.mother === el.name));
 
@@ -90,9 +88,8 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let averageAge;
   let differentAge;
-  const women = people.filter(el => el.sex === 'f');
-  const mothers = women.filter(el =>
-    people.some(person => person.mother === el.name));
+  const mothers = people.filter(el =>
+    el.sex === 'f' && people.some(person => person.mother === el.name));
   const children = people.filter(el =>
     mothers.some(m => m.name === el.mother));
 
@@ -104,9 +101,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     });
 
     averageAge = differentAge.reduce((a, b) => a + b) / children.length;
-  }
-
-  if (onlyWithSon === true) {
+  } else {
     const sons = children.filter(ch => ch.sex === 'm');
     const mothersWithSon = mothers.filter(m =>
       sons.some(s => s.mother === m.name));
