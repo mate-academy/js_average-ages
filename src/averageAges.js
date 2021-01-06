@@ -21,20 +21,15 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const man = people.filter((obj) => obj.sex === 'm');
+  const man = people.filter((obj) =>
+    century
+      ? Math.ceil(obj.died / 100) === century && obj.sex === `m`
+      : obj.sex === `m`
+  );
 
   const ages = man.map((obj) => obj.died - obj.born);
 
-  function callback(sum, age) {
-    return sum + age;
-  }
-
-  const manFilter = man.filter((obj) => Math.ceil(obj.died / 100) === century);
-  const filterAges = manFilter.map((obj) => obj.died - obj.born);
-
-  return century
-    ? filterAges.reduce(callback, 0) / filterAges.length
-    : ages.reduce(callback, 0) / ages.length;
+  return getAverage(ages);
 }
 
 /**
@@ -51,23 +46,25 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
+function getAverage(numbers) {
+  if (numbers.length === 0) {
+    return 0;
+  }
+
+  return numbers.reduce((a, b) => a + b, 0) / numbers.length;
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = people.filter((obj) => obj.sex === 'f');
+  const woman = people.filter((women) =>
+    withChildren
+      ? people.some((child) => child.mother === women.name)
+      : women.sex === `f`
+  );
 
   const ages = woman.map((obj) => obj.died - obj.born);
 
-  function callback(sum, age) {
-    return sum + age;
-  }
-
-  const mothers = people.filter((obj) =>
-    people.some((elem) => elem.mother === obj.name)
-  );
-  const mothersAge = mothers.map((obj) => obj.died - obj.born);
-
-  return withChildren
-    ? mothersAge.reduce(callback, 0) / mothersAge.length
-    : ages.reduce(callback, 0) / ages.length;
+  return getAverage(ages);
 }
 
 /**
@@ -89,23 +86,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     people.some((elem) => elem.mother === obj.name)
   );
   const children = people.filter((obj) =>
-    mothers.some((mom) => mom.name === obj.mother)
+    onlyWithSon
+      ? mothers.some((mom) => mom.name === obj.mother && obj.sex === `m`)
+      : mothers.some((mom) => mom.name === obj.mother)
   );
-  const childrenSons = children.filter((obj) => obj.sex === 'm');
   const ages = children.map(
     (obj) => obj.born - mothers.find((mom) => mom.name === obj.mother).born
   );
-  const agesSons = childrenSons.map(
-    (obj) => obj.born - mothers.find((mom) => mom.name === obj.mother).born
-  );
 
-  function callback(sum, age) {
-    return sum + age;
-  }
-
-  return onlyWithSon
-    ? agesSons.reduce(callback, 0) / agesSons.length
-    : ages.reduce(callback, 0) / ages.length;
+  return getAverage(ages);
 }
 
 module.exports = {
