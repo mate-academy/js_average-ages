@@ -51,13 +51,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const women = people.filter(item => item.sex === 'f');
-  const age = women.reduce((acc, cur) =>
-    acc + (cur.died - cur.born), 0) / women.length;
+  const womens = people.filter(item => item.sex === 'f');
+  const age = womens.reduce((acc, cur) =>
+    acc + (cur.died - cur.born), 0) / womens.length;
   const isNull = null;
   const childrenWithMother = people.filter(item => item.mother !== isNull);
-  const mothers = people.filter((item) =>
-    childrenWithMother.some(i => item.name === i.mother));
+  const mothers = people.filter((women) =>
+    childrenWithMother.some(person => women.name === person.mother));
 
   const momAge = mothers.reduce((a, cur) =>
     a + (cur.died - cur.born), 0) / mothers.length;
@@ -81,16 +81,18 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const child = people.filter(item => people.some(i => i.name === item.mother));
-  const childAges = child.map(item =>
-    item.born - people.find(i =>
-      i.name === item.mother).born);
+  const child = people.filter(person =>
+    people.some(women =>
+      women.name === person.mother));
+  const childAges = child.map(person =>
+    person.born - people.find(women =>
+      women.name === person.mother).born);
   const diff = childAges.reduce((acc, cur) => acc + cur) / child.length;
 
-  const sons = people.filter(item =>
-    people.some(i => item.mother === i.name) && item.sex === 'm');
-  const sonsAges = sons.map(item =>
-    item.born - people.find(i => i.name === item.mother).born);
+  const sons = people.filter(person =>
+    people.some(son => person.mother === son.name) && person.sex === 'm');
+  const sonsAges = sons.map(person =>
+    person.born - people.find(son => son.name === person.mother).born);
   const sonsAgesDiff = sonsAges.reduce((acc, cur) => acc + cur) / sons.length;
 
   return onlyWithSon ? sonsAgesDiff : diff;
