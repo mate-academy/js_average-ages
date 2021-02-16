@@ -77,12 +77,12 @@ function childsFilter(people, onlyWithSon) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const ChildsQuantity = childsFilter(people, onlyWithSon).length;
+  const childsQuantity = childsFilter(people, onlyWithSon).length;
 
   return childsFilter(people, onlyWithSon)
     .map(child => child.born - people
       .find(mom => mom.name === child.mother).born)
-    .reduce((acc, curVal) => acc + curVal) / ChildsQuantity;
+    .reduce((acc, curVal) => acc + curVal) / childsQuantity;
 }
 
 module.exports = {
