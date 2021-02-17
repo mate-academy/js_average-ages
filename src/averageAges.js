@@ -94,8 +94,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const sumOfDifference = children.reduce((sum, el) =>
     sum + (el.born - people.find(
       mother => el.mother === mother.name
-    ).born)
-  , 0);
+    ).born), 0);
   const avarageDifference = sumOfDifference / children.length;
 
   return avarageDifference;
