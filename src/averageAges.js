@@ -50,8 +50,8 @@ function calculateWomenAverageAge(people, withChildren) {
   const womens = onlyWomens(people)
     .filter(women => withChildren
       ? people.find(child => child.mother === women.name)
-      : women
-    ).map(women => women.died - women.born);
+      : women)
+    .map(women => women.died - women.born);
 
   return womens.reduce((acc, curentValue) => acc + curentValue) / womens.length;
 }
