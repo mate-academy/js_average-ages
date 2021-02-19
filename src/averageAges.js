@@ -15,8 +15,6 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // let men = people.filter(person => person.sex === 'm');
-
   const men = people.filter(person =>
     century
       ? person.sex === 'm' && Math.ceil(person.died / 100) === century
