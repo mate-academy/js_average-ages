@@ -20,6 +20,16 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const mans = people.filter(men => men.sex === 'm');
+  const averageAgeOfMen = mans.reduce((sum, year) => (sum
+    + (year.died - year.born) / mans.length), 0);
+
+  const mansWithCentury = mans.filter(man => Math.ceil(man.died
+    / 100) === century);
+  const averageAgeOfMenWithCentury = mansWithCentury.reduce((sum, year) => (sum
+    + (year.died - year.born) / mansWithCentury.length), 0);
+
+  return (century) ? averageAgeOfMenWithCentury : averageAgeOfMen;
 }
 
 /**
@@ -38,6 +48,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const allWomen = people.filter(person => person.sex === 'f');
+  const womenWithChild = allWomen.filter(
+    women => people.some(person => person.mother === women.name));
+
+  const averageAgeOfWoman = allWomen.reduce((sum, year) => (sum
+    + (year.died - year.born) / allWomen.length), 0);
+  const averageAgeOfWomanWithChild = womenWithChild.reduce((sum, year) => (sum
+    + (year.died - year.born) / womenWithChild.length), 0);
+
+  return withChildren
+    ? averageAgeOfWomanWithChild : averageAgeOfWoman;
 }
 
 /**
@@ -56,6 +77,22 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const childrens = people.filter(
+    person => people.find(mother => person.mother === mother.name)
+  );
+  const boys = childrens.filter(child => child.sex === 'm');
+
+  const diferense = childrens.reduce((sum, child) => (
+    sum + (child.born - people.find(
+      mother => child.mother === mother.name
+    ).born)), 0) / childrens.length;
+
+  const diferenseWithSon = boys.reduce((sum, child) => (
+    sum + (child.born - people.find(
+      mother => child.mother === mother.name
+    ).born)), 0) / boys.length;
+
+  return onlyWithSon ? diferenseWithSon : diferense;
 }
 
 module.exports = {
