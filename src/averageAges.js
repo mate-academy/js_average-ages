@@ -14,12 +14,28 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let average = 0;
+
+  let objectForCheck = people.filter(function(item) {
+    let valid = (century !== undefined)
+      ? (item['sex'] === 'm' && item['died'] >= ((century - 1) * 100)) && item['died'] < century * 100
+      : (item['sex'] === 'm');
+    if (valid) {
+      average += item['died'] - item['born'];
+    }
+    return valid;
+  });
+
+  average = average / objectForCheck.length;
+
+  return average;
 }
 
 /**
@@ -38,6 +54,18 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let average = 0;
+
+  let arrayOfWomen = people.filter(function(item) {
+    let valid = withChildren
+      ? item['sex'] === 'f' && people.some(number => item['name'] === number['mother'])
+      : item['sex'] === 'f';
+    if (valid) {
+      average += item['died'] - item['born'];
+    };
+    return valid;
+  });
+  return average / arrayOfWomen.length;
 }
 
 /**
@@ -54,8 +82,35 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  let amountOfChildren = 0;
+
+  let women = people.filter(function(item) {
+    let valid = item['sex'] === 'f' && people.some(function(number) {
+      return onlyWithSon
+        ? item['name'] === number['mother'] && number['sex'] === 'm'
+        : item['name'] === number['mother'];
+    });
+    return valid;
+  });
+
+  let sumOfDiffAges = people.reduce(function(previousValue, item) {
+    if (onlyWithSon && item['sex'] === 'f') return previousValue;
+
+    let objMom = women.find(function(element) {
+      return (element['name'] === item['mother']) ? element : false;
+    });
+
+    if (objMom) {
+      amountOfChildren++;
+      return previousValue + (item['born'] - objMom['born']);
+    }
+    return previousValue;
+  }, 0);
+
+  return sumOfDiffAges / amountOfChildren;
 }
 
 module.exports = {
