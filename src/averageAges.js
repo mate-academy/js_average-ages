@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,12 +13,27 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let counter = 0;
+
+  const withoutCentury = (person) => !century && person.sex === 'm';
+  const withCentury = (person) => century === Math.ceil(person.died / 100)
+  && person.sex === 'm';
+
+  return people.reduce((accum, person) => {
+    let newAccum = accum;
+
+    (withoutCentury(person) || withCentury(person))
+      && ((newAccum += person.died - person.born) && counter++);
+
+    return newAccum;
+  }, 0) / counter;
 }
 
 /**
@@ -36,8 +50,32 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let counter = 0;
+
+  const withoutChildren = (person) => !withChildren && person.sex === 'f';
+
+  const withChild = (person) => withChildren
+  && (person.name in archive)
+  && person.sex === 'f';
+
+  const archive = people.reduce((accum, current) => {
+    const newAccum = accum;
+
+    (current.mother) && (newAccum[current.mother] = current.name);
+
+    return newAccum;
+  }, {});
+
+  return people.reduce((accum, person) => {
+    let newAccum = accum;
+
+    (withoutChildren(person) || withChild(person))
+      && (newAccum += person.died - person.born) && counter++;
+
+    return newAccum;
+  }, 0) / counter;
 }
 
 /**
@@ -55,7 +93,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const archive = {};
+  let counter = 0;
+  const hasDaughter = (person) => !onlyWithSon && archive[person.mother];
+  const hasSon = (person) => onlyWithSon
+  && archive[person.mother]
+  && person.sex === 'm';
+
+  people.forEach(item => {
+    archive[item.mother] = 0;
+  });
+
+  people.forEach(item => {
+    if (item.name in archive) {
+      archive[item.name] = item.born;
+    }
+  });
+
+  return people.reduce((accum, person, index) => {
+    let newAccum = accum;
+
+    (hasDaughter(person) || hasSon(person))
+      && ((newAccum += person.born - archive[person.mother]) && counter++);
+
+    return newAccum;
+  }, 0) / counter;
 }
 
 module.exports = {
