@@ -15,9 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menArray = people.filter(person => century
-    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-    : person.sex === 'm');
+  const findMale = (element) =>
+    element.sex === 'm';
+
+  const findMaleWithCentury = (element) =>
+    element.sex === 'm' && Math.ceil(element.died / 100) === century;
+
+  const menArray = people.filter(century ? findMaleWithCentury : findMale);
 
   const averageManAge = menArray.reduce((accumulator, man) => {
     return accumulator + man.died - man.born;
@@ -41,9 +45,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenArray = people.filter(person => withChildren
-    ? person.sex === 'f' && people.some(some => some.mother === person.name)
-    : person.sex === 'f');
+  const findFemale = (element) =>
+    element.sex === 'f';
+
+  const findFemaleWithChild = (element) =>
+    element.sex === 'f' && people.some(
+      person => person.mother === element.name
+    );
+
+  const womenArray = people.filter(
+    withChildren ? findFemaleWithChild : findFemale
+  );
 
   const averageWomanAge = womenArray.reduce((accumulator, woman) => {
     return accumulator + woman.died - woman.born;
@@ -67,15 +79,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const AverageAgeDiffArray = people.filter(person => onlyWithSon
-    ? person.sex === 'm' && people.some(woman => person.mother === woman.name)
-    : people.some(woman => person.mother === woman.name));
+  const findMomWithChild = (element) =>
+    people.some(woman => element.mother === woman.name);
 
-  const AverageAgeDiff = AverageAgeDiffArray.map(person =>
+  const findMomWithSon = (element) =>
+    element.sex === 'm' && people.some(woman => element.mother === woman.name);
+
+  const averageAgeDiffArray = people.filter(
+    onlyWithSon ? findMomWithSon : findMomWithChild
+  );
+
+  const averageAgeDiff = averageAgeDiffArray.map(person =>
     person.born - people.find(woman => woman.name === person.mother).born
-  ).reduce((a, b) => a + b) / AverageAgeDiffArray.length;
+  ).reduce((a, b) => a + b) / averageAgeDiffArray.length;
 
-  return AverageAgeDiff;
+  return averageAgeDiff;
 }
 
 module.exports = {
