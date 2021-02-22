@@ -21,10 +21,10 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const men = (arguments.length < 2)
-    ? people.filter(item => item.sex === 'm')
-    : people.filter(item => item.sex === 'm'
-      && Math.ceil(item.died / 100) === century);
-  const menAge = men.map(item => item.died - item.born);
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century);
+  const menAge = men.map(man => man.died - man.born);
   const sumMenAge = menAge.reduce((sum, item) => sum + item, 0);
   const result = sumMenAge / men.length;
 
@@ -46,11 +46,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = (arguments.length < 2)
-    ? people.filter(item => item.sex === 'f')
-    : people.filter(item => item.sex === 'f').filter(item =>
-      people.some(element => element.mother === item.name));
-  const womenAge = women.map(item => item.died - item.born);
+  const women = people.filter(person => withChildren
+    ? people.some(child => child.mother === person.name)
+    : person.sex === 'f');
+
+  const womenAge = women.map(woman => woman.died - woman.born);
   const sumWomenAge = womenAge.reduce((sum, item) => sum + item, 0);
   const result = sumWomenAge / women.length;
 
@@ -72,13 +72,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrenHasMother = (arguments.length < 2)
-    ? people.filter(item => people.some(element =>
-      element.name === item.mother) === true)
-    : people.filter(item => people.some(element =>
-      element.name === item.mother) === true && item.sex === 'm');
-  const diffAge = childrenHasMother.map(item =>
-    item.born - people.find(element => element.name === item.mother).born);
+  const childrenHaveMother = people.filter(child => onlyWithSon
+    ? people.some(mother => mother.name === child.mother && child.sex === 'm')
+    : people.some(mother => mother.name === child.mother));
+
+  const diffAge = childrenHaveMother.map(child =>
+    child.born - people.find(mother => mother.name === child.mother).born);
   const sumDiffAge = diffAge.reduce((sum, item) => sum + item, 0);
   const result = sumDiffAge / diffAge.length;
 
