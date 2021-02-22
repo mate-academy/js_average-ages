@@ -15,10 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const isMan = person => person.sex === 'm';
+  const isBornThisCentury = person =>
+    person.sex === 'm' && Math.ceil(person.died / 100) === century;
+
   const filteredMen = people.filter(
-    person => century
-      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-      : person.sex === 'm'
+    century ? isBornThisCentury : isMan
   );
 
   const averageMenAge = filteredMen.reduce(
@@ -48,10 +50,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  const isWoman = person => person.sex === 'f';
+  const hasChildren = person =>
+    person.sex === 'f' && people.some(child => child.mother === person.name);
+
   const filteredWoman = people.filter(
-    person => withChildren
-      ? person.sex === 'f' && people.some(child => child.mother === person.name)
-      : person.sex === 'f'
+    withChildren ? hasChildren : isWoman
   );
 
   const averageWomanAge = filteredWoman.reduce(
@@ -75,14 +79,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person =>
-    people.find(mother => person.mother === mother.name)
-    && (onlyWithSon ? person.sex === 'm' : true));
 
-  const difference = children.reduce((accum, child) => (accum + (child.born
-    - people.find(mother => child.mother === mother.name).born)), 0)
-  / children.length;
+function calculateAverageAgeDiff(people, onlyWithSon) {
+  const isChild = person => people.find(
+    mother => person.mother === mother.name
+  );
+
+  const isBoy = child => child.sex === 'm'
+  && people.find(mother => child.mother === mother.name);
+
+  const filteredChildren = people.filter(onlyWithSon
+    ? isBoy
+    : isChild
+  );
+
+  const difference = filteredChildren.reduce(
+    (accum, child) => (accum + (child.born - people.find(
+      mother => child.mother === mother.name).born)
+    ), 0) / filteredChildren.length;
 
   return difference;
 }
