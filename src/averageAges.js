@@ -14,12 +14,26 @@
  *
  * @return {number}
  */
+const reducedAverage = (value) => {
+  return value.reduce((acc, currennt) => {
+    return acc + currennt;
+  }, 0) / value.length;
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let result;
+
+  const men = people.filter(person => person.sex === 'm');
+
+  const allMen = men.map(element => element.died - element.born);
+
+  const menWithCentury = men.filter(x => Math.ceil(x.died / 100) === century)
+    .map((element) => element.died - element.born);
+
+  typeof century === 'undefined' ? result = reducedAverage(allMen)
+    : result = reducedAverage(menWithCentury);
+
+  return result;
 }
 
 /**
@@ -37,7 +51,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let result;
+
+  const weman = people.filter((x) => x.sex === 'f');
+
+  const womentWithotChildren = weman.filter(mam =>
+    people.some((x) => mam.name !== x.mother))
+    .map(x => x.died - x.born);
+
+  const womanWithChildren = weman.filter(mam =>
+    people.some((x) => mam.name === x.mother))
+    .map(x => x.died - x.born);
+
+  arguments.length === 2 ? result = reducedAverage(womanWithChildren)
+    : result = reducedAverage(womentWithotChildren);
+
+  return result;
 }
 
 /**
@@ -55,7 +84,42 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = (people.filter(mam =>
+    people.some(child => child.mother === mam.name)));
+
+  const children = (people.filter(x =>
+    people.some(mother => mother.name === x.mother)));
+
+  const childrenBoys = (people.filter(x => people.some(mother =>
+    (mother.name === x.mother) && x.sex === 'm')));
+
+  const AllChildren = mothers.reduce((accumulator, currennt) => {
+    let perviousValue = accumulator;
+
+    children.forEach(element => {
+      if (element.mother === currennt.name) {
+        perviousValue += element.born - currennt.born;
+      }
+    });
+
+    return perviousValue;
+  }, 0);
+
+  const WithSon = mothers.reduce((accumulator, currennt) => {
+    let perviousValue = accumulator;
+
+    childrenBoys.forEach(element => {
+      if (element.mother === currennt.name && element.sex === 'm') {
+        perviousValue += element.born - currennt.born;
+      }
+    });
+
+    return perviousValue;
+  }, 0);
+
+  return arguments.length === 2
+    ? WithSon / childrenBoys.length
+    : AllChildren / children.length;
 }
 
 module.exports = {
