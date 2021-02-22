@@ -21,8 +21,6 @@ const reducedAverage = (value) => {
 };
 
 function calculateMenAverageAge(people, century) {
-  let result;
-
   const men = people.filter(person => person.sex === 'm');
 
   const allMen = men.map(element => element.died - element.born);
@@ -30,10 +28,9 @@ function calculateMenAverageAge(people, century) {
   const menWithCentury = men.filter(x => Math.ceil(x.died / 100) === century)
     .map((element) => element.died - element.born);
 
-  typeof century === 'undefined' ? result = reducedAverage(allMen)
-    : result = reducedAverage(menWithCentury);
-
-  return result;
+  return arguments.length === 2
+    ? reducedAverage(menWithCentury)
+    : reducedAverage(allMen);
 }
 
 /**
@@ -51,8 +48,6 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let result;
-
   const weman = people.filter((x) => x.sex === 'f');
 
   const womentWithotChildren = weman.filter(mam =>
@@ -63,10 +58,9 @@ function calculateWomenAverageAge(people, withChildren) {
     people.some((x) => mam.name === x.mother))
     .map(x => x.died - x.born);
 
-  arguments.length === 2 ? result = reducedAverage(womanWithChildren)
-    : result = reducedAverage(womentWithotChildren);
-
-  return result;
+  return arguments.length === 2
+    ? reducedAverage(womanWithChildren)
+    : reducedAverage(womentWithotChildren);
 }
 
 /**
