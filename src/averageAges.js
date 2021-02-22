@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrayMenAge = people
+    .filter(person => person.sex === 'm')
+    .filter(person => Math.ceil(person.died / 100) === century || !century)
+    .map(person => person.died - person.born);
+
+  const sumAge = arrayMenAge.reduce((previous, currentValue) => {
+    return previous + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrayMenAge.length;
+
+  return averAge;
 }
 
 /**
@@ -37,7 +44,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrayWomenAge = people
+    .filter(person => person.sex === 'f')
+    .filter(woman => people
+      .some(child => child.mother === woman.name) || !withChildren)
+    .map(person => person.died - person.born);
+
+  const sumAge = arrayWomenAge.reduce((previous, currentValue) => {
+    return previous + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrayWomenAge.length;
+
+  return averAge;
 }
 
 /**
@@ -55,7 +74,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arrayMothers = people
+    .filter(person => person.sex === 'f')
+    .filter(woman => people.some(child =>
+      child.mother === woman.name));
+
+  const arrayChildren = people.filter(person =>
+    arrayMothers.find(woman => woman.name === person.mother))
+    .filter(child => child.sex === 'm' || !onlyWithSon);
+
+  const arrayAgeDifference = arrayChildren.map(child => {
+    const motherOfChild = arrayMothers
+      .find(mother => child.mother === mother.name);
+
+    return child.born - motherOfChild.born;
+  });
+
+  const sumAge = arrayAgeDifference.reduce((previous, currentValue) => {
+    return previous + currentValue;
+  }, 0);
+
+  const averAge = sumAge / arrayAgeDifference.length;
+
+  return averAge;
 }
 
 module.exports = {
