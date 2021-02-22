@@ -15,15 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const person = people.filter(men =>
+  const findMenWithCentury = (person) =>
+    person.sex === 'm' && Math.ceil(person.died / 100) === century;
+  const findMenWithoutCentury = (person) =>
+    person.sex === 'm';
+  const filteredMen = people.filter(
     century
-      ? men.sex === 'm' && Math.ceil(men.died / 100) === century
-      : men.sex === 'm'
+      ? findMenWithCentury
+      : findMenWithoutCentury
   );
 
-  return person
+  return filteredMen
     .map(men => men.died - men.born)
-    .reduce((a, b) => a + b) / person.length;
+    .reduce((a, b) => a + b) / filteredMen.length;
 }
 
 /**
@@ -41,10 +45,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = people.filter(person =>
+  const findWomenWithChildren = (person) =>
+    people.some(child => child.mother === person.name && person.sex === 'f');
+  const findWomenWithoutChildren = (person) =>
+    person.sex === 'f';
+  const woman = people.filter(
     withChildren
-      ? people.some(child => child.mother === person.name && person.sex === 'f')
-      : person.sex === 'f'
+      ? findWomenWithChildren
+      : findWomenWithoutChildren
   );
 
   return woman
@@ -67,11 +75,14 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person =>
+  const findWomenOnlyWithSon = (person) =>
+    people.some(woman => person.mother === woman.name) && person.sex === 'm';
+  const findWomenWithChild = (person) =>
+    people.some(woman => person.mother === woman.name);
+  const children = people.filter(
     onlyWithSon
-      ? (people.some(woman => person.mother === woman.name))
-      && person.sex === 'm'
-      : (people.some(woman => person.mother === woman.name))
+      ? findWomenOnlyWithSon
+      : findWomenWithChild
   );
 
   return children
