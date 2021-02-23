@@ -17,8 +17,10 @@
 function calculateMenAverageAge(people, century) {
   const findMenWithCentury = (person) =>
     person.sex === 'm' && Math.ceil(person.died / 100) === century;
+
   const findMenWithoutCentury = (person) =>
     person.sex === 'm';
+
   const filteredMen = people.filter(
     century
       ? findMenWithCentury
@@ -27,7 +29,8 @@ function calculateMenAverageAge(people, century) {
 
   return filteredMen
     .map(men => men.died - men.born)
-    .reduce((a, b) => a + b) / filteredMen.length;
+    .reduce((previousMan, nextMan) =>
+      previousMan + nextMan) / filteredMen.length;
 }
 
 /**
@@ -46,9 +49,11 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const findWomenWithChildren = (person) =>
-    people.some(child => child.mother === person.name && person.sex === 'f');
+    people.some(human => human.mother === person.name && person.sex === 'f');
+
   const findWomenWithoutChildren = (person) =>
     person.sex === 'f';
+
   const woman = people.filter(
     withChildren
       ? findWomenWithChildren
@@ -57,7 +62,8 @@ function calculateWomenAverageAge(people, withChildren) {
 
   return woman
     .map(person => person.died - person.born)
-    .reduce((a, b) => a + b) / woman.length;
+    .reduce((previousWoman, nextWoman) =>
+      previousWoman + nextWoman) / woman.length;
 }
 
 /**
@@ -77,8 +83,10 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const findWomenOnlyWithSon = (person) =>
     people.some(woman => person.mother === woman.name) && person.sex === 'm';
+
   const findWomenWithChild = (person) =>
     people.some(woman => person.mother === woman.name);
+
   const children = people.filter(
     onlyWithSon
       ? findWomenOnlyWithSon
@@ -88,7 +96,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return children
     .map(person =>
       person.born - people.find(woman => woman.name === person.mother).born)
-    .reduce((a, b) => a + b) / children.length;
+    .reduce((previousChild, nextChild) =>
+      previousChild + nextChild) / children.length;
 }
 
 module.exports = {
