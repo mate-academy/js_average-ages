@@ -47,15 +47,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const women = people.filter(
-    person => withChildren
-      ? person.sex === 'f' && people.some(child =>
-        child.mother === person.name)
-      : person.sex === 'f'
+  const woman = person => person.sex === 'f';
+
+  const womanWithChildren = person => person.sex === 'f'
+  && people.some(child => child.mother === person.name);
+
+  const filteredWoman = people.filter(
+    withChildren ? womanWithChildren : woman
   );
 
-  const averageAge = women.reduce((sum, year) => (sum
-    + (year.died - year.born) / women.length), 0);
+  const averageAge = filteredWoman.reduce((sum, year) => (sum
+    + (year.died - year.born) / filteredWoman.length), 0);
 
   return averageAge;
 }
@@ -77,7 +79,7 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const children = people.filter(
-    person => people.find(mother => person.mother === mother.name)
+    person => people.some(mother => person.mother === mother.name)
   );
   const boys = children.filter(child => child.sex === 'm');
 
