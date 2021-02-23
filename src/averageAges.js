@@ -15,16 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const findMenWithCentury = (person) =>
+  const wasManBornInCentury = (person) =>
     person.sex === 'm' && Math.ceil(person.died / 100) === century;
 
-  const findMenWithoutCentury = (person) =>
-    person.sex === 'm';
+  const isMen = (person) => person.sex === 'm';
 
   const filteredMen = people.filter(
     century
-      ? findMenWithCentury
-      : findMenWithoutCentury
+      ? wasManBornInCentury
+      : isMen
   );
 
   return filteredMen
@@ -48,22 +47,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const findWomenWithChildren = (person) =>
-    people.some(human => human.mother === person.name && person.sex === 'f');
+  const findWomenWithChildren = (person) => {
+    return people.some(
+      human => human.mother === person.name && person.sex === 'f'
+    );
+  };
 
-  const findWomenWithoutChildren = (person) =>
-    person.sex === 'f';
+  const findWomenWithoutChildren = (person) => person.sex === 'f';
 
-  const woman = people.filter(
+  const women = people.filter(
     withChildren
       ? findWomenWithChildren
       : findWomenWithoutChildren
   );
 
-  return woman
+  return women
     .map(person => person.died - person.born)
     .reduce((previousWoman, nextWoman) =>
-      previousWoman + nextWoman) / woman.length;
+      previousWoman + nextWoman) / women.length;
 }
 
 /**
@@ -81,11 +82,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const findWomenOnlyWithSon = (person) =>
-    people.some(woman => person.mother === woman.name) && person.sex === 'm';
+  const findWomenOnlyWithSon = (person) => {
+    return people.some(
+      woman => person.mother === woman.name
+    ) && person.sex === 'm';
+  };
 
-  const findWomenWithChild = (person) =>
-    people.some(woman => person.mother === woman.name);
+  const findWomenWithChild = (person) => {
+    return people.some(woman => person.mother === woman.name);
+  };
 
   const children = people.filter(
     onlyWithSon
