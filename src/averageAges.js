@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,8 +13,23 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const sum = (a, b) => a + b;
+  let arrayOfMen = people.filter((element) => element.sex === 'm');
+
+  if (century) {
+    arrayOfMen
+    = arrayOfMen.filter((element) => Math.ceil(element.died / 100) === century);
+  };
+
+  const arrayOfMenAges = arrayOfMen.map((a) => a.died - a.born);
+  const sumOfAges = arrayOfMenAges.reduce(sum, 0);
+  const result = sumOfAges / arrayOfMen.length;
+
+  return +result.toFixed(2);
+
+//   arrayOfMen.reduce((acc,currentValue) => )
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +51,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const sum = (a, b) => a + b;
+  let arrayOfWomen = people.filter((element) => element.sex === 'f');
+  const arrayOfChildren = people.filter((element) => element.mother);
+  const motherNames = arrayOfChildren.map(a => a.mother);
+
+  if (withChildren) {
+    arrayOfWomen
+    = arrayOfWomen.filter((element) => motherNames.includes(element.name));
+  };
+
+  const arrayOfWomenAges = arrayOfWomen.map((a) => a.died - a.born);
+  const sumOfAges = arrayOfWomenAges.reduce(sum, 0);
+  const result = sumOfAges / arrayOfWomen.length;
+
+  return +result.toFixed(2);
 }
 
 /**
@@ -55,7 +83,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let arrayOfChildren = people.filter((element) =>
+    people.some((person) => person.name === element.mother));
+
+  if (onlyWithSon) {
+    arrayOfChildren = arrayOfChildren.filter(element => element.sex === 'm');
+  };
+
+  return arrayOfChildren.reduce((acc, element) => {
+    const mother = people.find(theMother => element.mother === theMother.name);
+    const diff = element.born - mother.born;
+
+    return acc + diff;
+  }, 0) / arrayOfChildren.length;
 }
 
 module.exports = {
