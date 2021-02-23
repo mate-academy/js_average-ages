@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const isMan = (person) => person.sex === 'm';
+  const wasManBornThisCentury = (person) => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century;
+
+  const filteredMen = people.filter(century ? wasManBornThisCentury : isMan);
+
+  const averageAgeMen = filteredMen
+    .reduce((sumOfAge, person) =>
+      sumOfAge + (person.died - person.born), 0);
+
+  return (averageAgeMen / filteredMen.length);
 }
 
 /**
@@ -37,7 +43,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const isWoman = (person) => person.sex === 'f';
+  const isWomanWithChildren = (person) => person.sex === 'f'
+    && people.some(human => human.mother === person.name);
+
+  const filteredWomen = people.filter(
+    withChildren ? isWomanWithChildren : isWoman
+  );
+
+  const womenAverageAge = filteredWomen.reduce((sumOfAge, person) =>
+    sumOfAge + (person.died - person.born), 0);
+
+  return (womenAverageAge / filteredWomen.length);
 }
 
 /**
@@ -55,7 +72,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const hasChild = (person) =>
+    people.some(human => human.name === person.mother);
+  const hasSon = (person) => person.sex === 'm'
+    && people.some(human => human.name === person.mother);
+
+  const filteredChildren = people.filter(
+    onlyWithSon ? hasSon : hasChild
+  );
+
+  const womenAverageAgeDiff = filteredChildren.reduce((sumOgAgeDiff, child) => {
+    const isMotherOfChild = people.find(human => human.name === child.mother);
+
+    return sumOgAgeDiff + (child.born - isMotherOfChild.born);
+  }, 0);
+
+  return (womenAverageAgeDiff / filteredChildren.length);
 }
 
 module.exports = {
