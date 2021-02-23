@@ -14,12 +14,37 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = null) {
+  let i = 0;
+
+  if (century === null) {
+    const sum = people.reduce((accumulator, human) => {
+      if (human.sex === 'm') {
+        i++;
+
+        return accumulator + human.died - human.born;
+      } else {
+        return accumulator;
+      }
+    }, 0);
+
+    return sum / i;
+  }
+
+  if (typeof century === 'number') {
+    const sum = people.reduce((accumulator, human) => {
+      if (human.sex === 'm'
+      && Math.ceil(human.died / 100) === century) {
+        i++;
+
+        return accumulator + human.died - human.born;
+      } else {
+        return accumulator;
+      }
+    }, 0);
+
+    return sum / i;
+  }
 }
 
 /**
@@ -36,8 +61,30 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  let i = 0;
+
+  if (withChildren === false) {
+    return people.reduce((acc, human) => {
+      if (human.sex === 'f') {
+        i++;
+
+        return acc + human.died - human.born;
+      } else {
+        return acc;
+      }
+    }, 0) / i;
+  } else {
+    return people.reduce((acc, human) => {
+      if (haveChild(people, human)) {
+        i++;
+
+        return acc + human.died - human.born;
+      } else {
+        return acc;
+      }
+    }, 0) / i;
+  }
 }
 
 /**
@@ -54,8 +101,53 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let child;
+  let i = 0;
+
+  if (onlyWithSon === false) {
+    return people.reduce((acc, human) => {
+      if (human.sex === 'f') {
+        child = haveChild(people, human);
+      } else {
+        child = '';
+      }
+
+      if (human.name === child.mother) {
+        i++;
+
+        return acc + child.born - human.born;
+      } else {
+        return acc;
+      }
+    }, 0) / i;
+  } else {
+    return people.reduce((acc, human) => {
+      if (human.sex === 'f') {
+        child = haveChild(people, human);
+      } else {
+        child = '';
+      }
+
+      if (human.name === child.mother && child.sex === 'm') {
+        i++;
+
+        return acc + child.born - human.born;
+      } else {
+        return acc;
+      }
+    }, 0) / i;
+  }
+}
+
+function haveChild(people, mother) {
+  const sr = people.find((human) => mother.name === human.mother);
+
+  if (sr !== undefined) {
+    return sr;
+  } else {
+    return false;
+  }
 }
 
 module.exports = {
