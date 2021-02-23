@@ -21,10 +21,16 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const man = people.filter(human =>
-    century
-      ? human.sex === 'm' && Math.ceil(human.died / 100) === century
-      : human.sex === 'm'
+  const hasManInCentury = (human) => {
+    return human.sex === 'm' && Math.ceil(human.died / 100) === century;
+  };
+
+  const hasMan = (human) => {
+    return human.sex === 'm';
+  };
+
+  const man = people.filter(
+    century ? hasManInCentury : hasMan
   );
 
   return man
@@ -49,10 +55,17 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
 
-  const woman = people.filter(human =>
-    withChildren
-      ? people.some(child => child.mother === human.name && human.sex === 'f')
-      : human.sex === 'f'
+  const hasWomanChild = (human) => {
+    return people
+      .some(child => child.mother === human.name && human.sex === 'f');
+  };
+
+  const hasWoman = (human) => {
+    return human.sex === 'f';
+  };
+
+  const woman = people.filter(
+    withChildren ? hasWomanChild : hasWoman
   );
 
   return woman
@@ -77,18 +90,24 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
 
-  const children = people.filter(human =>
-    onlyWithSon
-      ? (people.some(person => human.mother === person.name))
-      && human.sex === 'm'
-      : people.some(person => human.mother === person.name)
+  const hasOnlySon = (human) => {
+    return (people.some(person => human.mother === person.name))
+      && human.sex === 'm';
+  };
+
+  const hasChild = (human) => {
+    return people.some(person => human.mother === person.name);
+  };
+
+  const children = people.filter(
+    onlyWithSon ? hasOnlySon : hasChild
   );
 
   return children
     .map(human => human.born - people
       .find(person => person.name === human.mother)
       .born)
-    .reduce((a, b) => a + b) / children.length;
+    .reduce((accamulator, current) => accamulator + current) / children.length;
 }
 
 module.exports = {
