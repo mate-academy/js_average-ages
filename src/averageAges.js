@@ -21,18 +21,15 @@ const calculateAverageAge = (value) => {
 };
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
+  const filteredMan = people.filter(person =>
+    century ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
 
-  const menWithCentury = men.filter(person =>
-    Math.ceil(person.died / 100) === century)
-    .map((man) => man.died - man.born);
+  const calculateFilteredMan = filteredMan.map(man => man.died - man.born);
 
-  const allMen = men.map(man => man.died - man.born);
-
-  const filtredeMan = century ? menWithCentury : allMen;
-
-  return calculateAverageAge(filtredeMan);
-}
+  return calculateAverageAge(calculateFilteredMan);
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -89,7 +86,7 @@ function calculateAverageAgeDiff(people, onlywithSon) {
   const allChildren = mothers.reduce((accumulator, currennt) => {
     let perviousValue = accumulator;
 
-    children.forEach(child => {
+    children.find(child => {
       if (child.mother === currennt.name) {
         perviousValue += child.born - currennt.born;
       }
@@ -101,7 +98,7 @@ function calculateAverageAgeDiff(people, onlywithSon) {
   const withSon = mothers.reduce((accumulator, currennt) => {
     let perviousValue = accumulator;
 
-    childrenBoys.forEach(boy => {
+    childrenBoys.find(boy => {
       if (boy.mother === currennt.name && boy.sex === 'm') {
         perviousValue += boy.born - currennt.born;
       }
