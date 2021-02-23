@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const wasManBornInCentury = (person) =>
+    person.sex === 'm' && Math.ceil(person.died / 100) === century;
+
+  const isMan = (person) => person.sex === 'm';
+
+  const filteredMen = people.filter(
+    century
+      ? wasManBornInCentury
+      : isMan
+  );
+
+  return filteredMen
+    .map(men => men.died - men.born)
+    .reduce((previousMan, nextMan) =>
+      previousMan + nextMan) / filteredMen.length;
 }
 
 /**
@@ -37,7 +47,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const isWomanWithChildren = (person) => {
+    return people.some(
+      human => human.mother === person.name && person.sex === 'f'
+    );
+  };
+
+  const isWoman = (person) => person.sex === 'f';
+
+  const women = people.filter(
+    withChildren
+      ? isWomanWithChildren
+      : isWoman
+  );
+
+  return women
+    .map(person => person.died - person.born)
+    .reduce((previousWoman, nextWoman) =>
+      previousWoman + nextWoman) / women.length;
 }
 
 /**
@@ -55,7 +82,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const isWomanOnlyWithSon = (person) => {
+    return people.some(
+      woman => person.mother === woman.name
+    ) && person.sex === 'm';
+  };
+
+  const isWomanWithChild = (person) => {
+    return people.some(woman => person.mother === woman.name);
+  };
+
+  const children = people.filter(
+    onlyWithSon
+      ? isWomanOnlyWithSon
+      : isWomanWithChild
+  );
+
+  return children
+    .map(person =>
+      person.born - people.find(woman => woman.name === person.mother).born)
+    .reduce((previousChild, nextChild) =>
+      previousChild + nextChild) / children.length;
 }
 
 module.exports = {
