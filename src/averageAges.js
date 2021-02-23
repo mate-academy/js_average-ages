@@ -15,26 +15,26 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menAge = person => (
+  const isMan = person => (
     Math.ceil(person.died / 100) === century
       && person.sex === 'm'
   );
 
-  const menAgeBornInCentury = person => (
+  const isManBornInCentury = person => (
     person.sex === 'm'
   );
 
   const filteredMen = people.filter(
     century
-      ? menAge
-      : menAgeBornInCentury
+      ? isMan
+      : isManBornInCentury
   );
 
-  const menAgeAverage = filteredMen.reduce(
+  const isManAverage = filteredMen.reduce(
     (accumulator, person) => accumulator + (person.died - person.born), 0
   );
 
-  return menAgeAverage / filteredMen.length;
+  return isManAverage / filteredMen.length;
 };
 
 /**
@@ -52,11 +52,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const femaleAge = person => (
+  const isFemale = person => (
     person.sex === 'f'
   );
 
-  const femaleAgeWithChildren = mom => {
+  const isFemaleWithChildren = mom => {
     return mom.sex === 'f'
       && people.some(
         child => child.mother === mom.name);
@@ -64,15 +64,15 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const filteredFemale = people.filter(
     withChildren
-      ? femaleAgeWithChildren
-      : femaleAge
+      ? isFemaleWithChildren
+      : isFemale
   );
 
-  const femaleAgeAverage = filteredFemale.reduce(
+  const isFemaleAverage = filteredFemale.reduce(
     (accumulator, person) => accumulator + (person.died - person.born), 0
   );
 
-  return femaleAgeAverage / filteredFemale.length;
+  return isFemaleAverage / filteredFemale.length;
 }
 
 /**
@@ -90,17 +90,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const differenceMotherAndChild = person => people.find(
+  const isMotherAndChild = person => people.find(
     mother => person.mother === mother.name
   );
 
-  const differenceMotherAndSon = child => child.sex === 'm'
+  const isMotherAndSon = child => child.sex === 'm'
     && people.find(mother => child.mother === mother.name);
 
   const filteredChildren = people.filter(
     onlyWithSon
-      ? differenceMotherAndSon
-      : differenceMotherAndChild
+      ? isMotherAndSon
+      : isMotherAndChild
   );
 
   const ageDifference = filteredChildren.reduce(
