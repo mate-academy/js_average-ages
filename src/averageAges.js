@@ -40,10 +40,10 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let i = 0;
+  let amountOfPeople = 0;
   const averageAges = people.reduce((acc, human) => {
     if (withChildren ? haveChild(people, human) : human.sex === 'f') {
-      i++;
+      amountOfPeople++;
 
       return acc + human.died - human.born;
     } else {
@@ -51,7 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
     }
   }, 0);
 
-  return averageAges / i;
+  return averageAges / amountOfPeople;
 }
 /**
  * Implement calculateAverageAgeDiff function.
@@ -69,20 +69,20 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let i = 0;
+  let amountOfPeople = 0;
   let child;
   const averageAges = people.reduce((acc, human) => {
     child = (human.sex === 'f') ? haveChild(people, human) : '';
 
     if (onlyWithSon ? human.name === child.mother
       && child.sex === 'm' : human.name === child.mother) {
-      i++;
+      amountOfPeople++;
 
       return acc + child.born - human.born;
     } else {
       return acc;
     }
-  }, 0) / i;
+  }, 0) / amountOfPeople;
 
   return averageAges;
 }
