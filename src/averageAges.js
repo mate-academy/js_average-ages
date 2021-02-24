@@ -15,12 +15,10 @@
  * @return {number}
  */
 
-function calculateMenAverageAge(people, century = null) {
-  let averageAges;
-
-  century === null ? averageAges = people.filter((human) => human.sex === 'm')
-    : averageAges = people.filter((human) =>
-      human.sex === 'm' && Math.ceil(human.died / 100) === century);
+function calculateMenAverageAge(people, century) {
+  const averageAges = people.filter((human) =>
+    century ? human.sex === 'm' && Math.ceil(human.died / 100) === century
+      : human.sex === 'm');
 
   return averageAges.reduce((acc, man) =>
     acc + man.died - man.born, 0) / averageAges.length;
@@ -41,30 +39,20 @@ function calculateMenAverageAge(people, century = null) {
  * @return {number}
  */
 
-function calculateWomenAverageAge(people, withChildren = false) {
+function calculateWomenAverageAge(people, withChildren) {
   let i = 0;
-  const averageAges = withChildren ? people.reduce((acc, human) => {
-    if (haveChild(people, human)) {
+  const averageAges = people.reduce((acc, human) => {
+    if (withChildren ? haveChild(people, human) : human.sex === 'f') {
       i++;
 
       return acc + human.died - human.born;
     } else {
       return acc;
     }
-  }, 0)
-    : people.reduce((acc, human) => {
-      if (human.sex === 'f') {
-        i++;
-
-        return acc + human.died - human.born;
-      } else {
-        return acc;
-      }
-    }, 0);
+  }, 0);
 
   return averageAges / i;
 }
-
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -80,32 +68,21 @@ function calculateWomenAverageAge(people, withChildren = false) {
  * @return {number}
  */
 
-function calculateAverageAgeDiff(people, onlyWithSon = false) {
+function calculateAverageAgeDiff(people, onlyWithSon) {
   let i = 0;
   let child;
-
-  const averageAges = onlyWithSon ? people.reduce((acc, human) => {
+  const averageAges = people.reduce((acc, human) => {
     child = (human.sex === 'f') ? haveChild(people, human) : '';
 
-    if (human.name === child.mother && child.sex === 'm') {
+    if (onlyWithSon ? human.name === child.mother
+      && child.sex === 'm' : human.name === child.mother) {
       i++;
 
       return acc + child.born - human.born;
     } else {
       return acc;
     }
-  }, 0) / i
-    : people.reduce((acc, human) => {
-      child = (human.sex === 'f') ? haveChild(people, human) : '';
-
-      if (human.name === child.mother) {
-        i++;
-
-        return acc + child.born - human.born;
-      } else {
-        return acc;
-      }
-    }, 0) / i;
+  }, 0) / i;
 
   return averageAges;
 }
