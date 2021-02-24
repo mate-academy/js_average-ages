@@ -15,18 +15,18 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  const filteredMen = (century === undefined)
-    ? people.filter(firstCallback)
-    : people.filter(secondCallback);
+  const filteredMen = people.filter(
+    century ? centuryCheck : isMan
+  );
 
   return filteredMen.reduce((accumulator, person) =>
     accumulator + (person.died - person.born), 0) / filteredMen.length;
 
-  function firstCallback(human) {
+  function isMan(human) {
     return human.sex === 'm';
   }
 
-  function secondCallback(human) {
+  function centuryCheck(human) {
     return human.sex === 'm' && Math.ceil(human.died / 100) === century;
   }
 }
@@ -47,22 +47,28 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people.filter(person => person.sex === 'f');
-  const femaleWithChildren = filteredWomen.filter(person =>
-    people.some(child => child.mother === person.name)
-  );
+  const filteredWomen = people.filter(isWoman);
+  const femaleWithChildren = filteredWomen.filter(findChild);
 
   return (withChildren === undefined)
-    ? filteredWomen.reduce(firstCallback, 0)
-    : femaleWithChildren.reduce(secondCallback, 0);
+    ? filteredWomen.reduce(getAverageAge, 0)
+    : femaleWithChildren.reduce(getAverageAgeWithChildren, 0);
 
-  function firstCallback(accumulator, person) {
+  function getAverageAge(accumulator, person) {
     return accumulator + (person.died - person.born) / filteredWomen.length;
   }
 
-  function secondCallback(accumulator, person) {
+  function getAverageAgeWithChildren(accumulator, person) {
     return accumulator + (person.died - person.born)
       / femaleWithChildren.length;
+  }
+
+  function isWoman(person) {
+    return person.sex === 'f';
+  }
+
+  function findChild(person) {
+    return people.some(child => child.mother === person.name);
   }
 }
 
@@ -81,21 +87,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrenAll = people.filter(firstCallback);
-  const childrenBoys = childrenAll.filter(secondCallback);
+  const childrenAll = people.filter(findMother);
+  const childrenBoys = childrenAll.filter(isMan);
   const children = (onlyWithSon) ? childrenBoys : childrenAll;
 
-  return children.reduce(thirdCallback, 0);
+  return children.reduce(findMotherWithChild, 0);
 
-  function firstCallback(human) {
+  function findMother(human) {
     return people.find(mother => mother.name === human.mother);
   }
 
-  function secondCallback(human) {
+  function isMan(human) {
     return human.sex === 'm';
   }
 
-  function thirdCallback(accumulator, person) {
+  function findMotherWithChild(accumulator, person) {
     return accumulator + (person.born - people.find(mother =>
       mother.name === person.mother).born) / children.length;
   }
