@@ -14,12 +14,15 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const firstCallback = people.filter((human) =>
+    human.sex === 'm' && Math.ceil(human.died / 100) === century);
+  const secondCallback = people.filter((human) => human.sex === 'm');
+  const averageAges = century ? firstCallback : secondCallback;
+
+  return averageAges.reduce((acc, man) =>
+    acc + man.died - man.born, 0) / averageAges.length;
 }
 
 /**
@@ -36,10 +39,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
 
+function calculateWomenAverageAge(people, withChildren) {
+  const filteredList = withChildren
+    ? people.filter((human) => !!haveChild(people, human) && human.sex === 'f')
+    : people.filter((human) => human.sex === 'f');
+
+  return filteredList.reduce((acc, human) => acc + human.died - human.born, 0)
+  / filteredList.length;
+}
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -54,8 +62,32 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let child;
+  const listOfPeople = onlyWithSon ? people.filter((human) => {
+    child = (human.sex === 'f') ? haveChild(people, human) : '';
+
+    return (human.name === child.mother && child.sex === 'm');
+  })
+    : people.filter((human) => {
+      child = (human.sex === 'f') ? haveChild(people, human) : '';
+
+      return (human.name === child.mother);
+    });
+
+  return listOfPeople.reduce((acc, human) => {
+    child = (human.sex === 'f') ? haveChild(people, human) : '';
+
+    return (human.name === child.mother)
+      ? acc + child.born - human.born : acc;
+  }, 0) / listOfPeople.length;
+}
+
+function haveChild(people, mother) {
+  const child = people.find((human) => mother.name === human.mother);
+
+  return (child !== undefined) ? child : false;
 }
 
 module.exports = {

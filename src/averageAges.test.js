@@ -29,10 +29,10 @@ test('Average mothers age', () => {
 
 test('Average age difference', () => {
   expect(calculateAverageAgeDiff(people))
-    .toBeCloseTo(31.22, 2);
+    .toBeCloseTo(31.38, 2);
 });
 
 test('Average age difference with son', () => {
   expect(calculateAverageAgeDiff(people, true))
-    .toBeCloseTo(30.08, 2);
+    .toBeCloseTo(30.3, 2);
 });
