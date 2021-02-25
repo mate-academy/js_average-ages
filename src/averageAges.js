@@ -94,9 +94,9 @@ function calculateAverageAgeDiff(people, onlywithSon) {
     let perviousValue = accumulator;
 
     children.some(child => {
-      child.mother === currennt.name
-        ? perviousValue += child.born - currennt.born
-        : perviousValue += 0;
+      perviousValue += child.mother === currennt.name
+        ? child.born - currennt.born
+        : 0;
     });
 
     return perviousValue;
@@ -106,9 +106,9 @@ function calculateAverageAgeDiff(people, onlywithSon) {
     let perviousValue = accumulator;
 
     childrenBoys.find(boy => {
-      boy.mother === currennt.name && boy.sex === 'm'
-        ? perviousValue += boy.born - currennt.born
-        : perviousValue += 0;
+      perviousValue += boy.mother === currennt.name && boy.sex === 'm'
+        ? boy.born - currennt.born
+        : 0;
     });
 
     return perviousValue;
