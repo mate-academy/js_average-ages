@@ -40,19 +40,12 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const averageAges = withChildren ? people.reduce((acc, human) => {
-    return (withChildren ? haveChild(people, human) : human.sex === 'f')
-      ? acc + human.died - human.born : acc;
-  }, 0)
-    : people.reduce((acc, human) => {
-      return (human.sex === 'f')
-        ? acc + human.died - human.born : acc;
-    }, 0);
-  const amountOfPeople = withChildren
-    ? people.filter((human) => haveChild(people, human) && human.sex === 'f')
+  const filteredList = withChildren
+    ? people.filter((human) => !!haveChild(people, human) && human.sex === 'f')
     : people.filter((human) => human.sex === 'f');
 
-  return averageAges / amountOfPeople.length;
+  return filteredList.reduce((acc, human) => acc + human.died - human.born, 0)
+  / filteredList.length;
 }
 /**
  * Implement calculateAverageAgeDiff function.
@@ -70,38 +63,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const averageAges = onlyWithSon ? people.reduce((acc, human) => {
-    const child = (human.sex === 'f') ? haveChild(people, human) : '';
+  let child;
+  const listOfPeople = onlyWithSon ? people.filter((human) => {
+    child = (human.sex === 'f') ? haveChild(people, human) : '';
 
-    return (human.name === child.mother && child.sex === 'm')
-      ? acc + child.born - human.born
-      : acc;
-  }, 0)
-    : people.reduce((acc, human) => {
-      const child = (human.sex === 'f') ? haveChild(people, human) : '';
+    return (human.name === child.mother && child.sex === 'm');
+  })
+    : people.filter((human) => {
+      child = (human.sex === 'f') ? haveChild(people, human) : '';
 
-      return (human.name === child.mother)
-        ? acc + child.born - human.born
-        : acc;
-    }, 0);
+      return (human.name === child.mother);
+    });
 
-  const amountOfPeople = onlyWithSon
-    ? people.reduce((acc, human) => {
-      const child = (human.sex === 'f') ? haveChild(people, human) : '';
+  return listOfPeople.reduce((acc, human) => {
+    child = (human.sex === 'f') ? haveChild(people, human) : '';
 
-      return (human.name === child.mother && child.sex === 'm')
-        ? acc + 1
-        : acc;
-    }, 0)
-    : people.reduce((acc, human) => {
-      const child = (human.sex === 'f') ? haveChild(people, human) : '';
-
-      return (human.name === child.mother)
-        ? acc + 1
-        : acc;
-    }, 0);
-
-  return averageAges / amountOfPeople;
+    return (human.name === child.mother)
+      ? acc + child.born - human.born : acc;
+  }, 0) / listOfPeople.length;
 }
 
 function haveChild(people, mother) {
