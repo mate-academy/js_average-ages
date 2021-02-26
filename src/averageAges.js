@@ -20,6 +20,22 @@ const calculateAverageAge = (value) => {
   }, 0) / value.length;
 };
 
+const calculateDiffAges = (mother, value) => {
+  const result = mother.reduce((accumulator, current) => {
+    let pervious = accumulator;
+
+    value.find(child => {
+      pervious += child.mother === current.name
+        ? child.born - current.born
+        : 0;
+    });
+
+    return pervious;
+  }, 0);
+
+  return result;
+};
+
 function calculateMenAverageAge(people, century) {
   const wasBornCentunry = (person) =>
     person.sex === 'm' && Math.ceil(person.died / 100) === century;
@@ -90,33 +106,9 @@ function calculateAverageAgeDiff(people, onlywithSon) {
   const childrenBoys = (people.filter(boy => people.some(mother =>
     (mother.name === boy.mother) && boy.sex === 'm')));
 
-  const allChildren = mothers.reduce((accumulator, currennt) => {
-    let perviousValue = accumulator;
-
-    children.some(child => {
-      perviousValue += child.mother === currennt.name
-        ? child.born - currennt.born
-        : 0;
-    });
-
-    return perviousValue;
-  }, 0);
-
-  const withSon = mothers.reduce((accumulator, currennt) => {
-    let perviousValue = accumulator;
-
-    childrenBoys.find(boy => {
-      perviousValue += boy.mother === currennt.name && boy.sex === 'm'
-        ? boy.born - currennt.born
-        : 0;
-    });
-
-    return perviousValue;
-  }, 0);
-
   return onlywithSon
-    ? withSon / childrenBoys.length
-    : allChildren / children.length;
+    ? calculateDiffAges(mothers, childrenBoys) / childrenBoys.length
+    : calculateDiffAges(mothers, children) / children.length;
 }
 
 module.exports = {
