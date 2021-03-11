@@ -15,11 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const ages = [];
+  let count = 0;
+
+  people.forEach(item => {
+    const check = century
+      ? item.sex === 'm'
+      && century === Math.ceil(item.died / 100)
+      : item.sex === 'm';
+
+    if (check) {
+      ages.push(item.died - item.born);
+      count++;
+    }
+  });
+
+  const averageAge = ages.reduce((acc, curr) => acc + curr) / count;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +50,40 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const ages = [];
+  const womenNames = [];
+  const childsMothers = [];
+  const mothersNames = [];
+  let count = 0;
+
+  people.forEach(item => {
+    if (item.sex === 'f') {
+      womenNames.push(item.name);
+    }
+
+    childsMothers.push(item.mother);
+  });
+
+  womenNames.forEach(item => {
+    if (childsMothers.includes(item)) {
+      mothersNames.push(item);
+    }
+  });
+
+  people.forEach(item => {
+    const check = withChildren
+      ? item.sex === 'f' && mothersNames.includes(item.name)
+      : item.sex === 'f';
+
+    if (check) {
+      ages.push(item.died - item.born);
+      count++;
+    }
+  });
+
+  const averageAge = ages.reduce((acc, curr) => acc + curr) / count;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +101,35 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childsMotherAndBorn = [];
+  const mothersNameAndBorn = [];
+  const ages = [];
+
+  people.forEach(item => {
+    const check = onlyWithSon
+      ? item.sex === 'm' && item.sex !== 'f'
+      : item.sex;
+
+    if (item.sex === 'f') {
+      mothersNameAndBorn.push([item.name, item.born]);
+    }
+
+    if (check) {
+      childsMotherAndBorn.push([item.mother, item.born]);
+    }
+  });
+
+  for (let i = 0; i < mothersNameAndBorn.length; i++) {
+    for (let j = 0; j < childsMotherAndBorn.length; j++) {
+      if (childsMotherAndBorn[j].includes(mothersNameAndBorn[i][0])) {
+        ages.push(childsMotherAndBorn[j][1] - mothersNameAndBorn[i][1]);
+      }
+    }
+  }
+
+  const averageAge = ages.reduce((acc, curr) => acc + curr) / ages.length;
+
+  return averageAge;
 }
 
 module.exports = {
