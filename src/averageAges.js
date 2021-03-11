@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let centuryList = [];
+
+  century !== undefined
+    ? centuryList = people.filter(x => Math.ceil(x.died / 100) === century)
+    : centuryList = people;
+
+  const menList = centuryList.filter(x => x.sex === 'm');
+
+  return menList.reduce((sum, a) => sum + (a.died - a.born), 0)
+    / menList.length;
 }
 
 /**
@@ -37,7 +42,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  for (let i = 0; i < people.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (people[i].name === people[j].mother) {
+        people[i].hadChidren = 'y';
+      }
+    }
+  }
+
+  let peopleWhitChildred = [];
+
+  withChildren !== undefined
+    ? peopleWhitChildred = people.filter(x => x.hadChidren === 'y')
+    : peopleWhitChildred = people;
+
+  const womenWithChidlren = peopleWhitChildred.filter(x => x.sex === 'f');
+
+  return womenWithChidlren.reduce((sum, x) => sum + (x.died - x.born), 0)
+    / womenWithChidlren.length;
 }
 
 /**
@@ -55,7 +77,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  for (let i = 0; i < people.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (people[i].name === people[j].mother) {
+        people[j].isChidren = 'y';
+        people[j].mother = people[i];
+      }
+    }
+  }
+
+  const childrenList = people.filter(x => x.isChidren === 'y');
+  const hadSon = childrenList.filter(x => x.sex === 'm');
+
+  let result;
+
+  onlyWithSon === true
+    ? result = hadSon.reduce((sum, x) => sum + (x.born - x.mother.born), 0)
+    / hadSon.length
+    : result = childrenList.reduce((sum, x) => sum
+    + (x.born - x.mother.born), 0)
+    / childrenList.length;
+
+  return result;
 }
 
 module.exports = {
