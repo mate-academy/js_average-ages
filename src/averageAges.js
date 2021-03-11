@@ -1,5 +1,7 @@
 'use strict';
 
+// const people = require("./people");
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +17,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filtered = (century)
+    ? people.filter(person =>
+      (Math.ceil(person.died / 100) === century) && (person.sex === 'm'))
+    : people.filter(person => person.sex === 'm');
+
+  return filtered.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / filtered.length;
 }
 
 /**
@@ -37,7 +41,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let filtered = people.filter(person => person.sex === 'f');
+
+  function hasChild(person, index, array) {
+    if (person.sex === 'f') {
+      const name = person.name;
+
+      return array.find(child => child.mother === name);
+    }
+
+    return false;
+  }
+
+  if (withChildren) {
+    filtered = people.filter(hasChild);
+  }
+
+  return filtered.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / filtered.length;
 }
 
 /**
@@ -55,7 +76,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const relations = {};
+  const women = people.filter(person => person.sex === 'f');
+
+  women.forEach(woman => {
+    relations[woman.name] = { born: woman.born };
+  });
+
+  let dateCounter = 0;
+  let count = 0;
+
+  for (const person of people) {
+    if (onlyWithSon && person.sex !== 'm') {
+      continue;
+    }
+
+    if (person.mother in relations) {
+      dateCounter += (person.born - relations[person.mother].born);
+      count++;
+    }
+  }
+
+  return dateCounter / count;
 }
 
 module.exports = {
