@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const male = people.filter(
+    x => century
+      ? x.sex === 'm' && Math.ceil(x.died / 100) === century
+      : x.sex === 'm'
+  );
+  const maleSum = male.reduce((total, person) =>
+    total + person.died - person.born, 0);
+  const maleAvg = maleSum / male.length;
+
+  return maleAvg;
 }
 
 /**
@@ -37,7 +42,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  for (let i = 0; i < people.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (people[i].name === people[j].mother) {
+        people[i].children = true;
+      }
+    }
+  }
+
+  const female = people.filter(
+    x => withChildren
+      ? x.sex === 'f' && x.children
+      : x.sex === 'f'
+  );
+
+  const femaleSum = female.reduce((total, person) =>
+    total + person.died - person.born, 0);
+  const femaleAvg = femaleSum / female.length;
+
+  return femaleAvg;
 }
 
 /**
@@ -55,7 +78,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arr = [];
+  let arrReduced = 0;
+  let arrAvg = 0;
+
+  if (!onlyWithSon) {
+    for (let i = 0; i < people.length; i++) {
+      for (let j = 0; j < people.length; j++) {
+        if (people[i].name === people[j].mother) {
+          arr.push(people[j].born - people[i].born);
+        }
+      }
+    }
+
+    arrReduced += arr.reduce((a, b) => a + b, 0);
+    arrAvg += arrReduced / arr.length;
+
+    return arrAvg;
+  }
+
+  for (let i = 0; i < people.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (people[i].name === people[j].mother && people[j].sex === 'm') {
+        arr.push(people[j].born - people[i].born);
+      }
+    }
+  }
+
+  arrReduced += arr.reduce((a, b) => a + b, 0);
+  arrAvg += arrReduced / arr.length;
+
+  return arrAvg;
 }
 
 module.exports = {
