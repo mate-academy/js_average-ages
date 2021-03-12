@@ -14,6 +14,12 @@
  *
  * @return {number}
  */
+
+function middleAge(age) {
+  return age.reduce((prev, person) =>
+    (person.died - person.born) + prev, 0);
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -26,7 +32,7 @@ function calculateMenAverageAge(people, century) {
     : person.sex === 'm'
   );
 
-  const sum = men.reduce((prev, m) => (m.died - m.born) + prev, 0);
+  const sum = middleAge(men);
 
   return sum / men.length;
 }
@@ -45,6 +51,7 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   const mom = people.map(person => person.mother).filter(el => el !== null);
 
@@ -53,8 +60,7 @@ function calculateWomenAverageAge(people, withChildren) {
     : el.sex === 'f'
   );
 
-  const sum = women.reduce((prev, person) =>
-    (person.died - person.born) + prev, 0);
+  const sum = middleAge(women);
 
   return sum / women.length;
 }
