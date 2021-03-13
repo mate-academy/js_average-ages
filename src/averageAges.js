@@ -101,44 +101,21 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return relations;
   }, {});
 
-  const getMotherAgeDiff = () => {
-    let agesDiffCounter = 0;
-    const motherTotalDiff = people.reduce((totalDiff, person) => {
-      if (((onlyWithSon && person.sex === 'm') || !onlyWithSon)
-        && (person.mother in womenBorn)) {
-        const born = womenBorn[person.mother];
+  let agesDiffCounter = 0;
+  const motherTotalDiff = people.reduce((totalDiff, person) => {
+    if (((onlyWithSon && person.sex === 'm') || !onlyWithSon)
+      && (person.mother in womenBorn)) {
+      const born = womenBorn[person.mother];
 
-        agesDiffCounter += 1;
+      agesDiffCounter += 1;
 
-        return totalDiff + (person.born - born);
-      }
+      return totalDiff + (person.born - born);
+    }
 
-      return totalDiff;
-    }, 0);
+    return totalDiff;
+  }, 0);
 
-    return motherTotalDiff / agesDiffCounter;
-  };
-
-  return getMotherAgeDiff();
-  // women.forEach(woman => {
-  //   relations[woman.name] = { born: woman.born };
-  // });
-
-  // let dateCounter = 0;
-  // let count = 0;
-
-  // for (const person of people) {
-  //   if (onlyWithSon && person.sex !== 'm') {
-  //     continue;
-  //   }
-
-  //   if (person.mother in relations) {
-  //     dateCounter += (person.born - relations[person.mother].born);
-  //     count++;
-  //   }
-  // }
-
-  // return dateCounter / count;
+  return motherTotalDiff / agesDiffCounter;
 }
 
 module.exports = {
