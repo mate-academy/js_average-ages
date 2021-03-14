@@ -1,5 +1,12 @@
 'use strict';
 
+function getAverage({ sum, count }, val) {
+  return {
+    sum: sum + val,
+    count: count + 1,
+  };
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -22,15 +29,13 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   const reducedData = people
-    .filter(({ sex }) => sex === 'm')
-    .filter(({ died }) =>
-      century === undefined || Math.ceil(died / 100) === century)
-    .reduce(({ sum, count }, { died, born }) => {
-      return {
-        sum: sum + died - born,
-        count: count + 1,
-      };
-    }, {
+    .filter(
+      ({ died, sex }) => century
+        ? Math.ceil(died / 100) === century && sex === 'm'
+        : sex === 'm'
+    )
+    .map(({ died, born }) => died - born)
+    .reduce(getAverage, {
       sum: 0,
       count: 0,
     });
@@ -54,21 +59,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+
   const reducedData = people
-    .filter(({ sex }) => sex === 'f')
     .filter(
-      ({ name }) =>
-        !withChildren || people.some(
-          ({ mother }) =>
-            mother === name
-        )
-    )
-    .reduce(({ sum, count }, { died, born }) => {
-      return {
-        sum: sum + died - born,
-        count: count + 1,
-      };
-    }, {
+      ({ sex, name }) => {
+        return (sex === 'f')
+          && (!withChildren || people.some(({ mother }) => mother === name));
+      })
+    .map(({ died, born }) => died - born)
+    .reduce(getAverage, {
       sum: 0,
       count: 0,
     });
@@ -94,19 +93,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
 
   const reducedData = people
-    .filter(({ mother }) => people.some(({ name }) => name === mother))
-    .filter(({ sex }) => !onlyWithSon || sex === 'm')
+    .filter(
+      ({ mother, sex }) => (!onlyWithSon || sex === 'm')
+        && people.some(({ name }) => name === mother))
     .map(({ mother, born }) => {
       const mothers = people.filter(({ name }) => name === mother);
 
       return born - mothers[0].born;
     })
-    .reduce(({ sum, count }, diff) => {
-      return {
-        sum: sum + diff,
-        count: count + 1,
-      };
-    }, {
+    .reduce(getAverage, {
       sum: 0,
       count: 0,
     });
