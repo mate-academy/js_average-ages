@@ -1,5 +1,9 @@
 'use strict';
 
+function calculateAverage(total, length) {
+  return +(total / length).toFixed(2);
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,12 +18,19 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(man => century
+    ? Math.ceil(man.died / 100) === century && man.sex === 'm'
+    : man.sex === 'm'
+  );
+
+  const totalAge = men
+    .reduce((sum, curent) => sum + (curent.died - curent.born), 0);
+
+  const averageAge = calculateAverage(totalAge, men.length);
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +48,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => withChildren
+    ? people.some(woman => person.name === woman.mother)
+    : person.sex === 'f'
+  );
+
+  const totalAge = women
+    .reduce((sum, curent) => sum + (curent.died - curent.born), 0);
+
+  const averageAge = calculateAverage(totalAge, women.length);
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +76,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(person => onlyWithSon
+    ? people.some(mother => mother.name === person.mother) && person.sex === 'm'
+    : people.some(mother => mother.name === person.mother)
+  );
+
+  const differenceList = children.map(child =>
+    child.born - people.find(mother => mother.name === child.mother).born);
+
+  const totalDifference = differenceList.reduce((sum, cur) => cur + sum, 0);
+
+  const averageDiff = calculateAverage(totalDifference, differenceList.length);
+
+  return averageDiff;
 }
 
 module.exports = {
