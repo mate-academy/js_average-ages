@@ -1,7 +1,5 @@
 'use strict';
 
-// const people = require("./people");
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -21,10 +19,12 @@ function calculateMenAverageAge(people, century) {
     return (person.sex === 'm')
       && ((century) ? (Math.ceil(person.died / 100) === century) : 1);
   };
-  const filtered = people.filter(menFilter);
+  const men = people.filter(menFilter);
 
-  return filtered.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / filtered.length;
+  const totalAge = men.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+
+  return totalAge / men.length;
 }
 
 /**
