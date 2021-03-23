@@ -36,27 +36,6 @@ function calculateMenAverageAge(people, century) {
   }, 0);
 
   return +(sum / arr.length).toFixed(2);
-
-  // let count = 0;
-  // const sum = people.reduce((accum, person) => {
-  //   if (century && person.sex === 'm') {
-  //     if (Math.ceil(person.died / 100) === century) {
-  //       count++;
-
-  //       return (accum + person.died - person.born);
-  //     } else {
-  //       return accum;
-  //     }
-  //   } else if (person.sex === 'm') {
-  //     count++;
-
-  //     return (accum + person.died - person.born);
-  //   } else {
-  //     return accum;
-  //   }
-  // }, 0);
-
-  // return +(sum / count).toFixed(2);
 }
 
 /**
