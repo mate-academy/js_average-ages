@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let arr = [];
+
+  arr = (century) ? people.filter((person) => {
+    return (person.sex === 'm' && Math.ceil(person.died / 100) === century);
+  })
+    : people.filter((person) => {
+      return (person.sex === 'm');
+    });
+
+  const sum = arr.reduce((accum, men) => {
+    return accum + (men.died - men.born);
+  }, 0);
+
+  return +(sum / arr.length).toFixed(2);
 }
 
 /**
@@ -37,7 +46,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let arr = [];
+
+  arr = (withChildren) ? people.filter((person) => {
+    return (person.sex === 'f' && people.some(child => {
+      return (person.name === child.mother);
+    }));
+  })
+    : people.filter((person) => {
+      return (person.sex === 'f');
+    });
+
+  const sum = arr.reduce((accum, women) => {
+    return accum + (women.died - women.born);
+  }, 0);
+
+  return +(sum / arr.length).toFixed(2);
 }
 
 /**
@@ -55,7 +79,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let arr = [];
+
+  arr = (onlyWithSon) ? people.filter((person) => {
+    return (person.sex === 'm' && person.mother !== null
+    && people.find((item) => {
+      return item.name === person.mother;
+    }));
+  })
+    : people.filter((person) => {
+      return (person.mother !== null && people.find((item) => {
+        return item.name === person.mother;
+      }));
+    });
+
+  const sum = arr.reduce((accum, child) => {
+    const mother = people.find((person) => {
+      return person.name === child.mother;
+    });
+
+    return accum + (child.born - mother.born);
+  }, 0);
+
+  return +(sum / arr.length).toFixed(2);
 }
 
 module.exports = {
