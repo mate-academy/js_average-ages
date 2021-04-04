@@ -15,7 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  let a;
+
+  a = people.filter(human => human.sex === 'm');
+
+  if (century) {
+    a = a.filter(man => (man.died > ((century - 1) * 100))
+    && (man.died < ((century) * 100)));
+  }
+
+  a = a.map(man => man.died - man.born);
+
+  let b = a.reduce((total, amount) => total + amount);
+
+  b = (b / a.length);
+
+  return +b.toFixed(2);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -25,7 +40,7 @@ function calculateMenAverageAge(people, century) {
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
+ * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -37,7 +52,29 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let a;
+
+  a = people.filter(human => human.sex === 'f');
+
+  if (withChildren) {
+    a = a.filter(woman => {
+      for (const human of people) {
+        if (human.mother === woman.name) {
+          return true;
+        };
+      }
+
+      return false;
+    });
+  };
+
+  a = a.map(woman => woman.died - woman.born);
+
+  let b = a.reduce((total, amount) => total + amount);
+
+  b = (b / a.length);
+
+  return +b.toFixed(2);
 }
 
 /**
@@ -55,7 +92,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let mom;
+  let counter = 0;
+  let sum = 0;
+
+  for (const person of people) {
+    if (person.mother) {
+      mom = people.find(elem => elem.name === person.mother);
+
+      if (!mom) {
+        continue;
+      }
+
+      if ((person.sex === 'f') && (onlyWithSon)) {
+        continue;
+      }
+      mom.child = person;
+      sum += person.born - mom.born;
+      counter++;
+    }
+  };
+
+  return +(sum / counter).toFixed(2);
 }
 
 module.exports = {
