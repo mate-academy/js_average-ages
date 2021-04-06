@@ -52,9 +52,8 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let a;
-
-  a = people.filter(human => human.sex === 'f');
+  let a = people.filter(human => human.sex === 'f');
+  // 'a' is a technical temporary variable :P
 
   if (withChildren) {
     a = a.filter(woman => {
@@ -100,11 +99,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     if (person.mother) {
       mom = people.find(elem => elem.name === person.mother);
 
-      if (!mom) {
-        continue;
-      }
-
-      if ((person.sex === 'f') && (onlyWithSon)) {
+      if (((person.sex === 'f') && (onlyWithSon)) || (!mom)) {
         continue;
       }
       mom.child = person;
