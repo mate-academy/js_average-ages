@@ -15,13 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
+  const men = people.filter(person => century !== undefined
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm');
 
-  const menOfCentury = century !== undefined
-    ? men.filter(person => Math.ceil(person.died / 100) === century)
-    : men;
-
-  const ages = menOfCentury.map(person => person.died - person.born);
+  const ages = men.map(person => person.died - person.born);
 
   const averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
 
@@ -43,13 +41,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = people.filter(person => person.sex === 'f');
+  const woman = people.filter(person => withChildren !== undefined
+    ? person.sex === 'f' && people.find(human => person.name === human.mother)
+    : person.sex === 'f');
 
-  const womanWithChildren = withChildren !== undefined
-    ? woman.filter(person => people.find(human => person.name === human.mother))
-    : woman;
-
-  const ages = womanWithChildren.map(person => person.died - person.born);
+  const ages = woman.map(person => person.died - person.born);
 
   const averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
 
@@ -71,15 +67,14 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person =>
-    person.mother !== null
-    && people.find(mother => mother.name === person.mother));
+  const children = people.filter(person => onlyWithSon !== undefined
+    ? person.mother !== null
+      && people.find(mother => mother.name === person.mother)
+      && person.sex === 'm'
+    : person.mother !== null
+      && people.find(mother => mother.name === person.mother));
 
-  const son = onlyWithSon !== undefined
-    ? children.filter(person => person.sex === 'm')
-    : children;
-
-  const ages = son.map(person => {
+  const ages = children.map(person => {
     const mothers = people.find(mother => mother.name === person.mother);
 
     return person.born - mothers.born;
