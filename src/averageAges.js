@@ -15,22 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let a;
+  let maleArr = people.filter(human => human.sex === 'm');
 
-  a = people.filter(human => human.sex === 'm');
+  (century) && (
+    maleArr = maleArr.filter(man => (man.died > ((century - 1) * 100))
+    && (man.died < ((century) * 100))));
 
-  if (century) {
-    a = a.filter(man => (man.died > ((century - 1) * 100))
-    && (man.died < ((century) * 100)));
-  }
+  const maleTotalLongevity = maleArr
+    .map(man => man.died - man.born)
+    .reduce((total, amount) => total + amount);
 
-  a = a.map(man => man.died - man.born);
-
-  let b = a.reduce((total, amount) => total + amount);
-
-  b = (b / a.length);
-
-  return +b.toFixed(2);
+  return +(maleTotalLongevity / maleArr.length).toFixed(2);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -52,28 +47,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let a = people.filter(human => human.sex === 'f');
-  // 'a' is a technical temporary variable :P
+  let femArray = people.filter(human => human.sex === 'f');
 
-  if (withChildren) {
-    a = a.filter(woman => {
-      for (const human of people) {
-        if (human.mother === woman.name) {
-          return true;
-        };
-      }
+  (withChildren) && (femArray = femArray
+    .filter(woman => people.find(human => human.mother === woman.name)));
 
-      return false;
-    });
-  };
+  const femTotalLongevity = femArray
+    .map(woman => woman.died - woman.born)
+    .reduce((total, amount) => total + amount);
 
-  a = a.map(woman => woman.died - woman.born);
-
-  let b = a.reduce((total, amount) => total + amount);
-
-  b = (b / a.length);
-
-  return +b.toFixed(2);
+  return +(femTotalLongevity / femArray.length).toFixed(2);
 }
 
 /**
