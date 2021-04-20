@@ -55,36 +55,46 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  if (withChildren) {
-    let mothers = people.map(person => person.mother);
+  // if (withChildren) {
+  //   let mothers = people.map(person => person.mother);
 
-    mothers = mothers.filter(person => person !== null);
+  //   mothers = mothers.filter(person => person !== null);
 
-    const female = people.filter(item => mothers.includes(item.name));
-    // ????????????????????????????????????????????????????????????????
-    //
-    // ВОПРОС - почему при вынесении строк 71-76 за пределы текущего if
-    // массив female становится 'is assigned a value but never read'?
-    // Пришлось эти строки дублировать для обоих условий
-    //
-    // ????????????????????????????????????????????????????????????????
-    const womanAge = female.map(woman => woman.died - woman.born);
-    const avWomenAge = womanAge.reduce((prev, item) => {
-      return (prev + item);
-    }) / female.length;
+  //   const female = people.filter(item => mothers.includes(item.name));
+  //   const womanAge = female.map(woman => woman.died - woman.born);
+  //   const avWomenAge = womanAge.reduce((prev, item) => {
+  //     return (prev + item);
+  //   }) / female.length;
 
-    return avWomenAge;
-  };
+  //   return avWomenAge;
+  // };
 
-  if (!withChildren) {
-    const female = people.filter(item => item.sex === 'f');
-    const womanAge = female.map(woman => woman.died - woman.born);
-    const avWomenAge = womanAge.reduce((prev, item) => {
-      return (prev + item);
-    }) / female.length;
+  // if (!withChildren) {
+  //   const female = people.filter(item => item.sex === 'f');
+  //   const womanAge = female.map(woman => woman.died - woman.born);
+  //   const avWomenAge = womanAge.reduce((prev, item) => {
+  //     return (prev + item);
+  //   }) / female.length;
 
-    return avWomenAge;
-  }
+  //   return avWomenAge;
+  // }
+  const mothers = people.map(person => person.mother);
+  let female = null;
+  let womanAge = null;
+  let avWomenAge = null;
+
+  withChildren ? (
+    female = people.filter(item => mothers.includes(item.name))
+  ) : (
+    female = people.filter(item => item.sex === 'f')
+  );
+  womanAge = female.map(woman => woman.died - woman.born);
+
+  avWomenAge = womanAge.reduce((prev, item) => {
+    return (prev + item);
+  }) / female.length;
+
+  return avWomenAge;
 };
 
 /**
@@ -104,11 +114,16 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
 
-  let children = people.filter(person => {
-    if (people.find(mom => person.mother === mom.name)) {
-      return person;
-    };
+  const allChildren = people.filter(person => {
+    // if (people.find(mom => person.mother === mom.name)) {
+    //   return person;
+    // };
+    const pers = people.find(mom => person.mother === mom.name)
+    !== undefined;
+
+    return pers;
   });
+  const childrenBoys = allChildren.filter(child => child.sex === 'm');
 
   let mothers = people.map(person => person.mother);
 
@@ -116,9 +131,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const finalMothers = people.filter(item => mothers.includes(item.name));
 
-  if (onlyWithSon) {
-    children = children.filter(child => child.sex === 'm');
-  }
+  const childrenFinal = onlyWithSon ? childrenBoys : allChildren;
+
+  // if (onlyWithSon) {
+  //   children = children.filter(child => child.sex === 'm');
+  // }
 
   function findMomAge(child) {
     const mom = finalMothers.find(person => person.name === child.mother);
@@ -128,7 +145,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return childBorn - momBorn;
   };
 
-  const ages = children.map(findMomAge);
+  const ages = childrenFinal.map(findMomAge);
 
   return ages.reduce((a, b) => a + b, 0) / ages.length;
 };
