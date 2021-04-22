@@ -15,6 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  let allMen;
+
+  century
+    ? allMen = people.filter(person => person.sex === 'm'
+    && century === Math.ceil(person.died / 100))
+    : allMen = people.filter(person => person.sex === 'm');
+
+  const manLifeLength = allMen.map(person => person.died - person.born);
+
+  const sum = [...manLifeLength].reduce((preSum, x) => preSum + x);
+  const result = sum / manLifeLength.length;
+
+  return result;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +50,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let allWoman;
+
+  const peopleWithMotherInfo = people.filter(person => person.mother !== null);
+
+  withChildren
+    ? allWoman = people.filter(person => peopleWithMotherInfo.find(child =>
+      child.mother === person.name))
+    : allWoman = people.filter(person => person.sex === 'f');
+
+  const womanLifeLength = allWoman.map(person => person.died - person.born);
+  const callback = (preSum, x) => {
+    return preSum + x;
+  };
+
+  const sum = [...womanLifeLength].reduce(callback);
+  const result = sum / womanLifeLength.length;
+
+  return result;
 }
 
 /**
@@ -55,7 +85,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let withMomInfo;
+
+  onlyWithSon
+    ? withMomInfo = people.filter(person => person.mother !== null
+      && person.sex === 'm')
+    : withMomInfo = people.filter(person => person.mother !== null);
+
+  function ageOfBecomingMom(child) {
+    const mom = people.find(mother => mother.name === child.mother);
+
+    return (mom !== undefined) ? child.born - mom.born : 0;
+  }
+
+  const giveBirthYear = withMomInfo.map(ageOfBecomingMom).filter(age =>
+    age !== 0);
+
+  const sumOfDeliverYears = [...giveBirthYear].reduce((sum, age) => sum + age);
+
+  return sumOfDeliverYears / giveBirthYear.length;
 }
 
 module.exports = {
