@@ -16,10 +16,11 @@
  */
 function calculateMenAverageAge(people, century) {
   const mans = century
-    ? people.filter(el => (
-      el.sex === 'm' && Math.ceil(el.died / 100) === century
+    ? people.filter(person => (
+      person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
     ))
-    : people.filter(el => el.sex === 'm');
+    : people.filter(person => person.sex === 'm');
 
   return mans.reduce((prev, { born, died }) => prev + (died - born), 0)
     / mans.length;
@@ -41,11 +42,11 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womans = withChildren
-    ? people.filter((el, i, arr) => (
-      el.sex === 'f'
-      && arr.some(child => child.mother === el.name)
+    ? people.filter(person => (
+      person.sex === 'f'
+      && people.some(child => child.mother === person.name)
     ))
-    : people.filter(el => el.sex === 'f');
+    : people.filter(person => person.sex === 'f');
 
   return womans.reduce((prev, { born, died }) => prev + (died - born), 0)
     / womans.length;
@@ -66,20 +67,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = onlyWithSon
-    ? people.filter((child, i, arr) => (
-      arr.some(mother => mother.name === child.mother)
+  const children = onlyWithSon
+    ? people.filter(child => (
+      people.some(mother => mother.name === child.mother)
       && child.sex === 'm'
     ))
-    : people.filter((child, i, arr) => (
-      arr.some(mother => mother.name === child.mother)
+    : people.filter(child => (
+      people.some(mother => mother.name === child.mother)
     ));
 
-  children = children.map((child) => (
+  const ageDifference = children.map(child => (
     child.born - people.find(mother => mother.name === child.mother).born
   ));
 
-  return children.reduce((prev, el) => prev + el) / children.length;
+  return ageDifference.reduce((prev, el) => prev + el) / ageDifference.length;
 }
 
 module.exports = {
