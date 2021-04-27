@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(item => item.sex === 'm');
+  const menCentury = people.filter(item => item.sex === 'm'
+    && Math.ceil(item.died / 100) === century);
+
+  return century === undefined
+    ? +(men.map(item => item.died - item.born)
+      .reduce((accum, item) => accum + item) / men.length).toFixed(2)
+    : +(menCentury.map(item => item.died - item.born)
+      .reduce((accum, item) => accum + item) / menCentury.length).toFixed(2);
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(item => item.sex === 'f');
+  const WithChildren = people.filter(person =>
+    people.some(child => person.name === child.mother));
+
+  return withChildren === undefined
+    ? +(women.map(item => item.died - item.born)
+      .reduce((accum, item) => accum + item) / women.length).toFixed(2)
+    : +(WithChildren.map(item => item.died - item.born)
+      .reduce((accum, item) => accum + item) / WithChildren.length).toFixed(2);
 }
 
 /**
@@ -55,7 +67,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = [];
+  const withSon = [];
+
+  people.filter(child =>
+    people.filter(woman => {
+      if (child.mother === woman.name) {
+        women.push(child.born - woman.born);
+      }
+    })
+  );
+
+  people.filter(child =>
+    people.filter(woman => {
+      if (child.mother === woman.name && child.sex === 'm') {
+        withSon.push(child.born - woman.born);
+      }
+    })
+  );
+
+  return onlyWithSon === undefined
+    ? +(women.reduce((accum, item) => accum + item) / women.length)
+      .toFixed(2)
+    : +(withSon.reduce((accum, item) => accum + item) / withSon.length)
+      .toFixed(2);
 }
 
 module.exports = {
