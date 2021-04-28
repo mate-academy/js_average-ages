@@ -15,11 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(({ sex }) => sex === 'm');
-
-  if (century) {
-    men = men.filter(({ died }) => Math.ceil(died / 100) === century);
-  }
+  const men = people.filter(({ sex, died }) => century
+    ? sex === 'm' && Math.ceil(died / 100) === century
+    : sex === 'm');
 
   const result = men.reduce((a, b) => a + (b.died - b.born), 0);
 
@@ -41,13 +39,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(({ sex }) => sex === 'f');
-
-  if (withChildren) {
-    women = women.filter(woman => {
-      return people.find(({ mother }) => mother === woman.name);
-    });
-  }
+  const women = people.filter(({ name, sex }) => withChildren
+    ? people.find(({ mother }) => mother === name)
+    : sex === 'f');
 
   const result = women.reduce((a, b) => a + (b.died - b.born), 0);
 
@@ -69,24 +63,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(({ mother }) => {
-    return people.find(({ name }) => name === mother);
-  });
-  const mothersAges = [];
+  const children = people.filter(({ mother, sex }) => onlyWithSon
+    ? people.find(({ name }) => name === mother) && sex === 'm'
+    : people.find(({ name }) => name === mother));
 
-  if (onlyWithSon) {
-    children = children.filter(({ sex }) => sex === 'm');
-  }
+  const result = children.reduce((prev, { mother, born: childBorn }) => {
+    const age = childBorn - people.find(({ name }) => name === mother).born;
 
-  children.forEach(({ mother, born: childBorn }) => {
-    const motherBorn = people.find(person => person.name === mother).born;
+    return prev + age;
+  }, 0);
 
-    mothersAges.push(childBorn - motherBorn);
-  });
-
-  const result = mothersAges.reduce((a, b) => a + b, 0);
-
-  return +(result / mothersAges.length).toFixed(2);
+  return +(result / children.length).toFixed(2);
 }
 
 module.exports = {
