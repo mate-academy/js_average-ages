@@ -14,12 +14,21 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = false) {
+  let count = 0;
+  const manAgeSum = people.reduce((accum, person, ind) => {
+    const dieCentury = Math.ceil(person.died / 100);
+
+    return (century === dieCentury && person.sex === 'm') ? (
+      count++,
+      accum + (person.died - person.born)
+    ) : (!century && person.sex === 'm') ? (
+      count++,
+      accum + (person.died - person.born)
+    ) : accum + 0;
+  }, 0);
+
+  return Number((manAgeSum / count).toFixed(2));
 }
 
 /**
