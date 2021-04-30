@@ -15,20 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-  const menInCentury = men.filter(
-    person => Math.ceil(person.died / 100) === century
+  const men = people.filter(person =>
+    century
+      ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+      : person.sex === 'm'
   );
-  const averageAge = (arguments.length < 2)
-    ? men.reduce(
-      (acc, person) => acc + person.died - person.born, 0)
-      / men.length
-    : menInCentury
-      .reduce(
-        (acc, person) => acc + person.died - person.born, 0)
-        / menInCentury.length;
+  const averageAge = men.reduce(
+    (acc, person) => acc + person.died - person.born, 0)
+    / men.length;
 
-  return +averageAge.toFixed(2);
+  return averageAge;
 }
 
 /**
@@ -46,19 +42,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
-  const womenWithChildren = women.filter(
-    person => people.some((child) => child.mother === person.name)
+  const women = people.filter(person =>
+    withChildren
+      ? people.some((child) => child.mother === person.name)
+      : person.sex === 'f'
   );
-  const averageAge = (arguments.length < 2)
-    ? women.reduce(
-      (acc, person) => acc + person.died - person.born, 0)
-      / women.length
-    : womenWithChildren.reduce(
-      (acc, person) => acc + person.died - person.born, 0)
-      / womenWithChildren.length;
+  const averageAge = women.reduce(
+    (acc, person) => acc + person.died - person.born, 0)
+      / women.length;
 
-  return +averageAge.toFixed(2);
+  return averageAge;
 }
 
 /**
@@ -76,29 +69,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(
-    (person) => people.some((child) => person.name === child.mother)
+  const children = people.filter((person) =>
+    onlyWithSon
+      ? person.sex === 'm'
+        && people.some((mother) => person.mother === mother.name)
+      : people.some((mother) => person.mother === mother.name)
   );
-  const children = people.filter(
-    (person) => people.some((mother) => person.mother === mother.name)
-  );
-  const mothersWithSon = mothers.filter(
-    (person) => children.some(
-      (child) => child.sex === 'm' && child.mother === person.name)
-  );
-  const sons = children.filter(
-    (person) => person.sex === 'm');
-  const avarageDifference = (onlyWithSon)
-    ? sons.reduce(
-      (acc, son) => acc + son.born
-      - mothersWithSon.find((mother) => son.mother === mother.name).born, 0)
-      / sons.length
-    : children.reduce(
-      (acc, child) => acc + child.born
-      - mothers.find((mother) => child.mother === mother.name).born, 0)
+  const avarageDifference = children.reduce(
+    (acc, child) => acc + child.born
+      - people.find((mother) => child.mother === mother.name).born, 0)
       / children.length;
 
-  return +avarageDifference.toFixed(2);
+  return avarageDifference;
 }
 
 module.exports = {
