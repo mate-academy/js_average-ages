@@ -15,13 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const menList = people.filter(person =>
+    century
+      ? (person.sex === 'm') && (Math.ceil(person.died / 100) === century)
+      : (person.sex === 'm')
+  );
 
+  const averageAge = menList.reduce((accumulator, person) =>
+    (accumulator + ((person.died - person.born) / menList.length)),
+  0).toFixed(2);
+
+  return +averageAge;
+};
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,9 +41,21 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+  const womanList = people.filter(person =>
+    withChildren
+      ? (person.sex === 'f')
+        && (people.some(child => child.mother === person.name))
+      : (person.sex === 'f')
+  );
+
+  const averageAge = womanList.reduce((accumulator, person) =>
+    (accumulator + ((person.died - person.born) / womanList.length)),
+  0).toFixed(2);
+
+  return +averageAge;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -54,9 +71,25 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  const childrenList = people.filter(person =>
+    onlyWithSon
+      ? (person.sex === 'm')
+      && (people.some(mother => mother.name === person.mother))
+      : (people.some(mother => mother.name === person.mother))
+  );
+
+  const ageDiff = childrenList.map(child =>
+    child.born - people.find(mother =>
+      mother.name === child.mother).born
+  );
+
+  const averageAgeDiff = ageDiff.reduce((accumulator, age) =>
+    accumulator + age, 0) / ageDiff.length;
+
+  return +averageAgeDiff;
+};
 
 module.exports = {
   calculateMenAverageAge,
