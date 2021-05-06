@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century
+    ? people.filter(item => item.sex === 'm'
+      && Math.ceil(item.died / 100) === century)
+    : people.filter(item => item.sex === 'm');
+
+  const menAge = men.map(item => item.died - item.born);
+  const sumOfAge = menAge.reduce((sum, age) => sum + age);
+
+  return Math.round((sumOfAge / menAge.length) * 100) / 100;
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(item => item.sex === 'f'
+      && people.some(child => item.name === child.mother))
+    : people.filter(item => item.sex === 'f');
+
+  const womenAge = women.map(item => item.died - item.born);
+  const sumOfAge = womenAge.reduce((sum, age) => sum + age);
+
+  return Math.round((sumOfAge / womenAge.length) * 100) / 100;
 }
 
 /**
@@ -55,7 +67,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women
+    = people.filter(item => item.sex === 'f'
+    && people.some(child => item.name === child.mother));
+
+  const children = onlyWithSon
+    ? people.filter(child => women
+      .some(item => child.mother === item.name) && child.sex === 'm')
+    : people.filter(child => women
+      .some(item => child.mother === item.name));
+
+  const ageGap = children.map(child => {
+    const foundMother = women.find(mother => child.mother === mother.name);
+
+    return child.born - foundMother.born;
+  });
+
+  const sumOfAge = ageGap.reduce((sum, age) => sum + age);
+
+  return Math.round((sumOfAge / ageGap.length) * 100) / 100;
 }
 
 module.exports = {
