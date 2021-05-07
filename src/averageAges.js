@@ -20,25 +20,14 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const isCenturySpecified = arguments.length > 1;
+  const males = century
+    ? people.filter(
+      person => person.sex === 'm' && Math.ceil(person.died / 100) === century)
 
-  const callback = (person) => {
-    switch (isCenturySpecified) {
-      case true:
-        return Math.ceil(person.died / 100) === century
-          ? [person.name, person.died - person.born]
-          : null;
+    : people.filter(person => person.sex === 'm');
 
-      case false:
-        return [person.name, person.died - person.born];
-    }
-  };
-
-  const maleData = people.filter((person) => person.sex === 'm').map(
-    callback).filter(person => person !== null);
-
-  return maleData.reduce(
-    (sum, person) => person[1] + sum, 0) / maleData.length;
+  return males.reduce(
+    (sum, person) => sum + person.died - person.born, 0) / males.length;
 }
 
 /**
@@ -57,30 +46,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const mothersData = new Set(people.map(person => {
-    return person.mother;
-  }));
-  const hasChildren = arguments.length > 1;
+  const mothersData = new Set(people.map(person => person.mother));
 
   mothersData.delete(null);
 
-  const callback = (person) => {
-    switch (hasChildren) {
-      case true:
-        return mothersData.has(person.name)
-          ? [person.name, person.died - person.born]
-          : null;
+  const femalesData = withChildren
+    ? people.filter(person => mothersData.has(person.name))
 
-      case false:
-        return [person.name, person.died - person.born];
-    }
-  };
+    : people.filter(person => person.sex === 'f');
 
-  const femaleData = people.filter((person) => person.sex === 'f').map(
-    callback).filter(person => person !== null);
-
-  return femaleData.reduce(
-    (sum, person) => person[1] + sum, 0) / femaleData.length;
+  return femalesData.reduce(
+    (sum, person) => sum + person.died - person.born, 0) / femalesData.length;
 }
 
 /**
@@ -99,41 +75,42 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const isOnlySonsSpecified = arguments.length > 1;
+  const mothersData = new Set(people.map(person => person.mother));
 
-  const mothersBirthdayData = people.filter(
-    human => human.sex === 'f').reduce((prev, person) => {
-    return {
-      ...prev,
-      [person.name]: person.born,
-    };
+  mothersData.delete(null);
+
+  const mothersBornData = people.reduce(function(all, mother) {
+    return mothersData.has(mother.name)
+      ? {
+        ...all,
+        [mother.name]: mother.born,
+      }
+
+      : all;
   }, {});
 
-  const peopleMothersData = people.reduce((prev, person) => {
-    switch (isOnlySonsSpecified) {
-      case false:
-        return person.mother in mothersBirthdayData
-          ? [
-            ...prev,
-            [person.mother, mothersBirthdayData[person.mother], person.born],
-          ]
+  let childrenData = people.reduce(function(all, child) {
+    return mothersBornData.hasOwnProperty(child.mother)
+      ? [
+        ...all,
+        {
+          name: child.name,
+          sex: child.sex,
+          born: child.born,
+          mother: child.mother,
+        },
+      ]
 
-          : prev;
-
-      case true:
-        return person.mother in mothersBirthdayData && person.sex === 'm'
-          ? [
-            ...prev,
-            [person.mother, mothersBirthdayData[person.mother], person.born],
-          ]
-
-          : prev;
-    }
+      : all;
   }, []);
 
-  return peopleMothersData.reduce((sum, mother) => {
-    return (mother[2] - mother[1]) + sum;
-  }, 0) / peopleMothersData.length;
+  childrenData = onlyWithSon
+    ? childrenData.filter(child => child.sex === 'm')
+    : childrenData;
+
+  return childrenData.reduce(function(sum, child) {
+    return sum + child.born - mothersBornData[child.mother];
+  }, 0) / childrenData.length;
 }
 
 module.exports = {
