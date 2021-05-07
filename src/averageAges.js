@@ -94,7 +94,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       ? [
         ...all,
         {
-          name: child.name,
           sex: child.sex,
           born: child.born,
           mother: child.mother,
