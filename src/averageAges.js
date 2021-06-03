@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArray = people.filter(({ sex }) => sex === 'm');
+
+  function Calculate(manData) {
+    return +(manData.reduce((result, { born, died }) =>
+      result + (died - born), 0) / manData.length)
+      .toFixed(2);
+  }
+
+  return !century
+    ? Calculate(manArray)
+    : Calculate(manArray.filter(({ died }) =>
+      century === Math.ceil(died / 100)
+    ));
 }
 
 /**
@@ -37,7 +45,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womanArray = people.filter(({ sex }) => sex === 'f');
+
+  function Calculate(data) {
+    return +(data.reduce((result, { born, died }) =>
+      result + (died - born), 0) / data.length)
+      .toFixed(2);
+  }
+
+  return !withChildren
+    ? Calculate(womanArray)
+    : Calculate(people.filter(({ name }) =>
+      people.some(({ mother }) =>
+        mother === name)
+    ));
 }
 
 /**
@@ -55,7 +76,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let childrenWidthMothers;
+
+  !onlyWithSon
+    ? childrenWidthMothers = people.filter(({ mother }) =>
+      people.find(({ name }) => name === mother))
+
+    : childrenWidthMothers = people.filter(({ sex }) => sex === 'm')
+      .filter(({ mother }) =>
+        people.find(({ name }) => name === mother));
+
+  const differenceAges = childrenWidthMothers.reduce(function(sum, current) {
+    const motherBornDate = people.find(({ name }) =>
+      name === current.mother).born;
+
+    return sum + (current.born - motherBornDate);
+  }
+  , 0);
+
+  return +(differenceAges / childrenWidthMothers.length).toFixed(2);
 }
 
 module.exports = {
