@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter((person) => person.sex === 'm');
+
+  if (century) {
+    men = men.filter(person => century === Math.ceil(person.died / 100));
+  }
+
+  const yearMen = men.map(person => person.died - person.born);
+
+  const averageAgeOfMen = yearMen.reduce((a, b) => (a + b)) / men.length;
+
+  return averageAgeOfMen;
 }
 
 /**
@@ -36,8 +42,20 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = undefined) {
+  let women = people.filter(person => person.sex === 'f');
+
+  if (withChildren) {
+    women = women.filter((woman) =>
+      people.find(person => person.mother === woman.name)
+    );
+  }
+
+  const yearW = women.map(person => person.died - person.born);
+
+  const averageAgeOfWomen = yearW.reduce((a, b) => (a + b)) / yearW.length;
+
+  return averageAgeOfWomen;
 }
 
 /**
@@ -54,8 +72,30 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = undefined) {
+  const arrayOfDif = [];
+
+  people.forEach((person) => {
+    if (person.mother === null) {
+      return;
+    }
+
+    people.forEach((mother) => {
+      if (mother.name === person.mother) {
+        if (onlyWithSon !== undefined) {
+          if (person.sex === 'm') {
+            arrayOfDif.push((person.born - mother.born));
+          }
+        } else {
+          arrayOfDif.push((person.born - mother.born));
+        }
+      }
+    });
+  });
+
+  const averAge = arrayOfDif.reduce((a, b) => a + b) / arrayOfDif.length;
+
+  return averAge;
 }
 
 module.exports = {
