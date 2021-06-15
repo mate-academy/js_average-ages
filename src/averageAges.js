@@ -8,6 +8,10 @@
  *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
+ * learn how to use array methods like .filter .map .some .every .find .reduce
+  // avoid using loop and forEach
+  // replace `if ()` statement with &&, || or ?:
+  // without nesting
  *
  * @param {object[]} people
  * @param {number} century - optional
@@ -16,21 +20,17 @@
  */
 function calculateMenAverageAge(people, century) {
   // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let menArr;
+
+  century
+    ? menArr = people.filter(
+      (a) => Math.ceil(a['died'] / 100) === century && a['sex'] === 'm')
+    : menArr = people.filter((a) => a['sex'] === 'm');
+
+  return menArr.reduce((a, b) => a + (b.died - b.born), 0) / menArr.length;
 }
 
-/**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average ave of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find the other who mention
- * her as mother.
- *
+/*
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
@@ -38,17 +38,19 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let womanArr;
+  const motherArr = [];
+
+  people.map((a) => motherArr.push(a['mother']));
+
+  withChildren
+    ? womanArr = people.filter((a) => motherArr.some((b) => b === a['name']))
+    : womanArr = people.filter((a) => a['sex'] === 'f');
+
+  return womanArr.reduce((a, b) => a + (b.died - b.born), 0) / womanArr.length;
 }
 
 /**
- * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a mother and her
- * child in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for mothers who have son.
- *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
  *
@@ -56,6 +58,21 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const motherArr = [];
+
+  function son(a) {
+    return onlyWithSon
+      ? people.some((c) => c['name'] === a['mother'] && a['sex'] === 'm')
+      : people.some((c) => c['name'] === a['mother']);
+  }
+
+  people.map((a) =>
+    son(a)
+      ? motherArr.push(
+        a['born'] - people.find((c) => c['name'] === a['mother'])['born'])
+      : true);
+
+  return motherArr.reduce((a, b) => a + b, 0) / motherArr.length;
 }
 
 module.exports = {
