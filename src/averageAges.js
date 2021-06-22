@@ -21,26 +21,23 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const fullData = people.map(person => {
-    const result = Object.assign(person,
-      person.century = Math.ceil(person.died / 100),
-      person.age = person.died - person.born);
+    const result = {
+      ...person,
+      century: Math.ceil(person.died / 100),
+      age: person.died - person.born,
+    };
 
     return result;
   });
 
-  const mansData = fullData.filter(person => person.sex === 'm');
+  const men = fullData.filter((person) => century
+    ? person.century === century && person.sex === 'm'
+    : person.sex === 'm'
+  );
 
-  const averageAgeOfMans = mansData.reduce((acc, val) =>
-    acc + val.age, 0) / mansData.length;
+  const averageAge = men.reduce((acc, val) => acc + val.age, 0) / men.length;
 
-  const mansDataWithCentury = mansData.filter(person =>
-    person.century === century);
-
-  const averageAgeOfMansWithCentury = mansDataWithCentury.reduce((acc, val) =>
-    acc + val.age, 0) / mansDataWithCentury.length;
-
-  return +(averageAgeOfMansWithCentury).toFixed(2)
-    || +(averageAgeOfMans).toFixed(2);
+  return +averageAge.toFixed(2);
 }
 
 /**
@@ -60,33 +57,24 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const peopleAddAge = people.map(person => {
-    const result = Object.assign(
-      person,
-      person.age = person.died - person.born);
+    const result = {
+      ...person,
+      age: person.died - person.born,
+    };
 
     return result;
   });
 
-  const womenData = peopleAddAge.filter(person => person.sex === 'f');
+  const womenData = peopleAddAge.filter(person => withChildren
+    ? peopleAddAge.find(child => child.mother === person.name)
+      && person.sex === 'f'
+    : person.sex === 'f'
+  );
 
-  const averageAgeOfWomen = womenData.reduce((acc, val) =>
+  const averageAgeDiff = womenData.reduce((acc, val) =>
     acc + val.age, 0) / womenData.length;
 
-  const mothers = womenData.filter(mother => {
-    return people.find(children => children.mother === mother.name);
-  });
-
-  const motherUnic = mothers.filter((person, index, array) => {
-    return array.indexOf(person) === index;
-  });
-
-  const averageAgeOfWomenWithChildren = motherUnic.reduce((acc, val) => {
-    return acc + val.age;
-  }, 0) / motherUnic.length;
-
-  return (withChildren
-    && +(averageAgeOfWomenWithChildren).toFixed(2))
-    || +(averageAgeOfWomen).toFixed(2);
+  return +averageAgeDiff.toFixed(2);
 }
 
 /**
