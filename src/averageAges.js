@@ -15,8 +15,12 @@
  * @return {number}
  *
  */
-function averageAge(objectWithPeoples) {
-  const allAges = objectWithPeoples.map(human => human.died - human.born);
+function averageAge(objectWithPeoples, momWithSon, people) {
+  const allAges = momWithSon ? objectWithPeoples.map(child => {
+    const mom = people.find(mother => child.mother === mother.name);
+
+    return child.born - mom.born;
+  }) : objectWithPeoples.map(human => human.died - human.born);
 
   return allAges.reduce((sumOFAge, nextAge) =>
     sumOFAge + nextAge, 0) / allAges.length;
@@ -80,14 +84,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     & people.find(mother => child.mother === mother.name) !== undefined)
     : people.filter(child => people.find(mother => child.mother
     === mother.name));
-  const allYears = children.map(child => {
-    const mom = people.find(mother => child.mother === mother.name);
 
-    return child.born - mom.born;
-  });
-
-  return allYears.reduce((sum, nextValue) =>
-    sum + nextValue, 0) / allYears.length;
+  return averageAge(children, true, people);
 }
 
 module.exports = {
