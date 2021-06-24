@@ -15,10 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter((person) =>
+  const men = people.filter(
     century
-      ? receiveСenturyOfLife(person, century)
-      : person.sex === 'm'
+      ? (person) => receiveСenturyOfLife(person, century)
+      : (person) => person.sex === 'm'
   );
 
   return calculateAverageAge(men);
