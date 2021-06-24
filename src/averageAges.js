@@ -22,8 +22,9 @@ function averageAge(objectWithPeoples, momWithSon, people) {
     return child.born - mom.born;
   }) : objectWithPeoples.map(human => human.died - human.born);
 
-  return allAges.reduce((sumOFAge, nextAge) =>
-    sumOFAge + nextAge, 0) / allAges.length;
+  return allAges.reduce(
+    (sumOFAge, nextAge) => sumOFAge + nextAge,
+    0) / allAges.length;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -32,9 +33,9 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const men = century
-    ? people.filter(man => century === Math.ceil(man.died / 100)
-& man.sex === 'm') : people.filter(man => man.sex === 'm');
+  const men = people.filter(century ? man => century
+    === Math.ceil(man.died / 100)
+    & man.sex === 'm' : man => man.sex === 'm');
 
   return averageAge(men);
 }
@@ -55,10 +56,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const women = withChildren
-    ? people.filter(woman => woman.sex === 'f'
-& people.find(child => child.mother === woman.name)
-!== undefined) : people.filter(woman => woman.sex === 'f');
+  const women = people.filter(withChildren ? woman => woman.sex === 'f'
+&& people.find(child => child.mother === woman.name)
+    : woman => woman.sex === 'f');
 
   return averageAge(women);
 }
@@ -79,10 +79,9 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const children = onlyWithSon
-    ? people.filter(child => child.sex === 'm'
-    & people.find(mother => child.mother === mother.name) !== undefined)
-    : people.filter(child => people.find(mother => child.mother
+  const children = people.filter(onlyWithSon ? child => child.sex === 'm'
+    && people.find(mother => child.mother === mother.name)
+    : child => people.find(mother => child.mother
     === mother.name));
 
   return averageAge(children, true, people);
