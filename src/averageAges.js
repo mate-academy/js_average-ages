@@ -15,13 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter((item) =>
+  const men = people.filter((person) =>
     century
-      ? centuryOfLife(item) === century && item.sex === 'm'
-      : item.sex === 'm');
-  const lifetime = lifespan(men);
+      ? receiveСenturyOfLife(person) === century && person.sex === 'm'
+      : person.sex === 'm'
+  );
 
-  return averageaAge(lifetime);
+  return calculateAverageAge(men);
 }
 
 /**
@@ -39,14 +39,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter((item) =>
+  const women = people.filter((person) =>
     withChildren
-      ? item.sex === 'f' && people.find(child => item.name === child.mother)
-      : item.sex === 'f');
+      ? person.sex === 'f'
+      && people.find((child) => person.name === child.mother)
+      : person.sex === 'f'
+  );
 
-  const lifetime = lifespan(women);
-
-  return averageaAge(lifetime);
+  return calculateAverageAge(women);
 }
 
 /**
@@ -75,12 +75,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return item.born - mother.born;
   });
 
-  return averageaAge(yearsOld);
+  return calculateAverageAge(yearsOld);
 }
 
-const centuryOfLife = obj => Math.ceil(obj.died / 100);
-const lifespan = arr => arr.map(item => item.died - item.born);
-const averageaAge = arr => arr.reduce((acc, el) => acc + el) / arr.length;
+const receiveСenturyOfLife = (obj) => Math.ceil(obj.died / 100);
+const calculateAverageAge = (arr) =>
+  !isNaN(arr[0])
+    ? arr.reduce((acc, el) => acc + el) / arr.length
+    : arr
+      .map((item) => item.died - item.born)
+      .reduce((acc, el) => acc + el) / arr.length;
 
 module.exports = {
   calculateMenAverageAge,
