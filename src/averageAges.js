@@ -17,7 +17,7 @@
 function calculateMenAverageAge(people, century) {
   const men = people.filter((person) =>
     century
-      ? receiveСenturyOfLife(person) === century && person.sex === 'm'
+      ? receiveСenturyOfLife(person, century)
       : person.sex === 'm'
   );
 
@@ -75,16 +75,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return item.born - mother.born;
   });
 
-  return calculateAverageAge(yearsOld);
+  return yearsOld.reduce((acc, el) => acc + el) / yearsOld.length;
 }
 
-const receiveСenturyOfLife = (obj) => Math.ceil(obj.died / 100);
+const receiveСenturyOfLife = (obj, century) =>
+  Math.ceil(obj.died / 100) === century && obj.sex === 'm';
 const calculateAverageAge = (arr) =>
-  !isNaN(arr[0])
-    ? arr.reduce((acc, el) => acc + el) / arr.length
-    : arr
-      .map((item) => item.died - item.born)
-      .reduce((acc, el) => acc + el) / arr.length;
+  arr
+    .map((item) => item.died - item.born)
+    .reduce((acc, el) => acc + el) / arr.length;
 
 module.exports = {
   calculateMenAverageAge,
