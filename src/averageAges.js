@@ -16,11 +16,9 @@
  *
  */
 function averageAge(objectWithPeoples) {
-  const allAges = objectWithPeoples.map(human => human.died - human.born);
-
-  return allAges.reduce(
-    (sumOFAge, nextAge) => sumOFAge + nextAge,
-    0) / allAges.length;
+  return objectWithPeoples.reduce(
+    (sumOFAge, nextAge) => sumOFAge + (nextAge.died - nextAge.born),
+    0) / objectWithPeoples.length;
 }
 
 function calculateMenAverageAge(people, century) {
