@@ -20,6 +20,19 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let manList;
+
+  if (!century) {
+    manList = getPersonsBySex(people, 'm');
+  } else {
+    manList
+      = getPersonsBySex(people, 'm')
+        .filter(item => Math.ceil(item.died / 100) === century);
+  }
+
+  const getAge = getAgesList(manList);
+
+  return calclulationSumAndAverage(getAge);
 }
 
 /**
@@ -37,7 +50,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let womenList;
+
+  if (!withChildren) {
+    womenList = getPersonsBySex(people, 'f');
+  } else {
+    womenList = getMother(people);
+  }
+
+  const getAge = getAgesList(womenList);
+
+  return calclulationSumAndAverage(getAge);
 }
 
 /**
@@ -55,7 +78,51 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let childsList;
+
+  if (!onlyWithSon) {
+    childsList = getChildsList(people);
+  } else {
+    childsList = getChildsList(people).filter(item => item.sex === 'm');
+  }
+
+  const getMotherList = getMother(people);
+
+  const motherAge
+    = childsList.map(item => item.born
+      - getMotherList.find(person => item.mother === person.name).born);
+
+  return calclulationSumAndAverage(motherAge);
+}
+
+function calclulationSumAndAverage(ageList) {
+  const sum = ageList.reduce((a, b) => a + b);
+
+  return sum / ageList.length;
+}
+
+function getAgesList(list) {
+  return list.map(item => item.died - item.born);
+}
+
+function getPersonsBySex(listOfPersons, sex) {
+  return listOfPersons.filter(item => item.sex === `${sex}`);
+}
+
+function getMother(peoplelist) {
+  return getPersonsBySex(peoplelist, 'f').filter(item => {
+    if (peoplelist.some(peoples => item.name === peoples.mother)) {
+      return item;
+    }
+  });
+}
+
+function getChildsList(peopleList) {
+  return peopleList.filter(item => {
+    if (peopleList.some(person => item.mother === person.name)) {
+      return item;
+    }
+  });
 }
 
 module.exports = {
