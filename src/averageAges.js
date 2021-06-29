@@ -20,15 +20,11 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let manList;
-
-  if (!century) {
-    manList = getPersonsBySex(people, 'm');
-  } else {
-    manList
-      = getPersonsBySex(people, 'm')
-        .filter(item => Math.ceil(item.died / 100) === century);
-  }
+  // let manList;
+  const manList = !century
+    ? getPersonsBySex(people, 'm')
+    : getPersonsBySex(people, 'm')
+      .filter(item => Math.ceil(item.died / 100) === century);
 
   const getAge = getAgesList(manList);
 
@@ -50,13 +46,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenList;
-
-  if (!withChildren) {
-    womenList = getPersonsBySex(people, 'f');
-  } else {
-    womenList = getMother(people);
-  }
+  const womenList = !withChildren
+    ? getPersonsBySex(people, 'f')
+    : getMother(people);
 
   const getAge = getAgesList(womenList);
 
@@ -78,13 +70,9 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let childsList;
-
-  if (!onlyWithSon) {
-    childsList = getChildsList(people);
-  } else {
-    childsList = getChildsList(people).filter(item => item.sex === 'm');
-  }
+  const childsList = !onlyWithSon
+    ? getChildsList(people)
+    : getChildsList(people).filter(item => item.sex === 'm');
 
   const getMotherList = getMother(people);
 
@@ -96,9 +84,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 }
 
 function calclulationSumAndAverage(ageList) {
-  const sum = ageList.reduce((a, b) => a + b);
-
-  return sum / ageList.length;
+  return ageList.reduce((a, b) => a + b) / ageList.length;
 }
 
 function getAgesList(list) {
@@ -109,9 +95,9 @@ function getPersonsBySex(listOfPersons, sex) {
   return listOfPersons.filter(item => item.sex === `${sex}`);
 }
 
-function getMother(peoplelist) {
-  return getPersonsBySex(peoplelist, 'f').filter(item => {
-    if (peoplelist.some(peoples => item.name === peoples.mother)) {
+function getMother(peoplelList) {
+  return getPersonsBySex(peoplelList, 'f').filter(item => {
+    if (peoplelList.some(peoples => item.name === peoples.mother)) {
       return item;
     }
   });
