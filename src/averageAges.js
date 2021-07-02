@@ -83,12 +83,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let kidsList = [];
 
   if (arguments.length > 1) {
-    kidsList = people.filter(child => child.sex === 'm'
-    && people.find(mother => mother.name === child.mother));
+    kidsList = people.filter(child => (
+      child.sex === 'm'
+      && people.find(mother => mother.name === child.mother)));
   } else {
-    kidsList = people.filter(child => people.find(mother => {
-      return mother.name === child.mother;
-    }));
+    kidsList = people.filter(child => (
+      people.find(mother => mother.name === child.mother
+      )
+    ));
   }
 
   const ageDiffList = kidsList.map(child => {
@@ -97,9 +99,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return child.born - motherOfChild.born;
   });
 
-  const ageDiffCumul = ageDiffList.reduce((acc, current) => acc + current, 0);
+  const geGupSum = ageDiffList.reduce((acc, current) => acc + current, 0);
 
-  return ageDiffCumul / ageDiffList.length;
+  return geGupSum / ageDiffList.length;
 }
 
 module.exports = {
