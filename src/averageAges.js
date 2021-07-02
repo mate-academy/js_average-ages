@@ -84,9 +84,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const names = people.map((preson) => {
-    return preson.name;
-  });
+  const names = people.map((person) => person.name);
 
   let children;
 
