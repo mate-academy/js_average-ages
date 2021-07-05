@@ -15,17 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMen = people.filter(century
+    ? person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century
+    : person => person.sex === 'm');
+
+  const averageMenAge = onlyMen.reduce(
+    (acc, men) => acc + (men.died - men.born), 0
+  ) / onlyMen.length;
+
+  return averageMenAge;
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
+ * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -37,7 +42,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const onlyWomen = people.filter(withChildren
+    ? person => people.find(child => child.mother === person.name)
+    : person => person.sex === 'f');
+
+  const averageWomenAge = onlyWomen.reduce((acc, women) =>
+    acc + (women.died - women.born), 0) / onlyWomen.length;
+
+  return averageWomenAge;
 }
 
 /**
@@ -55,7 +67,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mother = people.filter(onlyWithSon
+    ? children => people.some(person =>
+      person.name === children.mother) && children.sex === 'm'
+    : children => people.find(person =>
+      (person.name === children.mother)));
+
+  const motherAge = mother.map(women =>
+    (women.born - people.find(person =>
+      person.name === women.mother).born));
+
+  const age = motherAge.reduce((acc, element) =>
+    acc + element) / motherAge.length;
+
+  return age;
 }
 
 module.exports = {
