@@ -33,7 +33,7 @@ function calculateMenAverageAge(people, century) {
  * Function returns average ave of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
- * Hint: To check if a woman has children you should find the other who mention
+ * Hint: To check if a women has children you should find the other who mention
  * her as mother.
  *
  * @param {object[]} people
@@ -43,14 +43,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.map(person => person.mother);
-  const womans = (withChildren === undefined)
+  const womens = (withChildren === undefined)
     ? people.filter(person => person.sex === 'f')
     : people.filter(person => mothers.includes(person.name));
-  const womansAges = womans.map(person => person.died - person.born);
-  const womanAverageAge = womansAges.reduce((accum, age) => accum + age)
-   / womansAges.length;
+  const womensAges = womens.map(person => person.died - person.born);
+  const womenAverageAge = womensAges.reduce((accum, age) => accum + age)
+   / womensAges.length;
 
-  return womanAverageAge;
+  return womenAverageAge;
 }
 
 /**
