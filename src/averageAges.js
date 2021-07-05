@@ -20,36 +20,12 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let avarage;
-  let count = 0;
+  const ages = people.filter(man => century
+    ? man.sex === 'm' && Math.ceil(man.died / 100) === century
+    : man.sex === 'm')
+    .map(person => person.died - person.born);
 
-  if (century) {
-    avarage = people.reduce((prev, person) => {
-      if (Math.ceil(person.died / 100) === century && person.sex === 'm') {
-        const age = person.died - person.born;
-
-        count++;
-
-        return age + prev;
-      } else {
-        return prev;
-      }
-    }, 0);
-  } else {
-    avarage = people.reduce((prev, person) => {
-      if (person.sex === 'm') {
-        const age = person.died - person.born;
-
-        count++;
-
-        return prev + age;
-      } else {
-        return prev;
-      }
-    }, 0);
-  }
-
-  return avarage / count;
+  return ages.reduce((prev, cur) => prev + cur, 0) / ages.length;
 }
 
 /**
