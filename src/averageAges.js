@@ -79,10 +79,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     count + value) / difference.length;
 }
 
-//  const calculateAverageAge = people =>
-//   people.reduce((count, human) =>
-//     count + (human.died - human.born), 0) / people.length;
-
 module.exports = {
   calculateMenAverageAge,
   calculateWomenAverageAge,
