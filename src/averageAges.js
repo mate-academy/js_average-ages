@@ -15,14 +15,15 @@
  * @return {number}
  */
 
-// eslint-disable-next-line max-len
-const averageAge = (people) => people.reduce((acc, person) =>
-  acc + person.died - person.born, 0) / people.length;
+const averageAge = (people) => people.reduce(
+  (acc, person) => acc + person.died - person.born,
+  0) / people.length;
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => century
-    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-    : person.sex === 'm'
+  const men = people.filter(
+    person => century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
   );
 
   return averageAge(men);
