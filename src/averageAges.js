@@ -20,11 +20,13 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let onlyMen = people.filter(person => person.sex === 'm');
 
-  if (arguments.length === 2) {
-    onlyMen = onlyMen.filter(man => Math.ceil(man.died / 100) === century);
-  }
+  let onlyMen;
+
+  arguments.length === 1
+    ? onlyMen = people.filter(person => person.sex === 'm')
+    : onlyMen = people.filter(person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century);
 
   const avarageAge = onlyMen.map(man => man.died - man.born)
     .reduce((a, b) => a + b) / onlyMen.length;
@@ -47,12 +49,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let onlyWomen = people.filter(person => person.sex === 'f');
+  // let onlyWomen = people.filter(person => person.sex === 'f');
 
-  if (arguments.length === 2) {
-    onlyWomen = onlyWomen.filter(woman =>
-      people.some(child => child.mother === woman.name));
-  }
+  // if (arguments.length === 2) {
+  //   onlyWomen = onlyWomen.filter(woman =>
+  //     people.some(child => child.mother === woman.name));
+  // }
+  let onlyWomen;
+
+  arguments.length === 1
+    ? onlyWomen = people.filter(person => person.sex === 'f')
+    : onlyWomen = people.filter(person => person.sex === 'f'
+    && people.some(child => child.mother === person.name));
 
   const avarageAge = onlyWomen.map(woman => woman.died - woman.born)
     .reduce((a, b) => a + b) / onlyWomen.length;
@@ -78,16 +86,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const mothersAndChilds = people.map(child => {
     const foundMother = people.find(mother => {
-      if (arguments.length === 2) {
-        return mother.name === child.mother && child.sex === 'm';
-      }
-
-      return mother.name === child.mother;
+      return arguments.length === 2
+        ? mother.name === child.mother && child.sex === 'm'
+        : mother.name === child.mother;
     });
 
-    if (foundMother) {
-      return child.born - foundMother.born;
-    }
+    return foundMother && child.born - foundMother.born;
   });
 
   const filteredList = mothersAndChilds.filter(motherAndChild =>
