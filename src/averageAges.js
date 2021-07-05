@@ -28,9 +28,7 @@ function calculateMenAverageAge(people, century) {
 
   const filteredMen = people.filter(filterCondition);
 
-  const averageAge = filteredMen.reduce(findAge, 0) / filteredMen.length;
-
-  return averageAge;
+  return filteredMen.reduce(findAge, 0) / filteredMen.length;
 }
 
 /**
@@ -57,9 +55,8 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const filteredWomen = people.filter(filterCondition);
 
-  const averageAge = filteredWomen.reduce(findAge, 0) / filteredWomen.length;
-
-  return averageAge;
+  return filteredWomen.reduce(findAge, 0) / filteredWomen.length;
+  ;
 }
 
 /**
@@ -90,10 +87,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const filteredChildren = people.filter(filterCondition);
 
-  const ageDifference = filteredChildren.map(child =>
-    child.born - people.find(personChild => {
-      return personChild.name === child.mother;
-    }).born);
+  const ageDifference = filteredChildren.map(
+    child => child.born - people.find(
+      personChild => {
+        return personChild.name === child.mother;
+      }).born
+  );
 
   const averageAge = ageDifference.reduce(calcSumAge, 0) / ageDifference.length;
 
