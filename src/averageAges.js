@@ -15,9 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let newPeople = [...people];
-
-  newPeople = newPeople.filter(human => human.sex === 'm');
+  let newPeople = people.filter(human => human.sex === 'm');
 
   if (century !== undefined) {
     newPeople = newPeople.filter(human =>
@@ -25,7 +23,7 @@ function calculateMenAverageAge(people, century) {
   }
 
   return newPeople.reduce((acum, curnum) =>
-    acum + curnum['died'] - curnum['born'], 0) / newPeople.length;
+    acum + curnum.died - curnum.born, 0) / newPeople.length;
 }
 
 /**
@@ -43,25 +41,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  people.forEach(element => {
-    const motherIndex = people.findIndex(elementt =>
+  const newPeople = [...people];
+
+  newPeople.forEach(element => {
+    const motherIndex = newPeople.findIndex(elementt =>
       elementt['name'] === element['mother']);
 
     if (motherIndex !== -1) {
-      people[motherIndex]['child'] = element;
+      newPeople[motherIndex]['child'] = element;
     }
   });
 
-  let newPeople = [...people];
-
-  newPeople = newPeople.filter(human => human.sex === 'f');
+  let fMPeople = newPeople.filter(human => human.sex === 'f');
 
   if (withChildren) {
-    newPeople = newPeople.filter(human => human['child'] !== undefined);
+    fMPeople = fMPeople.filter(human => human['child'] !== undefined);
   }
 
-  return newPeople.reduce((acum, curnum) =>
-    acum + curnum['died'] - curnum['born'], 0) / newPeople.length;
+  return fMPeople.reduce((acum, curnum) =>
+    acum + curnum['died'] - curnum['born'], 0) / fMPeople.length;
 }
 
 /**
