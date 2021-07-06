@@ -78,18 +78,19 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     onlyWithSon ? findAllWomenWithSon : findAllWomenWithChild
   );
 
-  const yearsOld = children.map(item => {
-    const mother = people.find(mom => item.mother === mom.name);
+  const yearsOld = children.map(child => {
+    const mother = people.find(mom => child.mother === mom.name);
 
-    return item.born - mother.born;
+    return child.born - mother.born;
   });
 
-  return yearsOld.reduce((acc, el) => acc + el) / yearsOld.length;
+  return yearsOld.reduce((acc, age) => acc + age) / yearsOld.length;
 }
 
-const calculateAverageAge = (arr) => {
-  return +(arr
-    .reduce((sum, el) => sum + (el.died - el.born), 0) / arr.length).toFixed(2);
+const calculateAverageAge = (ages) => {
+  return +(ages
+    .reduce((sum, age) => sum + (age.died - age.born), 0) / ages.length)
+    .toFixed(2);
 };
 
 module.exports = {
