@@ -14,21 +14,18 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   const newPeople = people.filter(human => human.sex === 'm');
   const newPeopleLength = newPeople.filter(human =>
     Math.ceil(human['died'] / 100) === century).length;
 
-  switch (century) {
-    case undefined:
-      return newPeople.reduce((acum, curnum) =>
-        acum + curnum.died - curnum.born, 0) / newPeople.length;
-
-    default:
-      return newPeople.filter(human =>
-        Math.ceil(human['died'] / 100) === century).reduce((acum, curnum) =>
-        acum + curnum.died - curnum.born, 0) / newPeopleLength;
-  }
+  return (century)
+    ? newPeople.filter(human =>
+      Math.ceil(human['died'] / 100) === century).reduce((acum, curnum) =>
+      acum + curnum.died - curnum.born, 0) / newPeopleLength
+    : newPeople.reduce((acum, curnum) =>
+      acum + curnum.died - curnum.born, 0) / newPeople.length;
 }
 
 /**
@@ -46,25 +43,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const newPeople = [...people];
+  const mothersNames = people.map((human) => (human.mother));
 
-  newPeople.forEach(element => {
-    const motherIndex = newPeople.findIndex(elementt =>
-      elementt['name'] === element['mother']);
-
-    if (motherIndex !== -1) {
-      newPeople[motherIndex]['child'] = element;
-    }
+  const female = people.filter((human) => {
+    return (withChildren)
+      ? mothersNames.indexOf(human.name) >= 0
+      : (human.sex === 'f');
   });
 
-  let fMPeople = newPeople.filter(human => human.sex === 'f');
+  const sumAgeWoman = female.reduce((acumulator, curentValue) => {
+    return acumulator + curentValue.died - curentValue.born;
+  }, 0);
 
-  if (withChildren) {
-    fMPeople = fMPeople.filter(human => human['child'] !== undefined);
-  }
-
-  return fMPeople.reduce((acum, curnum) =>
-    acum + curnum['died'] - curnum['born'], 0) / fMPeople.length;
+  return sumAgeWoman / female.length;
 }
 
 /**
