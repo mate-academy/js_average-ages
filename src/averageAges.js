@@ -31,9 +31,8 @@ function calculateMenAverageAge(people, century) {
   const men = people.filter(sexDefined('m'));
   const menDiedInCentury = men.filter(diedInCentury(century));
   const menAges = menDiedInCentury.map(person => person.died - person.born);
-  const averageAgeOfMen = averageAge(menAges);
 
-  return averageAgeOfMen;
+  return averageAge(menAges);
 }
 
 /**
@@ -52,19 +51,17 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const womenList = people.filter(sexDefined('f'));
+  const women = people.filter(sexDefined('f'));
 
-  const womenListWithChildren = people
+  const womenWithChildren = people
     .filter(person => people
       .find(child => child.mother === person.name));
 
-  const womenListOfAges = withChildren
-    ? womenListWithChildren.map(person => person.died - person.born)
-    : womenList.map(person => person.died - person.born);
+  const womenOfAges = withChildren
+    ? womenWithChildren.map(person => person.died - person.born)
+    : women.map(person => person.died - person.born);
 
-  const averageAgeOfWomen = averageAge(womenListOfAges);
-
-  return averageAgeOfWomen;
+  return averageAge(womenOfAges);
 }
 
 /**
@@ -82,20 +79,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrenList = people
+  const children = people
+    .filter(child => onlyWithSon ? (child && child.sex === 'm') : child)
     .filter(person => {
       const child = people
         .find(potentialChild => person.mother === potentialChild.name);
 
       return child;
-    })
-    .filter(child => onlyWithSon ? (child && child.sex === 'm') : child);
-  const differenceOfAgesList = childrenList.map(child => {
+    });
+
+  const differenceOfAges = children.map(child => {
     const mother = people.find(woman => woman.name === child.mother);
 
     return child.born - mother.born;
   });
-  const averageAgeOfDiff = averageAge(differenceOfAgesList);
+  const averageAgeOfDiff = averageAge(differenceOfAges);
 
   return averageAgeOfDiff;
 }
