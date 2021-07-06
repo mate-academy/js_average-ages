@@ -4,11 +4,11 @@ function calculateMenAverageAge(people, century) {
   let ageOfPassage = [];
 
   (century === undefined)
-    ? (people.map(item => ((item.sex === 'm')
-      ? ageOfPassage.push(item.died - item.born) : false)))
+    ? (people.map(item => (item.sex === 'm')
+      && ageOfPassage.push(item.died - item.born)))
     : (people.map(item =>
-      ((item.sex === 'm' && Math.ceil(item.died / 100) === century)
-        ? ageOfPassage.push(item.died - item.born) : false)));
+      (item.sex === 'm' && Math.ceil(item.died / 100) === century)
+      && ageOfPassage.push(item.died - item.born)));
 
   ageOfPassage = calulateAvarageAge(ageOfPassage);
 
