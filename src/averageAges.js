@@ -20,6 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const men = century
+    ? people.filter(person => {
+      return person.sex === 'm' && Math.ceil(person.died / 100) === century;
+    })
+    : people.filter(person => person.sex === 'm');
+
+  const menAge = men.map(man => man.died - man.born);
+
+  return menAge.reduce((sum, age) => sum + age, 0) / men.length;
 }
 
 /**
@@ -37,7 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.filter((person, i, arr) => {
+    return arr.find(child => child.mother === person.name);
+  });
+
+  const womenWithoutChildren = people.filter(person => person.sex === 'f');
+
+  const women = withChildren ? mothers : womenWithoutChildren;
+
+  const womenAge = women.map(woman => woman.died - woman.born);
+
+  return womenAge.reduce((sum, age) => sum + age, 0) / women.length;
 }
 
 /**
@@ -55,7 +74,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => onlyWithSon
+    ? people.find(mother => mother.name === child.mother) && child.sex === 'm'
+    : people.find(mother => mother.name === child.mother)
+  );
+
+  const ageDiff = children.map(child => {
+    const mom = people.find(mother => mother.name === child.mother);
+
+    if (mom) {
+      return child.born - mom.born;
+    }
+  });
+
+  return ageDiff.reduce((sum, age) => sum + age, 0) / ageDiff.length;
 }
 
 module.exports = {
