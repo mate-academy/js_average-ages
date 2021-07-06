@@ -16,16 +16,18 @@
  */
 
 const averageLifespan = (people) => people
-  .reduce((sum, element) =>
-    sum + (element.died - element.born), 0) / people.length;
+  .reduce(
+    (sum, element) => sum + (element.died - element.born),
+    0) / people.length;
 
 function calculateMenAverageAge(people, century) {
-  const menLifespan = people
-    .filter((human) => century
-      ? Math.ceil(human.died / 100) === century && human.sex === 'm'
-      : human.sex === 'm');
+  const men = people
+    .filter(
+      century
+        ? human => Math.ceil(human.died / 100) === century && human.sex === 'm'
+        : human => human.sex === 'm');
 
-  return averageLifespan(menLifespan);
+  return averageLifespan(men);
 }
 
 /**
@@ -43,9 +45,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(human => withChildren
-    ? people.find(child => child.mother === human.name)
-    : human.sex === 'f');
+  const women = people.filter(
+    human => withChildren ? people.find(
+      child => child.mother === human.name) : human.sex === 'f');
 
   return averageLifespan(women);
 }
@@ -65,14 +67,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(human => onlyWithSon
-    ? people.some(mother => mother.name === human.mother)
-    && human.sex === 'm'
-    : people.find(mother => mother.name === human.mother)
+  const children = people.filter(
+    human => onlyWithSon ? people.some(
+      mother => mother.name === human.mother) && human.sex === 'm'
+      : people.find(mother => mother.name === human.mother)
   );
 
-  const ageDifference = children.map(age =>
-    age.born - people.find(mother => mother.name === age.mother).born
+  const ageDifference = children.map(
+    age => age.born - people.find(
+      mother => mother.name === age.mother
+    ).born
   );
 
   return ageDifference.reduce((count, human) =>
