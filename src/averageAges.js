@@ -19,13 +19,15 @@ function calculateMenAverageAge(people, century) {
   const newPeople = people.filter(human => human.sex === 'm');
   const newPeopleLength = newPeople.filter(human =>
     Math.ceil(human['died'] / 100) === century).length;
+  const makeFromCentry = human => Math.ceil(human['died'] / 100) === century;
+  const getFromCentry = (acum, curnum) => acum + curnum.died - curnum.born;
+  const getFromAllMen = (acum, curnum) =>
+    acum + curnum.died - curnum.born;
 
   return (century)
-    ? newPeople.filter(human =>
-      Math.ceil(human['died'] / 100) === century).reduce((acum, curnum) =>
-      acum + curnum.died - curnum.born, 0) / newPeopleLength
-    : newPeople.reduce((acum, curnum) =>
-      acum + curnum.died - curnum.born, 0) / newPeople.length;
+    ? newPeople.filter(makeFromCentry).reduce(getFromCentry, 0)
+     / newPeopleLength
+    : newPeople.reduce(getFromAllMen, 0) / newPeople.length;
 }
 
 /**
