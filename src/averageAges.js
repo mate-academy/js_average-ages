@@ -43,8 +43,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = withChildren ? people.filter(
-    person => people.find(child => child.mother === person.name))
+  const woman = withChildren
+    ? people.filter(
+      person => people.find(child => child.mother === person.name)
+    )
     : people.filter(person => person.sex === 'f');
 
   const averageAge = woman.map(person => person.died - person.born)
