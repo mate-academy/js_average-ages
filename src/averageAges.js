@@ -13,77 +13,65 @@ const calulateAvarageAge = (womenAverageAgeay) => {
 /* ---------------------------------------------------------------- */
 
 function calculateMenAverageAge(people, century) {
-  const withoutCentury = [];
-  const withCentury = [];
-  const allDateWithoutCentury = people.map(item => {
-    (item.sex === 'm')
-      && withoutCentury.push(item.died - item.born);
+  const withoutCentury = people.filter(x => x.sex === 'm');
 
-    return withoutCentury;
-  });
-  const allDataWithCentury = people.map(item => {
-    (item.sex === 'm' && Math.ceil(item.died / 100) === century)
-          && withCentury.push(item.died - item.born);
+  const withCentury = withoutCentury.filter(item =>
+    century === Math.ceil(item.died / 100));
 
-    return withCentury;
-  });
+  const withCenturyOrNo = century ? withCentury : withoutCentury;
 
-  return century ? calulateAvarageAge(allDataWithCentury[0])
-    : calulateAvarageAge(allDateWithoutCentury[0]);
+  return (calulateAvarageAge(calculateDate(withCenturyOrNo)));
 }
+
+const calculateDate = (person) => {
+  const resOfFunction = [];
+
+  person.map(item => resOfFunction.push(item.died - item.born));
+
+  return resOfFunction;
+};
 
 /* ---------------------------------------------------------------- */
 
 function calculateWomenAverageAge(people, withChildren) {
   const womenWithChild = [];
-  const womenWithoutChild = [];
 
   const allWoman = people.filter(person => person.sex === 'f');
 
-  const allWomenLifeTim = allWoman.map(value => {
-    womenWithoutChild.push(value.died - value.born);
+  const allWomenLifeTime = allWoman.map(value => (value.died - value.born));
 
-    return womenWithoutChild;
-  });
-
-  const womenLifeTimeWithChild = allWoman.map(item => {
-    people.map(value => {
-      (item.name === value.mother)
-       && womenWithChild.push(item.died - item.born);
-    });
+  let womenLifeTimeWithChild = allWoman.filter(item => {
+    people.map(value => (item.name === value.mother)
+          && womenWithChild.push(item.died - item.born));
 
     return womenWithChild;
   });
 
-  return withChildren
-    ? calulateAvarageAge(womenLifeTimeWithChild[0].filter((x, index, array) =>
-      array.indexOf(x) === index))
-    : calulateAvarageAge(allWomenLifeTim[0]);
+  womenLifeTimeWithChild = womenWithChild.filter((item, index, array) =>
+    array.indexOf(item) === index);
+
+  const res = withChildren ? womenLifeTimeWithChild : allWomenLifeTime;
+
+  return calulateAvarageAge(res);
 }
 
 /* ---------------------------------------------------------------- */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const withSunAgeDate = [];
-  const withoutSunAgeDate = [];
+  const children = people
+    .filter(person => people.some(parent => person.mother === parent.name));
 
-  const averageAgeWithSun = people.filter(child => child.sex === 'm'
-  && people.map(mother => mother.name === child.mother));
-  const averageAgeWithoutSun = people.filter(child => people.find(
-    mother => mother.name === child.mother));
+  const filteredChildren = onlyWithSon
+    ? children.filter(x => x.sex === 'm')
+    : children;
 
-  const withSunOrNo = (person, array) => {
-    person.map(item => {
-      people.map(value => (value.name === item.mother)
-        && array.push(item.born - value.born));
-    });
+  const mothers = filteredChildren
+    .map(child => people.find(mother => mother.name === child.mother));
 
-    return array;
-  };
+  const differenceAges = filteredChildren
+    .map((child, index) => child.born - mothers[index].born);
 
-  return onlyWithSon
-    ? calulateAvarageAge(withSunOrNo(averageAgeWithSun, withSunAgeDate))
-    : calulateAvarageAge(withSunOrNo(averageAgeWithoutSun, withoutSunAgeDate));
+  return calulateAvarageAge(differenceAges);
 }
 
 module.exports = {
