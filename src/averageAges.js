@@ -1,7 +1,5 @@
 'use strict';
 
-/* ---------------------------------------------------------------- */
-
 const calulateAvarageAge = (womenAverageAgeay) => {
   const womenAverageAgeLength = womenAverageAgeay.length;
   const resultOfAverageAge = (womenAverageAgeay
@@ -9,8 +7,6 @@ const calulateAvarageAge = (womenAverageAgeay) => {
 
   return resultOfAverageAge;
 };
-
-/* ---------------------------------------------------------------- */
 
 function calculateMenAverageAge(people, century) {
   const withoutCentury = people.filter(x => x.sex === 'm');
@@ -30,8 +26,6 @@ const calculateDate = (person) => {
 
   return resOfFunction;
 };
-
-/* ---------------------------------------------------------------- */
 
 function calculateWomenAverageAge(people, withChildren) {
   const womenWithChild = [];
@@ -54,8 +48,6 @@ function calculateWomenAverageAge(people, withChildren) {
 
   return calulateAvarageAge(res);
 }
-
-/* ---------------------------------------------------------------- */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people
