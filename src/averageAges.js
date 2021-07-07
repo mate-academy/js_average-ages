@@ -1,3 +1,7 @@
+/* eslint-disable object-curly-spacing */
+/* eslint-disable quotes */
+/* eslint-disable object-curly-newline */
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -15,13 +19,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const men = people.filter(person => century
+    ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+    : person.sex === 'm');
 
+  return men.reduce((previous, current) => {
+    return previous + (current.died - current.born);
+  }, 0) / men.length;
+}
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,8 +41,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => withChildren
+    ? people.some(child => child.mother === person.name)
+    : person.sex === 'f'
+  );
+
+  return women.reduce((previous, current) => {
+    return previous + (current.died - current.born);
+  }, 0) / women.length;
 }
 
 /**
@@ -55,7 +68,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let differenceInAge = 0;
+  let counter = 0;
+
+  const women = people.filter(person => person.sex === 'f');
+
+  const sons = people.filter(person => person.sex === 'm');
+
+  if (onlyWithSon) {
+    women.forEach(woman => sons.forEach(son => {
+      if (son.mother === woman.name) {
+        differenceInAge += (son.born - woman.born);
+        counter++;
+      }
+    }));
+  } else {
+    women.forEach(woman => people.forEach(child => {
+      if (child.mother === woman.name) {
+        differenceInAge += (child.born - woman.born);
+        counter++;
+      }
+    }));
+  }
+
+  return differenceInAge / counter;
 }
 
 module.exports = {
