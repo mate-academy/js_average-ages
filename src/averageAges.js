@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  let mensQuantity = 0;
+  const averageAgeOfMen = people.reduce((acc, person) => {
+    if (person.sex === 'm'
+    && (century === undefined || century === Math.ceil(person.died / 100))) {
+      mensQuantity++;
+
+      return acc + person.died - person.born;
+    }
+
+    return acc;
+  }, 0);
+
+  return averageAgeOfMen / mensQuantity;
 }
 
 /**
@@ -38,6 +52,24 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const womens = people.filter(person => person.sex === 'f');
+
+  const womenWithChildren = people.filter(
+    person => people.some(child => child.mother === person.name));
+
+  if (withChildren) {
+    const ageWomenWithChildren = womenWithChildren.reduce((acc, person) => {
+      return acc + person.died - person.born;
+    }, 0);
+
+    return ageWomenWithChildren / womenWithChildren.length;
+  } else {
+    const ageWomen = womens.reduce((acc, person) => {
+      return acc + person.died - person.born;
+    }, 0);
+
+    return ageWomen / womens.length;
+  }
 }
 
 /**
@@ -56,6 +88,28 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const ageDiff = [];
+  let mothers = people.filter(
+    person => person.sex === 'f' && people.some(
+      child => child.mother === person.name));
+
+  if (onlyWithSon) {
+    mothers = mothers.filter(
+      mother => people.some(
+        child => child.mother === mother.name && child.sex === 'm'));
+  }
+
+  mothers.map(mother => {
+    const children = onlyWithSon
+      ? people.filter(
+        child => child.mother === mother.name && child.sex === 'm')
+      : people.filter(
+        child => child.mother === mother.name);
+
+    children.map(child => ageDiff.push(child.born - mother.born));
+  });
+
+  return ageDiff.reduce((sum, age) => sum + age, 0) / ageDiff.length;
 }
 
 module.exports = {
