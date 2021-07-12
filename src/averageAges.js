@@ -17,15 +17,11 @@
 function calculateMenAverageAge(people, century) {
   let mensList = [];
 
-  if (arguments.length > 1) {
-    mensList = people.filter(person => {
-      if (Math.ceil(person.died / 100) === century) {
-        return person.sex === 'm';
-      }
-    });
-  } else {
-    mensList = people.filter(person => person.sex === 'm');
-  }
+  mensList = arguments.length > 1 ? people.filter(person => {
+    if (Math.ceil(person.died / 100) === century) {
+      return person.sex === 'm';
+    }
+  }) : people.filter(person => person.sex === 'm');
 
   const mensAgesList = mensList.map(person => person.died - person.born);
   const sumOfMensAges = mensAgesList.reduce((acc, current) => acc + current, 0);
@@ -50,13 +46,9 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let womenList = [];
 
-  if (arguments.length > 1) {
-    womenList = people.filter(haveMother => {
-      return people.find(child => haveMother.name === child.mother);
-    });
-  } else {
-    womenList = people.filter(person => person.sex === 'f');
-  }
+  womenList = arguments.length > 1 ? people.filter(haveMother => {
+    return people.find(child => haveMother.name === child.mother);
+  }) : people.filter(person => person.sex === 'f');
 
   const womenAgesList = womenList.map(person => person.died - person.born);
 
@@ -82,16 +74,13 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let kidsList = [];
 
-  if (arguments.length > 1) {
-    kidsList = people.filter(child => (
-      child.sex === 'm'
-        && people.find(mother => mother.name === child.mother)));
-  } else {
-    kidsList = people.filter(child => (
-      people.find(mother => mother.name === child.mother
-      )
-    ));
-  }
+  kidsList = arguments.length > 1 ? people.filter(child => (
+    child.sex === 'm'
+      && people.find(mother =>
+        mother.name === child.mother))) : people.filter(child => (
+    people.find(mother => mother.name === child.mother
+    )
+  ));
 
   const ageDifferenceList = kidsList.map(child => {
     const motherOfChild = people.find(mother => mother.name === child.mother);
