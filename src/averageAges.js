@@ -50,21 +50,18 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const reducer = (a, b) => a + b;
-  let arrWomen;
 
-  if (withChildren) {
-    arrWomen = people.filter((person) => {
+  const arrWomen = withChildren
+    ? people.filter((person) => {
       const trueMother = people.some((female) => {
         return female.mother === person.name;
       });
 
       return trueMother && person.sex === 'f';
-    });
-  } else {
-    arrWomen = people.filter((person) => {
+    })
+    : people.filter((person) => {
       return person.sex === 'f';
     });
-  };
 
   const arrAgesWomen = arrWomen.map(person => person.died - person.born);
 
@@ -89,29 +86,41 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const reducer = (a, b) => a + b;
-  const yearsDiff = [];
+  // const yearsDiff = [];
 
-  if (onlyWithSon) {
-    people.forEach((mother) => {
-      people.forEach((person) => {
-        if (person.sex === 'm' && person.mother === mother.name) {
-          yearsDiff.push(person.born - mother.born);
-        };
-      });
+  // if (onlyWithSon) {
+  //   people.forEach((mother) => {
+  //     people.forEach((person) => {
+  //       if (person.sex === 'm' && person.mother === mother.name) {
+  //         yearsDiff.push(person.born - mother.born);
+  //       };
+  //     });
+  //   });
+  // } else {
+  //   people.forEach((mother) => {
+  //     people.forEach((person) => {
+  //       if (person.mother === mother.name) {
+  //         yearsDiff.push(person.born - mother.born);
+  //       };
+  //     });
+  //   });
+  // };
+
+  const arrChildren = onlyWithSon
+    ? people.filter((child) => {
+      return child.sex === 'm'
+        && people.some((mother) => child.mother === mother.name);
+    })
+    : people.filter((child) => {
+      return people.some((mother) => child.mother === mother.name);
     });
-  } else {
-    people.forEach((mother) => {
-      people.forEach((person) => {
-        if (person.mother === mother.name) {
-          yearsDiff.push(person.born - mother.born);
-        };
-      });
-    });
-  };
 
-  const resultYearsDiff = yearsDiff.reduce(reducer) / yearsDiff.length;
+  const ageDiff = arrChildren.map((child) =>
+    child.born - people.find((mother) => child.mother === mother.name).born);
 
-  return +resultYearsDiff.toFixed(2);
+  const resultAgeDiff = ageDiff.reduce(reducer) / ageDiff.length;
+
+  return +resultAgeDiff.toFixed(2);
 };
 
 module.exports = {
