@@ -20,6 +20,16 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  let arrMen;
+
+  century
+    ? arrMen = people.filter(person => person['sex'] === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : arrMen = people.filter(person => person['sex'] === 'm');
+
+  return (arrMen.reduce((prev, person) =>
+    (prev + (person['died'] - person['born'])), 0)) / arrMen.length;
 }
 
 /**
@@ -38,6 +48,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let arrWomen;
+
+  withChildren
+    ? arrWomen = people.filter(person => person['sex'] === 'f'
+      && people.some(el => (el['mother']) === person['name']))
+    : arrWomen = people.filter(person => person['sex'] === 'f');
+
+  return (arrWomen.reduce((prev, person) =>
+    (prev + (person['died'] - person['born'])), 0)) / arrWomen.length;
 }
 
 /**
@@ -55,7 +74,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function calculateChildren(prev, person) {
+    const copyPerson = { ...person };
+    const mother = people.find(el => el['name'] === person['mother']);
+
+    if (onlyWithSon && person['sex']
+      === 'm' && people.some(el => el['name'] === person['mother'])) {
+      copyPerson.bornMother = mother['born'];
+      prev.push(copyPerson);
+    }
+
+    if (!onlyWithSon && people.some(el => el['name'] === person['mother'])) {
+      copyPerson.bornMother = mother['born'];
+      prev.push(copyPerson);
+    }
+
+    return prev;
+  }
+
+  const arrСhild = people.reduce(calculateChildren, []);
+
+  function calculateDifferenceAge(prev, person) {
+    const differenceAge = prev + (person['born'] - person['bornMother']);
+
+    return differenceAge;
+  }
+
+  return arrСhild.reduce(calculateDifferenceAge, 0) / arrСhild.length;
 }
 
 module.exports = {
