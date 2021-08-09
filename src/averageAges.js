@@ -52,7 +52,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let children = filterChildren(people, women);
 
   if (onlyWithSon) {
-    children = children.filter(x => x.sex === 'm');
+    children = filterBySex(children, 'm');
   }
 
   const motherChildAgeDiff = parentChildAgeDiff(women, children);
