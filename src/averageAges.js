@@ -45,17 +45,15 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let women = filterBySex(people, 'f');
+  const mothers = filterMothers(people, filterBySex(people, 'f'));
 
-  women = filterMothers(people, women);
-
-  let children = filterChildren(people, women);
+  let children = filterChildren(people, mothers);
 
   if (onlyWithSon) {
     children = filterBySex(children, 'm');
   }
 
-  const motherChildAgeDiff = parentChildAgeDiff(women, children);
+  const motherChildAgeDiff = parentChildAgeDiff(mothers, children);
 
   return motherChildAgeDiff / children.length;
 }
