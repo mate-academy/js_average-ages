@@ -15,19 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let menList = people.filter((person) => person.sex === 'm');
+  const getData = people.filter(person => person.sex === 'm');
 
-  menList = (century !== undefined)
-    ? menList = menList.filter((person) =>
-      Math.ceil(person.died / 100) === century
-    )
-    : menList;
+  const getDataWithCentury = people
+    .filter(person => Math.ceil(person.died / 100) === 18
+      && person.sex === 'm');
 
-  const totalAge = menList.reduce((total, { born, died }) =>
-    total + (died - born),
-  0);
+  const getListOfMens = century !== 0 ? getDataWithCentury : getData;
 
-  return totalAge / menList.length;
+  const getListOfAges = getListOfMens.map(person => person.died - person.born);
+
+  const sumOfAges = getListOfAges.reduce((prev, item) => prev + item, 0);
+
+  return sumOfAges / getListOfAges.length;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
