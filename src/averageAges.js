@@ -15,26 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-  /*
-  if (century) {
-    const oneCentury
-    = this.filter(x => Math.ceil(x.died/100) * 100 === century);
-  }
-  */
-  const arrayToUse = century
+  const filteredPeople = century
     ? people.filter(({ died }) => Math.ceil(died / 100) === century)
     : people;
 
-  const men = arrayToUse.filter(({ sex }) => sex === 'm');
-  const age = men.map(({ born, died }) => died - born);
-  const sumOfAge = age.reduce((prev, x) => prev + x);
+  const menAges = filteredPeople.filter(({ sex }) => sex === 'm')
+    .map(({ born, died }) => died - born);
+  const sumOfAge = menAges.reduce((prev, x) => prev + x);
 
-  return sumOfAge / men.length;
+  return sumOfAge / menAges.length;
 }
 
 /**
@@ -52,15 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const arrayToUse = withChildren
+  const filteredPeople = withChildren
     ? people.filter(x => people.some(({ mother }) => mother === x.name))
     : people;
 
-  const women = arrayToUse.filter(x => x.sex === 'f');
-  const age = women.map(({ born, died }) => died - born);
-  const sumOfAge = age.reduce((prev, x) => prev + x);
+  const womenAges = filteredPeople.filter(x => x.sex === 'f')
+    .map(({ born, died }) => died - born);
+  const sumOfAge = womenAges.reduce((prev, x) => prev + x);
 
-  return sumOfAge / women.length;
+  return sumOfAge / womenAges.length;
 };
 
 /**
@@ -79,10 +68,11 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const women = people.filter(x => x.sex === 'f');
-  const men = people.filter(x => x.sex === 'm');
-  const arrayToUse = onlyWithSon ? men : people;
+  const filteredPeople = onlyWithSon
+    ? people.filter(x => x.sex === 'm')
+    : people;
 
-  const children = arrayToUse.filter(({ mother }) => {
+  const children = filteredPeople.filter(({ mother }) => {
     return women.some(woman => woman.name === mother);
   });
 
