@@ -21,10 +21,11 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const men = people.filter(({ sex }) => sex === 'm');
-  const menCentury = men.filter(({ died }) => {
-    return Math.ceil(died / 100) === century;
-  });
-  const filteredMen = century !== undefined ? menCentury : men;
+  const menCentury = men.filter(({ died }) => (
+    Math.ceil(died / 100) === century
+  ));
+  const filteredMen = century !== undefined && typeof (century) === 'number'
+    ? menCentury : men;
   const age = filteredMen.map(x => x.died - x.born);
 
   return age.reduce((a, b) => a + b) / age.length;
@@ -47,9 +48,9 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const women = people.filter(({ sex }) => sex === 'f');
-  const womenWithChild = people.filter(({ name }) => {
-    return people.some(({ mother }) => name === mother);
-  });
+  const womenWithChild = women.filter(({ name }) => (
+    people.some(({ mother }) => name === mother)
+  ));
   const filteredWomen = withChildren !== undefined ? womenWithChild : women;
   const age = filteredWomen.map(x => x.died - x.born);
 
@@ -72,14 +73,14 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const children = people.filter(({ mother }) => {
-    return people.some(({ name }) => name === mother);
-  });
+  const children = people.filter(({ mother }) => (
+    people.some(({ name }) => name === mother)
+  ));
   const onlySon = children.filter(({ sex }) => sex === 'm');
   const filteredPeople = onlyWithSon !== undefined ? onlySon : children;
-  const difference = filteredPeople.map(x => {
-    return x.born - people.find(({ name }) => name === x.mother).born;
-  });
+  const difference = filteredPeople.map(x => (
+    x.born - people.find(({ name }) => name === x.mother).born
+  ));
 
   return difference.reduce((a, b) => a + b) / difference.length;
 }
