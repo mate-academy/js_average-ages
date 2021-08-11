@@ -96,7 +96,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   onlyWithSon !== undefined
     ? people.filter((child) => {
-      return people.some((mom) => {
+      people.some((mom) => {
         if (mom.name === child.mother && child.sex === 'm') {
           sonsMotherAges.push(child.born - mom.born);
         }
@@ -104,7 +104,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     })
 
     : people.filter((child) => {
-      return people.some((mom) => {
+      people.some((mom) => {
         if (mom.name === child.mother) {
           childrenMotherAges.push(child.born - mom.born);
         };
