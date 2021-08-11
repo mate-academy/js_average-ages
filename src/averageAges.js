@@ -16,17 +16,14 @@
  */
 function calculateMenAverageAge(people, century) {
   const filteredMans = century !== undefined
-    ? people.filter((person) => {
-      return (Math.ceil(person.died / 100) === century) && (person.sex === 'm');
-    })
+    ? people.filter((person) => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
 
-    : people.filter((person) => {
-      return (person.sex === 'm');
-    });
+    : people.filter(person => person.sex === 'm');
 
   const numberOfMans = filteredMans.length;
 
-  const ages = filteredMans.map((person) => person.died - person.born);
+  const ages = filteredMans.map(person => person.died - person.born);
 
   function averageAgeCalculator(sum, age) {
     return sum + age;
@@ -53,19 +50,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const filteredWomen = withChildren !== undefined
-    ? people.filter((woman) => {
-      return people.some((person) => {
-        return person.mother === woman.name;
-      });
-    })
+    ? people
+      .filter(woman => people.some(person => person.mother === woman.name))
 
-    : people.filter((person) => {
-      return (person.sex === 'f');
-    });
+    : people.filter(person => person.sex === 'f');
 
   const numberOfWomen = filteredWomen.length;
 
-  const ages = filteredWomen.map((person) => person.died - person.born);
+  const ages = filteredWomen.map(person => person.died - person.born);
 
   function averageAgeCalculator(sum, age) {
     return sum + age;
@@ -95,21 +87,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const sonsMotherAges = [];
 
   onlyWithSon !== undefined
-    ? people.filter((child) => {
-      people.some((mom) => {
-        if (mom.name === child.mother && child.sex === 'm') {
-          sonsMotherAges.push(child.born - mom.born);
-        }
-      });
-    })
+    ? people.filter(child => people.some(mom => {
+      mom.name === child.mother && child.sex === 'm'
+        ? sonsMotherAges.push(child.born - mom.born)
+        : sonsMotherAges.push();
+    }))
 
-    : people.filter((child) => {
-      people.some((mom) => {
-        if (mom.name === child.mother) {
-          childrenMotherAges.push(child.born - mom.born);
-        };
-      });
-    });
+    : people.filter(child => people.some(mom => {
+      mom.name === child.mother
+        ? childrenMotherAges.push(child.born - mom.born)
+        : childrenMotherAges.push();
+    }));
 
   const ages = onlyWithSon !== undefined
     ? sonsMotherAges
