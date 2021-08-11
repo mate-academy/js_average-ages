@@ -5,29 +5,35 @@ const filterBySex = (people, sex) => {
 };
 
 const getAverageAge = (people) => {
-  return people
-    .reduce((sumOfAges, person) =>
-      sumOfAges + (person.died - person.born), 0) / people.length;
+  return people.reduce((sumOfAges, person) => (
+    sumOfAges + (person.died - person.born)
+  ),
+  0,
+  ) / people.length;
 };
 
 const filterMothers = (people, women) => {
-  return women
-    .filter(mother => people
-      .map(daughter => daughter.mother).includes(mother.name));
+  return women.filter(mother => (
+    people.map(child => child.mother).includes(mother.name)
+  ));
 };
 
 const filterChildren = (people, mothers) => {
   const children = people.filter(person => person.mother !== null);
 
-  return children
-    .filter(child => mothers
-      .map(mother => mother.name).includes(child.mother));
+  return children.filter(child => (
+    mothers.map(mother => mother.name).includes(child.mother)
+  ));
 };
 
 const parentChildAgeDiff = (parents, children) => {
-  return children.reduce(
-    (totalAge, child) => totalAge + (child.born - parents.filter(
-      parent => parent.name === child.mother)[0].born), 0);
+  return children.reduce((totalAge, child) => (
+    totalAge + (child.born - parents.filter(parent => (
+      parent.name === child.mother
+    ))[0].born)
+  ),
+  0,
+  );
 };
 
 function calculateMenAverageAge(people, century = 0) {
@@ -55,7 +61,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let children = filterChildren(people, mothers);
 
-  children = onlyWithSon === true
+  children = onlyWithSon
     ? filterBySex(children, 'm')
     : children;
 
