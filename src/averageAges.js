@@ -1,10 +1,14 @@
 'use strict';
 
 function estimateAverageAge(filteredArray) {
-  return filteredArray
-    .map(person => person.died - person.born)
-    .reduce((prev, curr) => prev + curr, 0)
-    / filteredArray.length;
+  if (filteredArray.length !== 0) {
+    return filteredArray
+      .map(person => person.died - person.born)
+      .reduce((prev, curr) => prev + curr, 0)
+      / filteredArray.length;
+  }
+
+  return 'Sorry, we have too little input to make the estimation work';
 }
 
 /**
@@ -25,7 +29,7 @@ function calculateMenAverageAge(people, century) {
   const arrayOfMen = !century
     ? people.filter(person => person.sex === 'm')
     : people.filter(person => person.sex === 'm'
-                    && Math.ceil(person.died / 100) === century);
+      && Math.ceil(person.died / 100) === century);
 
   return estimateAverageAge(arrayOfMen);
 }
@@ -72,7 +76,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const arrayOfChildren = onlyWithSon
     ? people
       .filter(child => people.some(woman => child.sex === 'm'
-                                  && child.mother === woman.name))
+      && child.mother === woman.name))
     : people
       .filter(child => people.some(woman => child.mother === woman.name));
 
@@ -81,7 +85,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .find(mother => mother.name === child.mother).born);
 
   return ageDifferences.reduce((prev, curr) => prev + curr, 0)
-    / arrayOfChildren.length;
+  / arrayOfChildren.length;
 }
 
 module.exports = {
