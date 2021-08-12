@@ -1,5 +1,13 @@
 'use strict';
 
+function findBirthYear(name, array) {
+  for (const item of array) {
+    if (name === item.name) {
+      return item.born;
+    }
+  }
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,27 +23,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-  const centuryMen = men.filter(man => Math.ceil(man.died / 100) === century);
-  const menNumber = men.length;
-  const centuryMenNumber = centuryMen.length;
-
-  const totalMenAge = (century)
-    ? centuryMen.reduce((totalAge, person) =>
-      totalAge + (person.died - person.born), 0)
-    : men.reduce((totalAge, person) =>
-      totalAge + (person.died - person.born), 0);
-
-  const result = (century)
-    ? totalMenAge / centuryMenNumber
-    : totalMenAge / menNumber;
-
-  return result;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const men = people.filter(person => person.sex === 'm');
+  const centuryMen = men.filter(man => Math.ceil(man.died / 100) === century);
+  const menNumber = men.length;
+  const centuryMenNumber = centuryMen.length;
+
+  const result = (century)
+    ? centuryMen.reduce((totalAge, person) =>
+      totalAge + (person.died - person.born), 0) / centuryMenNumber
+    : men.reduce((totalAge, person) =>
+      totalAge + (person.died - person.born), 0) / menNumber;
+
+  return result;
 }
 
 /**
@@ -67,15 +71,11 @@ function calculateWomenAverageAge(people, withChildren) {
   const womenNumber = women.length;
   const womenWithChildrenNumber = womenWithChildren.length;
 
-  const totalWomenAge = (withChildren)
-    ? womenWithChildren.reduce((totalAge, person) =>
-      totalAge + (person.died - person.born), 0)
-    : women.reduce((totalAge, person) =>
-      totalAge + (person.died - person.born), 0);
-
   const result = (withChildren)
-    ? totalWomenAge / womenWithChildrenNumber
-    : totalWomenAge / womenNumber;
+    ? womenWithChildren.reduce((totalAge, person) =>
+      totalAge + (person.died - person.born), 0) / womenWithChildrenNumber
+    : women.reduce((totalAge, person) =>
+      totalAge + (person.died - person.born), 0) / womenNumber;
 
   return result;
 }
@@ -96,14 +96,6 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  function findBirthYear(name, array) {
-    for (const item of array) {
-      if (name === item.name) {
-        return item.born;
-      }
-    }
-  }
-
   const children = people.filter((person, _, arr) =>
     arr.some(x => x.name === person.mother));
 
