@@ -30,11 +30,6 @@ function calculateMenAverageAge(people, century) {
   };
 
   return cemetery.reduce(callback, 0) / cemetery.length;
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
 }
 
 /**
