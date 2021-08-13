@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(x => {
+    if (century !== undefined) {
+      if (Math.ceil(x.died / 100) === +century && x.sex === 'm') {
+        return true;
+      }
+
+      return false;
+    } else if (x.sex === 'm') {
+      return true;
+    }
+  });
+  const totalAges = (prev, x) => prev + (x.died - x.born);
+  const middleAge = men.reduce(totalAges, 0);
+
+  return middleAge / men.length;
 }
 
 /**
@@ -37,7 +47,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(x => x.sex === 'f');
+  const womenWithChild = women.filter(woman => {
+    return people.some(child => child.mother === woman.name);
+  });
+  const totalAges = (prev, x) => prev + (x.died - x.born);
+
+  if (withChildren) {
+    const middleAgeWithChild = womenWithChild.reduce(totalAges, 0);
+
+    return middleAgeWithChild / womenWithChild.length;
+  }
+
+  const middleAgeWithoutChild = women.reduce(totalAges, 0);
+
+  return middleAgeWithoutChild / women.length;
 }
 
 /**
@@ -55,7 +79,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arrayAges = [];
+  let children = people.filter(kid =>
+    people.some(mother => mother.name === kid.mother));
+
+  if (onlyWithSon) {
+    children = children.filter(son => son.sex === 'm');
+  }
+
+  const findDiference = children.map(kid =>
+    people.some(mother => {
+      if (mother.name === kid.mother) {
+        arrayAges.push(kid.born - mother.born);
+      }
+    })
+  );
+
+  const totalAges = (prev, x) => prev + x;
+
+  return arrayAges.reduce(totalAges, 0) / findDiference.length;
 }
 
 module.exports = {
