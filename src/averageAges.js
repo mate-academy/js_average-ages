@@ -74,8 +74,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   children = children.filter(child => !onlyWithSon || child.sex === 'm');
 
-  return children.reduce((sum, c) =>
-    c.born - (people.find(p => c.mother === p.name).born)
+  return children.reduce((sum, child) =>
+    child.born - (people.find(person => child.mother === person.name).born)
     + sum, 0) / children.length;
 }
 
