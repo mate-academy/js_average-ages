@@ -58,9 +58,9 @@ function calculateWomenAverageAge(people, withChildren = false) {
 
   if (withChildren === true) {
     return arrayOfMothers.reduce(callback, 0) / arrayOfMothers.length;
-  } else {
-    return arrayOfGirls.reduce(callback, 0) / arrayOfGirls.length;
   }
+
+  return arrayOfGirls.reduce(callback, 0) / arrayOfGirls.length;
 }
 
 /**
