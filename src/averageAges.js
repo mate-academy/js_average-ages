@@ -54,14 +54,10 @@ function calculateWomenAverageAge(people, withChildren) {
   const totalAges = (prev, x) => prev + (x.died - x.born);
 
   if (withChildren) {
-    const middleAgeWithChild = womenWithChild.reduce(totalAges, 0);
-
-    return middleAgeWithChild / womenWithChild.length;
+    return womenWithChild.reduce(totalAges, 0) / womenWithChild.length;
+  } else if (!withChildren) {
+    return women.reduce(totalAges, 0) / women.length;
   }
-
-  const middleAgeWithoutChild = women.reduce(totalAges, 0);
-
-  return middleAgeWithoutChild / women.length;
 }
 
 /**
