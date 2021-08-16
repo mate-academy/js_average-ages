@@ -1,81 +1,43 @@
 'use strict';
 
-function calculateMenAverageAge(people, century) {
-  let yearCount = 0;
+function calculateAverageAge(userList) {
+  return +(userList.reduce((prevUser, secondUser) =>
+    prevUser + secondUser.died - secondUser.born, 0)
+    / userList.length).toFixed(2);
+}
 
+function calculateMenAverageAge(people, century) {
   const filteredUsers = century === undefined
     ? people.filter(user => user.sex === 'm')
     : people.filter(user => user.sex === 'm'
       && century === Math.ceil(user.died / 100));
 
-  const userCount = filteredUsers.length;
-
-  filteredUsers.map(user => {
-    yearCount += user.died - user.born;
-  });
-
-  return +(yearCount / userCount).toFixed(2);
+  return calculateAverageAge(filteredUsers);
 }
 
 function calculateWomenAverageAge(people, withChildren = false) {
-  let ageCount = 0;
-
   const filteredUsers = withChildren
     ? people.filter(user => user.sex === 'f'
-      && (checkChield(user.name, people)))
+      && people.find(child => child.mother === user.name))
     : people.filter(user => user.sex === 'f');
-  const womanCount = filteredUsers.length;
 
-  filteredUsers.map(user => {
-    ageCount += (user.died - user.born);
-  });
-
-  return +(ageCount / womanCount).toFixed(2);
-
-  function checkChield(motherName, usersList) {
-    return usersList.find(user => user.mother === motherName);
-  };
+  return calculateAverageAge(filteredUsers);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon = false) {
-  let ageCount = 0;
-  let womanCount = 0;
+  let childList = onlyWithSon
+    ? people.filter(user => user.sex === 'm' && user.mother !== null)
+    : people.filter(user => user.mother !== null);
 
-  const filteredUsers = onlyWithSon
-    ? people.filter(user => {
-      return user.sex === 'f'
-        && (checkChild(user.name, user.born, people, true));
-    })
-    : people.filter(user => {
-      return user.sex === 'f'
-        && (checkChild(user.name, user.born, people));
-    });
+  childList = childList.filter(child =>
+    people.find(user => user.name === child.mother)
+  );
 
-  womanCount = onlyWithSon ? womanCount : filteredUsers.length;
+  const ageDiffArr = childList.map(child =>
+    child.born - people.find(user => user.name === child.mother).born);
 
-  return +(ageCount / womanCount).toFixed(2);
-
-  function checkChild(motherName, motherBirth, usersList, onlyMan = false) {
-    const resultOfCheck = onlyMan
-      ? usersList.filter(user => {
-        let ourResult = user.mother === motherName && user.sex === 'm'
-          ? ageCount += user.born - motherBirth
-          : false;
-
-        ourResult = ourResult ? womanCount++ : false;
-
-        return ourResult;
-      })
-      : usersList.filter(user => {
-        const ourResult = user.mother === motherName
-          ? ageCount += user.born - motherBirth
-          : false;
-
-        return ourResult;
-      });
-
-    return resultOfCheck;
-  }
+  return ageDiffArr.reduce((fistValue, secondValue) =>
+    fistValue + secondValue, 0) / ageDiffArr.length;
 }
 
 module.exports = {
