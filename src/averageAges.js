@@ -1,12 +1,12 @@
 'use strict';
 
 function calculateMenAverageAge(people, century = 0) {
-  const mans = getMansArray(people);
+  const men = getMansArray(people);
 
-  let mansInCentury = [];
+  let menInCentury = [];
 
   if (century !== 0) {
-    mansInCentury = mans.filter((man) => {
+    menInCentury = men.filter((man) => {
       if (Math.ceil(man.died / 100) === century) {
         return true;
       } else {
@@ -14,10 +14,10 @@ function calculateMenAverageAge(people, century = 0) {
       }
     });
   } else {
-    mansInCentury = mans;
+    menInCentury = men;
   }
 
-  const ages = mansInCentury.map((man) => {
+  const ages = menInCentury.map((man) => {
     return man.died - man.born;
   });
 
@@ -27,18 +27,18 @@ function calculateMenAverageAge(people, century = 0) {
 }
 
 function calculateWomenAverageAge(people, withChildren = false) {
-  const weman = getWomansArray(people);
+  const allWomen = getWomansArray(people);
 
-  let woman = [];
+  let women = [];
 
   if (withChildren) {
-    woman = findMothers(people);
+    women = findMothers(people);
   } else {
-    woman = weman;
+    women = allWomen;
   }
 
-  const ages = woman.map((person) => {
-    return person.died - person.born;
+  const ages = women.map((woman) => {
+    return woman.died - woman.born;
   });
 
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
@@ -66,20 +66,20 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
 }
 
 function getMansArray(people) {
-  const mans = people.filter((person) => person.sex === 'm');
+  const men = people.filter((person) => person.sex === 'm');
 
-  return mans;
+  return men;
 }
 
 function getWomansArray(people) {
-  const weman = people.filter((person) => person.sex === 'f');
+  const women = people.filter((person) => person.sex === 'f');
 
-  return weman;
+  return women;
 }
 
 function findMothers(people) {
-  const woman = people.filter(person => person.sex === 'f');
-  const mothers = woman.filter(person =>
+  const women = people.filter(person => person.sex === 'f');
+  const mothers = women.filter(person =>
     people.some(child => person.name === child.mother));
 
   return mothers;
