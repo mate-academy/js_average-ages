@@ -15,17 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrayMan = (century)
+    ? people.filter(item => item.sex === 'm'
+    && Math.ceil(item.died / 100) === century)
+    : people.filter(item => item.sex === 'm');
+
+  const sumAge = arrayMan.reduce((prev, item) =>
+    prev + (item.died - item.born), 0);
+
+  return (sumAge) / arrayMan.length;
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
+ * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrayWoman = (withChildren)
+    ? people.filter((item, index, array) =>
+      (array.some(itemChild => itemChild.mother === item.name)))
+    : people.filter(item =>
+      item.sex === 'f');
+  const sumAge = arrayWoman.reduce((prev, item) =>
+    prev + (item.died - item.born), 0);
+
+  return sumAge / arrayWoman.length;
 }
 
 /**
@@ -55,7 +67,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arraySons = people.filter(item => item.sex === 'm');
+  const chidrens = (onlyWithSon)
+    ? arraySons.filter(itemSon =>
+      (people.some(itemMother => itemSon.mother === itemMother.name)))
+    : people.filter((itemChild, index, array) =>
+      (array.some(itemMother => itemChild.mother === itemMother.name)));
+  const motherAvarageAge = chidrens.reduce((prev, itemChild) => {
+    const mother = people.find(itemMother =>
+      itemMother.name === itemChild.mother);
+    const next = itemChild.born - mother.born;
+
+    return prev + next;
+  }, 0);
+
+  return motherAvarageAge / chidrens.length;
 }
 
 module.exports = {
