@@ -42,12 +42,10 @@ function calculateWomenAverageAge(people, withChildren) {
   const womenFiltered = withChildren
     ? people.filter(person =>
       people.some(({ mother }) => mother === person.name))
-    : people;
+    : people.filter(person => person.sex === 'f');
 
-  const women = womenFiltered.filter(person => person.sex === 'f');
-
-  return women.reduce((acc, { died, born }) =>
-    acc + (died - born), 0) / women.length;
+  return womenFiltered.reduce((acc, { died, born }) =>
+    acc + (died - born), 0) / womenFiltered.length;
 }
 
 /**
