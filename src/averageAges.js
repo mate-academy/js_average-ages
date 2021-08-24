@@ -14,34 +14,25 @@
  *
  * @return {number}
  */
+function getAverageAge(peopleList, sex) {
+  const sexFilterList = peopleList.filter(sexFilter => sexFilter.sex === sex);
+  const ageList = sexFilterList.map(person => person.died - person.born);
+
+  return ageList.reduce((sum, person) => sum + person, 0) / ageList.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  let counter = 0;
-  let diedInThisCentury;
-  let currentCentury = century;
+  const mensList = century
+    ? people.filter(person => Math.ceil(person.died / 100) === century)
+    : people;
 
-  const averageAge = people.reduce(function(prev, item) {
-    diedInThisCentury = Math.ceil(item.died / 100);
-
-    if (century === undefined) {
-      currentCentury = diedInThisCentury;
-    }
-
-    if (item.sex === 'm' && diedInThisCentury === currentCentury) {
-      counter++;
-
-      return prev + (item.died - item.born);
-    } else {
-      return prev;
-    }
-  }, 0);
-
-  return averageAge / counter;
+  return getAverageAge(mensList, 'm');
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average age of women in array. If `withChildren` is
+ * Function returns average ave of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -53,27 +44,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let counter = 0;
-  let peoples = people;
+  const womensList = withChildren
+    ? people.filter(woman =>
+      people.some(person => person.mother === woman.name))
+    : people;
 
-  if (withChildren === true) {
-    const children = people.filter(item =>
-      people.some(person => person.mother === item.name));
-
-    peoples = children;
-  }
-
-  const averageAge = peoples.reduce(function(prev, item) {
-    if (item.sex === 'f') {
-      counter++;
-
-      return prev + (item.died - item.born);
-    } else {
-      return prev;
-    }
-  }, 0);
-
-  return averageAge / counter;
+  return getAverageAge(womensList, 'f');
 }
 
 /**
