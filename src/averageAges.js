@@ -15,7 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const menAllCentury = people.filter(item => item['sex'] === 'm');
+  const allMen = (arguments.length < 2) ? menAllCentury
+    : menAllCentury.filter(item => {
+      return (Math.ceil(item['died'] / 100) === century);
+    });
+
+  const allAges = allMen.reduce((value, item) => {
+    const ageDeath = item['died'] - item['born'];
+
+    return (ageDeath + value);
+  }, 0);
+  const averageAge = allAges / allMen.length;
+
+  return averageAge;
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +51,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter(item => item['sex'] === 'f');
+  const allWomenResult = (arguments.length < 2) ? allWomen
+    : allWomen.filter(item => {
+      return (people.some(element => element['mother'] === item['name']));
+    });
+
+  const allAges = allWomenResult.reduce((value, item) => {
+    const ageDeath = item['died'] - item['born'];
+
+    return (ageDeath + value);
+  }, 0);
+  const averageAge = allAges / allWomenResult.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +82,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childAll = people.filter(item => {
+    return (people.some(element => element['name'] === item['mother']));
+  });
+  const child = (arguments.length < 2) ? childAll
+    : childAll.filter(item => {
+      return (item['sex'] === 'm');
+    });
+  const allAges = child.reduce((value = 0, item) => {
+    const thisMother = people.find(element => {
+      return (element['name'] === item['mother']);
+    });
+    const ageAtBirth = item['born'] - thisMother['born'];
+
+    return (ageAtBirth + value);
+  }, 0);
+
+  return (allAges / child.length);
 }
 
 module.exports = {
