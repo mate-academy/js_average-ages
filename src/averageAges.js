@@ -16,13 +16,13 @@
  */
 
 // helper functions to map ages and get average:
-function averageObj(people) {
+function averageAgeOfObjectsArray(people) {
   const agesMap = people.map(person => person.died - person.born);
 
   return agesMap.reduce((a, b) => a + b) / agesMap.length;
 }
 
-function averageArr(ages) {
+function averageAgeOfNumbersArray(ages) {
   return ages.reduce((a, b) => a + b) / ages.length;
 }
 
@@ -38,7 +38,7 @@ function calculateMenAverageAge(people, century) {
       : man.sex === 'm'
   );
 
-  return averageObj(men);
+  return averageAgeOfObjectsArray(men);
 }
 
 /**
@@ -62,7 +62,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : woman.sex === 'f'
   );
 
-  return averageObj(women);
+  return averageAgeOfObjectsArray(women);
 }
 
 /**
@@ -94,7 +94,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return child.born - mother.born;
   });
 
-  return averageArr(ageDiff);
+  return averageAgeOfNumbersArray(ageDiff);
 }
 
 module.exports = {
