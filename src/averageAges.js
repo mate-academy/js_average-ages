@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menArr = people.filter((x) => century
+    ? Math.ceil(x.died / 100) === century && x.sex === 'm'
+    : x.sex === 'm');
+
+  const age = menArr.map((man) => man.died - man.born);
+  const result = age.reduce((prev, x) => prev + x);
+
+  return (result / menArr.length);
 }
 
 /**
@@ -37,7 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArr = people.filter((woman) => withChildren
+    ? woman.sex === 'f' && people.some((person) => person.mother === woman.name)
+    : woman.sex === 'f');
+
+  const age = womenArr.map((woman) => woman.died - woman.born);
+  const result = age.reduce((prev, x) => prev + x);
+
+  return (result / womenArr.length);
 }
 
 /**
@@ -55,7 +65,35 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const returnName = (obj) => {
+    const item = {};
+
+    item.name = obj.name;
+    item.born = obj.born;
+    item.sex = obj.sex;
+    item.mother = obj.mother;
+
+    return item;
+  };
+  const children = people.map(returnName);
+
+  const childrenFiltered = onlyWithSon
+    ? children.filter(value => value.mother !== null && value.sex === 'm')
+    : children.filter(value => value.mother !== null);
+
+  childrenFiltered.map((item) => (item.motherBorn
+  = people.find(woman => woman.name === item.mother)));
+
+  const motherExists
+  = childrenFiltered.filter(woman => (woman.motherBorn));
+
+  const difference
+  = motherExists.map(person => person.born - person.motherBorn.born);
+
+  const averageDifference
+  = (difference.reduce((sum, current) => sum + current) / difference.length);
+
+  return averageDifference;
 }
 
 module.exports = {
