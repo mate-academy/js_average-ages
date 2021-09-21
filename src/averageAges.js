@@ -3,27 +3,27 @@
 function calculateMenAverageAge(people, century) {
   let man = [];
 
-  (arguments.length === 1)
-    ? man = people.filter((x) => x.sex === 'm').map(person =>
-      person.died - person.born)
+  (!century)
+    ? man = people.filter((x) => x.sex === 'm')
     : man = people.filter((x) => x.sex === 'm'
-      && (Math.ceil(x.died / 100) === century)).map(person =>
-      person.died - person.born);
+      && (Math.ceil(x.died / 100) === century));
 
-  return man.reduce((sum, item) => sum + item, 0) / man.length;
+  return man
+    .map(person => person.died - person.born)
+    .reduce((sum, item) => sum + item, 0) / man.length;
 }
 
 function calculateWomenAverageAge(people, withChildren) {
   let woman = [];
 
-  (arguments.length === 1)
-    ? woman = people.filter((x) => x.sex === 'f').map(person =>
-      person.died - person.born)
+  (!withChildren)
+    ? woman = people.filter((x) => x.sex === 'f')
     : woman = people.filter((x) => x.sex === 'f'
-      && people.findIndex((y) => y.mother === x.name) !== -1).map(person =>
-      person.died - person.born);
+    && people.findIndex((y) => y.mother === x.name) !== -1);
 
-  return woman.reduce((sum, item) => sum + item, 0) / woman.length;
+  return woman
+    .map(person => person.died - person.born)
+    .reduce((sum, item) => sum + item, 0) / woman.length;
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
