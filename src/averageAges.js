@@ -15,21 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let menArr = people.filter(person => person.sex === 'm');
-  // console.log(menArr)
+  let men = people.filter(person => person.sex === 'm');
 
   if (century) {
-    menArr = people.filter(person =>
+    men = people.filter(person =>
       person.sex === 'm' && Math.ceil(person.died / 100) === century);
   };
 
-  const menYear = menArr.map(man => {
+  const menYear = men.map(man => {
     return man.died - man.born;
   });
-  // console.log(menYear)
   const middleYears
   = +((menYear.reduce((a, b) => a + b)) / menYear.length).toFixed(2);
-  // console.log(middleYears)
 
   return middleYears;
 }
@@ -49,15 +46,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womanArr = people.filter(person => person.sex === 'f');
-  const womanYear = womanArr.map(man => {
+  const women = people.filter(person => person.sex === 'f');
+  const womanYear = women.map(man => {
     return man.died - man.born;
   });
   const middleYears
   = +((womanYear.reduce((a, b) => a + b)) / womanYear.length).toFixed(2);
 
   if (withChildren) {
-    const motherWith = womanArr.filter(woman => people.find(person => {
+    const motherWith = women.filter(woman => people.find(person => {
       if (person.mother) {
         if ((woman.name === (person.mother))) {
           return true;
@@ -97,27 +94,21 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const women = people.filter(person => person.sex === 'f');
   const mothers = women.filter(woman => people.find(person => {
-    if (person.mother) {
-      if (woman.name === person.mother) {
-        return true;
-      }
+    if (person.mother && woman.name === person.mother) {
+      return true;
     }
   }));
 
   let childrens = people.filter(person => mothers.find(mother => {
-    if (mother.name) {
-      if (person.mother === mother.name) {
-        return true;
-      }
+    if (mother.name && person.mother === mother.name) {
+      return true;
     }
   }));
 
   if (onlyWithSon) {
     childrens = people.filter(person => mothers.find(mother => {
-      if (mother.name) {
-        if (person.mother === mother.name && person.sex === 'm') {
-          return true;
-        }
+      if (mother.name && person.mother === mother.name && person.sex === 'm') {
+        return true;
       }
     }));
   }
