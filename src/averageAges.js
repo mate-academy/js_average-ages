@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+  const AvarageAgeOfMen = men.reduce((sum, man) =>
+    (sum + man.died - man.born), 0) / men.length;
+
+  const deadmen = men.filter(man => Math.ceil(man.died / 100) === century);
+  const AvarageAgeOfDeadmen = deadmen.reduce((sum, deadman) =>
+    (sum + deadman.died - deadman.born), 0) / deadmen.length;
+
+  return century ? AvarageAgeOfDeadmen : AvarageAgeOfMen;
 }
 
 /**
@@ -37,7 +41,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+  const avarageAgeOfWomen = women.reduce((sum, woman) =>
+    (sum + woman.died - woman.born), 0) / women.length;
+
+  const mothers = people.map(person => person.mother);
+  const mothersWithChild = women.filter(woman =>
+    mothers.some(mother => mother === woman.name));
+  const avarageAgeOfMothersWithChild = mothersWithChild.reduce((sum, woman) =>
+    (sum + woman.died - woman.born), 0) / mothersWithChild.length;
+
+  return withChildren ? avarageAgeOfMothersWithChild : avarageAgeOfWomen;
 }
 
 /**
@@ -55,7 +69,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersWithChild = people.filter(woman =>
+    people.find(person => woman.name === person.mother));
+
+  const children = people.filter(child =>
+    mothersWithChild.find(mother =>
+      (mother.name === child.mother)));
+  const yearsGivenBirthChild = children.map(child =>
+    child.born - mothersWithChild.find(mother =>
+      mother.name === child.mother).born);
+  const AvarageAgeGivenDirthChild = yearsGivenBirthChild.reduce((sum, year) =>
+    sum + year) / yearsGivenBirthChild.length;
+
+  const sons = people.filter(child =>
+    mothersWithChild.find(mother =>
+      (mother.name === child.mother) && (child.sex === 'm')));
+  const yearsGivenBirthSons = sons.map(son =>
+    son.born - mothersWithChild.find(mother =>
+      mother.name === son.mother).born);
+  const AvarageAgeGivenDirthSon = yearsGivenBirthSons.reduce((sum, year) =>
+    sum + year) / yearsGivenBirthSons.length;
+
+  return onlyWithSon ? AvarageAgeGivenDirthSon : AvarageAgeGivenDirthChild;
 }
 
 module.exports = {
