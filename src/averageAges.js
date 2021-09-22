@@ -22,9 +22,9 @@ function calculateMenAverageAge(people, century) {
     : menFiltered;
 
   const menAges = menFiltered.map((person) => person.died - person.born);
-  const averageAges = menAges.reduce((sum, x) => sum + x, 0) / menAges.length;
+  const averageAgeMen = menAges.reduce((sum, x) => sum + x, 0) / menAges.length;
 
-  return +averageAges.toFixed(2);
+  return +averageAgeMen.toFixed(2);
 }
 
 /**
@@ -50,10 +50,10 @@ function calculateWomenAverageAge(people, withChildren) {
     : womenFiltered;
 
   const womenAges = womenFiltered.map((person) => person.died - person.born);
-  const averageAgesWomen = womenAges.reduce((sum, x) =>
+  const averageAgeWomen = womenAges.reduce((sum, x) =>
     sum + x, 0) / womenAges.length;
 
-  return +averageAgesWomen.toFixed(2);
+  return +averageAgeWomen.toFixed(2);
 }
 
 /**
