@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const appropriateMan = people.filter((person) => {
+    return person.sex === 'm'
+      && (century === undefined
+        ? true
+        : Math.ceil(person.died / 100) === century);
+  });
+
+  const res = appropriateMan.reduce((sum, currentValue) => {
+    return sum + (currentValue.died - currentValue.born);
+  }, 0);
+
+  return res / appropriateMan.length;
 }
 
 /**
@@ -36,8 +43,19 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  const appropriateWoman = people.filter((person) => {
+    return person.sex === 'f'
+      && (withChildren
+        ? people.some((potentialChild) => potentialChild.mother === person.name)
+        : people);
+  });
+
+  const res = appropriateWoman.reduce((sum, currentValue) => {
+    return sum + (currentValue.died - currentValue.born);
+  }, 0);
+
+  return res / appropriateWoman.length;
 }
 
 /**
@@ -54,8 +72,26 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let counter = 0;
+  const res = people.reduce((sum, currentPerson, index, peopleArr) => {
+    const personMother = people.find((mother) =>
+      currentPerson.mother === mother.name);
+
+    const motherAge = personMother
+      ? currentPerson.born - personMother.born : 0;
+
+    const out = onlyWithSon
+      ? currentPerson.sex === 'm'
+        ? motherAge : 0
+      : motherAge;
+
+    counter = out === 0 ? counter : ++counter;
+
+    return sum + out;
+  }, 0);
+
+  return res / counter;
 }
 
 module.exports = {
