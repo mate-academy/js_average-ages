@@ -69,36 +69,43 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = [];
-  const mother = [];
-  const arrDifference = [];
+  // const children = [];
+  // const mother = [];
+  // const arrDifference = [];
 
-  for (const person of people) {
-    for (const human of people) {
-      if (person.mother === human.name) {
-        children.push(person);
-        mother.push(human);
-      }
-    }
-  }
+  // for (const person of people) {
+  //   for (const human of people) {
+  //     if (person.mother === human.name) {
+  //       children.push(person);
+  //       mother.push(human);
+  //     }
+  //   }
+  // }
 
-  for (const child of children) {
-    for (const mam of mother) {
-      if (child.mother === mam.name) {
-        if (onlyWithSon) {
-          if (child.sex === 'm') {
-            arrDifference.push(child.born - mam.born);
-            break;
-          }
-        } else {
-          arrDifference.push(child.born - mam.born);
-          break;
-        }
-      }
-    }
-  }
+  // for (const child of children) {
+  //   for (const mam of mother) {
+  //     if (child.mother === mam.name) {
+  //       if (onlyWithSon) {
+  //         if (child.sex === 'm') {
+  //           arrDifference.push(child.born - mam.born);
+  //           break;
+  //         }
+  //       } else {
+  //         arrDifference.push(child.born - mam.born);
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
-  return arrDifference.reduce((sum, x) => sum + x, 0)
+  const children = people.filter(person => onlyWithSon
+    ? people.some(mother => mother.name === person.mother) && person.sex === 'm'
+    : people.some(mother => mother.name === person.mother));
+
+  const arrDifference = children.map(child => child.born - people.find(mother =>
+    mother.name === child.mother).born);
+
+  return arrDifference.reduce((sum, diff) => sum + diff, 0)
     / arrDifference.length;
 }
 
