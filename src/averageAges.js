@@ -93,7 +93,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const result = [];
+
+  people.forEach(human => {
+    const mother = people.find(potentialMother => {
+      const condition = onlyWithSon === undefined
+        ? potentialMother['name'] === human['mother']
+        : potentialMother['name'] === human['mother'] && human['sex'] === 'm';
+
+      return condition;
+    });
+
+    const diffAge = mother
+      ? human['born'] - mother['born']
+      : 0;
+
+    result.push(diffAge);
+  });
+
+  const resultWhoHasMom = result.filter(diff => diff !== 0);
+  const sum = resultWhoHasMom.reduce((prev, curr) => prev + curr, 0);
+
+  return sum / resultWhoHasMom.length;
 }
 
 module.exports = {
