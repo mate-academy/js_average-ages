@@ -1,8 +1,4 @@
-/* eslint-disable no-shadow */
 'use strict';
-
-// eslint-disable-next-line no-unused-vars
-const people = require('./people');
 
 /**
  * Implement calculateMenAverageAge function
@@ -20,8 +16,8 @@ const people = require('./people');
  */
 function calculateMenAverageAge(people, century) {
   const age = people
-    .filter(person => person.sex === 'm')
-    .filter(man => !century || getCentury(man) === century)
+    .filter(person =>
+      (person.sex === 'm') ? !century || getCentury(person) === century : null)
     .map(person => person.died - person.born);
 
   return getAverage(age);
@@ -52,8 +48,9 @@ function getAverage(numbers) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const age = people
-    .filter(person => person.sex === 'f')
-    .filter(woman => !withChildren || haveChildren(people, woman.name))
+    .filter(person =>
+      (person.sex === 'f') ? !withChildren
+      || haveChildren(people, person.name) : null)
     .map(person => person.died - person.born);
 
   return getAverage(age);
