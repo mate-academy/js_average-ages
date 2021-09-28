@@ -17,12 +17,13 @@
 function calculateMenAverageAge(people, century) {
   let males = people.filter(person => person.sex === 'm');
 
-  males = century
-    ? males.filter(person => Math.ceil(person.died / 100) === century)
-    : males;
+  if (century) {
+    males = males.filter(person => Math.ceil(person.died / 100) === century);
+  }
 
-  const malesAge = males.map(person => person.died - person.born);
-  const averageMaleAge = malesAge.reduce((sum, x) => sum + x) / malesAge.length;
+  const averageMaleAge = males
+    .map(person => person.died - person.born)
+    .reduce((sum, x) => sum + x) / males.length;
 
   return +averageMaleAge.toFixed(2);
 }
@@ -44,14 +45,14 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let females = people.filter(person => person.sex === 'f');
 
-  females = withChildren
-    ? females.filter(woman =>
-      (people.some(person => person.mother === woman.name)))
-    : females;
+  if (withChildren) {
+    females = females.filter(woman =>
+      (people.some(person => person.mother === woman.name)));
+  }
 
-  const femalesAge = females.map(person => person.died - person.born);
-  const averageFemaleAge = femalesAge.reduce((sum, x) =>
-    sum + x) / femalesAge.length;
+  const averageFemaleAge = females
+    .map(person => person.died - person.born)
+    .reduce((sum, x) => sum + x) / females.length;
 
   return +averageFemaleAge.toFixed(2);
 }
@@ -74,15 +75,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let children = people.filter(person =>
     (people.some(woman => woman.name === person.mother)));
 
-  children = onlyWithSon
-    ? children.filter(person =>
-      person.sex === 'm')
-    : children;
+  if (onlyWithSon) {
+    children = children.filter(person =>
+      person.sex === 'm');
+  }
 
-  const ageGap = children.map(child =>
-    child.born - people.find(mother => mother.name === child.mother).born);
-  const averageAgeGap = ageGap.reduce((sum, x) =>
-    sum + x) / ageGap.length;
+  const averageAgeGap = children
+    .map(child => child.born - people.find(mother =>
+      mother.name === child.mother).born)
+    .reduce((sum, x) =>
+      sum + x) / children.length;
 
   return +averageAgeGap.toFixed(2);
 }
