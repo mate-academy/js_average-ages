@@ -15,12 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  let age = 0;
+
+  const m = people.filter(x => x.sex === 'm');
+  const a = m.filter(x => Math.ceil(x.died / 100) === century);
+
+  age = (century === undefined) ? m.map(x => x.died - x.born)
+    : a.map(x => x.died - x.born);
+
+  let result = age.reduce((sum, r) => sum + r, 0);
+
+  result = result / age.length;
+
+  return result;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-}
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -37,8 +49,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+  let age = 0;
+
+  const f = people.filter(x => x.sex === 'f');
+
+  const m = people.map(x => (`${x.mother}`));
+
+  const res = f.filter(x => m.includes(x.name));
+
+  age = (withChildren === undefined) ? f.map(x => x.died - x.born)
+    : res.map(x => x.died - x.born);
+
+  let result = age.reduce((sum, r) => sum + r, 0);
+
+  result = result / age.length;
+
+  return result;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -55,8 +82,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  let result = 0;
+
+  const p = people;
+
+  const ch = p.filter(x => p.find(mother => mother.name === x.mother));
+
+  const o = p.filter(x => p.find(m => m.name === x.mother && x.sex === 'm'));
+
+  const d = ch.map(c => c.born - (people.find(m => m.name === c.mother).born));
+
+  const oD = o.map(c => c.born - (people.find(m => m.name === c.mother).born));
+
+  let cResult = d.reduce((sum, r) => sum + r, 0);
+
+  let oResult = oD.reduce((sum, r) => sum + r, 0);
+
+  cResult = cResult / d.length;
+
+  oResult = oResult / oD.length;
+
+  result = (onlyWithSon === undefined) ? cResult
+    : oResult;
+
+  return result;
+};
 
 module.exports = {
   calculateMenAverageAge,
