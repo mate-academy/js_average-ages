@@ -22,8 +22,7 @@ function isWoman(person) {
 
 function hasChildren(people) {
   const mothers = people.reduce((mothersArray, person) => {
-    return person.mother !== null
-      ? mothersArray.concat(person.mother) : mothersArray;
+    return person.mother ? mothersArray.concat(person.mother) : mothersArray;
   }, []);
 
   return function(person) {
@@ -44,7 +43,7 @@ function calculateAverageAge(people, ...checks) {
 
 function calculatePeopleAverageAgeDiff(people, ...checks) {
   const childrens = people.filter(person => {
-    return checks.every(check => check(person)) && person.mother !== null;
+    return checks.every(check => check(person)) && person.mother;
   });
   const differences = childrens.reduce((diffs, person) => {
     const mother = people.find(x => x.name === person.mother);
