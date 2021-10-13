@@ -8,7 +8,7 @@ function isCenturyValid(century) {
   return function(person) {
     const centuryDeath = Math.ceil(person.died / 100);
 
-    return !century || century === centuryDeath;
+    return century === centuryDeath;
   };
 }
 
@@ -35,8 +35,8 @@ function calculateAverageAge(people, ...checks) {
   const menAges = people.reduce((ages, person, persons) => {
     const age = person.died - person.born;
 
-    return checks.every(check => check(person)) ?
-      ages.concat(age) : ages;
+    return checks.every(check => check(person))
+      ? ages.concat(age) : ages;
   }, []);
 
   return getAverage(menAges);
@@ -56,7 +56,9 @@ function calculatePeopleAverageAgeDiff(people, ...checks) {
 }
 
 function calculateMenAverageAge(people, century) {
-  return calculateAverageAge(people, isMan, isCenturyValid(century));
+  return century
+    ? calculateAverageAge(people, isMan, isCenturyValid(century))
+    : calculateAverageAge(people, isMan);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
