@@ -8,15 +8,7 @@ function isCenturyValid(century) {
   return function(person) {
     const centuryDeath = Math.ceil(person.died / 100);
 
-    if (!century) {
-      return true;
-    }
-
-    if (century === centuryDeath) {
-      return true;
-    }
-
-    return false;
+    return !century || century === centuryDeath;
   };
 }
 
@@ -30,11 +22,8 @@ function isWomen(person) {
 
 function hasChildren(people) {
   const mothers = people.reduce((mothersArray, person) => {
-    if (person.mother !== null) {
-      return mothersArray.concat(person.mother);
-    }
-
-    return mothersArray;
+    return person.mother !== null
+      ? mothersArray.concat(person.mother) : mothersArray;
   }, []);
 
   return function(person) {
@@ -46,14 +35,24 @@ function calculateAverageAge(people, ...checks) {
   const menAges = people.reduce((ages, person, persons) => {
     const age = person.died - person.born;
 
-    if (checks.every(check => check(person))) {
-      return ages.concat(age);
-    }
-
-    return ages;
+    return checks.every(check => check(person)) ?
+      ages.concat(age) : ages;
   }, []);
 
   return getAverage(menAges);
+}
+
+function calculatePeopleAverageAgeDiff(people, ...checks) {
+  const childrens = people.filter(person => {
+    return checks.every(check => check(person)) && person.mother !== null;
+  });
+  const differences = childrens.reduce((diffs, person) => {
+    const mother = people.find(x => x.name === person.mother);
+
+    return mother ? diffs.concat(person.born - mother.born) : diffs;
+  }, []);
+
+  return getAverage(differences);
 }
 
 function calculateMenAverageAge(people, century) {
@@ -61,39 +60,15 @@ function calculateMenAverageAge(people, century) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  if (withChildren) {
-    return calculateAverageAge(people, isWomen, hasChildren(people));
-  }
-
-  return calculateAverageAge(people, isWomen);
-}
-
-function calculatePeopleAverageAge(people, ...checks) {
-  const childrens = people.filter(person => {
-    if (checks.every(check => check(person))) {
-      return person.mother !== null;
-    }
-  });
-  const differences = childrens.reduce((diffs, person) => {
-    const mother = people.find(x => x.name === person.mother);
-
-    if (mother) {
-      return diffs.concat(person.born - mother.born);
-    }
-
-    return diffs;
-  }, []);
-
-  return getAverage(differences);
+  return withChildren
+    ? calculateAverageAge(people, isWomen, hasChildren(people))
+    : calculateAverageAge(people, isWomen);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-  if (onlyWithSon) {
-    return calculatePeopleAverageAge(people, isMan);
-  }
-
-  return calculatePeopleAverageAge(people);
+  return onlyWithSon
+    ? calculatePeopleAverageAgeDiff(people, isMan)
+    : calculatePeopleAverageAgeDiff(people);
 }
 
 module.exports = {
