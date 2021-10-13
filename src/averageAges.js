@@ -14,12 +14,46 @@
  *
  * @return {number}
  */
+
+function isCenturyValid(century, centuryBorn, centuryDeath) {
+  if (!century) {
+    return true;
+  }
+
+  if (century === centuryDeath) {
+    return true;
+  }
+
+  return false;
+}
+
+// const isMan(person) {
+//   return person.sex === 'm' ? true : false;
+// }
+
+// function isWomen(person) {
+//   return person.sex === 'f' ? true : false;
+// }
+
+function calculateAverageAge(people, sex, century) {
+  const menAges = people.reduce((ages, person) => {
+    const age = person.died - person.born;
+    const centuryBorn = Math.ceil(person.born / 100);
+    const centuryDeath = Math.ceil(person.died / 100);
+
+    if (person.sex === sex && 
+      isCenturyValid(century, centuryBorn, centuryDeath)) {
+      return ages.concat(age);
+    }
+
+    return ages;
+  }, []);
+
+  return menAges.reduce((sum, age) => sum + age, 0) / menAges.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  return calculateAverageAge(people, 'm', century);
 }
 
 /**
@@ -37,7 +71,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  return calculateAverageAge(people, 'f');
 }
 
 /**
