@@ -16,7 +16,7 @@ function isMan(person) {
   return person.sex === 'm';
 }
 
-function isWomen(person) {
+function isWoman(person) {
   return person.sex === 'f';
 }
 
@@ -63,8 +63,8 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   return withChildren
-    ? calculateAverageAge(people, isWomen, hasChildren(people))
-    : calculateAverageAge(people, isWomen);
+    ? calculateAverageAge(people, isWoman, hasChildren(people))
+    : calculateAverageAge(people, isWoman);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
