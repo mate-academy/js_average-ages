@@ -1,4 +1,5 @@
 'use strict';
+
 function getAverage(arr) {
   return arr.reduce((sum, x) => sum + x, 0) / arr.length;
 }
@@ -67,7 +68,7 @@ function calculateWomenAverageAge(people, withChildren) {
   return calculateAverageAge(people, isWomen);
 }
 
-function calculateAverageAgeD(people, ...checks) {
+function calculatePeopleAverageAge(people, ...checks) {
   const childrens = people.filter(person => {
     if (checks.every(check => check(person))) {
       return person.mother !== null;
@@ -89,10 +90,10 @@ function calculateAverageAgeD(people, ...checks) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   if (onlyWithSon) {
-    return calculateAverageAgeD(people, isMan);
+    return calculatePeopleAverageAge(people, isMan);
   }
 
-  return calculateAverageAgeD(people);
+  return calculatePeopleAverageAge(people);
 }
 
 module.exports = {
