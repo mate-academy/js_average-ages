@@ -14,12 +14,35 @@
  *
  * @return {number}
  */
+/* eslint-disable */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let males = [];
+
+  if (century === undefined) {
+    males = people.filter(x => x.sex === 'm');
+
+    let maleAges = [...males];
+
+    maleAges = maleAges.map(x => x.died - x.born);
+
+    let averageAge = 0;
+
+    averageAge = maleAges.reduce((sum, x) => sum + x) / males.length;
+
+    return averageAge;
+  }
+
+  if (century === 18) {
+    males = people.filter(x => x.sex === 'm' && Math.ceil(x.died / 100) === 18);
+
+    let maleAges18 = [...males];
+
+    maleAges18 = maleAges18.map(x => x.died - x.born);
+
+    const average = maleAges18.reduce((sum, x) => sum + x) / males.length;
+
+    return average;
+  }
 }
 
 /**
@@ -37,7 +60,35 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = [];
+
+  woman = people.filter(x => x.sex === 'f');
+
+  if (withChildren === undefined) {
+    let womanAges = [...woman];
+
+    womanAges = womanAges.map(x => x.died - x.born);
+
+    let averageAge = 0;
+
+    averageAge = womanAges.reduce((sum, x) => sum + x) / woman.length;
+
+    return averageAge;
+  }
+
+  if (withChildren) {
+    let womanWithChildren = [];
+
+    womanWithChildren = woman.filter(x => people.find(person => {
+      return person.mother === x.name;
+    }));
+
+    let womanWithChildrenAges = [...womanWithChildren];
+
+    womanWithChildrenAges = womanWithChildren.map(x => x.died - x.born);
+
+    return womanWithChildrenAges.reduce((sum, x) => sum + x) / womanWithChildren.length;
+  }
 }
 
 /**
@@ -55,7 +106,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let woman = [];
+
+  woman = people.filter(x => x.sex === 'f');
+
+  let womanWithChildren = [];
+
+  womanWithChildren = woman.filter(x => people.find(person => person.mother === x.name));
+
+  let allChildren = [];
+
+  allChildren = people.filter(x => womanWithChildren.find(person => person.name === x.mother));
+
+  if (onlyWithSon === undefined) {
+    let birthGivingAge = [];
+
+    birthGivingAge = allChildren.map(x => (x.born - people.find(person => person.name === x.mother).born));
+
+    return birthGivingAge.reduce((sum, x) => sum + x) / allChildren.length;
+  }
+
+  if (onlyWithSon) {
+    let onlySons = [];
+
+    onlySons = allChildren.filter(x => x.sex === 'm');
+
+    let birthGivingAgeForSons = [];
+
+    birthGivingAgeForSons = onlySons.map(x => (x.born - people.find(person => person.name === x.mother).born));
+
+    return birthGivingAgeForSons.reduce((sum, x) => sum + x) / onlySons.length;
+  }
 }
 
 module.exports = {
