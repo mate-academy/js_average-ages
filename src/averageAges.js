@@ -1,29 +1,30 @@
 'use strict';
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-  const menInCentury = people.filter(person => person.sex === 'm')
-    .filter(person => Math.ceil(person.died / 100) === century);
+  const isMen = (person) => person.sex === 'm';
+  const ismenInCentury = (person) =>
+    person.sex === 'm'
+    && Math.ceil(person.died / 100) === century;
 
-  const ageAverage = (century === undefined)
-    ? men.reduce((sum, person) =>
-      sum + (person.died - person.born), 0) / men.length
-    : menInCentury.reduce((sum, person) =>
-      sum + (person.died - person.born), 0) / menInCentury.length;
+  const men = people.filter((century === undefined)
+    ? isMen : ismenInCentury);
+
+  const ageAverage = men.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / men.length;
 
   return ageAverage;
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
-  const mothers = people.filter(person =>
-    people.some(child => child.mother === person.name));
+  const isWomen = (person) => person.sex === 'f';
+  const isMother = (person) => people.some(
+    child => child.mother === person.name);
 
-  const ageAverage = (withChildren === undefined)
-    ? women.reduce((sum, person) =>
-      sum + (person.died - person.born), 0) / women.length
-    : mothers.reduce((sum, person) =>
-      sum + (person.died - person.born), 0) / mothers.length;
+  const women = people.filter((withChildren)
+    ? isMother : isWomen);
+
+  const ageAverage = women.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / women.length;
 
   return ageAverage;
 }
@@ -38,7 +39,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const isSon = (child) => mothers
     .some(mother => child.mother === mother.name) && child.sex === 'm';
 
-  const children = onlyWithSon ? people.filter(isSon) : people.filter(isChild);
+  const children = people.filter(onlyWithSon ? isSon : isChild);
 
   const averageAgeDiff = children.reduce((sum, child) =>
     sum + (child.born - people
