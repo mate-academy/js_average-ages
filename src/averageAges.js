@@ -1,7 +1,7 @@
 'use strict';
 
 function getAverage(arr) {
-  return arr.reduce((sum, x) => sum + x, 0) / arr.length;
+  return arr.reduce((sum, number) => sum + number, 0) / arr.length;
 }
 
 function isCenturyValid(century) {
@@ -22,7 +22,8 @@ function isWoman(person) {
 
 function hasChildren(people) {
   const mothers = people.reduce((mothersArray, person) => {
-    return person.mother ? mothersArray.concat(person.mother) : mothersArray;
+    // return person.mother ? mothersArray.concat(person.mother) : mothersArray;
+    return [...mothersArray, (person.mother || [])];
   }, []);
 
   return function(person) {
@@ -42,11 +43,11 @@ function calculateAverageAge(people, ...checks) {
 }
 
 function calculatePeopleAverageAgeDiff(people, ...checks) {
-  const childrens = people.filter(person => {
+  const children = people.filter(person => {
     return checks.every(check => check(person)) && person.mother;
   });
-  const differences = childrens.reduce((diffs, person) => {
-    const mother = people.find(x => x.name === person.mother);
+  const differences = children.reduce((diffs, person) => {
+    const mother = people.find(human => human.name === person.mother);
 
     return mother ? diffs.concat(person.born - mother.born) : diffs;
   }, []);
