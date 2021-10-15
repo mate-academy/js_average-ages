@@ -26,7 +26,6 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const peopleArr = [...people];
-
   const men = peopleArr.filter(person => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm').map(person =>
