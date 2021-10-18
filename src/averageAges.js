@@ -23,10 +23,6 @@ function calculateWomenAverageAge(people, withChildren) {
   }, 0) / women.length;
 }
 
-// 1. Находим детей у которых в этом массиве есть мать
-// 2. Если onlyWithSon - оставляем только кто сын
-// 3. Считаем разницу
-
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(child =>
     people.some(mother => child.mother === mother.name));
