@@ -15,10 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men =  people.filter(isMen => century ? isMen.sex === 'm'
-    && Math.ceil(isMen.died / 100) === century : isMen.sex === 'm')
+  const men =  people.filter(human => century ? isMen(human.sex)
+    && isManBornInCentury(human.died, century) : isMen(human.sex))
 
   return men.reduce((acc, curr) =>  acc + (curr.died - curr.born), 0) / men.length;
+}
+
+function isRightSex(sex) {
+  const recipientSex = sex
+  return (check) => sex === check
+ }
+
+ const isMen = isRightSex('m')
+
+function isManBornInCentury(deathDate, century) {
+  return Math.ceil(deathDate / 100) === century 
 }
 
 /**
@@ -36,16 +47,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const isWomen = people.filter(
-    human => withChildren
-    ? human.sex === 'f'
-    && people.some(
-    child=> child.mother === human.name)
-    : human.sex === 'f')
+  const women = people.filter(human => withChildren
+    ? isWomen(human.sex)
+    && people.some(child=> child.mother === human.name)
+    : isWomen(human.sex))
 
-  return isWomen.reduce(
-    (acc, curr) => acc + (curr.died - curr.born), 0) / isWomen.length
+  return women.reduce(
+    (acc, curr) => acc + (curr.died - curr.born), 0) / women.length
 }
+
+
+const isWomen = isRightSex('f')
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -62,17 +74,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const isChildren = people.filter(
-    human => onlyWithSon
-    ? human.mother && human.sex === 'm'
+  const children = people.filter(human => onlyWithSon
+    ? human.mother && isMen(human.sex)
     : human.mother);
 
-  const isMothers = people.filter(
+  const mothers = people.filter(
     human => people.some(
       child => child.mother === human.name));
 
-  const childMother = isChildren
-    .filter(child => isMothers.some(mother=> child.mother === mother.name));
+  const childMother = children
+    .filter(child => mothers.some(mother=> child.mother === mother.name));
 
   const averageAge = childMother.reduce(
     (sum, curr) =>
