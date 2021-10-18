@@ -55,13 +55,12 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const onlyWomen = withChildren
     ? people.filter(person => person['sex'] === 'f'
-    && people.some(elem => elem['mother'] === person['name'])).map(person =>
-      person.died - person.born)
+    && people.some(elem => elem['mother'] === person['name']))
     : people.filter(person =>
-      person.sex === 'f').map(person =>
-      person.died - person.born);
+      person.sex === 'f');
 
-  const averageYearsWomen = onlyWomen.reduce((sum, age) =>
+  const averageYearsWomen = onlyWomen.map(person =>
+    person.died - person.born).reduce((sum, age) =>
     sum + age, 0) / onlyWomen.length;
 
   return averageYearsWomen;
