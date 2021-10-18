@@ -28,7 +28,8 @@ function calculateMenAverageAge(people, century) {
   const peopleArr = [...people];
   const men = peopleArr.filter(person => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-    : person.sex === 'm').map(person =>
+    : person.sex === 'm'
+  ).map(person =>
     person.died - person.born);// проверяем только пол
 
   const averageYearsMen = men.reduce((sum, age) =>
