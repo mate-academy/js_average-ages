@@ -15,6 +15,10 @@
  * @return {number}
  */
 /* eslint-disable */
+
+
+
+
 function calculateMenAverageAge(people, century) {
   let males = [];
 
@@ -32,8 +36,8 @@ function calculateMenAverageAge(people, century) {
     return averageAge;
   }
 
-  if (century === 18) {
-    males = people.filter(x => x.sex === 'm' && Math.ceil(x.died / 100) === 18);
+  if (century) {
+    males = people.filter(x => x.sex === 'm' && Math.ceil(x.died / 100) === century);
 
     let maleAges18 = [...males];
 
