@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const males = people.filter(person => person.sex === 'm');
+  const malesFromCentury = males
+    .filter(male => Math.ceil(male.died / 100) === century);
+
+  const malesForCalculations = century ? malesFromCentury : males;
+
+  const malesAges = malesForCalculations
+    .map(person => person.died - person.born);
+
+  const numberOfMales = malesAges.length;
+
+  const output = malesAges.reduce(
+    (a, b) => a + b, 0) / numberOfMales;
+
+  return output;
 }
 
 /**
@@ -37,7 +48,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const females = people.filter(person => person.sex === 'f');
+  const femalesWithChildren = females
+    .filter(female => people.some(person => person.mother === female.name));
+  const femalesForCalculations = withChildren ? femalesWithChildren : females;
+
+  const femalesAges = femalesForCalculations.map(
+    person => person.died - person.born);
+
+  const numberOfFemales = femalesAges.length;
+
+  const output = femalesAges.reduce(
+    (a, b) => a + b, 0) / numberOfFemales;
+
+  return output;
 }
 
 /**
@@ -55,7 +79,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(
+    child => people.some(mother => mother.name === child.mother));
+  const sons = children.filter(child => child.sex === 'm');
+  const actualArray = onlyWithSon ? sons : children;
+
+  return actualArray.reduce((sum, child) => {
+    const motherRef = people.find(mother => mother.name === child.mother);
+
+    return sum + (child.born - motherRef.born);
+  }, 0) / actualArray.length;
 }
 
 module.exports = {
