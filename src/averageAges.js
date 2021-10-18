@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men =  people.filter(human => century ? isMen(human.sex)
+    && isManBornInCentury(human.died, century) : isMen(human.sex))
+
+  return men.reduce((acc, curr) =>  acc + (curr.died - curr.born), 0) / men.length;
+}
+
+function isRightSex(sex) {
+  const recipientSex = sex
+  return (check) => sex === check
+ }
+
+ const isMen = isRightSex('m')
+
+function isManBornInCentury(deathDate, century) {
+  return Math.ceil(deathDate / 100) === century 
 }
 
 /**
@@ -37,8 +47,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(human => withChildren
+    ? isWomen(human.sex)
+    && people.some(child=> child.mother === human.name)
+    : isWomen(human.sex))
+
+  return women.reduce(
+    (acc, curr) => acc + (curr.died - curr.born), 0) / women.length
 }
+
+
+const isWomen = isRightSex('f')
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -55,7 +74,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(human => onlyWithSon
+    ? human.mother && isMen(human.sex)
+    : human.mother);
+
+  const mothers = people.filter(
+    human => people.some(
+      child => child.mother === human.name));
+
+  const childMother = children
+    .filter(child => mothers.some(mother=> child.mother === mother.name));
+
+  const averageAge = childMother.reduce(
+    (sum, curr) =>
+    sum + (curr.born - people
+      .find(mother => curr.mother === mother.name).born), 0) / childMother.length;
+
+  return averageAge;
 }
 
 module.exports = {
