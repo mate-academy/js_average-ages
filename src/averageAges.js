@@ -40,7 +40,8 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.filter(person => {
-    return (person.sex === 'f' && (isMother(people, person) || !withChildren));
+    return (person.sex === 'f'
+    && (people.find(child => child.mother === person.name) || !withChildren));
   });
 
   const sumOfAgesMothers
@@ -54,16 +55,6 @@ function calculateWomenAverageAge(people, withChildren) {
     / mothers.length;
 
   return averageAgeOfMothers;
-}
-
-function isMother(arr, person) {
-  for (const obj of arr) {
-    if (obj.mother === person.name) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 /**
