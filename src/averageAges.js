@@ -26,8 +26,8 @@ function calculateMenAverageAge(people, century = 0) {
     return (Math.round(age * 100) / 100);
   }
 
-  // eslint-disable-next-line max-len
-  const arrMenCenturi = arrMen.filter(el => Math.ceil(el.died / 100) === century);
+  const arrMenCenturi = arrMen.filter(el =>
+    Math.ceil(el.died / 100) === century);
 
   const arrAgecenturi = arrMenCenturi.map(d => d.died - d.born);
 
@@ -63,8 +63,8 @@ function calculateWomenAverageAge(people, withChildren = 0) {
   }
 
   if (withChildren === true) {
-    // eslint-disable-next-line max-len
-    const nevarr = people.filter(el => people.some(elem => elem.mother === el.name));
+    const nevarr = people.filter(el =>
+      people.some(elem => elem.mother === el.name));
 
     const arrAge = nevarr.map(d => d.died - d.born);
 
@@ -89,14 +89,14 @@ function calculateWomenAverageAge(people, withChildren = 0) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon = 0) {
-  // eslint-disable-next-line max-len
-  const arrMother = people.filter(el => people.some(elem => elem.mother === el.name));
+  const arrMother = people.filter(el =>
+    people.some(elem => elem.mother === el.name));
   const arrAge = [];
   let age = 0;
 
   if (onlyWithSon === 0) {
-    // eslint-disable-next-line max-len
-    const arrChildr = people.filter(el => people.some(elem => elem.name === el.mother));
+    const arrChildr = people.filter(el =>
+      people.some(elem => elem.name === el.mother));
 
     for (const keyChild of arrChildr) {
       for (const keyMother of arrMother) {
@@ -112,8 +112,8 @@ function calculateAverageAgeDiff(people, onlyWithSon = 0) {
   }
 
   if (onlyWithSon) {
-    // eslint-disable-next-line max-len
-    const arrChildr = people.filter(el => people.some(elem => elem.name === el.mother) && el.sex === 'm');
+    const arrChildr = people.filter(el =>
+      people.some(elem => elem.name === el.mother) && el.sex === 'm');
 
     for (const keyChild of arrChildr) {
       for (const keyMother of arrMother) {
