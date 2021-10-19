@@ -14,10 +14,7 @@ function calculateMenAverageAge(people, century) {
     return accum + personAge;
   }, 0);
 
-  const averageAgeOfRelevantPeople = sumOfAgesRelevantPeople
-    / relevantPeople.length;
-
-  return averageAgeOfRelevantPeople;
+  return sumOfAgesRelevantPeople / relevantPeople.length;
 }
 // learn how to use array methods like .  filter .map .some .every .find .reduce
 // avoid using loop and forEach
@@ -51,10 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return accum + personAge;
   }, 0);
 
-  const averageAgeOfMothers = sumOfAgesMothers
-    / mothers.length;
-
-  return averageAgeOfMothers;
+  return sumOfAgesMothers / mothers.length;
 }
 
 /**
@@ -80,15 +74,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const sonsConditionArray = onlyWithSon ? sons : children;
 
-  const SumOfDifferenceAge = sonsConditionArray.reduce((prev, child) => {
+  const sumOfDifferenceAge = sonsConditionArray.reduce((prev, child) => {
     const childeMother = people.find(mother => mother.name === child.mother);
 
     return prev + (child.born - childeMother.born);
   }, 0);
 
-  const averageDifferenceAge = SumOfDifferenceAge / sonsConditionArray.length;
-
-  return averageDifferenceAge;
+  return sumOfDifferenceAge / sonsConditionArray.length;
 }
 
 module.exports = {
