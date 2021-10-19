@@ -5,69 +5,44 @@ function getRoundNumber(number) {
   return +number.toFixed(2);
 }
 
-function getHumanAge(human) {
-  const { born, died } = human;
-  const humanAge = died - born;
-
-  return humanAge;
-}
-
 function calculateMenAverageAge(people, century) {
-  const manList = people.filter(human => human.sex === 'm');
-  let manCount;
-  let manAgeList;
-  let manAverageAge;
-  let manDiedInThisCentury;
+  const isMan = person => person.sex === 'm';
+  const wasDiedInCentury = person =>
+    person.sex === 'm' && Math.ceil(person.died / 100) === century;
 
-  (century) ? (
-    manDiedInThisCentury = manList.filter(function(man) {
-      const { died } = man;
-
-      return Math.ceil(died / 100) === century;
-    }),
-    manCount = manDiedInThisCentury.length,
-    manAgeList = manDiedInThisCentury.map(getHumanAge),
-    manAverageAge = manAgeList.reduce(
-      (current, next) => current + next) / manCount
-  ) : (
-    manCount = manList.length,
-    manAgeList = manList.map(getHumanAge),
-    manAverageAge = manAgeList.reduce(
-      (current, next) => current + next) / manCount
+  const manList = people.filter(
+    century ? wasDiedInCentury : isMan
   );
 
-  return getRoundNumber(manAverageAge);
+  const averageAge = manList.reduce(
+    (summary, person) => {
+      const personAge = person.died - person.born;
+
+      return summary + personAge;
+    }, 0) / manList.length;
+
+  return getRoundNumber(averageAge);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const womenList = people.filter(human => human.sex === 'f');
-  let womenCount;
-  let womenAgeList;
-  let womenAverageAge;
-  let filteredPeopleList;
-  let motherList;
-  let womenWhichHaveChild;
+  const isWoman = person => person.sex === 'f';
 
-  (withChildren) ? (
-    filteredPeopleList = people.filter(women => women.mother),
-    motherList = Array.from(new Set(filteredPeopleList.map(
-      human => human.mother
-    ))),
-    womenWhichHaveChild = womenList.filter(
-      women => motherList.includes(women.name)
-    ),
-    womenCount = womenWhichHaveChild.length,
-    womenAgeList = womenWhichHaveChild.map(getHumanAge),
-    womenAverageAge = womenAgeList.reduce(
-      (current, next) => current + next) / womenCount
-  ) : (
-    womenCount = womenList.length,
-    womenAgeList = womenList.map(getHumanAge),
-    womenAverageAge = womenAgeList.reduce(
-      (current, next) => current + next) / womenCount
+  const haveChild = person => people.some(
+    child => child.mother === person.name
   );
 
-  return getRoundNumber(womenAverageAge);
+  const womenList = people.filter(
+    withChildren ? haveChild : isWoman
+  );
+
+  const averageAge = womenList.reduce(
+    (summary, person) => {
+      const personAge = person.died - person.born;
+
+      return summary + personAge;
+    }, 0) / womenList.length;
+
+  return getRoundNumber(averageAge);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
