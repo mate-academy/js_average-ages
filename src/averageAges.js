@@ -1,5 +1,10 @@
 'use strict';
 
+const calculateAverageAge = arr =>
+  arr
+    .reduce((prev, curr) => prev + curr, 0)
+    / arr.length;
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -17,16 +22,17 @@
 function calculateMenAverageAge(people, century) {
   const man = century
     ? people
-      .filter(p =>
-        p.sex === 'm' && Math.ceil(p.died / 100) === century)
+      .filter(person =>
+        person.sex === 'm' && Math.ceil(person.died / 100) === century)
+      .map(person =>
+        person.died - person.born)
     : people
-      .filter(p =>
-        p.sex === 'm');
+      .filter(person =>
+        person.sex === 'm')
+      .map(person =>
+        person.died - person.born);
 
-  return man
-    .reduce((prev, curr) =>
-      prev + curr.died - curr.born, 0)
-    / man.length;
+  return calculateAverageAge(man);
 }
 
 /**
@@ -44,24 +50,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const mothers = [...people]
+  const motherNames = [...people]
     .filter(person =>
       person.mother !== null)
-    .map(p =>
-      p.mother);
-  const persons = withChildren
-    ? people
-      .filter(p =>
-        mothers
-          .includes(p.name))
-    : people
-      .filter(p =>
-        p.sex === 'f');
+    .map(person =>
+      person.mother);
 
-  return persons
-    .reduce((prev, curr) =>
-      prev + curr.died - curr.born, 0)
-    / persons.length;
+  const personsWithMother = withChildren
+    ? people
+      .filter(person =>
+        motherNames
+          .includes(person.name))
+      .map(person =>
+        person.died - person.born)
+    : people
+      .filter(person =>
+        person.sex === 'f')
+      .map(person =>
+        person.died - person.born);
+
+  return calculateAverageAge(personsWithMother);
 }
 
 /**
@@ -79,49 +87,49 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const motherNames = [...new Set(
-    [...people]
-      .filter(p =>
-        p.mother !== null && [...people]
-          .find(c =>
-            c.name === p.mother))
-      .map(p =>
-        p.mother))];
+  const motherNames = [
+    ...new Set(
+      [...people]
+        .filter(person =>
+          person.mother !== null
+          && [...people]
+            .find(mother =>
+              mother.name === person.mother))
+        .map(person =>
+          person.mother)
+    )];
 
-  const mothers = [...people]
-    .filter(p =>
-      motherNames
-        .find(m =>
-          m === p.name))
-    .map(m => ({
-      'mName': m.name,
-      'mBorn': m.born,
-    }));
-
-  const childrens = onlyWithSon
-    ? [...people]
-      .filter(p =>
-        p.sex === 'm'
-        && motherNames
-          .find(m =>
-            m === p.mother))
-    : [...people]
-      .filter(p =>
+  function childrens(hasSon) {
+    const peopleByMotherName = [...people]
+      .filter(person =>
         motherNames
-          .find(m =>
-            m === p.mother));
+          .find(mother =>
+            mother === person.mother));
 
-  const all = childrens
-    .map(m =>
-      m.born - mothers
-        .find(el =>
-          el.mName === m.mother)
-        .mBorn);
+    return hasSon
+      ? peopleByMotherName
+        .filter(person =>
+          person.sex === 'm')
+      : peopleByMotherName;
+  }
 
-  return all
-    .reduce((prev, curr) =>
-      prev + curr, 0)
-    / childrens.length;
+  function diff() {
+    const motherBorn = childMotherName =>
+      [...people]
+        .filter(person =>
+          motherNames
+            .find(mother =>
+              mother === person.name))
+        .find(person =>
+          person.name === childMotherName)
+        .born;
+
+    return childrens(onlyWithSon)
+      .map(child =>
+        child.born - motherBorn(child.mother));
+  }
+
+  return calculateAverageAge(diff());
 }
 
 module.exports = {
