@@ -15,17 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menFilter = people.filter((men) =>
+    century
+      ? men.sex === 'm' && Math.ceil(men.died / 100) === century
+      : men.sex === 'm'
+  );
+
+  const averageAge = menFilter.reduce((acc, men) =>
+    acc + (men.died - men.born), 0) / menFilter.length;
+
+  return averageAge;
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
+ * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -37,7 +42,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womemenFilter = people.filter((women) =>
+    withChildren
+      ? women.sex === 'f' && people.some(child => child.mother === women.name)
+      : women.sex === 'f'
+  );
+
+  const averageAge = womemenFilter.reduce((acc, women) =>
+    acc + (women.died - women.born), 0) / womemenFilter.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +69,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => people.some(mother =>
+    child.mother === mother.name));
+  const sons = children.filter((son) => son.sex === 'm');
+
+  const arr = onlyWithSon ? sons : children;
+
+  return arr.reduce((prev, child) => {
+    const motherDiff = people.find((mother) => child.mother === mother.name);
+
+    return prev + (child.born - motherDiff.born);
+  }, 0) / arr.length;
 }
 
 module.exports = {
