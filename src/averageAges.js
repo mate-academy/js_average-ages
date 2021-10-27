@@ -15,9 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  return century > 0
+  return century
     ? getMenAverageAge(people
-      .filter(value => Math.ceil(value.died / 100) === century))
+      .filter(person => Math.ceil(person.died / 100) === century))
     : getMenAverageAge(people);
 }
 
@@ -36,7 +36,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(value => value.sex === 'f');
+  const women = people.filter(person => person.sex === 'f');
   const mothers = getMothers(people);
 
   return withChildren
@@ -61,9 +61,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = getMothers(people);
   const childs = people
-    .filter(v => v.mother)
-    .filter(v => mothers.some(a => a.name === v.mother));
-  const sons = childs.filter(v => v.sex === 'm');
+    .filter(person => person.mother)
+    .filter(person => mothers.some(mother => mother.name === person.mother));
+  const sons = childs.filter(person => person.sex === 'm');
 
   return onlyWithSon
     ? getAverageAgeDiff(sons, mothers)
@@ -71,28 +71,28 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 }
 
 function getMenAverageAge(people) {
-  return calculateAverageAge(people.filter(value => value.sex === 'm'));
+  return calculateAverageAge(people.filter(person => person.sex === 'm'));
 }
 
 function calculateAverageAge(people) {
   return people
-    .map(value => value.died - value.born)
+    .map(person => person.died - person.born)
     .reduce((a, b) => (a + b), 0) / people.length;
 }
 
 function getAverageAgeDiff(people, mothers) {
   return people
-    .map(value => value.born
-      - mothers.find(v => v.name === value.mother).born)
+    .map(person => person.born
+      - mothers.find(mother => mother.name === person.mother).born)
     .reduce((a, b) => (a + b)) / people.length;
 }
 
 function getMothers(people) {
   const mothersNames = people
-    .map(value => value.mother);
+    .map(person => person.mother);
 
   return people
-    .filter(value => mothersNames.includes(value.name));
+    .filter(person => mothersNames.includes(person.name));
 }
 
 module.exports = {
