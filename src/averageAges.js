@@ -20,12 +20,23 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let copyPeople = [...people];
+
+  century && (copyPeople = copyPeople.filter(el =>
+    Math.ceil(el.died / 100) === century));
+
+  const menFiltered = copyPeople.filter(el =>
+    el.sex === 'm').map(el => el.died - el.born);
+  const averageMenAge = menFiltered.reduce((total, amount) =>
+    total + amount, 0) / menFiltered.length;
+
+  return averageMenAge;
 }
 
 /**
  * Implement calculateWomenAverageAge function
  *
- * Function returns average ave of women in array. If `withChildren` is
+ * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
  * Hint: To check if a woman has children you should find the other who mention
@@ -37,7 +48,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person =>
+    withChildren
+      ? person.sex === 'f' && people.some(el =>
+        el.mother === person.name)
+      : person.sex === 'f');
+
+  return women.reduce((arr, curr) =>
+    arr + (curr.died - curr.born), 0) / women.length;
 }
 
 /**
@@ -55,7 +73,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const child = people.filter(el =>
+    onlyWithSon
+      ? el.mother && el.sex === 'm'
+      : el.mother);
+  const mothers = people.filter(el =>
+    people.some(person =>
+      person.mother === el.name));
+  const mothersWithSons = child.filter(el =>
+    mothers.some(mother =>
+      el.mother === mother.name));
+  const averageAges = mothersWithSons.reduce((sum, curr) =>
+  sum + (curr.born - people.find(el =>
+    curr.mother === el.name).born), 0) / mothersWithSons.length;
+
+  return averageAges;
 }
 
 module.exports = {
