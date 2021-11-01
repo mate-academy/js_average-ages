@@ -20,13 +20,9 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let copyPeople = [...people];
-
-  century && (copyPeople = copyPeople.filter(el =>
-    Math.ceil(el.died / 100) === century));
-
-  const menFiltered = copyPeople.filter(el =>
-    el.sex === 'm').map(el => el.died - el.born);
+  const menFiltered = people.filter(person => century
+    ? (Math.ceil(person.died / 100) === century) && (person.sex === 'm')
+    : person.sex === 'm').map(el => el.died - el.born);
   const averageMenAge = menFiltered.reduce((total, amount) =>
     total + amount, 0) / menFiltered.length;
 
@@ -73,19 +69,14 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const child = people.filter(el =>
-    onlyWithSon
-      ? el.mother && el.sex === 'm'
-      : el.mother);
-  const mothers = people.filter(el =>
-    people.some(person =>
-      person.mother === el.name));
-  const mothersWithSons = child.filter(el =>
-    mothers.some(mother =>
-      el.mother === mother.name));
+  const mothersWithSons = people.filter(el => onlyWithSon
+    ? el.mother && el.sex === 'm' : el.mother).filter(el => people.some(child =>
+      child.mother && el.name)).filter(el =>
+        people.some(mother =>
+          el.mother === mother.name));
   const averageAges = mothersWithSons.reduce((sum, curr) =>
-  sum + (curr.born - people.find(el =>
-    curr.mother === el.name).born), 0) / mothersWithSons.length;
+    sum + (curr.born - people.find(el =>
+      curr.mother === el.name).born), 0) / mothersWithSons.length;
 
   return averageAges;
 }
