@@ -15,6 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const centuryValue = (year) => Math.ceil(year / 100);
+  const men = people.filter(item => item.sex === 'm');
+  const menCentury = men.filter(item => centuryValue(item.died) === century);
+  const averageAgeMen = men.reduce(
+    (a, b) => a + (b.died - b.born), 0) / men.length;
+  const averageAgeMenCentury = menCentury.reduce(
+    (a, b) => a + (b.died - b.born), 0) / menCentury.length;
+  const averageYear = century ? averageAgeMenCentury : averageAgeMen;
+
+  return +averageYear.toFixed(2);
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +47,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(item => item.sex === 'f');
+  const womenMom = people.filter(item => item.sex === 'f'
+    && people.some(person => person.mother === item.name)
+  );
+  const averageYearWomen = women.reduce(
+    (a, b) => a + (b.died - b.born), 0
+  ) / women.length;
+
+  const averageYearWomenWidthChildren = womenMom.reduce(
+    (a, b) => a + (b.died - b.born), 0
+  ) / womenMom.length;
+
+  const averageAge = withChildren
+    ? averageYearWomenWidthChildren : averageYearWomen;
+
+  return +averageAge.toFixed(2);
 }
 
 /**
@@ -55,7 +80,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(item => item.mother);
+  const son = people.filter(item => item.mother && item.sex === 'm');
+
+  const motherYear = function(persons) {
+    const momYears = [];
+
+    for (let i = 0; i < persons.length; i++) {
+      for (const item in people) {
+        if (persons[i].mother === people[item].name) {
+          momYears.push(persons[i].born - people[item].born);
+        }
+      }
+    }
+
+    return momYears;
+  };
+
+  const averageYear = motherYear(children).reduce(
+    (a, b) => a + b) / motherYear(children).length;
+
+  const averageYearWidthSon = motherYear(son).reduce(
+    (a, b) => a + b) / motherYear(son).length;
+
+  const momAwerageYears = onlyWithSon ? averageYearWidthSon : averageYear;
+
+  return +momAwerageYears.toFixed(2);
 }
 
 module.exports = {
