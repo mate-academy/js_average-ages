@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm'
+  );
+
+  const menAge = men.map((age) =>
+    age.died - age.born);
+
+  const totalManAge = menAge.reduce((sum, index) => sum + index);
+
+  return totalManAge / men.length;
 }
 
 /**
@@ -37,8 +43,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => withChildren
+    ? person.sex === 'f' && motherAndChildren(people, person)
+    : person.sex === 'f'
+  );
+
+  const womenAge = women.map((age) =>
+    age.died - age.born);
+
+  const totalAge = womenAge.reduce((sum, index) => sum + index);
+
+  return totalAge / women.length;
 }
+
+function motherAndChildren(people, mother) {
+  return people.some(person => person.mother === mother.name);
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -55,7 +75,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(person => onlyWithSon
+    ? person.sex === 'm' && hasMother(people, person.mother)
+    : hasMother(people, person.mother));
+
+  const ageOfMothers = children.map(child =>
+    child.born - motherBorn(people, child.mother));
+
+  const totalAge = ageOfMothers.reduce((sum, index) => sum + index, 0);
+
+  return totalAge / children.length;
+}
+
+function hasMother(people, motherName) {
+  return people.some(person => person.name === motherName);
+}
+
+function motherBorn(people, motherName) {
+  const mother = people.find(person => person.name === motherName);
+
+  return mother.born;
 }
 
 module.exports = {
