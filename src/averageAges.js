@@ -15,6 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  /*
   const centuryValue = (year) => Math.ceil(year / 100);
   const men = people.filter(item => item.sex === 'm');
   const menCentury = men.filter(item => centuryValue(item.died) === century);
@@ -24,7 +25,17 @@ function calculateMenAverageAge(people, century) {
     (a, b) => a + (b.died - b.born), 0) / menCentury.length;
   const averageYear = century ? averageAgeMenCentury : averageAgeMen;
 
-  return +averageYear.toFixed(2);
+  return +averageYear.toFixed(2); */
+
+  const men = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
+
+  return men.reduce(
+    (sum, y) => sum + (y.died - y.born), 0) / men.length;
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -47,22 +58,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(item => item.sex === 'f');
-  const womenMom = people.filter(item => item.sex === 'f'
-    && people.some(person => person.mother === item.name)
+  const women = people.filter(person =>
+    withChildren
+      ? person.sex === 'f'
+      && people.find(pers => pers.mother === person.name)
+      : person.sex === 'f'
   );
-  const averageYearWomen = women.reduce(
-    (a, b) => a + (b.died - b.born), 0
-  ) / women.length;
 
-  const averageYearWomenWidthChildren = womenMom.reduce(
-    (a, b) => a + (b.died - b.born), 0
-  ) / womenMom.length;
+  const averageYears = women.reduce(
+    (a, b) => a + (b.died - b.born), 0) / women.length;
 
-  const averageAge = withChildren
-    ? averageYearWomenWidthChildren : averageYearWomen;
-
-  return +averageAge.toFixed(2);
+  return +averageYears.toFixed(2);
 }
 
 /**
@@ -88,9 +94,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const momYear = children.map(
     item => item.born - people.find(i => i.name === item.mother).born);
 
-  const averageYears = momYear.reduce((a, b) => a + b) / momYear.length;
-
-  return +averageYears.toFixed(2);
+  return momYear.reduce((a, b) => a + b) / momYear.length;
 }
 
 module.exports = {
