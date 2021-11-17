@@ -43,7 +43,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const womans = people.filter((woman) =>
     woman.sex === 'f'
     && (withChildren === true
-      ? people.some(percon => woman.name === percon.mother)
+      ? people.some(person => woman.name === person.mother)
       : true));
 
   return womans
@@ -69,14 +69,14 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = people.filter((woman) =>
     woman.sex === 'f'
-    && people.some(percon =>
-      woman.name === percon.mother));
+    && people.some(person =>
+      woman.name === person.mother));
 
-  const childs = people.filter(percon =>
+  const childs = people.filter(person =>
     mothers.some(woman =>
-      percon.mother === woman.name)
+      person.mother === woman.name)
       && (onlyWithSon === true
-        ? percon.sex === 'm'
+        ? person.sex === 'm'
         : true));
 
   const result = childs
