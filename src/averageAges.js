@@ -15,13 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(man =>
+  const men = people.filter(man => (
     century
       ? man.sex === 'm' && Math.ceil(man.died / 100) === century
       : man.sex === 'm'
-  );
+  ));
 
-  return averageAge(men);
+  return findAverageAge(men);
 }
 
 /**
@@ -39,23 +39,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren = false) {
-  const women = people.filter(woman =>
+  const women = people.filter(woman => (
     withChildren
       ? woman.sex === 'f' && hasChildren(people, woman.name)
       : woman.sex === 'f'
-  );
+  ));
 
-  return averageAge(women);
+  return findAverageAge(women);
 }
 
 function hasChildren(people, name, sex = false) {
-  return people.some(person => sex
+  return people.some(person => (sex
     ? person.sex === sex && person.mother === name
     : person.mother === name
-  );
+  ));
 }
 
-function averageAge(people) {
+function findAverageAge(people) {
   const ages = people.map(person => person.died - person.born);
   const sumOfAll = ages.reduce((sum, age) => sum + age, 0);
 
@@ -77,25 +77,25 @@ function averageAge(people) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon = false) {
-  const children = people.filter(person =>
+  const children = people.filter(person => (
     onlyWithSon
-      ? person.sex === 'm' && hasMother(people, person.mother)
-      : hasMother(people, person.mother)
-  );
+      ? person.sex === 'm' && checkIfMotherExists(people, person.mother)
+      : checkIfMotherExists(people, person.mother)
+  ));
 
   const ageDiffrences = children.map(child =>
-    child.born - motherBorn(people, child.mother));
+    child.born - getMotherBorn(people, child.mother));
 
   const averageDiff = ageDiffrences.reduce((sum, age) => sum + age, 0);
 
   return averageDiff / ageDiffrences.length;
 }
 
-function hasMother(people, motherName) {
+function checkIfMotherExists(people, motherName) {
   return people.some(person => person.name === motherName);
 }
 
-function motherBorn(people, motherName) {
+function getMotherBorn(people, motherName) {
   const mother = people.find(person => person.name === motherName);
 
   return mother.born;
