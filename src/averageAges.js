@@ -14,13 +14,16 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+const calculateMenAverageAge = (people, century) => {
+  const men = century ? people.filter(person =>
+    person.sex === 'm' && (Math.ceil(person.died / 100) === century))
+    : people.filter(person => person.sex === 'm');
+
+  const sumOfAge = men.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+
+  return sumOfAge / men.length;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -36,9 +39,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+const calculateWomenAverageAge = (people, withChildren) => {
+  const woman = withChildren ? people.filter(person =>
+    person.sex === 'f' && people.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
+
+  const sumOfAge = woman.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+
+  return sumOfAge / woman.length;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -54,9 +64,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+const calculateAverageAgeDiff = (people, onlyWithSon) => {
+  const ageDiff = onlyWithSon ? people.filter(({ sex, mother }) => sex === 'm'
+    && people.some(({ name }) => name === mother))
+    : people.filter(({ mother }) => people.some(({ name }) => name === mother));
+
+  ageDiff.map(child => {
+    const mother = people.find(({ name }) => name === child.mother);
+
+    child.motherAgeInBirth = child.born - mother.born;
+
+    return child;
+  });
+
+  const sumOfAge = ageDiff.reduce((sum, { motherAgeInBirth }) =>
+    sum + motherAgeInBirth, 0);
+
+  return sumOfAge / ageDiff.length;
+};
 
 module.exports = {
   calculateMenAverageAge,
