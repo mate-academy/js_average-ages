@@ -14,12 +14,29 @@
  *
  * @return {number}
  */
+
+function getSumAge(people) {
+  return people
+    .map((person) => person.died - person.born)
+    .reduce((initValue, currentValue) => initValue + currentValue, 0);
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const arrMen = century
+    ? people.filter(
+      (person) =>
+        person.sex === 'm' && Math.ceil(person.died / 100) === century
+    )
+    : people.filter((person) => person.sex === 'm');
+  const sumAges = getSumAge(arrMen);
+
+  return sumAges / arrMen.length;
 }
 
 /**
@@ -37,7 +54,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrWomen = withChildren
+    ? people.filter(
+      (person) =>
+        person.sex === 'f'
+          && people.find((child) => child.mother === person.name)
+    )
+    : people.filter((person) => person.sex === 'f');
+
+  const sumAge = getSumAge(arrWomen);
+
+  return Math.round((sumAge / arrWomen.length) * 100) / 100;
 }
 
 /**
@@ -54,8 +81,39 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
+function getChildren(people, motherName) {
+  const children = people.filter((item) => item.mother === motherName);
+
+  return children;
+}
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arrWomen = people.filter((person) => person.sex === 'f');
+  const arrWomenWithExtraData = [];
+
+  arrWomen.forEach((woman) => {
+    const arrChildren = onlyWithSon
+      ? getChildren(people, woman.name).filter((child) => child.sex === 'm')
+      : getChildren(people, woman.name);
+
+    if (arrChildren.length) {
+      arrWomenWithExtraData.push({
+        ...woman,
+        ageOfBirthOfChildren: arrChildren.map(
+          (child) => child.born - woman.born
+        ),
+      });
+    }
+  });
+
+  const arrAges = arrWomenWithExtraData.reduce(
+    (acc, woman) => [...acc, ...woman.ageOfBirthOfChildren],
+    []
+  );
+  const sumAge = arrAges.reduce((acc, currentValue) => acc + currentValue, 0);
+
+  return Math.round((sumAge / arrAges.length) * 100) / 100;
 }
 
 module.exports = {
