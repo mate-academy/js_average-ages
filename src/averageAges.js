@@ -113,10 +113,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  // find sons or mummies
   function getChildren(child) {
     const children = (typeof onlyWithSon !== 'undefined')
+    // if param(withChildren) is passed
       ? people.some(person => person.name === child.mother)
       && child.sex === 'm'
+      // if argument withChildren is not passed
       : people.some(person => person.name === child.mother);
 
     return children;
@@ -124,10 +127,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const getOnlyChildren = people.filter(getChildren);
 
-  // get ages of all kids
+  // get ages of all mothers
   function getAgeDifference(child) {
-    const lifeSpan = child.born
-     - (people.find(mum => mum.name === child.mother)).born;
+    const lifeSpan = child.born - (people.find(mum =>
+      mum.name === child.mother)).born;
 
     return lifeSpan;
   }
