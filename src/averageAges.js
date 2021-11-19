@@ -1,8 +1,9 @@
 'use strict';
 
 const sumOfAge = (human) => {
-  const result = human.reduce((sum, person) =>
-    sum + (person.died - person.born), 0);
+  const result = human.reduce((sum, person) => (
+    sum + (person.died - person.born)
+  ), 0);
 
   return result / human.length;
 };
@@ -84,8 +85,9 @@ const calculateAverageAgeDiff = (people, onlyWithSon) => {
     return child;
   });
 
-  const totalAges = ageDiff.reduce((sum, { motherAgeInBirth }) =>
-    sum + motherAgeInBirth, 0);
+  const totalAges = ageDiff.reduce((sum, { motherAgeInBirth }) => (
+    sum + motherAgeInBirth
+  ), 0);
 
   return totalAges / ageDiff.length;
 };
