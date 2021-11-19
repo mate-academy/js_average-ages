@@ -24,10 +24,10 @@ function calculateMenAverageAge(people, century) {
   /* create array only with men, if century is passed
   than it creates a separate array */
   function getSex(male) {
-    const men = (typeof century === 'undefined')
+    const men = century
       ? (male['sex'] === 'm')
-      : (male['sex'] === 'm')
-    && (Math.ceil(male['died'] / 100) === century);
+      && (Math.ceil(male['died'] / 100) === century)
+      : (male['sex'] === 'm');
 
     return men;
   }
@@ -36,7 +36,7 @@ function calculateMenAverageAge(people, century) {
 
   // get ages of all men
   function getAgeDifference(age) {
-    const lifeSpan = (age['died'] - age['born']);
+    const lifeSpan = age.died - age.born;
 
     return lifeSpan;
   }
@@ -70,7 +70,7 @@ function calculateWomenAverageAge(people, withChildren) {
   /* create array only with women, if withChildren is passed
   than it creates a separate array of mathers */
   function getSex(female) {
-    const women = (typeof withChildren !== 'undefined')
+    const women = withChildren
       ? female.sex === 'f'
     && people.some(person => female.name === person.mother)
       : female['sex'] === 'f';
@@ -82,7 +82,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   // get ages of all women
   function getAgeDifference(age) {
-    const lifeSpan = (age['died'] - age['born']);
+    const lifeSpan = age.died - age.born;
 
     return lifeSpan;
   }
@@ -115,7 +115,7 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // find sons or mummies
   function getChildren(child) {
-    const children = (typeof onlyWithSon !== 'undefined')
+    const children = onlyWithSon
     // if param(withChildren) is passed
       ? people.some(person => person.name === child.mother)
       && child.sex === 'm'
