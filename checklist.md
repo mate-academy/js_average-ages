@@ -1,4 +1,4 @@
-[NAMING] - Name of functions should start with verbs. It will be easier to understand a function's purpose.
+1. [NAMING] - Name of functions should start with verbs. It will be easier to understand a function's purpose.
 
 BAD EXAMPLE:
 ```
@@ -11,7 +11,7 @@ GOOD EXAMPLE:
 function calculateAverageAge() {}
 ```
 
-[CODE STYLE] - If you move your shortened return statement in arrow function to a newline, use round brackets
+2. [CODE STYLE] - If you move your shortened return statement in arrow function to a newline, use round brackets
 
 BAD EXAMPLE:
 ```
@@ -31,7 +31,7 @@ const humans = people.reduce(a, b) => (
 ), 0);
 ```
 
-[CODE STYLE] - If you a have a lot of conditions/comparing, move them to a variable
+3. [CODE STYLE] - If you a have a lot of conditions/comparing, move them to a variable
 
 BAD EXAMPLE:
 ```
@@ -45,5 +45,5 @@ GOOD EXAMPLE:
 const hasMetCondition = a && (b == c)
 ```
 
-[CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
+4. [CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
 (`forEach` is exception). These methods return a new array, so you should use it. 
