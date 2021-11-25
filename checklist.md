@@ -42,7 +42,7 @@ if ((a && b === c && d === 'm')
 
 GOOD EXAMPLE: 
 ```
-const hasMetCondition = a && (b == c)
+const hasMetCondition = a && (b === c)
 ```
 
 4. [CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
