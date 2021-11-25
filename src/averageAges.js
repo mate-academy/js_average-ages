@@ -15,11 +15,49 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  if (century === undefined) {
+    const callback = (startValue, obj) => {
+      if (obj.sex === 'm') {
+        const age = obj.died - obj.born;
+
+        return startValue + age;
+      }
+
+      return startValue;
+    };
+
+    const sumAges = people.reduce(callback, 0);
+
+    const onlyMan = (obj) => {
+      if (obj.sex === 'm') {
+        return obj;
+      }
+    };
+
+    const onlyM = people.filter(onlyMan);
+    const avarageAges = sumAges / onlyM.length;
+
+    return avarageAges;
+  }
+
+  function callb(obj) {
+    if (obj.sex === 'm' && century === Math.ceil(obj.died / 100)) {
+      return obj;
+    }
+  }
+
+  const masivManInCentury = people.filter(callb);
+
+  function f(start, x) {
+    const agee = x.died - x.born;
+
+    return start + agee;
+  }
+
+  const sumAgess = masivManInCentury.reduce(f, 0);
+  const avarage = sumAgess / masivManInCentury.length;
+
+  return avarage;
 }
 
 /**
@@ -37,7 +75,56 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  if (withChildren === undefined) {
+    const callback = (startValue, obj) => {
+      if (obj.sex === 'f') {
+        const ages = obj.died - obj.born;
+
+        return startValue + ages;
+      }
+
+      return startValue;
+    };
+    const sum = people.reduce(callback, 0);
+
+    const x = (obj) => {
+      if (obj.sex === 'f') {
+        return obj;
+      }
+    };
+    const onlyF = people.filter(x);
+    const avarageAges = sum / onlyF.length;
+
+    return avarageAges;
+  } else {
+    const onlyWomans = people.filter((x) => x.sex === 'f');
+
+    const callback = (obj) => {
+      const name = obj.name;
+
+      for (let i = 0; i < people.length; i++) {
+        const objj = people[i];
+
+        if (name === objj.mother) {
+          return obj;
+        }
+      }
+    };
+
+    const onlyWomansWithChildrens = onlyWomans.filter(callback);
+
+    const func = (startValue, obj) => {
+      const ages = obj.died - obj.born;
+
+      return startValue + ages;
+    };
+
+    const sumAges = onlyWomansWithChildrens.reduce(func, 0);
+
+    const avarageAges = sumAges / onlyWomansWithChildrens.length;
+
+    return avarageAges;
+  }
 }
 
 /**
@@ -55,7 +142,66 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  if (onlyWithSon === undefined) {
+    const callback = (obj) => {
+      const name = obj.mother;
+
+      for (let i = 0; i < people.length; i++) {
+        const objj = people[i];
+
+        if (name === objj.name) {
+          obj.diff = obj.born - objj.born;
+
+          return obj;
+        }
+      }
+    };
+
+    const onlyChildren = people.filter(callback);
+
+    const func = (startValue, obj) => {
+      const ages = obj.diff;
+
+      return startValue + ages;
+    };
+
+    const sumAges = onlyChildren.reduce(func, 0);
+
+    const avarageAges = sumAges / onlyChildren.length;
+
+    return avarageAges;
+  } else {
+    const onlyWomans = people.filter((x) => x.sex === 'f');
+    const onlyMans = people.filter((x) => x.sex === 'm');
+
+    const callback = (obj) => {
+      const name = obj.mother;
+
+      for (let i = 0; i < onlyWomans.length; i++) {
+        const objj = onlyWomans[i];
+
+        if (name === objj.name) {
+          obj.diff = obj.born - objj.born;
+
+          return obj;
+        }
+      }
+    };
+
+    const onlyChildren = onlyMans.filter(callback);
+
+    const func = (startValue, obj) => {
+      const ages = obj.diff;
+
+      return startValue + ages;
+    };
+
+    const sumAges = onlyChildren.reduce(func, 0);
+
+    const avarageAges = sumAges / onlyChildren.length;
+
+    return avarageAges;
+  }
 }
 
 module.exports = {
