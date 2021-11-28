@@ -15,35 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  if (century === undefined) {
-    const callback = (startValue, obj) => {
-      if (obj.sex === 'm') {
-        const age = obj.died - obj.born;
 
-        return startValue + age;
-      }
+  const callback = (startValue, obj) => {
+    const age = obj.died - obj.born;
 
-      return startValue;
-    };
+    return obj.sex === 'm' ? startValue + age : startValue;
+  };
+  const sumAges = people.reduce(callback, 0);
 
-    const sumAges = people.reduce(callback, 0);
-
-    const onlyMan = (obj) => {
-      if (obj.sex === 'm') {
-        return obj;
-      }
-    };
-
-    const onlyM = people.filter(onlyMan);
-    const avarageAges = sumAges / onlyM.length;
-
-    return avarageAges;
-  }
+  const onlyM = people.filter(obj => {
+    return obj.sex === 'm' ? obj : null;
+  });
+  const avarageAges = sumAges / onlyM.length;
 
   function callb(obj) {
-    if (obj.sex === 'm' && century === Math.ceil(obj.died / 100)) {
-      return obj;
-    }
+    return obj.sex === 'm' && century === Math.ceil(obj.died / 100)
+      ? obj : null;
   }
 
   const masivManInCentury = people.filter(callb);
@@ -57,7 +44,8 @@ function calculateMenAverageAge(people, century) {
   const sumAgess = masivManInCentury.reduce(f, 0);
   const avarage = sumAgess / masivManInCentury.length;
 
-  return avarage;
+  return century === undefined ? avarageAges : avarage;
+
 }
 
 /**
