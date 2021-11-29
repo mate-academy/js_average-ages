@@ -21,10 +21,9 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const men = people.filter(person =>
-    century
-      ? person.sex === 'm' && (Math.ceil(person.died / 100) === century)
-      : person.sex === 'm');
+  const men = people.filter(person => century
+    ? person.sex === 'm' && (Math.ceil(person.died / 100) === century)
+    : person.sex === 'm');
   const ages = men.map(item => item.died - item.born);
   const result = ages.reduce((sum, age) => sum + age, 0);
 
@@ -79,10 +78,10 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const allClildren = people.filter(person => {
     return onlyWithSon
-      ? person.sex === 'm' && people.filter((mother) =>
-        person.mother === mother.name).length > 0
-      : people.filter((mother) =>
-        person.mother === mother.name).length > 0;
+      ? person.sex === 'm' && people.find((mother) =>
+        person.mother === mother.name)
+      : people.find((mother) =>
+        person.mother === mother.name);
   });
 
   const diferensAge = allClildren.map((child) => {
