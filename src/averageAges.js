@@ -20,6 +20,35 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let countAgesSum = [];
+
+  if (!century) {
+    countAgesSum = people.reduce((prev, element) => {
+      let [count, countAges] = prev;
+
+      if (element.sex === 'm') {
+        count++;
+        countAges += element.died - element.born;
+      }
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  if (century) {
+    countAgesSum = people.reduce((prev, element) => {
+      let [count, countAges] = prev;
+
+      if (element.sex === 'm' && Math.ceil(element.died / 100) === century) {
+        count++;
+        countAges += element.died - element.born;
+      }
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  return countAgesSum[1] / countAgesSum[0];
 }
 
 /**
@@ -38,6 +67,35 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let countAgesSum = [];
+
+  if (!withChildren) {
+    countAgesSum = people.reduce((prev, element) => {
+      let [count, countAges] = prev;
+
+      if (element.sex === 'f') {
+        count++;
+        countAges += element.died - element.born;
+      }
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  if (withChildren) {
+    countAgesSum = people.reduce((prev, element) => {
+      let [count, countAges] = prev;
+
+      if ((people.some(el => element.name === el.mother))) {
+        count++;
+        countAges += element.died - element.born;
+      }
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  return countAgesSum[1] / countAgesSum[0];
 }
 
 /**
@@ -56,6 +114,52 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  let countAgesSum = [];
+
+  if (!onlyWithSon) {
+    countAgesSum = people.reduce((prev, mother) => {
+      let [count, countAges] = prev;
+      const children = people.filter(child => mother.name === child.mother);
+
+      if (children.length > 0) {
+        countAges += children.reduce((sum, child) => {
+          let sumAgesForEveryChild = sum;
+
+          sumAgesForEveryChild += child.born - mother.born;
+
+          return sumAgesForEveryChild;
+        }, 0);
+      }
+
+      count += children.length;
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  if (onlyWithSon) {
+    countAgesSum = people.reduce((prev, mother) => {
+      let [count, countAges] = prev;
+      const children = people.filter(child => mother.name === child.mother
+        && child.sex === 'm');
+
+      if (children.length > 0) {
+        countAges += children.reduce((sum, child) => {
+          let sumAgesForEveryChild = sum;
+
+          sumAgesForEveryChild += child.born - mother.born;
+
+          return sumAgesForEveryChild;
+        }, 0);
+      }
+
+      count += children.length;
+
+      return [count, countAges];
+    }, [0, 0]);
+  }
+
+  return countAgesSum[1] / countAgesSum[0];
 }
 
 module.exports = {
