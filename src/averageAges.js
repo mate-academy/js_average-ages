@@ -100,9 +100,7 @@ function calculateAverageAgeDiff(people, onlyWithSon = 0) {
       const mother = mothers.find((a) => a.name === person.mother);
 
       if (onlyWithSon === 0 || person.sex === 'm') {
-        const ageDiff = person.born - mother.born;
-
-        agesDiferencesSum += ageDiff;
+        agesDiferencesSum += person.born - mother.born;
         n++;
       }
     }
