@@ -15,35 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const callback = (startValue, obj) => {
+  const getOnlyMan = (obj) => {
+    return obj.sex === 'm'
+      ? (century ? (century === Math.ceil(obj.died / 100) ? obj : null) : obj)
+      : null;
+  };
+
+  const onlyMan = people.filter(getOnlyMan);
+
+  const getSumAge = (startValue, obj) => {
     const age = obj.died - obj.born;
 
-    return obj.sex === 'm' ? startValue + age : startValue;
+    return startValue + age;
   };
-  const sumAges = people.reduce(callback, 0);
 
-  const onlyM = people.filter(obj => {
-    return obj.sex === 'm' ? obj : null;
-  });
-  const avarageAges = sumAges / onlyM.length;
+  const sumAge = onlyMan.reduce(getSumAge, 0);
 
-  function callb(obj) {
-    return obj.sex === 'm' && century === Math.ceil(obj.died / 100)
-      ? obj : null;
-  }
-
-  const masivManInCentury = people.filter(callb);
-
-  function f(start, x) {
-    const agee = x.died - x.born;
-
-    return start + agee;
-  }
-
-  const sumAgess = masivManInCentury.reduce(f, 0);
-  const avarage = sumAgess / masivManInCentury.length;
-
-  return century === undefined ? avarageAges : avarage;
+  return sumAge / onlyMan.length;
 }
 
 /**
@@ -61,43 +49,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const callback = (startValue, obj) => {
-    const ages = obj.died - obj.born;
-
-    return obj.sex === 'f' ? startValue + ages : startValue;
-  };
-  const sum = people.reduce(callback, 0);
-
-  const onlyF = people.filter((obj) => {
-    return obj.sex === 'f' ? obj : null;
-  });
-  const avarageAges = sum / onlyF.length;
-
-  const onlyWomans = people.filter((x) => x.sex === 'f');
-
-  const callb = (obj) => {
-    const callbb = (obj1) => {
-      return obj.name === obj1.mother ? obj : null;
+  const getOnlyWoman = (obj) => {
+    const getWithChildren = (peopleObj) => {
+      return obj.name === peopleObj.mother ? obj : null;
     };
+    const womanWithChildren = people.find(getWithChildren);
 
-    const x = people.find(callbb);
-
-    return x;
+    return obj.sex === 'f' ? (withChildren ? womanWithChildren : obj) : null;
   };
 
-  const onlyWomansWithChildrens = onlyWomans.filter(callb);
+  const onlyWoman = people.filter(getOnlyWoman);
 
-  const func = (startValue, obj) => {
-    const ages = obj.died - obj.born;
+  const getSumAge = (startValue, obj) => {
+    const age = obj.died - obj.born;
 
-    return startValue + ages;
+    return startValue + age;
   };
 
-  const sumAges = onlyWomansWithChildrens.reduce(func, 0);
+  const sumAges = onlyWoman.reduce(getSumAge, 0);
 
-  const avarage = sumAges / onlyWomansWithChildrens.length;
-
-  return withChildren === undefined ? avarageAges : avarage;
+  return sumAges / onlyWoman.length;
 }
 
 /**
@@ -115,58 +86,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const callback = (obj) => {
-    const callbb = (obj1) => {
-      obj.diff = obj.born - obj1.born;
+  const callback = (childObj) => {
+    const getMothers = (obj) => {
+      childObj.diff = childObj.born - obj.born;
 
-      return obj.mother === obj1.name ? obj : null;
+      const result = childObj.mother === obj.name ? obj : null;
+
+      return onlyWithSon ? (childObj.sex === 'm' ? result : null) : result;
     };
 
-    const x = people.find(callbb);
+    const mother = people.find(getMothers);
 
-    return x;
+    return mother;
   };
 
-  const onlyChildren = people.filter(callback);
+  const onlyMothers = people.filter(callback);
 
-  const f = (startValue, obj) => {
+  const getSumAge = (startValue, obj) => {
     const ages = obj.diff;
 
     return startValue + ages;
   };
 
-  const sumAges = onlyChildren.reduce(f, 0);
+  const sumAges = onlyMothers.reduce(getSumAge, 0);
 
-  const avarageAges = sumAges / onlyChildren.length;
-
-  const onlyWomans = people.filter((x) => x.sex === 'f');
-  const onlyMans = people.filter((x) => x.sex === 'm');
-
-  const callb = (obj) => {
-    const callbbb = (obj1) => {
-      obj.diff = obj.born - obj1.born;
-
-      return obj.mother === obj1.name ? obj : null;
-    };
-
-    const y = onlyWomans.find(callbbb);
-
-    return y;
-  };
-
-  const onlyChildrenn = onlyMans.filter(callb);
-
-  const func = (startValue, obj) => {
-    const ages = obj.diff;
-
-    return startValue + ages;
-  };
-
-  const sumAgess = onlyChildrenn.reduce(func, 0);
-
-  const avarage = sumAgess / onlyChildrenn.length;
-
-  return onlyWithSon === undefined ? avarageAges : avarage;
+  return sumAges / onlyMothers.length;
 }
 
 module.exports = {
