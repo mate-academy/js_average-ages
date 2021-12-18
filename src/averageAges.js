@@ -64,13 +64,11 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
   const arr = [];
 
   for (const person of people) {
-    if (onlyWithSon === true && person.sex === 'f') {
-      continue;
-    }
-
-    for (const woman of people) {
-      if (woman.name === person.mother) {
-        arr.push(person.born - woman.born);
+    if (!(onlyWithSon === true && person.sex === 'f')) {
+      for (const woman of people) {
+        if (woman.name === person.mother) {
+          arr.push(person.born - woman.born);
+        }
       }
     }
   }
