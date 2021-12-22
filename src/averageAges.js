@@ -20,6 +20,18 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const filteredMans = people.filter(person => {
+    if (century) {
+      return person.sex === 'm' && Math.ceil(person.died / 100) === century;
+    }
+
+    return person.sex === 'm';
+  });
+  const reduceTimeLive = filteredMans.reduce((prev, cur) => {
+    return prev + cur.died - cur.born;
+  }, 0);
+
+  return reduceTimeLive / filteredMans.length;
 }
 
 /**
@@ -37,7 +49,27 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let filteredWomens;
+
+  if (withChildren) {
+    filteredWomens = people.filter(person => {
+      return person.sex === 'f' && people.some((person1) => person1.mother
+        === person.name);
+    });
+  } else {
+    filteredWomens = people.filter(person => {
+      return person.sex === 'f';
+    });
+  }
+
+  if (filteredWomens.length === 0) {
+    return;
+  }
+
+  const reduceTimeLive = filteredWomens.reduce((prev, cur) =>
+    prev + cur.died - cur.born, 0);
+
+  return reduceTimeLive / filteredWomens.length;
 }
 
 /**
@@ -55,7 +87,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let filteredPeople;
+
+  if (onlyWithSon) {
+    filteredPeople = people.filter(person => {
+      return people.some(name => name.name
+        === person.mother && person.sex === 'm');
+    });
+  } else {
+    filteredPeople = people.filter(person => {
+      return people.some(name => name.name === person.mother);
+    });
+  }
+
+  const reducePeople = (prev, cur) => {
+    const mom = people.filter((mother) => mother.name === cur.mother);
+
+    return prev + cur.born - mom[0].born;
+  };
+
+  const totalAgeDiff = filteredPeople.reduce(reducePeople, 0);
+
+  return totalAgeDiff / filteredPeople.length;
 }
 
 module.exports = {
