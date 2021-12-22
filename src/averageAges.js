@@ -26,9 +26,11 @@ function calculateMenAverageAge(people, century) {
     : man.sex === 'm'));
 
   const ageMap = males.map(man => man.died - man.born);
-  const avg = ageMap.reduce((a, b) => a + b) / ageMap.length;
 
-  return avg;
+  const averageAge = ageMap.reduce((prevMan, currMan) =>
+    prevMan + currMan) / ageMap.length;
+
+  return averageAge;
 }
 
 /**
@@ -48,14 +50,19 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
 
+  const withChild = (woman) => people.some(mother =>
+    woman.name === mother.mother);
+
   const women = people.filter(woman => (withChildren
-    ? (woman.sex === 'f' && people.some(mother => woman.name === mother.mother))
+    ? (woman.sex === 'f' && withChild(woman))
     : woman.sex === 'f'));
 
   const ageMap = women.map(woman => woman.died - woman.born);
-  const avg = ageMap.reduce((a, b) => a + b) / ageMap.length;
 
-  return avg;
+  const averageAge = ageMap.reduce((prevWoman, currWoman) =>
+    prevWoman + currWoman) / ageMap.length;
+
+  return averageAge;
 }
 
 /**
@@ -73,15 +80,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const withMother = (child) =>
+    people.some(mother => child.mother === mother.name);
+
+  const findMother = (child) =>
+    people.find(mother => child.mother === mother.name);
+
   const children = people.filter(child => (onlyWithSon
-    ? (child.sex === 'm' && people.some(mother => child.mother === mother.name))
-    : people.some(mother => child.mother === mother.name)));
+    ? (child.sex === 'm' && withMother(child))
+    : withMother(child)));
 
   const ageMap = children.map(child =>
-    child.born - people.find(mother => child.mother === mother.name).born);
-  const avg = ageMap.reduce((a, b) => a + b) / ageMap.length;
+    child.born - findMother(child).born);
 
-  return avg;
+  const averageAge = ageMap.reduce((prevWoman, currWoman) =>
+    prevWoman + currWoman) / ageMap.length;
+
+  return averageAge;
 }
 
 module.exports = {
