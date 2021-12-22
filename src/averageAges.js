@@ -35,8 +35,7 @@ function calculateMenAverageAge(people, century) {
   const menAverageAgeCentury
     = menCentury.reduce(averageAge, 0) / menCentury.length;
 
-  return century !== undefined
-    ? menAverageAgeCentury : menAverageAge;
+  return century ? menAverageAgeCentury : menAverageAge;
 }
 
 /**
@@ -70,8 +69,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const mothersAveragreAge
     = mothers.reduce(averageAge, 0) / mothers.length;
 
-  return withChildren === true
-    ? mothersAveragreAge : womenAveragreAge;
+  return withChildren ? mothersAveragreAge : womenAveragreAge;
 }
 
 /**
@@ -122,8 +120,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     = diffMotherSon.reduce((a, b) =>
       a + b) / sons.length;
 
-  return onlyWithSon === undefined
-    ? averageAgeMotherChild : averageAgeMotherSon;
+  return onlyWithSon ? averageAgeMotherSon : averageAgeMotherChild;
 }
 
 module.exports = {
