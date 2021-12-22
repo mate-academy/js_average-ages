@@ -41,17 +41,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const listOfMothers = people.reduce((mothers, pupil) => {
-    const newListOfMothers = pupil.mother
-      ? [...mothers, pupil.mother]
-      : [...mothers];
-
-    return newListOfMothers;
-  }, []);
-
   const filteredWomens = withChildren
     ? people.filter((pupil) => {
-      return listOfMothers.some(elem => elem === pupil.name)
+      return people.some(child => child.mother === pupil.name)
         && pupil.sex === 'f';
     })
     : people.filter((pupil) => pupil.sex === 'f');
@@ -77,45 +69,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const allMothersNames = people.reduce((mothers, pupil) => {
-    const newListOfMothers = pupil.mother
-      ? [...mothers, pupil.mother]
-      : [...mothers];
+  const children = onlyWithSon
+    ? people.filter((pupil) => {
+      return people
+        .some(mother => mother.name === pupil.mother) && pupil.sex === 'm';
+    })
+    : people.filter((pupil) =>
+      people.some(mother => mother.name === pupil.mother));
 
-    return newListOfMothers;
-  }, []);
-
-  const womensWithChild = people.filter((pupil) => {
-    return allMothersNames.some(elem => elem === pupil.name)
-        && pupil.sex === 'f';
-  });
-
-  const listOfChildren = onlyWithSon
-    ? people.reduce((children, pupil) => {
-      const newListOfChildren = womensWithChild
-        .some(mother => mother.name === pupil.mother) && pupil.sex === 'm'
-        ? [...children, { ...pupil }]
-        : [...children];
-
-      return newListOfChildren;
-    }, [])
-    : people.reduce((children, pupil) => {
-      const newListOfChildren = womensWithChild
-        .some(mother => mother.name === pupil.mother)
-        ? [...children, { ...pupil }]
-        : [...children];
-
-      return newListOfChildren;
-    }, []);
-
-  const sumOfYears = listOfChildren.reduce((years, child) => {
-    const motherOfChild = womensWithChild
+  const sumOfYears = children.reduce((years, child) => {
+    const motherOfChild = people
       .find(women => women.name === child.mother);
 
     return years + child.born - motherOfChild.born;
   }, [0]);
 
-  return sumOfYears / listOfChildren.length;
+  return sumOfYears / children.length;
 }
 
 module.exports = {
