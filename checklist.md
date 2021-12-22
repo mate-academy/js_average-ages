@@ -15,7 +15,7 @@ function calculateAverageAge() {}
 
 BAD EXAMPLE:
 ```
-const humans = people.map(a, b) =>
+const humans = people.map((a, b) =>
     a + b);
 
 const babies = people.map(person => children 
@@ -26,7 +26,7 @@ const babies = people.map(person => children
 
 GOOD EXAMPLE: 
 ```
-const humans = people.reduce(a, b) => (
+const humans = people.reduce((a, b) => (
   a + b
 ), 0);
 ```
