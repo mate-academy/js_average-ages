@@ -50,27 +50,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let filteredWomens;
+  const filteredWomen = withChildren
+    ? people.filter(person => person.sex === 'f'
+      && people.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
 
-  if (withChildren) {
-    filteredWomens = people.filter(person => {
-      return person.sex === 'f' && people.some((person1) => person1.mother
-        === person.name);
-    });
-  } else {
-    filteredWomens = people.filter(person => {
-      return person.sex === 'f';
-    });
-  }
-
-  if (filteredWomens.length === 0) {
+  if (filteredWomen.length === 0) {
     return;
   }
 
-  const reduceTimeLive = filteredWomens.reduce((prev, cur) =>
+  const reduceTimeLive = filteredWomen.reduce((prev, cur) =>
     prev + cur.died - cur.born, 0);
 
-  return reduceTimeLive / filteredWomens.length;
+  return reduceTimeLive / filteredWomen.length;
 }
 
 /**
@@ -88,21 +80,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children;
+  const children = onlyWithSon
+    ? people.filter(person => people.some(name => name.name
+      === person.mother && person.sex === 'm'))
+    : people.filter(person => people.some(name => name.name === person.mother));
 
-  if (onlyWithSon) {
-    children = people.filter(person => {
-      return people.some(name => name.name
-        === person.mother && person.sex === 'm');
-    });
-  } else {
-    children = people.filter(person => {
-      return people.some(name => name.name === person.mother);
-    });
-  }
-
-  const differenceAge = children.map(childs => {
-    return childs.born - people.find(mom => mom.name === childs.mother).born;
+  const differenceAge = children.map(child => {
+    return child.born - people.find(mom => mom.name === child.mother).born;
   });
 
   const averageSumAge = differenceAge.reduce((sum, age) => sum + age);
