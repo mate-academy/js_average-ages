@@ -14,23 +14,18 @@
  *
  * @return {number}
  */
+const findAverage = (previousValue, currentValue) => {
+  return previousValue + currentValue;
+};
+
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-
-  if (century !== undefined) {
-    const menDiedInCentury = men.filter(man =>
-      (Math.ceil(man.died / 100)) === century);
-    const ageOfMenDiedInCentury = menDiedInCentury.map(man =>
-      man.died - man.born);
-    const averageAgeOfDiedInCentury = ageOfMenDiedInCentury.reduce((p, n) =>
-      p + n) / ageOfMenDiedInCentury.length;
-
-    return averageAgeOfDiedInCentury;
-  }
+  const men = century ? people.filter(man =>
+    (Math.ceil(man.died / 100)) === century && man.sex === 'm')
+    : people.filter(person => person.sex === 'm');
 
   const ageOfMen = men.map(man => man.died - man.born);
-  const averageLifespan = ageOfMen.reduce((prev, curr) =>
-    prev + curr) / ageOfMen.length;
+
+  const averageLifespan = ageOfMen.reduce(findAverage, 0) / ageOfMen.length;
 
   return averageLifespan;
 }
@@ -50,23 +45,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
-
-  if (withChildren !== undefined) {
-    const mothers = women.filter(person =>
-      people.some(child => child.mother === person.name));
-    const ageOfMother = mothers.map(woman =>
-      woman.died - woman.born);
-    const averageLifespanMother = ageOfMother.reduce((p, n) =>
-      p + n) / ageOfMother.length;
-
-    return averageLifespanMother;
-  }
+  const women = withChildren ? people.filter(person =>
+    people.some(child => child.mother === person.name) && person.sex === 'f')
+    : people.filter(person => person.sex === 'f');
 
   const ageOfWomen = women.map(woman =>
     woman.died - woman.born);
-  const averageLifespan = ageOfWomen.reduce((p, n) =>
-    p + n) / ageOfWomen.length;
+
+  const averageLifespan = ageOfWomen.reduce(findAverage, 0) / ageOfWomen.length;
 
   return averageLifespan;
 }
@@ -86,25 +72,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person =>
-    people.some(mother => person.mother === mother.name));
+  const children = people.filter(person => onlyWithSon
+    ? people.some(mother => person.mother === mother.name
+      && person.sex === 'm')
+    : people.some(mother => person.mother === mother.name));
+
   const mothers = people.filter(person =>
     children.some(child => child.mother === person.name));
+
   const motherOfChild = (child) => {
     return mothers.find(mother =>
       child.mother === mother.name);
   };
 
-  if (onlyWithSon) {
-    const sons = children.filter(person =>
-      person.sex === 'm');
-
-    return sons.reduce((p, n) =>
-      p + (n.born - motherOfChild(n).born), 0) / sons.length;
-  }
-
-  return children.reduce((p, n) =>
-    p + (n.born - motherOfChild(n).born), 0) / children.length;
+  return children.reduce((previousValue, nextValue) =>
+    previousValue + (nextValue.born - motherOfChild(nextValue).born), 0)
+    / children.length;
 }
 
 module.exports = {
