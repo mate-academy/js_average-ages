@@ -82,7 +82,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .find(women => women.name === child.mother);
 
     return years + child.born - motherOfChild.born;
-  }, [0]);
+  }, 0);
 
   return sumOfYears / children.length;
 }
