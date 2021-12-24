@@ -20,11 +20,6 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  // let menList = people.filter(person => person.sex === 'm');
-
-  // if (century) {
-  //   menList = menList.filter(man => Math.ceil(man.died / 100) === century);
-  // }
   let menList;
 
   if (century) {
@@ -58,28 +53,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // let womenList = people.filter(person => person.sex === 'f');
-
-  // if (withChildren) {
-  //   womenList = womenList.filter(women => (
-  //     people.some(person => (
-  //       person.mother === women.name
-  //     ))));
-  // }
   let womenList;
-  // let womenList = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
-    womenList = people.filter(women => (
+    womenList = people.filter(woman => (
       people.some(person => (
-        person.mother === women.name
+        person.mother === woman.name
       ))));
   } else {
     womenList = people.filter(person => person.sex === 'f');
   }
 
-  const totalAge = (womenList.reduce((summ, women) => (
-    summ + women.died - women.born
+  const totalAge = (womenList.reduce((summ, woman) => (
+    summ + woman.died - woman.born
   ), 0));
 
   const averageAge = totalAge / womenList.length;
@@ -102,19 +88,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let childrens = people.filter(person => (
+  let children = people.filter(person => (
     people.some(mother => person.mother === mother.name)
   ));
 
   if (onlyWithSon) {
-    childrens = childrens.filter(child => child.sex === 'm');
+    children = children.filter(child => child.sex === 'm');
   }
 
-  const totalAge = childrens.reduce((prev, current) => (
+  const totalAge = children.reduce((prev, current) => (
     prev + (current.born - people.find(person => (
       current.mother === person.name)).born
     )), 0);
-  const averageAgeDiff = totalAge / childrens.length;
+  const averageAgeDiff = totalAge / children.length;
 
   return averageAgeDiff;
 }
