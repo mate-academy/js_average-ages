@@ -20,19 +20,27 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let menList = people.filter(person => person.sex === 'm');
+  // let menList = people.filter(person => person.sex === 'm');
+
+  // if (century) {
+  //   menList = menList.filter(man => Math.ceil(man.died / 100) === century);
+  // }
+  let menList;
 
   if (century) {
-    menList = menList.filter(men => Math.ceil(men.died / 100) === century);
+    menList = people.filter(person =>
+      Math.ceil(person.died / 100) === century && person.sex === 'm');
+  } else {
+    menList = people.filter(person => person.sex === 'm');
   }
 
-  const totalAge = (menList.reduce((summ, men) => (
-    summ + men.died - men.born
+  const totalAge = (menList.reduce((summ, man) => (
+    summ + man.died - man.born
   ), 0));
 
-  const averegeAge = totalAge / menList.length;
+  const averageAge = totalAge / menList.length;
 
-  return averegeAge;
+  return averageAge;
 }
 
 /**
@@ -50,22 +58,33 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenList = people.filter(person => person.sex === 'f');
+  // let womenList = people.filter(person => person.sex === 'f');
+
+  // if (withChildren) {
+  //   womenList = womenList.filter(women => (
+  //     people.some(person => (
+  //       person.mother === women.name
+  //     ))));
+  // }
+  let womenList;
+  // let womenList = people.filter(person => person.sex === 'f');
 
   if (withChildren) {
-    womenList = womenList.filter(women => (
+    womenList = people.filter(women => (
       people.some(person => (
         person.mother === women.name
       ))));
+  } else {
+    womenList = people.filter(person => person.sex === 'f');
   }
 
   const totalAge = (womenList.reduce((summ, women) => (
     summ + women.died - women.born
   ), 0));
 
-  const averegeAge = totalAge / womenList.length;
+  const averageAge = totalAge / womenList.length;
 
-  return averegeAge;
+  return averageAge;
 }
 
 /**
