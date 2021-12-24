@@ -42,10 +42,10 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const filteredWomens = withChildren
-    ? people.filter((person) => {
-      return people.some(child => child.mother === person.name)
+    ? people.filter((person) => (
+        people.some(child => child.mother === person.name) 
         && person.sex === 'f';
-    })
+      ))
     : people.filter((person) => person.sex === 'f');
 
   const sumOfYears = filteredWomens
