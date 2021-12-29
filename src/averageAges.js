@@ -20,18 +20,14 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let men;
-
-  !century
-    ? men = people.filter(person => person.sex === 'm')
-    : men = people.filter(person =>
+  const men = !century
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person =>
       person.sex === 'm' && Math.ceil(person.died / 100) === century);
 
-  const result = men.reduce((prev, curr) =>
+  return men.reduce((prev, curr) =>
     (prev + (curr.died - curr.born)), 0)
       / men.length;
-
-  return result;
 }
 
 /**
@@ -50,17 +46,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  let women;
-
-  !withChildren
-    ? women = people.filter(el => el.sex === 'f')
-    : women = people.filter(el =>
+  const women = !withChildren
+    ? people.filter(el => el.sex === 'f')
+    : people.filter(el =>
       people.some(child => el.name === child.mother) && (el.sex === 'f'));
 
   const age = women.map(year => year.died - year.born);
-  const result = (age.reduce((a, b) => a + b) / women.length);
 
-  return result;
+  return (age.reduce((a, b) => a + b) / women.length);
 }
 
 /**
@@ -83,12 +76,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     people.some(parent => person.name === parent.mother)
     && person.sex === 'f');
 
-  let children;
-
-  !onlyWithSon
-    ? children = people.filter(person =>
+  const children = !onlyWithSon
+    ? people.filter(person =>
       people.some(womanWithSon => person.mother === womanWithSon.name))
-    : children = people.filter(person =>
+    : people.filter(person =>
       people.some(womanWithSon =>
         person.mother === womanWithSon.name && person.sex === 'm'));
 
@@ -96,10 +87,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     child.born - mother.find(parent =>
       child.mother === parent.name).born);
 
-  const result = (ageDefferences.reduce((a, b) =>
+  return (ageDefferences.reduce((a, b) =>
     a + b) / ageDefferences.length);
-
-  return result;
 }
 
 module.exports = {
