@@ -20,6 +20,16 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const menOfCentury = century
+    ? (people.filter((p) => p.sex === 'm'
+        && Math.ceil(p.died / 100) === century))
+    : (people.filter((p) => p.sex === 'm'));
+
+  const arrMenAge = menOfCentury.map(man => man.died - man.born);
+  const sumMenAge = arrMenAge.reduce((sum, age) => sum + age, 0);
+  const averageAgeMen = sumMenAge / arrMenAge.length;
+
+  return averageAgeMen;
 }
 
 /**
@@ -38,6 +48,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const mothersNames = people.map(person => person.mother);
+  const women = withChildren
+    ? (people.filter(per => mothersNames.some(woman => woman === per.name)))
+    : (people.filter(per => per.sex === 'f'));
+  const arrWomenAge = women.map(({ died, born }) => died - born);
+  const sumAgeWomen = arrWomenAge.reduce((sum, age) => sum + age, 0);
+  const averageAgeWomen = sumAgeWomen / arrWomenAge.length;
+
+  return averageAgeWomen;
 }
 
 /**
@@ -56,6 +75,25 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const mothersNames = people.map(person => person.mother);
+  const wAndMom = people.filter(per => mothersNames.some(w => w === per.name));
+
+  const mothersChild = onlyWithSon
+    ? (people.filter((ch) => ch.sex === 'm'
+        && wAndMom.some(w => w.name === ch.mother)))
+    : (people.filter((ch) => wAndMom.some(w => w.name === ch.mother)));
+  const difMoCh = mothersChild.map(person => {
+    const mother = person.mother;
+    const bornChild = person.born;
+    const currentPersonsMother = people.find(woman => woman.name === mother);
+
+    return bornChild - currentPersonsMother.born;
+  });
+
+  const sumAgeMoCh = difMoCh.reduce((sum, age) => sum + age, 0);
+  const averageMoCh = sumAgeMoCh / difMoCh.length;
+
+  return averageMoCh;
 }
 
 module.exports = {
