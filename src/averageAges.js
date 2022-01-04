@@ -19,9 +19,9 @@
 
 function calculateMenAverageAge(people, century) {
   const arrayOfMan = (century)
-  ? people.filter(newton => newton.sex === 'm'
-    && Math.ceil(newton.died / 100) === century)
-  : people.filter(yoda => yoda.sex === 'm');
+  ? people.filter(men => men.sex === 'm'
+    && Math.ceil(men.died / 100) === century)
+  : people.filter(men => men.sex === 'm');
 
   return arrayOfMan.reduce((sum, yoda) => (sum + (yoda.died - yoda.born)), 0)
     / arrayOfMan.length;
