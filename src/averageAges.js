@@ -23,7 +23,7 @@ function calculateMenAverageAge(people, century) {
     && Math.ceil(men.died / 100) === century)
   : people.filter(men => men.sex === 'm');
 
-  return arrayOfMan.reduce((sum, yoda) => (sum + (yoda.died - yoda.born)), 0)
+  return arrayOfMan.reduce((sum, men) => (sum + (men.died - men.born)), 0)
     / arrayOfMan.length;
 }
 
