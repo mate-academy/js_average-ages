@@ -23,9 +23,6 @@ function calculateMenAverageAge(people, century) {
     && Math.ceil(newton.died / 100) === century)
   : people.filter(yoda => yoda.sex === 'm');
 
-  console.log(arrayOfMan.reduce((sum, yoda) => (sum + (yoda.died - yoda.born)), 0)
-  / arrayOfMan.length);
-
   return arrayOfMan.reduce((sum, yoda) => (sum + (yoda.died - yoda.born)), 0)
     / arrayOfMan.length;
 }
@@ -51,9 +48,6 @@ function calculateWomenAverageAge(people, withChildren) {
       && women.sex ==='f')
     : people.filter(women => women.sex === 'f');
 
-
-  // console.log(withChildren,arrayOfWomen, arrayOfWomen.reduce((sum, women) => sum + women.died - women.born, 0) / arrayOfWomen.length);
-
   return arrayOfWomen.reduce((sum, women) => sum + women.died - women.born, 0) / arrayOfWomen.length;
 }
 
@@ -76,7 +70,6 @@ function calculateWomenAverageAge(people, withChildren) {
 
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  console.log('my solution', onlyWithSon);
   const arrayChild = (onlyWithSon)
     ? people.filter(child => child.sex === 'm'
       && people.some(mother => child.mother === mother.name))
@@ -85,7 +78,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return arrayChild.reduce((sum, child) => sum + (child.born - people.find(mother => child.mother === mother.name).born), 0) / arrayChild.length;
 }
-
 
 module.exports = {
   calculateMenAverageAge,
