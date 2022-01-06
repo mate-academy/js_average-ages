@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable */
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -19,11 +17,11 @@
 
 function calculateMenAverageAge(people, century) {
   const arrayOfMan = (century)
-  ? people.filter(men => men.sex === 'm'
-    && Math.ceil(men.died / 100) === century)
-  : people.filter(men => men.sex === 'm');
+    ? people.filter(man => man.sex === 'm'
+      && Math.ceil(man.died / 100) === century)
+    : people.filter(man => man.sex === 'm');
 
-  return arrayOfMan.reduce((sum, men) => (sum + (men.died - men.born)), 0)
+  return arrayOfMan.reduce((sum, man) => (sum + (man.died - man.born)), 0)
     / arrayOfMan.length;
 }
 
@@ -45,14 +43,13 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const arrayOfWomen = (withChildren)
     ? people.filter(women => people.some(child => child.mother === women.name)
-      && women.sex ==='f')
+      && women.sex === 'f')
     : people.filter(women => women.sex === 'f');
 
-  return arrayOfWomen.reduce((sum, women) => sum + women.died - women.born, 0) / arrayOfWomen.length;
+  return arrayOfWomen.reduce((sum, women) =>
+    sum + women.died - women.born, 0) / arrayOfWomen.length;
 }
 
-// calculateWomenAverageAge(people)
-// calculateWomenAverageAge(people, true)
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -68,14 +65,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 
-
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const arrayChild = (onlyWithSon)
     ? people.filter(child => child.sex === 'm'
       && people.some(mother => child.mother === mother.name))
-    : people.filter(child => people.some(mother => child.mother === mother.name));
+    : people.filter(child => people.some(mother =>
+      child.mother === mother.name));
 
-    return arrayChild.reduce((sum, child) => sum + (child.born - people.find(mother => child.mother === mother.name).born), 0) / arrayChild.length;
+  return arrayChild.reduce((sum, child) => sum + (child.born
+    - people.find(mother => child.mother === mother.name).born), 0)
+    / arrayChild.length;
 }
 
 module.exports = {
