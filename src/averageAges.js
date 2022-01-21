@@ -14,12 +14,22 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+
+const getPersonAge = person => person.died - person.born;
+const getSum = (x, y) => x + y;
+
+function calculateMenAverageAge(people, century = 0) {
+  let age = people.filter(x => x.sex === 'm').map(getPersonAge);
+
+  if (century) {
+    const cent = (century - 1) * 100;
+    const filt = people
+      .filter(p => p.died >= cent && p.died <= cent + 100);
+
+    age = filt.filter(man => man.sex === 'm').map(getPersonAge);
+  }
+
+  return Math.round(age.reduce(getSum) / age.length * 100) / 100;
 }
 
 /**
@@ -37,7 +47,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let allAge = people.filter(x => x.sex === 'f').map(getPersonAge);
+
+  if (withChildren) {
+    allAge = people.filter(mother => people
+      .some(dauther => dauther.mother === mother.name))
+      .map(getPersonAge);
+  }
+
+  return Math.round(allAge.reduce(getSum) / allAge.length * 100) / 100;
 }
 
 /**
@@ -54,8 +72,27 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(mother => people
+    .some(child => child.mother === mother.name));
+
+  const children = people.filter(child => people
+    .some(mother => child.mother === mother.name));
+
+  let result = children.map(child => child.born - mothers
+    .filter(mom => mom.name === child.mother)[0].born);
+
+  if (onlyWithSon) {
+    const childrenBoys = children.filter(boy => boy.sex === 'm');
+
+    result = childrenBoys.map(child => child.born - mothers
+      .find(mom => mom.name === child.mother).born);
+  }
+
+  result = Math.round(result.reduce(getSum) * 100 / result.length) / 100;
+
+  return result;
 }
 
 module.exports = {
