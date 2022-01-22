@@ -1,5 +1,11 @@
 'use strict';
 
+// write code here
+// learn how to use array methods like .filter .map .some .every .find .reduce
+// avoid using loop and forEach
+// replace `if ()` statement with &&, || or ?:
+// without nesting
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +21,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredNumbers = century === undefined ? (
+    people.filter(el => el.sex === 'm')
+  ) : (
+    people.filter(el =>
+      Math.ceil(el.died / 100) === century && el.sex === 'm')
+  );
+
+  const total = filteredNumbers.reduce((acc, rec) =>
+    acc + (rec.died - rec.born), 0);
+
+  const result = total / (filteredNumbers.length);
+
+  return result;
 }
 
 /**
@@ -37,7 +51,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredNumbers = withChildren === undefined ? (
+    people.filter(el => el.sex === 'f')
+  ) : (
+    people.filter((item, i, arr) => {
+      return item.sex === 'f' && arr.some(el => el.mother === item.name);
+    })
+  );
+
+  const total = filteredNumbers.reduce((acc, rec) =>
+    acc + (rec.died - rec.born), 0);
+
+  const result = total / (filteredNumbers.length);
+
+  return result;
 }
 
 /**
@@ -55,7 +82,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childs = onlyWithSon
+    ? people.filter((item, i, arr) => {
+      return item.sex === 'm' && arr.some(el => el.name === item.mother);
+    })
+    : people.filter((item, i, arr) => arr.some(el => el.name === item.mother));
+
+  return childs.reduce((acc, rec) => {
+    const mother = people.find(el => el.name === rec.mother);
+
+    return acc + (rec.born - mother.born);
+  }, 0) / childs.length;
 }
 
 module.exports = {
