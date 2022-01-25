@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century === undefined
+    ? people.filter(m => m.sex === 'm')
+    : people.filter(m => m.sex === 'm' && Math.ceil(m.died / 100) === century);
+
+  const menAge = men.reduce((a, b) => a + b.died - b.born, 0);
+
+  return menAge / men.length;
 }
 
 /**
@@ -37,7 +39,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren === undefined
+    ? people.filter(f => f.sex === 'f')
+    : people.filter((f, i, arr) => f.sex === 'f'
+      && arr.some(child => child.mother === f.name));
+
+  const womenAge = women.reduce((a, b) => a + b.died - b.born, 0);
+
+  return womenAge / women.length;
 }
 
 /**
@@ -55,7 +64,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = onlyWithSon === undefined
+    ? people.filter((mother, i, arr) => mother.sex === 'f'
+      && arr.some(child => child.mother === mother.name))
+    : people.filter((mother, i, arr) =>
+      mother.sex === 'f'
+      && arr.some(child => child.mother === mother.name
+      && child.sex === 'm'));
+
+  const childs = onlyWithSon === undefined
+    ? people.filter(child =>
+      mothers.some(mother => child.mother === mother.name))
+    : people.filter((child) =>
+      mothers.some(mother => child.mother === mother.name)
+      && child.sex === 'm');
+
+  const differencies = [];
+
+  childs.forEach(child => {
+    const mother = mothers.find(m => m.name === child.mother);
+
+    differencies.push(
+      child.born - mother.born
+    );
+  });
+
+  return differencies.reduce((a, b) => a + b) / differencies.length;
 }
 
 module.exports = {
