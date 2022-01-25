@@ -15,6 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const men = century
+    ? people.filter(
+      (human) => human.sex === 'm' && Math.ceil(human.died / 100) === century
+    )
+    : people.filter((human) => human.sex === 'm');
+
+  const ageSum = men.reduce(function(accumulator, currentValue) {
+    return accumulator + currentValue.died - currentValue.born;
+  }, 0);
+
+  return +(ageSum / men.length).toFixed(2);
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -28,16 +40,25 @@ function calculateMenAverageAge(people, century) {
  * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
- * Hint: To check if a woman has children you should find the other who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(
+      (woman) =>
+        woman.sex === 'f'
+          && people.some((human) => human.mother === woman.name)
+    )
+    : people.filter((woman) => woman.sex === 'f');
+
+  const ageSum = women.reduce(function(accumulator, currentValue) {
+    return accumulator + currentValue.died - currentValue.born;
+  }, 0);
+
+  return +(ageSum / women.length).toFixed(2);
 }
 
 /**
@@ -55,7 +76,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(
+      (human) =>
+        human.sex === 'm' && people.some((mom) => mom.name === human.mother)
+    )
+    : people.filter((human) => people.some((mom) => mom.name === human.mother));
+
+  const ageDiff = children
+    .map(
+      (child) =>
+        child.born - people.find((mom) => child.mother === mom.name).born
+    )
+    .reduce(function(accumulator, currentValue) {
+      return accumulator + currentValue;
+    }, 0);
+
+  return +(ageDiff / children.length).toFixed(2);
 }
 
 module.exports = {
