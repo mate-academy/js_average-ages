@@ -15,7 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  function agesMen(element) {
+    const x = element.sex === 'm' && Math.ceil(element.died / 100) === century;
+    const y = element.sex === 'm';
+
+    return (century !== undefined) ? x : y;
+  }
+
+  const arrMen = people.filter(agesMen);
+
+  const sumAges = arrMen.map(item => item.died - item.born);
+  const averageAges = sumAges.reduce((sum, x) => sum + x, 0) / arrMen.length;
+
+  return averageAges;
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +50,31 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  function isMother(item, index, arr) {
+    let x = false;
+
+    for (const key of arr) {
+      if (item.name === key.mother) {
+        x = true;
+        break;
+      };
+    }
+
+    return x;
+  };
+
+  let women = [];
+
+  if (withChildren === true) {
+    women = people.filter(isMother);
+  } else {
+    women = people.filter(x => x.sex === 'f');
+  };
+
+  const sumAges = women.map(i => i.died - i.born);
+  const averageWomenAge = sumAges.reduce((sum, x) => sum + x, 0) / women.length;
+
+  return averageWomenAge;
 }
 
 /**
@@ -55,7 +92,42 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function isMother(item, index, arr) {
+    const ages = [];
+
+    for (const key of arr) {
+      if (onlyWithSon === true) {
+        if (item.name === key.mother && key.sex === 'm') {
+          const x = key.born - item.born;
+
+          ages.push(x);
+        };
+      } else {
+        if (item.name === key.mother) {
+          const x = key.born - item.born;
+
+          ages.push(x);
+        };
+      };
+    }
+
+    return ages;
+  };
+
+  const result = people.map(isMother).filter(x => x.length > 0);
+  let sum = 0;
+  let count = 0;
+
+  for (const key of result) {
+    for (const y of key) {
+      sum += y;
+      count++;
+    }
+  };
+
+  const average = sum / count;
+
+  return average;
 }
 
 module.exports = {
