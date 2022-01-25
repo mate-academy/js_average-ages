@@ -20,11 +20,9 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const menOfCentury = century
-    ? (people.filter((p) => p.sex === 'm'
-        && Math.ceil(p.died / 100) === century))
-    : (people.filter((p) => p.sex === 'm'));
-
+  const menOfCentury = people.filter(({ died, sex }) => century
+    ? Math.ceil(died / 100) === century && sex === 'm'
+    : sex === 'm');
   const arrMenAge = menOfCentury.map(man => man.died - man.born);
   const sumMenAge = arrMenAge.reduce((sum, age) => sum + age, 0);
   const averageAgeMen = sumMenAge / arrMenAge.length;
@@ -49,9 +47,9 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const mothersNames = people.map(person => person.mother);
-  const women = withChildren
-    ? (people.filter(per => mothersNames.some(woman => woman === per.name)))
-    : (people.filter(per => per.sex === 'f'));
+  const women = people.filter(person => withChildren
+    ? mothersNames.some(woman => woman === person.name)
+    : person.sex === 'f');
   const arrWomenAge = women.map(({ died, born }) => died - born);
   const sumAgeWomen = arrWomenAge.reduce((sum, age) => sum + age, 0);
   const averageAgeWomen = sumAgeWomen / arrWomenAge.length;
@@ -76,12 +74,12 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const mothersNames = people.map(person => person.mother);
-  const wAndMom = people.filter(per => mothersNames.some(w => w === per.name));
-
-  const mothersChild = onlyWithSon
-    ? (people.filter((child) => child.sex === 'm'
-        && wAndMom.some(woman => woman.name === child.mother)))
-    : (people.filter((ch) => wAndMom.some(w => w.name === ch.mother)));
+  const wAndMom = people.filter(person =>
+    mothersNames.some(woman => woman === person.name)
+  );
+  const mothersChild = people.filter(({ sex, mother }) => onlyWithSon
+    ? sex === 'm' && wAndMom.some(woman => woman.name === mother)
+    : wAndMom.some(woman => woman.name === mother));
   const difMoCh = mothersChild.map(person => {
     const mother = person.mother;
     const bornChild = person.born;
