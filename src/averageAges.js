@@ -15,19 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const mens = people.filter(person => (
+  const men = people.filter(person => (
     person.sex === 'm'
-    && (
-      (century) ? Math.ceil(person.died / 100) === century : true
+    && (century
+      ? Math.ceil(person.died / 100) === century
+      : true
     )
   ));
 
-  const arrayOfAges = mens.map(man => man.died - man.born);
-  const sumAllAges = arrayOfAges.reduce((prevValue, currentValue) => (
+  const ages = men.map(man => man.died - man.born);
+  const sumAllAges = ages.reduce((prevValue, currentValue) => (
     prevValue + currentValue
   ));
 
-  return Math.round(sumAllAges / arrayOfAges.length * 100) / 100;
+  return Math.round(sumAllAges / ages.length * 100) / 100;
 }
 
 /**
@@ -45,18 +46,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womens = people.filter(person => (
-    person.sex === 'f' && (
-      (withChildren) ? people.some(child => child.mother === person.name) : true
+  const women = people.filter(person => (
+    person.sex === 'f'
+    && (withChildren
+      ? people.some(child => child.mother === person.name)
+      : true
     )
   ));
 
-  const arrayOfAges = womens.map(woman => woman.died - woman.born);
-  const sumAllAges = arrayOfAges.reduce((prevValue, currentValue) => (
+  const ages = women.map(woman => woman.died - woman.born);
+  const sumAllAges = ages.reduce((prevValue, currentValue) => (
     prevValue + currentValue
   ));
 
-  return Math.round(sumAllAges / arrayOfAges.length * 100) / 100;
+  return Math.round(sumAllAges / ages.length * 100) / 100;
 }
 
 /**
@@ -80,15 +83,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     )
   ));
 
-  const arrayOfAges = children.map(child => (
+  const ages = children.map(child => (
     child.born - people.find(mother => mother.name === child.mother).born
   ));
 
-  const sumAllAges = arrayOfAges.reduce((prevValue, currentValue) => (
+  const sumAllAges = ages.reduce((prevValue, currentValue) => (
     prevValue + currentValue
   ));
 
-  return Math.round(sumAllAges / arrayOfAges.length * 100) / 100;
+  return Math.round(sumAllAges / ages.length * 100) / 100;
 }
 
 module.exports = {
