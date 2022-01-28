@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century
+    ? people
+      .filter(person => person.sex === 'm')
+      .filter(person => Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const menAge = men.map(a => a.died - a.born);
+
+  return menAge.reduce((sum, age) => sum + age) / menAge.length;
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.map(children => children.mother);
+  const women = withChildren
+    ? people
+      .filter(person => person.sex === 'f')
+      .filter(person => mothers.includes(person.name))
+    : people.filter(person => person.sex === 'f');
+
+  return Number((women.reduce((sum, person) => sum
+   + (person.died - person.born), 0) / women.length).toFixed(2));
 }
 
 /**
@@ -55,7 +67,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const men = people.filter(person => person.sex === 'm');
+  const childs = onlyWithSon
+    ? men
+    : people;
+
+  const mothers = childs
+    .map(children => children.mother)//  массив состоящий из имен матерей
+    .map((mother) => {
+      //  замена объектами из массива сhilds по соотвествующему имени
+      let mom = mother;
+
+      mom = people.find(person => person.name === mother);
+
+      return mom;
+    });
+
+  const differenceBetweenAges = mothers.map((person, index) => {
+    const momAge = person === undefined
+      ? undefined
+      : childs[index].born - person.born;
+
+    return momAge;
+  }).filter(a => a !== undefined);
+
+  return Number((differenceBetweenAges.reduce((sum, a) => {
+    return sum + a;
+  }) / differenceBetweenAges.length).toFixed(2));
 }
 
 module.exports = {
