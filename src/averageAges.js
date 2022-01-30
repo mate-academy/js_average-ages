@@ -47,6 +47,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  if (withChildren) {
+    const allMothers = people.map(person => person.mother);
+
+    // eslint-disable-next-line no-shadow
+    const ages = people
+      .filter((person) => allMothers.includes(person.name))
+      .map(person => person.died - person.born);
+
+    return ages.reduce((ageSum, curent) => ageSum + curent, 0) / ages.length;
+  }
+
+  const womens = people.filter(person => person.sex === 'f');
+  const ages = womens.map(mom => mom.died - mom.born);
+
+  return ages.reduce((ageSum, current) => ageSum + current, 0) / ages.length;
 }
 
 /**
@@ -64,6 +79,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const childrens = onlyWithSon
+    ? people
+      .filter((person) => person.sex === 'm'
+        && people.some((mom) => mom.name === person.mother))
+    : people
+      .filter((person) => people.some((mom) => mom.name === person.mother));
+
+  const mothers = people.filter((mother) =>
+    childrens.find((child) => mother.name === child.mother)
+  );
+
+  const childAgesSum = childrens
+    .map((child) => child.born)
+    .reduce((age, currentAge) => age + currentAge, 0);
+
+  const mothersAge = childrens.map((child) =>
+    mothers
+      .filter((mom) => mom.name === child.mother)
+      .map((age) => age.born)
+      .reduce((age, curent) => age + curent)
+  );
+
+  return ((childAgesSum
+    - mothersAge.reduce((age, cur) => age + cur)) / childrens.length);
 }
 
 module.exports = {
