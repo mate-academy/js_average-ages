@@ -13,13 +13,31 @@
  * @param {number} century - optional
  *
  * @return {number}
- */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+*/
+function era(num) {
+  return Math.ceil(num / 100);
+}
+
+const reducer = (previousValue, currentValue) => previousValue + currentValue;
+
+function roundToTwoSymbols(x) {
+  return Math.round(x * 100) / 100;
+}
+
+function calculateMenAverageAge(people, century = -1) {
+  let men = people.filter(person => (
+    person.sex === 'm'
+  ));
+
+  if (century > 0) {
+    men = men.filter(person => (
+      era(person.died) === century
+    ));
+  }
+
+  const menAge = men.map(person => (person.died - person.born));
+
+  return roundToTwoSymbols(menAge.reduce(reducer) / menAge.length);
 }
 
 /**
@@ -37,7 +55,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(person => (
+    person.sex === 'f'
+  ));
+
+  if (withChildren) {
+    women = women.filter(person =>
+      people.find(child => child.mother === person.name));
+  }
+
+  const womenAge = women.map(person => (person.died - person.born));
+
+  return roundToTwoSymbols(womenAge.reduce(reducer) / womenAge.length);
 }
 
 /**
@@ -55,7 +84,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let children = people.filter(child =>
+    people.find(mother => mother.name === child.mother));
+
+  if (onlyWithSon) {
+    children = children.filter(person => person.sex === 'm');
+  }
+
+  const mothers = people.filter(person =>
+    people.find(child => child.mother === person.name)
+  );
+
+  const averageDiffAge = children
+    .map(child => child.born - mothers
+      .find(mom => child.mother === mom.name).born)
+    .reduce(reducer) / children.length;
+
+  return roundToTwoSymbols(averageDiffAge);
 }
 
 module.exports = {
