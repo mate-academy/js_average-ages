@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter((x) => x.sex === 'm');
+
+  if (century) {
+    men = men.filter((x) => Math.ceil(x.died / 100) === century);
+  }
+
+  const age = men.map((x) => x.died - x.born).reduce((a, b) => a + b);
+
+  return +(age / men.length).toFixed(2);
 }
 
 /**
@@ -37,7 +41,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter((x) => x.sex === 'f');
+  const mothers = people
+    .filter((x) => x.mother !== null)
+    .reduce((a, b) => `${a},${b.mother}`, [])
+    .split(',');
+
+  mothers.shift();
+
+  if (withChildren) {
+    women = women.filter((x) => mothers.includes(x.name));
+  }
+
+  const age = women.map((x) => x.died - x.born).reduce((a, b) => a + b);
+
+  return +(age / women.length).toFixed(2);
 }
 
 /**
@@ -55,7 +73,43 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersArr = people
+    .filter((x) => x.mother !== null)
+    .reduce((a, b) => `${a},${b.mother}`, [])
+    .split(',');
+
+  mothersArr.shift();
+
+  const mothers = people.filter((x) => mothersArr.includes(x.name));
+
+  const mothersArrShort = mothers
+    .reduce((a, b) => `${a},${b.name}`, [])
+    .split(',');
+
+  mothersArrShort.shift();
+
+  let children = people.filter((x) => mothersArrShort.includes(x.mother));
+
+  if (onlyWithSon) {
+    children = children.filter((x) => x.sex === 'm');
+  }
+
+  const mothersPlus = [];
+
+  for (let i = 0; i < children.length; i++) {
+    for (let j = 0; j < mothers.length; j++) {
+      if (children[i].mother === mothers[j].name) {
+        mothersPlus.push(mothers[j]);
+      }
+    }
+  }
+
+  const childrenAge = children.reduce((a, b) => a + b.born, 0);
+
+  const mothersAge = mothersPlus.reduce((a, b) => a + b.born, 0);
+
+  return +(childrenAge / children.length - mothersAge / mothersPlus.length)
+    .toFixed(2);
 }
 
 module.exports = {
