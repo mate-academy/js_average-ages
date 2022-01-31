@@ -20,6 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const searchedMen = century
+    ? people.filter(person => (
+      person.sex === 'm' && century === Math.ceil(person.died / 100)))
+    : people.filter(person => person.sex === 'm');
+
+  const menAgeList = searchedMen.map(person => person.died - person.born);
+
+  return menAgeList.reduce((a, b) => a + b) / menAgeList.length;
 }
 
 /**
@@ -38,6 +47,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const searchedWomen = withChildren
+    ? people.filter(person => (
+      person.sex === 'f' && people.some(children => (
+        children.mother === person.name))))
+    : people.filter(person => person.sex === 'f');
+
+  const womenAgeList = searchedWomen.map(person => person.died - person.born);
+
+  return womenAgeList.reduce((a, b) => a + b) / womenAgeList.length;
 }
 
 /**
@@ -56,6 +74,27 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const searchMothers = onlyWithSon
+    ? people.filter(person => (
+      person.sex === 'f' && people.some(child => (
+        child.mother === person.name && child.sex === 'm'))))
+    : people.filter(person => (
+      person.sex === 'f' && people.some(child => (
+        child.mother === person.name))));
+
+  const searchChildren = onlyWithSon
+    ? people.filter((child) => (
+      searchMothers.some((mother) => (
+        child.mother === mother.name
+        && child.sex === 'm'))))
+    : people.filter((child) => (
+      searchMothers.some((mother) => child.mother === mother.name)));
+
+  const becomingMotherAge = searchChildren.map(child => (
+    child.born - searchMothers.find(person => (
+      person.name === child.mother)).born));
+
+  return becomingMotherAge.reduce((a, b) => a + b) / becomingMotherAge.length;
 }
 
 module.exports = {
