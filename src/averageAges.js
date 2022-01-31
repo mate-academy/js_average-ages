@@ -14,11 +14,6 @@
  *
  * @return {number}
  */
-// learn how to use array methods like .filter .map .some .every .find .reduce
-// avoid using loop and forEach
-// replace `if ()` statement with &&, || or ?:
-// without nesting
-
 function calculateMenAverageAge(people, century) {
   const filteredPeople = people.filter(object => object.sex === 'm'
     && (century
