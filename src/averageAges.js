@@ -20,21 +20,17 @@ function calculateMenAverageAge(people, century = undefined) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let arrFiltered = [];
+  let man = [];
   let lifeTime = [];
-  let avargeAge = 0;
 
-  (century === undefined)
-    ? arrFiltered = people.filter(({ sex, died }) => ((sex === 'm')))
-    : arrFiltered = people.filter(({ sex, died }) =>
-      ((sex === 'm') && (Math.ceil(died / 100) === century)
-      ));
+  man = people.filter(({ sex, died }) => ((sex === 'm'))
+    && (century
+      ? (Math.ceil(died / 100) === century)
+      : true));
 
-  lifeTime = arrFiltered.map(({ born, died }) => died - born);
+  lifeTime = man.map(({ born, died }) => died - born);
 
-  avargeAge = lifeTime.reduce((sum, age) => sum + age);
-
-  return ((avargeAge / lifeTime.length));
+  return ((lifeTime.reduce((sum, age) => sum + age) / lifeTime.length));
 }
 
 /**
@@ -52,21 +48,17 @@ function calculateMenAverageAge(people, century = undefined) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let arrFiltered = [];
+  let women = [];
   let lifeTime = [];
-  let avargeAge = 0;
 
-  (withChildren === undefined)
-    ? arrFiltered = people.filter(({ sex }) => ((sex === 'f')))
-    : arrFiltered = people.filter(({ sex, name, mother }) =>
-      ((sex === 'f') && (people.some((person) => person.mother === name))
-      ));
+  women = people.filter(({ sex, name }) => ((sex === 'f')
+   && (withChildren
+     ? (people.some((person) => person.mother === name))
+     : true)));
 
-  lifeTime = arrFiltered.map(({ born, died }) => died - born);
+  lifeTime = women.map(({ born, died }) => died - born);
 
-  avargeAge = lifeTime.reduce((sum, age) => sum + age);
-
-  return ((avargeAge / lifeTime.length));
+  return (lifeTime.reduce((sum, age) => sum + age) / lifeTime.length);
 }
 
 /**
@@ -84,28 +76,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let motherArr = [];
-  let childArr = [];
+  let mom = [];
+  let kid = [];
   let ageDiffer = [];
-  let avarageDiffer = 0;
 
-  motherArr = people.filter(person =>
+  mom = people.filter(person =>
     (people.some((parent) => person.name === parent.mother)));
 
-  (onlyWithSon === undefined)
-    ? childArr = people.filter((child) =>
-      (motherArr.some((parent) => parent.name === child.mother)))
-    : childArr = people.filter((child) =>
-      (motherArr.some((parent) =>
-        (parent.name === child.mother) && (child.sex === 'm'))));
+  kid = people.filter((child) => (mom.some((parent) =>
+    (parent.name === child.mother)
+        && (onlyWithSon
+          ? (child.sex === 'm')
+          : true))));
 
-  ageDiffer = childArr.map((child) =>
-    child.born - ((motherArr.find((mother) =>
-      (child.mother === mother.name)).born)));
+  ageDiffer = kid.map((child) =>
+    child.born - mom.find((mother) =>
+      (child.mother === mother.name)).born);
 
-  avarageDiffer = ageDiffer.reduce((a, b) => a + b) / ageDiffer.length;
-
-  return (avarageDiffer);
+  return (ageDiffer.reduce((a, b) => a + b) / ageDiffer.length);
 }
 
 module.exports = {
