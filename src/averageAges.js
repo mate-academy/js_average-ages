@@ -20,6 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const menArray = (century) ? people.filter((person) => (person.sex === 'm')
+    && (Math.ceil(person.died / 100) === century))
+    : people.filter(person => (person.sex === 'm'));
+  const menAges = menArray.map(person => person.died - person.born);
+  const result = menAges.reduce((prev, current) => prev + current, 0)
+    / menAges.length;
+
+  return result;
 }
 
 /**
@@ -36,8 +45,37 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let result;
+  const womenArray = people.filter(person => (person.sex === 'f'));
+
+  if (withChildren) {
+    let index = 0;
+    const mothersArray = [];
+
+    for (let i = 0; i < womenArray.length; i++) {
+      for (let j = 0; j < people.length; j++) {
+        if (womenArray[i].name === people[j].mother) {
+          mothersArray[index] = womenArray[i];
+          index++;
+          break;
+        }
+      }
+    }
+
+    const mothersAges = mothersArray.map(person => person.died - person.born);
+
+    result = mothersAges.reduce((prev, current) => prev + current, 0)
+    / mothersAges.length;
+  } else {
+    const womenAges = womenArray.map(person => person.died - person.born);
+
+    result = womenAges.reduce((prev, current) => prev + current, 0)
+    / womenAges.length;
+  }
+
+  return result;
 }
 
 /**
@@ -55,7 +93,42 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersArray = [];
+  let index = 0;
+  const womenArray = people.filter(person => (person.sex === 'f'));
+
+  for (let i = 0; i < womenArray.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (womenArray[i].name === people[j].mother) {
+        mothersArray[index] = womenArray[i];
+        index++;
+        break;
+      }
+    }
+  }
+
+  let count = 0;
+  let sum = 0;
+
+  for (let i = 0; i < mothersArray.length; i++) {
+    for (let j = 0; j < people.length; j++) {
+      if (mothersArray[i].name === people[j].mother) {
+        if (!onlyWithSon) {
+          sum += (people[j].born - mothersArray[i].born);
+          count++;
+        } else {
+          if (people[j].sex === 'm') {
+            sum += (people[j].born - mothersArray[i].born);
+            count++;
+          }
+        }
+      }
+    }
+  }
+
+  const result = sum / count;
+
+  return result;
 }
 
 module.exports = {
