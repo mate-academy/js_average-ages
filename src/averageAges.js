@@ -47,33 +47,14 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let result;
-  const womenArray = people.filter(person => (person.sex === 'f'));
+  const womenArray = (withChildren) ? people.filter((woman, index, array) =>
+    array.find(person => (woman.name === person.mother)))
+    : people.filter(person => (person.sex === 'f'));
 
-  if (withChildren) {
-    let index = 0;
-    const mothersArray = [];
+  const womenAges = womenArray.map(person => person.died - person.born);
 
-    for (let i = 0; i < womenArray.length; i++) {
-      for (let j = 0; j < people.length; j++) {
-        if (womenArray[i].name === people[j].mother) {
-          mothersArray[index] = womenArray[i];
-          index++;
-          break;
-        }
-      }
-    }
-
-    const mothersAges = mothersArray.map(person => person.died - person.born);
-
-    result = mothersAges.reduce((prev, current) => prev + current, 0)
-    / mothersAges.length;
-  } else {
-    const womenAges = womenArray.map(person => person.died - person.born);
-
-    result = womenAges.reduce((prev, current) => prev + current, 0)
+  const result = womenAges.reduce((prev, current) => prev + current, 0)
     / womenAges.length;
-  }
 
   return result;
 }
@@ -93,40 +74,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothersArray = [];
-  let index = 0;
-  const womenArray = people.filter(person => (person.sex === 'f'));
+  let ageDif = 0;
 
-  for (let i = 0; i < womenArray.length; i++) {
-    for (let j = 0; j < people.length; j++) {
-      if (womenArray[i].name === people[j].mother) {
-        mothersArray[index] = womenArray[i];
-        index++;
-        break;
-      }
-    }
-  }
+  const childrenArray = (onlyWithSon)
+    ? (people.filter((kid, index, array) =>
+      array.find(mom =>
+        (kid.mother === mom.name && kid.sex === 'm')
+          ? ((ageDif += kid.born - mom.born), true) : false)))
+    : people.filter((kid, index, array) =>
+      array.find(mom => ((kid.mother === mom.name)
+        ? ((ageDif += kid.born - mom.born), true) : false)));
 
-  let count = 0;
-  let sum = 0;
-
-  for (let i = 0; i < mothersArray.length; i++) {
-    for (let j = 0; j < people.length; j++) {
-      if (mothersArray[i].name === people[j].mother) {
-        if (!onlyWithSon) {
-          sum += (people[j].born - mothersArray[i].born);
-          count++;
-        } else {
-          if (people[j].sex === 'm') {
-            sum += (people[j].born - mothersArray[i].born);
-            count++;
-          }
-        }
-      }
-    }
-  }
-
-  const result = sum / count;
+  const result = ageDif / childrenArray.length;
 
   return result;
 }
