@@ -86,21 +86,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         ? ((ageDif += kid.born - mom.born), true) : false)));
 
   return ageDif / childrenArray.length;
-
-  // There is another and very strange implementation for the function below
-  /* const childrenArray = [];
-
-  onlyWithSon ? (people.forEach((kid, index, array) =>
-    array.find(mom => (kid.mother === mom.name && kid.sex === 'm')
-      ? childrenArray.push(kid.born - mom.born)
-      : null)))
-    : (people.forEach((kid, index, array) =>
-      array.find(mom => (kid.mother === mom.name)
-        ? childrenArray.push(kid.born - mom.born)
-        : null)));
-
-  const result = childrenArray.reduce((prev, current) => prev + current, 0)
-  / childrenArray.length; */
 }
 
 module.exports = {
