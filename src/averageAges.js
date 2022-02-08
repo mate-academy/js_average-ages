@@ -16,9 +16,9 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people.filter(({ sex, died }) =>
-    (century === undefined)
-      ? (sex === 'm')
-      : (sex === 'm') && (Math.ceil(+died / 100) === century));
+    century
+      ? (sex === 'm') && (Math.ceil(+died / 100) === century)
+      : (sex === 'm'));
 
   const lifeTime = (men.reduce((sum, { born, died }) =>
     sum + died - born, 0) / men.length).toFixed(2);
@@ -42,9 +42,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(({ name, sex, mother }) =>
-    (withChildren === undefined)
-      ? (sex === 'f')
-      : (sex === 'f') && people.find(person => name === person.mother));
+    withChildren
+      ? (sex === 'f') && people.find(person => name === person.mother)
+      : (sex === 'f'));
 
   const lifeTime = (women.reduce((sum, { born, died }) =>
     sum + died - born, 0) / women.length).toFixed(2);
