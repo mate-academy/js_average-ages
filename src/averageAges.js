@@ -14,12 +14,21 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = 0) {
+  const sortedMens = people.filter(item => {
+    const currentCentury = Math.ceil(item.died / 100);
+    const isValidCentury = (!century) ? true : (currentCentury === century);
+
+    return (isValidCentury && (item.sex === 'm'));
+  });
+
+  const sumOfAges = sortedMens.reduce((prev, value) => {
+    const averageAgeMen = (value.died - value.born) / sortedMens.length;
+
+    return prev + averageAgeMen;
+  }, 0);
+
+  return sumOfAges;
 }
 
 /**
@@ -37,7 +46,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const sortedWomens = people.filter(item => {
+    const isHasChildren = people.some(elem => item.name === elem.mother);
+
+    return ((!withChildren || isHasChildren) && (item.sex === 'f'));
+  });
+
+  const sumOfAges = sortedWomens.reduce((prev, value) => {
+    const averageAgeWomen = (value.died - value.born) / sortedWomens.length;
+
+    return prev + averageAgeWomen;
+  }, 0);
+
+  return sumOfAges;
 }
 
 /**
@@ -55,7 +76,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const sortedChild = people.filter(item => {
+    const isHasMother = people.some(elem => {
+      return (onlyWithSon)
+        ? item.mother === elem.name && item.sex === 'm'
+        : item.mother === elem.name;
+    });
+
+    return isHasMother;
+  });
+
+  const listOfDiff = sortedChild.map(item => {
+    const someMother = people.find(elem => elem.name === item.mother);
+
+    return (item.born - someMother.born);
+  });
+
+  const sumOfAges = listOfDiff.reduce((prev, value) => {
+    return prev + (value / listOfDiff.length);
+  }, 0);
+
+  return sumOfAges;
 }
 
 module.exports = {
