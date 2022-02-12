@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const peopleFiltered = century ? people.filter(a => {
+    const validateCentury = Math.ceil(a.died / 100) === century;
+
+    return validateCentury && a.sex === 'm';
+  }) : people.filter(a => a.sex === 'm');
+
+  return calculateValidAvarageAge(peopleFiltered);
 }
 
 /**
@@ -37,7 +39,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const peopleFiltered = withChildren ? people.filter(a => {
+    const findChildren = people.find(element => element.mother === a.name);
+
+    return findChildren && a.sex === 'f';
+  }) : people.filter(a => a.sex === 'f');
+
+  return calculateValidAvarageAge(peopleFiltered);
 }
 
 /**
@@ -55,7 +63,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function hasMother(child) {
+    const motherInBase = Boolean(people.find(mother =>
+      child.mother === mother.name));
+
+    return onlyWithSon ? motherInBase && child.sex === 'm'
+      : motherInBase;
+  }
+
+  const childrenWithMother = people.filter(hasMother);
+  const sumAge = childrenWithMother.reduce((sum, child) => {
+    const difference = child.born - people.find(mother =>
+      child.mother === mother.name).born;
+
+    return sum + difference;
+  }, 0);
+
+  return +(sumAge / childrenWithMother.length).toFixed(2);
 }
 
 module.exports = {
@@ -63,3 +87,13 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function calculateValidAvarageAge(arr) {
+  const averageAge = arr.reduce((sum, person) => {
+    const personAge = person.died - person.born;
+
+    return sum + personAge;
+  }, 0);
+
+  return +(averageAge / arr.length).toFixed(2);
+}
