@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(man => man.sex === 'm');
+  const menCentury = men.filter(x => century === Math.ceil(x.died / 100));
+  let ages = [];
+
+  !century ? ages = men.map(man => man.died - man.born)
+    : ages = menCentury.map(man => man.died - man.born);
+
+  const sum = ages.reduce((prev, next) => prev + next);
+  const result = sum / ages.length;
+
+  return result;
 }
 
 /**
@@ -37,7 +43,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(woman => woman.sex === 'f');
+  const allMothers = people.map(mom => mom.mother);
+  const mothers = women.filter(mom => allMothers.includes(mom.name));
+  let ages = [];
+
+  !withChildren ? ages = women.map(woman => woman.died - woman.born)
+    : ages = mothers.map(woman => woman.died - woman.born);
+
+  const sum = ages.reduce((prev, next) => prev + next);
+  const result = sum / ages.length;
+
+  return result;
 }
 
 /**
@@ -55,7 +72,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const kids = people.filter(
+    kid => people.some(mom => kid.mother === mom.name)
+  );
+  const sons = people.filter(
+    son => son.sex === 'm' && people.some(mom => son.mother === mom.name)
+  );
+
+  let age = 0;
+
+  !onlyWithSon
+    ? age = kids.reduce((prev, next) => prev + (
+      next.born - people.find(mother => next.mother === mother.name).born
+    ), 0) / kids.length
+    : age = sons.reduce((prev, next) => prev + (
+      next.born - people.find(mother => next.mother === mother.name).born
+    ), 0) / sons.length;
+
+  return age;
 }
 
 module.exports = {
