@@ -21,14 +21,16 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const addAge = people.map(item =>
-    Object.assign(item, { age: (item.died - item.born) }, { centuries:
-      Math.ceil(item.died / 100) }));
+    Object.assign(item, { age: (item.died - item.born) }, {
+      centuries:
+        Math.ceil(item.died / 100),
+    }));
+  let filSexDied = [];
 
-  let filSexDied = addAge.filter(item => item.sex === 'm');
-
-  if (century) {
-    filSexDied = filSexDied.filter(item => item.centuries === century);
-  }
+  century
+    ? filSexDied = addAge.filter(item => item.sex === 'm'
+    && item.centuries === century)
+    : filSexDied = addAge.filter(item => item.sex === 'm');
 
   const sum = filSexDied.reduce((ac, person) => ac + person.age, 0);
 
@@ -53,12 +55,12 @@ function calculateWomenAverageAge(people, withChildren) {
   const addAge = people.map(item =>
     Object.assign(item, { age: (item.died - item.born) }));
 
-  let woman = addAge.filter(item => item.sex === 'f');
+  let woman = [];
 
-  if (withChildren) {
-    woman = woman.filter(women =>
-      people.some(item => item.mother === women.name));
-  }
+  withChildren
+    ? woman = addAge.filter(women => women.sex === 'f'
+      && people.some(item => item.mother === women.name))
+    : woman = addAge.filter(item => item.sex === 'f');
 
   const sum = woman.reduce((ac, person) => ac + person.age, 0);
 
@@ -80,13 +82,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let childALL = people.filter(child =>
-    people.some(item => item.name === child.mother));
+  let childALL = [];
 
-  if (onlyWithSon) {
-    childALL = people.filter(child =>
-      child.sex === 'm' && people.some(item => item.name === child.mother));
-  }
+  onlyWithSon
+    ? childALL = people.filter(child =>
+      child.sex === 'm' && people.some(item => item.name === child.mother))
+    : childALL = people.filter(child =>
+      people.some(item => item.name === child.mother));
 
   const ageDiff = childALL.map(person => {
     const diff = people.find(elem => person.mother === elem.name);
