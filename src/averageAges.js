@@ -1,4 +1,11 @@
 'use strict';
+/**
+ * @param {number} sum
+ * @param {number} length
+ *
+ * @return {number}
+ */
+const getAverage = (sum, length) => Math.round(sum / length * 100) / 100 || 0;
 
 /**
  * Implement calculateMenAverageAge function
@@ -23,7 +30,7 @@ function calculateMenAverageAge(people, century = 0) {
   const sumAges = filteredPeople
     .reduce((sum, person) => sum + person.died - person.born, 0);
 
-  return Math.round(sumAges / filteredPeople.length * 100) / 100 || 0;
+  return getAverage(sumAges, filteredPeople.length);
 }
 
 /**
@@ -49,13 +56,13 @@ function calculateWomenAverageAge(people, withChildren = false) {
   const sumAges = filteredPeople
     .reduce((sum, person) => sum + person.died - person.born, 0);
 
-  return Math.round(sumAges / filteredPeople.length * 100) / 100 || 0;
+  return getAverage(sumAges, filteredPeople.length);
 }
 
 /**
  * Implement calculateAverageAgeDiff function.
  *
- * The function returns an average age difference between a child and his or her
+ * Te function returns an average age difference between a child and his or her
  * mother in the array. (A mother's age at child birth)
  *
  * If `onlyWithSon` is specified then function calculates age difference only
@@ -66,13 +73,22 @@ function calculateWomenAverageAge(people, withChildren = false) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const getMother = (childMotherName) => (
+    people.find(mother => childMotherName === mother.name)
+  );
+
+  const children = people
+    .filter(({ sex, mother }) => (
+      getMother(mother) && (!onlyWithSon || sex === 'm')
+    ));
+
+  const ageSum = children.reduce((sum, { born, mother }) => (
+    sum + born - getMother(mother).born
+  ), 0);
+
+  return getAverage(ageSum, children.length);
 }
-
-// const people = require('./people');
-
-// console.log(calculateWomenAverageAge(people, true));
 
 module.exports = {
   calculateMenAverageAge,
