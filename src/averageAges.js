@@ -1,25 +1,23 @@
 'use strict';
 
 /**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const man = !century
+    ? people.filter(({ sex }) =>
+      sex === 'm')
+    : people.filter(({ sex, died }) =>
+      sex === 'm' && Math.ceil(died / 100) === century);
+
+  const totalYearsOfLife = man.reduce((previous, { born, died }) =>
+    previous + (died - born), 0);
+
+  return totalYearsOfLife / man.length;
 }
 
 /**
