@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMan = people.filter(obj => {
+    return century
+      ? (century === Math.ceil(obj.died / 100) && obj.sex === 'm' ? obj : null)
+      : obj.sex === 'm' ? obj : null;
+  }
+  );
+
+  const sumAge = onlyMan.reduce((startValue, obj) => {
+    const age = obj.died - obj.born;
+
+    return startValue + age;
+  }, 0);
+
+  return sumAge / onlyMan.length;
 }
 
 /**
@@ -37,7 +46,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const getOnlyWoman = (obj) => {
+    const getWithChildren = (peopleObj) => {
+      return obj.name === peopleObj.mother ? obj : null;
+    };
+    const womanWithChildren = people.find(getWithChildren);
+
+    return obj.sex === 'f' ? (withChildren ? womanWithChildren : obj) : null;
+  };
+
+  const onlyWoman = people.filter(getOnlyWoman);
+
+  const getSumAge = (startValue, obj) => {
+    const age = obj.died - obj.born;
+
+    return startValue + age;
+  };
+
+  const sumAges = onlyWoman.reduce(getSumAge, 0);
+
+  return sumAges / onlyWoman.length;
 }
 
 /**
@@ -55,7 +83,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const callback = (childObj) => {
+    const getMothers = (obj) => {
+      childObj.diff = childObj.born - obj.born;
+
+      const result = childObj.mother === obj.name ? obj : null;
+
+      return onlyWithSon ? (childObj.sex === 'm' ? result : null) : result;
+    };
+
+    const mother = people.find(getMothers);
+
+    return mother;
+  };
+
+  const onlyMothers = people.filter(callback);
+
+  const getSumAge = (startValue, obj) => {
+    const ages = obj.diff;
+
+    return startValue + ages;
+  };
+
+  const sumAges = onlyMothers.reduce(getSumAge, 0);
+
+  return sumAges / onlyMothers.length;
 }
 
 module.exports = {
