@@ -14,12 +14,15 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = getPeopleBySex(people, 'm');
+
+  if (century) {
+    men = men.filter(man => Math.ceil(man.died / 100) === century);
+  }
+
+  return getAverageAgeOf(men);
 }
 
 /**
@@ -36,15 +39,24 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = getPeopleBySex(people, 'f');
+
+  if (withChildren) { // O(N^2) :(
+    women = women.filter(
+      woman => people.some(person => person.mother === woman.name)
+    );
+  }
+
+  return getAverageAgeOf(women);
 }
 
 /**
  * Implement calculateAverageAgeDiff function.
  *
  * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
+ * mother in the array. (A mother's age at childbirth)
  *
  * If `onlyWithSon` is specified then function calculates age difference only
  * for sons and their mothers.
@@ -54,8 +66,37 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const getMotherByName
+    = (motherName) => people.find(person => person.name === motherName);
+
+  const children = people.filter( // O(N^2) :(
+    ({ mother, sex }) =>
+      getMotherByName(mother) && (!onlyWithSon || sex === 'm')
+  );
+
+  const ageDiffList
+    = children.map(child => child.born - getMotherByName(child.mother).born);
+
+  return getAverage(ageDiffList);
+}
+
+function getAverage(numbers) {
+  return numbers
+    .reduce((agesSum, nextAge) => agesSum + nextAge, 0) / numbers.length;
+}
+
+function getAverageAgeOf(people) {
+  return getAverage(people.map(person => getAge(person)));
+}
+
+function getPeopleBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function getAge(person) {
+  return person.died - person.born;
 }
 
 module.exports = {
