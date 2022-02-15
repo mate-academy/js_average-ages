@@ -4,12 +4,6 @@ function getAge(deathYear, birthYear) {
   return deathYear - birthYear;
 }
 
-/* const men = people.filter(
-  century
-   ? callbackA  === person => Math.ceil(men.died /100) === century
-   : callbackB === per
-)
-*/
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person =>
     person.sex === 'm' && (century
