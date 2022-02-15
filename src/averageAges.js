@@ -86,11 +86,7 @@ function getAverage(numbers) {
 }
 
 function getAverageAgeOf(people) {
-  return getAverage(people.map(person => getAge(person)));
-}
-
-function getAge(person) {
-  return person.died - person.born;
+  return getAverage(people.map(person => person.died - person.born));
 }
 
 module.exports = {
