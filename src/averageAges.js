@@ -20,6 +20,36 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  /* create array only with men, if century is passed
+  than it creates a separate array */
+  function getSex(male) {
+    const men = century
+      ? (male['sex'] === 'm')
+      && (Math.ceil(male['died'] / 100) === century)
+      : (male['sex'] === 'm');
+
+    return men;
+  }
+
+  const getOnlyMales = people.filter(getSex);
+
+  // get ages of all men
+  function getAgeDifference(age) {
+    const lifeSpan = age.died - age.born;
+
+    return lifeSpan;
+  }
+
+  const ageDifference = getOnlyMales.map(getAgeDifference);
+
+  // add all ages
+  const sumOfAges = ageDifference.reduce((first, next) => first + next, 0);
+
+  // get average age
+  const averageAge = sumOfAges / ageDifference.length;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +67,35 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  /* create array only with women, if withChildren is passed
+  than it creates a separate array of mathers */
+  function getSex(female) {
+    const women = withChildren
+      ? female.sex === 'f'
+    && people.some(person => female.name === person.mother)
+      : female['sex'] === 'f';
+
+    return women;
+  }
+
+  const getOnlyFemales = people.filter(getSex);
+
+  // get ages of all women
+  function getAgeDifference(age) {
+    const lifeSpan = age.died - age.born;
+
+    return lifeSpan;
+  }
+
+  const ageDifference = getOnlyFemales.map(getAgeDifference);
+
+  // add all ages
+  const sumOfAges = ageDifference.reduce((first, next) => first + next, 0);
+
+  // get average age
+  const averageAge = sumOfAges / ageDifference.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +113,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  // find sons or mummies
+  function getChildren(child) {
+    const children = onlyWithSon
+    // if param(withChildren) is passed
+      ? people.some(person => person.name === child.mother)
+      && child.sex === 'm'
+      // if argument withChildren is not passed
+      : people.some(person => person.name === child.mother);
+
+    return children;
+  }
+
+  const getOnlyChildren = people.filter(getChildren);
+
+  // get ages of all mothers
+  function getAgeDifference(child) {
+    const lifeSpan = child.born - (people.find(mum =>
+      mum.name === child.mother)).born;
+
+    return lifeSpan;
+  }
+
+  const ageDifference = getOnlyChildren.map(getAgeDifference);
+
+  // add all ages
+  const sumOfAges = ageDifference.reduce((first, next) => first + next, 0);
+
+  // get average age
+  const averageAge = sumOfAges / ageDifference.length;
+
+  return averageAge;
 }
 
 module.exports = {
