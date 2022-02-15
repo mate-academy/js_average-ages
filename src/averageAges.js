@@ -15,11 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const peopleFiltered = century ? people.filter(a => {
-    const validateCentury = Math.ceil(a.died / 100) === century;
+  const peopleFiltered = people.filter(century ? person => {
+    const validateCentury = Math.ceil(person.died / 100) === century;
 
-    return validateCentury && a.sex === 'm';
-  }) : people.filter(a => a.sex === 'm');
+    return validateCentury && person.sex === 'm';
+  } : person => person.sex === 'm');
 
   return calculateValidAvarageAge(peopleFiltered);
 }
@@ -39,11 +39,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const peopleFiltered = withChildren ? people.filter(a => {
-    const findChildren = people.find(element => element.mother === a.name);
+  const peopleFiltered = people.filter(withChildren ? person => {
+    const findChildren = people.find(element => element.mother === person.name);
 
-    return findChildren && a.sex === 'f';
-  }) : people.filter(a => a.sex === 'f');
+    return findChildren && person.sex === 'f';
+  } : person => person.sex === 'f');
 
   return calculateValidAvarageAge(peopleFiltered);
 }
@@ -88,12 +88,12 @@ module.exports = {
   calculateAverageAgeDiff,
 };
 
-function calculateValidAvarageAge(arr) {
-  const averageAge = arr.reduce((sum, person) => {
+function calculateValidAvarageAge(filteredPeople) {
+  const averageAge = filteredPeople.reduce((sum, person) => {
     const personAge = person.died - person.born;
 
     return sum + personAge;
   }, 0);
 
-  return +(averageAge / arr.length).toFixed(2);
+  return +(averageAge / filteredPeople.length).toFixed(2);
 }
