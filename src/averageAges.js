@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm');
+
+  const sumOfAges = men.reduce((prev, curr) => {
+    const result = prev + (curr.died - curr.born);
+
+    return result;
+  }, 0);
+
+  return sumOfAges / men.length;
 }
 
 /**
@@ -37,7 +44,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person =>
+    withChildren
+      ? person.sex === 'f' && (people.some(b => b.mother === person.name))
+      : person.sex === 'f');
+
+  const sumOfAges = women.reduce((prev, curr) => {
+    const result = prev + (curr.died - curr.born);
+
+    return result;
+  }, 0);
+
+  return sumOfAges / women.length;
 }
 
 /**
@@ -55,7 +73,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = people.filter(a => a.sex === 'f');
+
+  const womenWithChildren = women.filter(a => {
+    return (people.some(b => b.mother === a.name));
+  });
+
+  let totalAgeAllWomen = 0;
+  let countChildren = 0;
+
+  womenWithChildren.map(person => {
+    const thisChildren = people.filter(baby =>
+      onlyWithSon
+        ? baby.mother === person.name && baby.sex === 'm'
+        : baby.mother === person.name);
+
+    countChildren += thisChildren.length;
+
+    const totalAgeThisMother = thisChildren.reduce((accum, baby) => {
+      const ageThisMother = baby.born - person.born;
+
+      return accum + ageThisMother;
+    }, 0);
+
+    totalAgeAllWomen += totalAgeThisMother;
+  });
+
+  return totalAgeAllWomen / countChildren;
 }
 
 module.exports = {
