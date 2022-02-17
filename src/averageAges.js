@@ -14,18 +14,18 @@
  *
  * @return {number}
  */
-function getAverageAge(peopleFiltered) {
-  const personAge = peopleFiltered.map(person => person.died - person.born);
+function getAverageAge(filteredPeople) {
+  const personAge = filteredPeople.map(person => person.died - person.born);
   const averageAge = personAge.reduce((a, b) => a + b) / personAge.length;
 
   return Math.round(averageAge * 100) / 100;
 }
 
 function calculateMenAverageAge(people, century) {
-  const male = century
-    ? people.filter(
-      person => person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
+  const male = people.filter(
+    person => century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm');
 
   return getAverageAge(male);
 }
@@ -45,10 +45,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const female = withChildren
-    ? people.filter(
-      mother => people.find(child => child.mother === mother.name))
-    : people.filter(person => person.sex === 'f');
+  const female = people.filter(
+    person => withChildren
+      ? people.find(child => child.mother === person.name)
+      : person.sex === 'f');
 
   return getAverageAge(female);
 }
