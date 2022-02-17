@@ -23,8 +23,8 @@ function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(
     !withChildren
       ? ({ sex }) => sex === 'f'
-      : people.filter(({ name }) =>
-        people.some(({ mother }) => mother === name))
+      : ({ name }) =>
+        people.some(({ mother }) => mother === name)
   );
 
   return averageAge(women);
