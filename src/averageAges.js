@@ -15,11 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  return century
+    ? getMenAverageAge(people
+      .filter(person => Math.ceil(person.died / 100) === century))
+    : getMenAverageAge(people);
 }
 
 /**
@@ -37,7 +36,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+  const mothers = getMothers(people);
+
+  return withChildren
+    ? calculateAverageAge(mothers)
+    : calculateAverageAge(women);
 }
 
 /**
@@ -55,7 +59,40 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = getMothers(people);
+  const childs = people
+    .filter(person => person.mother)
+    .filter(person => mothers.some(mother => mother.name === person.mother));
+  const sons = childs.filter(person => person.sex === 'm');
+
+  return onlyWithSon
+    ? getAverageAgeDiff(sons, mothers)
+    : getAverageAgeDiff(childs, mothers);
+}
+
+function getMenAverageAge(people) {
+  return calculateAverageAge(people.filter(person => person.sex === 'm'));
+}
+
+function calculateAverageAge(people) {
+  return people
+    .map(person => person.died - person.born)
+    .reduce((a, b) => (a + b), 0) / people.length;
+}
+
+function getAverageAgeDiff(people, mothers) {
+  return people
+    .map(person => person.born
+      - mothers.find(mother => mother.name === person.mother).born)
+    .reduce((a, b) => (a + b)) / people.length;
+}
+
+function getMothers(people) {
+  const mothersNames = people
+    .map(person => person.mother);
+
+  return people
+    .filter(person => mothersNames.includes(person.name));
 }
 
 module.exports = {
