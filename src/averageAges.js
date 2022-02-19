@@ -14,14 +14,26 @@
  *
  * @return {number}
  */
+const calculateAge = person => person.died - person.born;
+
+const averageReducer = (arr) => {
+  return arr.reduce((acc, i) => acc + calculateAge(i), 0) / arr.length;
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+
+  const targetGroup = people.filter(
+    century
+      ? item => item.sex === 'm' && Math.ceil(item.died / 100) === century
+      : item => item.sex === 'm'
+  );
+
+  const averageAge = averageReducer(targetGroup);
+
+  return +(averageAge.toFixed(2));
 }
 
+// replace `if ()` statement with &&, || or ?:
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -37,7 +49,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  function isMother(woman) {
+    return people.some(person => person.mother === woman.name);
+  };
+
+  const targetGroup = people.filter(
+    withChildren
+      ? item => item.sex === 'f' && isMother(item)
+      : item => item.sex === 'f');
+
+  const averageAge = averageReducer(targetGroup);
+
+  return +(averageAge.toFixed(2));
 }
 
 /**
@@ -55,7 +78,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const onlySons = people.filter(
+    item => item.mother
+    && item.sex === 'm'
+    && people.some(person => person.name === item.mother));
+
+  const differentAge = (mother, child) => mother.born - child.born;
+  const diffAges = [];
+
+  const mothersGroup = people.filter(
+    onlyWithSon
+      ? target => onlySons.some(person => person.mother === target.name)
+      : target => people.some(person => person.mother === target.name));
+
+  const childGroup = onlyWithSon
+    ? onlySons
+    : people.filter(person => mothersGroup.some(
+      mother => mother.name === person.mother));
+
+  for (const child of childGroup) {
+    diffAges.push(differentAge(child, (mothersGroup.filter(
+      mother => mother.name === child.mother))[0]));
+  }
+
+  const result = diffAges.reduce((acc, item) => acc + item) / diffAges.length;
+
+  return +(result.toFixed(2));
 }
 
 module.exports = {
