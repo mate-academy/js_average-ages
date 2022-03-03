@@ -15,11 +15,39 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const result = [];
+  let sumAges = 0;
+
+  if (century !== undefined) {
+    people.map(x => {
+      const age = x['died'] - x['born'];
+      const diedCentury = Math.ceil(x['died'] / 100);
+
+      if (x['sex'] === 'm' && diedCentury === century) {
+        result.push(age);
+      }
+    });
+
+    for (const i of result) {
+      sumAges += i;
+    }
+
+    return (sumAges / result.length);
+  }
+
+  people.map(x => {
+    const age = x['died'] - x['born'];
+
+    if (x['sex'] === 'm') {
+      result.push(age);
+    }
+  });
+
+  for (const i of result) {
+    sumAges += i;
+  }
+
+  return (sumAges / result.length);
 }
 
 /**
@@ -37,7 +65,42 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const result = [];
+  let sumAges = 0;
+
+  if (withChildren) {
+    let mothersName = '';
+    const isMother = [];
+    const women = [];
+
+    for (const obj of people) {
+      if (obj.sex === 'f') {
+        women.push(obj);
+        mothersName = obj.name;
+
+        if (people.some(person => person.mother === mothersName)) {
+          isMother.push(obj.died - obj.born);
+          sumAges += obj.died - obj.born;
+        }
+      }
+    }
+
+    return sumAges / isMother.length;
+  }
+
+  people.map(x => {
+    const age = x['died'] - x['born'];
+
+    if (x['sex'] === 'f') {
+      result.push(age);
+    }
+  });
+
+  for (const i of result) {
+    sumAges += i;
+  }
+
+  return (sumAges / result.length);
 }
 
 /**
@@ -55,7 +118,39 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const potentialMothers = [];
+  let agesSum = 0;
+  const agesArray = [];
+
+  potentialMothers.push(people.map(person => {
+    if (person.sex === 'f') {
+      potentialMothers.push(person);
+    }
+  }));
+
+  if (onlyWithSon) {
+    for (const woman of potentialMothers) {
+      people.some(person => {
+        if (person.sex === 'm' && person.mother === woman.name) {
+          agesArray.push(person.born - woman.born);
+          agesSum += person.born - woman.born;
+        }
+      });
+    }
+
+    return agesSum / agesArray.length;
+  }
+
+  for (const woman of potentialMothers) {
+    people.some(person => {
+      if (person.mother === woman.name) {
+        agesArray.push(person.born - woman.born);
+        agesSum += person.born - woman.born;
+      }
+    });
+  }
+
+  return agesSum / agesArray.length;
 }
 
 module.exports = {
