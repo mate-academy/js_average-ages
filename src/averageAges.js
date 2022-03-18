@@ -20,10 +20,10 @@ function calculateMenAverageAge(people, century) {
 
   if (century !== undefined) {
     people.map(person => {
-      const age = person['died'] - person['born'];
-      const diedCentury = Math.ceil(person['died'] / 100);
+      const age = person.died - person.born;
+      const diedCentury = Math.ceil(person.died / 100);
 
-      if (person['sex'] === 'm' && diedCentury === century) {
+      if (person.sex === 'm' && diedCentury === century) {
         menAges.push(age);
       }
     });
@@ -36,9 +36,9 @@ function calculateMenAverageAge(people, century) {
   }
 
   people.map(person => {
-    const age = person['died'] - person['born'];
+    const age = person.died - person.born;
 
-    if (person['sex'] === 'm') {
+    if (person.sex === 'm') {
       menAges.push(age);
     }
   });
@@ -65,7 +65,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const result = [];
+  const womenArray = [];
   let sumAges = 0;
 
   if (withChildren) {
@@ -73,34 +73,34 @@ function calculateWomenAverageAge(people, withChildren) {
     const isMother = [];
     const women = [];
 
-    for (const obj of people) {
-      if (obj.sex === 'f') {
-        women.push(obj);
-        mothersName = obj.name;
+    people.map((woman) => {
+      if (woman.sex === 'f') {
+        women.push(woman);
+        mothersName = woman.name;
 
         if (people.some(person => person.mother === mothersName)) {
-          isMother.push(obj.died - obj.born);
-          sumAges += obj.died - obj.born;
+          isMother.push(woman.died - woman.born);
+          sumAges += woman.died - woman.born;
         }
       }
-    }
+    });
 
     return sumAges / isMother.length;
   }
 
-  people.map(x => {
-    const age = x['died'] - x['born'];
+  people.map(person => {
+    const age = person.died - person.born;
 
-    if (x['sex'] === 'f') {
-      result.push(age);
+    if (person.sex === 'f') {
+      womenArray.push(age);
     }
   });
 
-  for (const i of result) {
-    sumAges += i;
-  }
+  womenArray.map((woman) => {
+    sumAges += woman;
+  });
 
-  return (sumAges / result.length);
+  return (sumAges / womenArray.length);
 }
 
 /**
@@ -129,26 +129,26 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   }));
 
   if (onlyWithSon) {
-    for (const woman of potentialMothers) {
+    potentialMothers.map(mother => {
       people.some(person => {
-        if (person.sex === 'm' && person.mother === woman.name) {
-          agesArray.push(person.born - woman.born);
-          agesSum += person.born - woman.born;
+        if (person.sex === 'm' && person.mother === mother.name) {
+          agesArray.push(person.born - mother.born);
+          agesSum += person.born - mother.born;
         }
       });
-    }
+    });
 
     return agesSum / agesArray.length;
   }
 
-  for (const woman of potentialMothers) {
+  potentialMothers.map((woman) => {
     people.some(person => {
       if (person.mother === woman.name) {
         agesArray.push(person.born - woman.born);
         agesSum += person.born - woman.born;
       }
     });
-  }
+  });
 
   return agesSum / agesArray.length;
 }
