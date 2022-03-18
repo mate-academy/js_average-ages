@@ -15,39 +15,39 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const result = [];
+  const menAges = [];
   let sumAges = 0;
 
   if (century !== undefined) {
-    people.map(x => {
-      const age = x['died'] - x['born'];
-      const diedCentury = Math.ceil(x['died'] / 100);
+    people.map(person => {
+      const age = person['died'] - person['born'];
+      const diedCentury = Math.ceil(person['died'] / 100);
 
-      if (x['sex'] === 'm' && diedCentury === century) {
-        result.push(age);
+      if (person['sex'] === 'm' && diedCentury === century) {
+        menAges.push(age);
       }
     });
 
-    for (const i of result) {
-      sumAges += i;
-    }
+    menAges.map((age) => {
+      sumAges += age;
+    });
 
-    return (sumAges / result.length);
+    return (sumAges / menAges.length);
   }
 
-  people.map(x => {
-    const age = x['died'] - x['born'];
+  people.map(person => {
+    const age = person['died'] - person['born'];
 
-    if (x['sex'] === 'm') {
-      result.push(age);
+    if (person['sex'] === 'm') {
+      menAges.push(age);
     }
   });
 
-  for (const i of result) {
-    sumAges += i;
-  }
+  menAges.map((age) => {
+    sumAges += age;
+  });
 
-  return (sumAges / result.length);
+  return (sumAges / menAges.length);
 }
 
 /**
