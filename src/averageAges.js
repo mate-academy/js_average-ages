@@ -48,7 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f'
   );
 
-  const womenAges = womenAvarage.map(men => men.died - men.born);
+  const womenAges = womenAvarage.map(women => women.died - women.born);
   const totalWomenAge = womenAges.reduce((sum, age) => sum + age, 0);
 
   return totalWomenAge / womenAges.length;
