@@ -20,11 +20,11 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let men = people.filter(person => person.sex === 'm');
 
-  if (arguments.length > 1) {
-    men = men.filter(person => Math.ceil(person.died / 100) === century);
-  };
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm'
+  );
 
   const menAges = men.map(person => person.died - person.born);
   const sumOfMenAge = menAges.reduce((sum, x) => sum + x, 0);
@@ -48,14 +48,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
+  const childrens = people.filter(person => !!person.mother === true);
+  const mothers = childrens.map(children => children.mother);
 
-  if (arguments.length > 1) {
-    const childrens = people.filter(person => !!person.mother === true);
-    const mothers = childrens.map(children => children.mother);
-
-    women = women.filter(person => mothers.includes(person.name));
-  }
+  const women = people.filter(person => withChildren
+    ? person.sex === 'f' && mothers.includes(person.name)
+    : person.sex === 'f');
 
   const womenAges = women.map(person => person.died - person.born);
   const sumOfWomenAges = womenAges.reduce((sum, x) => sum + x, 0);
@@ -81,11 +79,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const women = people.filter(person => person.sex === 'f');
 
-  let childrens = people.filter(person => !!person.mother === true);
-
-  if (arguments.length > 1) {
-    childrens = childrens.filter(children => children.sex === 'm');
-  }
+  let childrens = people.filter(person => onlyWithSon
+    ? !!person.mother === true && person.sex === 'm'
+    : !!person.mother === true);
 
   let motherNames = childrens.map(children => children.mother);
   const mothers = women.filter(person => motherNames.includes(person.name));
