@@ -14,12 +14,13 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = false) {
+  const men = people.filter(({ sex, died }) => (
+    sex === 'm' && (century ? (Math.ceil(died / 100) === century) : true)
+  ));
+  const len = men.length;
+
+  return men.reduce((prev, { died, born }) => (died - born + prev), 0) / len;
 }
 
 /**
@@ -36,8 +37,17 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  let women = people.filter(({ sex }) => sex === 'f');
+
+  if (withChildren) {
+    women = women.filter(({ name }) => people.find(
+      ({ mother }) => (mother === name)));
+  }
+
+  const len = women.length;
+
+  return women.reduce((prev, { died, born }) => (died - born + prev), 0) / len;
 }
 
 /**
@@ -54,8 +64,29 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let result;
+
+  if (onlyWithSon) {
+    result = people.filter(({ mother, sex }) => sex === 'm'
+    && people.find(({ name }) => (
+      (mother === name)))).map(son => {
+      const motherOb = people.find(mom => mom.name === son.mother);
+
+      return son.born - motherOb.born;
+    });
+  } else {
+    result = people.filter(({ mother }) => people.find(({ name }) => (
+      (mother === name)))).map(son => {
+      const motherOb = people.find(mom => mom.name === son.mother);
+
+      return son.born - motherOb.born;
+    });
+  }
+
+  const len = result.length;
+
+  return result.reduce((sum, x) => (sum + x), 0) / len;
 }
 
 module.exports = {
