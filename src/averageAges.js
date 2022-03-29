@@ -15,6 +15,25 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  let newArray = [];
+  let avgAge = 0;
+
+  if (century === undefined) {
+    newArray = people.filter(x => x.sex === 'm');
+
+    avgAge = newArray.reduce((sum, x) => sum + x.died - x.born, 0)
+    / newArray.length;
+
+    return avgAge;
+  }
+
+  newArray = people.filter(x => x.sex === 'm'
+  && Math.ceil(x.died / 100) === century);
+
+  avgAge = newArray.reduce((sum, x) => sum + x.died - x.born, 0)
+  / newArray.length;
+
+  return avgAge;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +56,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let newArray = [];
+  let avgAge = 0;
+
+  if (withChildren === undefined) {
+    newArray = people.filter(x => x.sex === 'f');
+
+    avgAge = newArray.reduce((sum, x) => sum + x.died - x.born, 0)
+    / newArray.length;
+
+    return avgAge;
+  }
+
+  newArray = people.filter(a => a.sex === 'f'
+  && people.find(x => x.mother === a.name));
+
+  avgAge = newArray.reduce((sum, x) => sum + x.died - x.born, 0)
+  / newArray.length;
+
+  return avgAge;
 }
 
 /**
@@ -55,7 +92,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  if (onlyWithSon === undefined) {
+    let newArray = [];
+
+    const result = people.filter(a =>
+      people.find(x => x.name === a.mother)).map(a => {
+      const motherObj = people.find(x => x.name === a.mother);
+
+      return a.born - motherObj.born;
+    });
+
+    newArray = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+    return newArray;
+  } else {
+    let newArray = [];
+
+    const result = people.filter(a => a.sex === 'm'
+    && people.find(x => x.name === a.mother)).map(a => {
+      const motherObj = people.find(x => x.name === a.mother);
+
+      return a.born - motherObj.born;
+    });
+
+    newArray = result.reduce((sum, x) => sum + x, 0) / result.length;
+
+    return newArray;
+  }
 }
 
 module.exports = {
