@@ -22,8 +22,8 @@ function calcAverageAge(peopleArray) {
   return sumAge / peopleArray.length;
 };
 
-function calculateMenAverageAge(people, century = 0) {
-  const foundMen = century !== 0
+function calculateMenAverageAge(people, century) {
+  const foundMen = century
     ? people.filter(person => person.sex === 'm'
     && Math.ceil(person.died / 100) === century)
     : people.filter(person => person.sex === 'm');
@@ -50,7 +50,7 @@ function calculateMenAverageAge(people, century = 0) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren = false) {
+function calculateWomenAverageAge(people, withChildren) {
   const foundWomen = withChildren
     ? people.filter(person => person.sex === 'f'
         && people.find((child) => person.name === child.mother))
