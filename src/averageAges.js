@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter(({ sex }) => sex === 'm');
+
+  (arguments.length === 2)
+    && (men = men.filter(({ died }) => Math.ceil(died / 100) === century));
+
+  return (
+    men.reduce((pre, { born, died }) => pre + (died - born), 0) / men.length);
 }
 
 /**
@@ -37,7 +39,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(({ sex }) => sex === 'f');
+  const findMother = ({ name }) => {
+    return people.some(({ mother }) => mother === name);
+  };
+
+  (withChildren) && (women = women.filter(findMother));
+
+  return (women.reduce((pre, { born, died }) =>
+    pre + (died - born), 0) / women.length);
 }
 
 /**
@@ -55,7 +65,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findChildren = ({ mother }) => {
+    return people.some(({ name }) => mother === name);
+  };
+  const findMother = ({ mother }) => {
+    return people.find(({ name }) => name === mother);
+  };
+
+  let children = Array.from(people);
+
+  (onlyWithSon) && (children = people.filter(({ sex }) => sex === 'm'));
+  children = children.filter(findChildren);
+
+  const women = children.map(findMother);
+
+  const bornChildren = children.reduce((pre, { born }) => pre + born, 0);
+  const bornWomen = women.reduce((pre, { born }) => pre + born, 0);
+
+  return (bornChildren - bornWomen) / children.length;
+  // return bornWomen;
+  // return women.length;
+  // women.sort((woman1, woman2) =>
+  //   woman1.name.localeCompaire(woman2.name));
+
+  // children.sort((child1, child2) =>
+  //   child1.mother.localeCompaire(child2.mother));
+
+  // const result = women.map(({ born }) => );
 }
 
 module.exports = {
