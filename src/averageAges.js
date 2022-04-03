@@ -74,7 +74,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let children = Array.from(people);
 
-  (onlyWithSon) && (children = people.filter(({ sex }) => sex === 'm'));
+  (onlyWithSon) && (children = children.filter(({ sex }) => sex === 'm'));
   children = children.filter(findChildren);
 
   const women = children.map(findMother);
@@ -83,15 +83,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const bornWomen = women.reduce((pre, { born }) => pre + born, 0);
 
   return (bornChildren - bornWomen) / children.length;
-  // return bornWomen;
-  // return women.length;
-  // women.sort((woman1, woman2) =>
-  //   woman1.name.localeCompaire(woman2.name));
-
-  // children.sort((child1, child2) =>
-  //   child1.mother.localeCompaire(child2.mother));
-
-  // const result = women.map(({ born }) => );
 }
 
 module.exports = {
