@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
+
+  const ages = men.map(person => person.died - person.born);
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
 }
 
 /**
@@ -36,8 +40,20 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  const women = people.filter(person =>
+    withChildren
+      ? person.sex === 'f' && hasChild(people, person.name)
+      : person.sex === 'f'
+  );
+
+  const ages = women.map(person => person.died - person.born);
+
+  return ages.reduce((sum, age) => sum + age, 0) / ages.length;
+}
+
+function hasChild(people, name) {
+  return people.some(person => person.mother === name);
 }
 
 /**
@@ -55,7 +71,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(person =>
+    onlyWithSon
+      ? person.sex === 'm' && hasMother(people, person.mother)
+      : hasMother(people, person.mother)
+  );
+
+  const ageDiffrences = children.map(child =>
+    child.born - motherBorn(people, child.mother));
+
+  const averageDiff = ageDiffrences.reduce((sum, age) => sum + age, 0);
+
+  return averageDiff / ageDiffrences.length;
+}
+
+function hasMother(people, motherName) {
+  return people.some(person => person.name === motherName);
+}
+
+function motherBorn(people, motherName) {
+  const mother = people.find(person => person.name === motherName);
+
+  return mother.born;
 }
 
 module.exports = {
