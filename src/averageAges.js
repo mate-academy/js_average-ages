@@ -1,48 +1,33 @@
 'use strict';
 
-/**
- * @param {object[]} arr
- * @param {string} sex
- *
- * @return {object[]}
- */
 function filterBySex(arr, sex) {
   return arr
     .filter(({ 'sex': currSex }) => currSex === sex);
 }
 
-/**
- * @param {object[]} arr
- * @param {number} century
- *
- * @return {object[]}
- */
 function filterByCentury(arr, century) {
   return arr
     .filter(({ died }) => Math.ceil(died / 100) === century);
 }
 
-/**
- * @param {number} totalAge
- * @param {object} man
- *
- * @return {number}
- */
 function sumAges(totalAge, { died, born }) {
   const age = died - born;
 
   return totalAge + age;
 }
 
-/**
- * @param {object[]} arr
- *
- * @return {object[]}
- */
+function getChildren(arr, momName) {
+  return arr
+    .filter(({ mother }) => {
+      return arguments.length > 1
+        ? mother === momName
+        : typeof mother === 'string';
+    });
+}
+
 function getMothers(arr) {
-  const motherNames = arr
-    .filter(({ mother }) => typeof mother === 'string')
-    .map(({ mother }) => mother);
+  const children = getChildren(arr);
+  const motherNames = children.map(({ mother }) => mother);
 
   return arr
     .filter(({ name }) => motherNames.indexOf(name) !== -1);
@@ -123,7 +108,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = getMothers(people);
+  const bornAges = [];
+
+  for (const mom of mothers) {
+    const children = arguments.length > 1
+      ? filterBySex(getChildren(people, mom.name), 'm')
+      : getChildren(people, mom.name);
+
+    children.forEach(({ born }) => {
+      const momAge = born - mom.born;
+
+      bornAges.push(momAge);
+    });
+  }
+
+  const totalBornAge = bornAges
+    .reduce((sum, age) => sum + age);
+  const avgBornAge = totalBornAge / bornAges.length;
+
+  return avgBornAge;
 }
 
 module.exports = {
