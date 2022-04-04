@@ -15,10 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(({ sex }) => sex === 'm');
+  const choiceMen = ({ sex, died }) => {
+    let isCentury;
 
-  (arguments.length === 2)
-    && (men = men.filter(({ died }) => Math.ceil(died / 100) === century));
+    isFinite(century)
+      ? isCentury = Math.ceil(died / 100) === century
+      : isCentury = true;
+
+    return (sex === 'm') && isCentury;
+  };
+
+  const men = people.filter(choiceMen);
 
   return (
     men.reduce((pre, { born, died }) => pre + (died - born), 0) / men.length);
@@ -39,10 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(({ sex }) => sex === 'f');
-  const findMother = ({ name }) => {
-    return people.some(({ mother }) => mother === name);
+  const findMother = ({ sex, name }) => {
+    let isMother;
+
+    withChildren
+      ? isMother = people.some(({ mother }) => mother === name)
+      : isMother = true;
+
+    return (sex === 'f') && isMother;
   };
+
+  let women = people.filter(findMother);
 
   (withChildren) && (women = women.filter(findMother));
 
@@ -65,17 +79,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const findChildren = ({ mother }) => {
-    return people.some(({ name }) => mother === name);
+  const findChildren = ({ mother, sex }) => {
+    let isChild;
+
+    onlyWithSon
+      ? isChild = people.some(({ name }) =>
+        (mother === name) && (sex === 'm'))
+      : isChild = people.some(({ name }) =>
+        mother === name);
+
+    return isChild;
   };
   const findMother = ({ mother }) => {
     return people.find(({ name }) => name === mother);
   };
 
-  let children = Array.from(people);
-
-  (onlyWithSon) && (children = children.filter(({ sex }) => sex === 'm'));
-  children = children.filter(findChildren);
+  const children = people.filter(findChildren);
 
   const women = children.map(findMother);
 
