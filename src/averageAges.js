@@ -70,10 +70,10 @@ function findMother(people, nameMother) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const arr = (onlyWithSon)
+  const array = (onlyWithSon)
     ? people.filter(person => person.sex === 'm') : people;
 
-  const diff = arr.map(person => {
+  const diff = array.map(person => {
     const mother = { ...findMother(people, person.mother) };
 
     return person.born - mother.born;
