@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  // creating callback to find men which are suitable for the condition
+  function searchMen(key) {
+    return century
+      ? key.sex === 'm' && Math.ceil(key.died / 100) === century
+      : key.sex === 'm';
+  }
+  // creating callback to calculate avarage age
+
+  function searchAge(prev, a) {
+    return prev + (a.died - a.born);
+  }
+  // implementation of our callbacks in methods
+
+  const manArr = people.filter(searchMen);
+  const averageMenAge = manArr.reduce(searchAge, 0) / manArr.length;
+
+  return averageMenAge;
 }
 
 /**
@@ -37,7 +49,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  // creating callback to find woman which are suitable for the condition
+
+  function searchWoman(key) {
+    return withChildren
+      ? key.sex === 'f' && people.some(child => key.name === child.mother)
+      : key.sex === 'f';
+  }
+  // creating callback to calculate avarage age
+
+  function searchWomenAge(prev, b) {
+    return prev + (b.died - b.born);
+  }
+  // implementation of our callbacks in methods
+
+  const womenArr = people.filter(searchWoman);
+  const averageWomAge = womenArr.reduce(searchWomenAge, 0) / womenArr.length;
+
+  return averageWomAge;
 }
 
 /**
@@ -55,7 +84,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  // fill in the array with sons by filter method
+
+  const childArr = people.filter(human => {
+    return onlyWithSon
+      ? human.sex === 'm' && people.some(woman => woman.name === human.mother)
+      : people.some(woman => woman.name === human.mother);
+  });
+  // fill in the array with age difference by map method
+
+  const ageDiff = childArr.map(children => {
+    const mother = people.find(women => children.mother === women.name);
+
+    return children.born - mother.born;
+  });
+  // calculating avarage age
+
+  const averageAge = ageDiff.reduce((a, b) => a + b) / ageDiff.length;
+
+  return averageAge;
 }
 
 module.exports = {
