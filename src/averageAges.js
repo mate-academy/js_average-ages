@@ -1,10 +1,10 @@
 'use strict';
 
-function getChildren(arr, momName) {
+function getChildren(arr, motherName) {
   return arr
     .filter(({ mother }) => {
       return arguments.length > 1
-        ? mother === momName
+        ? mother === motherName
         : typeof mother === 'string';
     });
 }
