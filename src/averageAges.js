@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let man = people.filter(({ sex }) => sex === 'm');
+
+  if (century !== undefined) {
+    man = people.filter(({ sex, died }) =>
+      sex === 'm' && Math.ceil(died / 100) === century);
+  }
+
+  const age = man.map(({ born, died }) => died - born);
+  const sumOfAge = age.reduce((prev, current) => prev + current, 0);
+
+  return sumOfAge / age.length;
 }
 
 /**
@@ -37,7 +43,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(({ sex }) => sex === 'f');
+  const womenWithChildren = [];
+  let resultWomen = women;
+
+  if (withChildren !== undefined) {
+    for (const item of women) {
+      const child = people.find(({ mother }) => mother === item.name);
+
+      if (child !== undefined) {
+        womenWithChildren.push(item);
+      }
+    }
+    resultWomen = womenWithChildren;
+  }
+
+  const age = resultWomen.map(({ born, died }) => died - born);
+  const sumOfAge = age.reduce((prev, current) => prev + current, 0);
+
+  return sumOfAge / age.length;
 }
 
 /**
@@ -55,7 +79,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = people.filter(({ sex }) => sex === 'f');
+  const differenceAge = [];
+  const differenceAgeWithSon = [];
+  let resultDifference = differenceAge;
+
+  for (const item of women) {
+    const children = people.filter(({ mother }) => mother === item.name);
+
+    for (const child of children) {
+      if (onlyWithSon !== undefined && child.sex === 'm') {
+        differenceAgeWithSon.push(child.born - item.born);
+        resultDifference = differenceAgeWithSon;
+      }
+      differenceAge.push(child.born - item.born);
+    }
+  }
+
+  const sum = resultDifference.reduce((prev, current) => prev + current, 0);
+
+  return sum / resultDifference.length;
 }
 
 module.exports = {
