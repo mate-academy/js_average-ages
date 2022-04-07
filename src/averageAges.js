@@ -19,11 +19,9 @@ function calculateMenAverageAge(people, century) {
     && century === Math.ceil(element.died / 100))
     : people.filter(element => element.sex === 'm');
 
-  const finalAge = century ? (array.map((element) =>
+  const finalAge = (array.map((element) =>
     element.died - element.born).reduce((prev, next) => prev + next)
-    / array.length)
-    : (array.map((element) => element.died
-    - element.born).reduce((prev, next) => prev + next) / array.length);
+    / array.length);
 
   return +finalAge.toFixed(2);
 }
