@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const array = century ? people.filter(element => element.sex === 'm'
+    && century === Math.ceil(element.died / 100))
+    : people.filter(element => element.sex === 'm');
+
+  const finalAge = (array.map((element) =>
+    element.died - element.born).reduce((prev, next) => prev + next)
+    / array.length);
+
+  return +finalAge.toFixed(2);
 }
 
 /**
@@ -37,7 +41,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const agesMothersDiff = people.filter(el =>
+    people.find(element => el.name === element.mother)).map((element) =>
+    element.died - element.born);
+
+  const motherAge = people.filter(el =>
+    el.sex === 'f').map((element) =>
+    element.died - element.born);
+
+  const result = withChildren ? agesMothersDiff : motherAge;
+
+  return +(result.reduce((prev, next) =>
+    prev + next) / result.length).toFixed(2);
 }
 
 /**
@@ -55,7 +70,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersSon = people.filter(el =>
+    people.find(element =>
+      (el.name === element.mother) && element.sex === 'm'));
+
+  const mothers = people.filter(el =>
+    people.find(element => el.name === element.mother));
+
+  const motherArray = onlyWithSon ? mothersSon : mothers;
+
+  const childrens = people.filter(el =>
+    mothers.find(element => el.mother === element.name));
+
+  const childrensSon = people.filter(el =>
+    mothersSon.find(element => (el.mother === element.name) && el.sex === 'm'));
+
+  const childrenArray = onlyWithSon ? childrensSon : childrens;
+
+  const finalNum = childrenArray.map(element =>
+    element.born - motherArray.find(el =>
+      el.name === element.mother).born).reduce((prev, next) =>
+    prev + next) / childrenArray.length;
+
+  return +finalNum.toFixed(2);
 }
 
 module.exports = {
