@@ -14,12 +14,20 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const mans = people.filter(person => {
+    if (century) {
+      return person.sex === 'm' && Math.ceil(person.died / 100) === century;
+    }
+
+    return person.sex === 'm';
+  });
+
+  const ages = mans.map(person => person.died - person.born);
+  const average = ages.reduce((prev, next) => prev + next, 0) / ages.length;
+
+  return average;
 }
 
 /**
@@ -36,8 +44,36 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
+function findChildren(arrayWithPeople) {
+  const children = arrayWithPeople.filter(person => person.mother);
+
+  return children;
+};
+
+function findMother(arrayWithPeople) {
+  const children = findChildren(arrayWithPeople);
+  const mothersNames = children.map(person => person.mother);
+  const mothersWithChildren = arrayWithPeople
+    .filter(person => mothersNames.indexOf(person.name) !== -1);
+
+  return mothersWithChildren;
+};
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let womens;
+
+  if (withChildren) {
+    womens = findMother(people);
+  } else {
+    womens = people.filter(person => person.sex === 'f');
+  }
+
+  const womensAges = womens.map(person => person.died - person.born);
+  const average = womensAges
+    .reduce((prev, curr) => prev + curr, 0) / womensAges.length;
+
+  return average;
 }
 
 /**
@@ -54,8 +90,29 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+function isChildsMother(people, nameMother) {
+  return people.find(person => person.name === nameMother);
+}
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let isOnlyWithSon;
+
+  if (onlyWithSon) {
+    isOnlyWithSon = people.filter(person => person.sex === 'm');
+  } else {
+    isOnlyWithSon = people;
+  }
+
+  const difference = isOnlyWithSon.map(person => {
+    const mother = { ...isChildsMother(people, person.mother) };
+
+    return person.born - mother.born;
+  }).filter(number => !isNaN(number));
+
+  const average = difference
+    .reduce((prev, curr) => prev + curr, 0) / difference.length;
+
+  return average;
 }
 
 module.exports = {
