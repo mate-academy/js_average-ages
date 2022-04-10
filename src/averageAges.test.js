@@ -7,12 +7,12 @@ const {
   calculateAverageAgeDiff,
 } = require('./averageAges');
 
-test('Average men age', () => {
+test.only('Average men age', () => {
   expect(calculateMenAverageAge(people))
     .toBeCloseTo(61.67, 2);
 });
 
-test('Average men age in 18 century', () => {
+test.only('Average men age in 18 century', () => {
   expect(calculateMenAverageAge(people, 18))
     .toBeCloseTo(56.50, 2);
 });
