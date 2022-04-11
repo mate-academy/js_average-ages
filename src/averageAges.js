@@ -20,14 +20,23 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const ageMan = (arguments.length === 2) ? people
+
+  const centuryTrue = people
     .filter(person => person.sex === 'm'
-    && Math.ceil(person.died / 100) === arguments[1])
-    .map(person => person.died - person.born) : people
-    .filter(person => person.sex === 'm')
+  && Math.ceil(person.died / 100) === arguments[1]);
+
+  const centuryFalse = people
+    .filter(person => person.sex === 'm');
+
+  const argLength = arguments.length;
+
+  const ageMan = (argLength === 2) ? centuryTrue
+    .map(person => person.died - person.born) : centuryFalse
     .map(person => person.died - person.born);
 
-  return ageMan.reduce((sum, age) => sum + age) / ageMan.length;
+  const ageManLength = ageMan.length;
+
+  return ageMan.reduce((sum, age) => sum + age) / ageManLength;
 }
 
 /**
@@ -51,11 +60,15 @@ function calculateWomenAverageAge(people, withChildren) {
     return arr.some(arrVal => val === arrVal);
   }
 
-  const ageWomen = (arguments.length === 2) ? people
+  const avalTrue = people
     .filter(person => person.sex === 'f'
-  && checkAvailability(peopleList, person.name))
-    .map(person => person.died - person.born) : people
-    .filter(person => person.sex === 'f')
+&& checkAvailability(peopleList, person.name));
+
+  const avalFalse = people
+    .filter(person => person.sex === 'f');
+
+  const ageWomen = (arguments.length === 2) ? avalTrue
+    .map(person => person.died - person.born) : avalFalse
     .map(person => person.died - person.born);
 
   return ageWomen.reduce((sum, age) => sum + age) / ageWomen.length;
@@ -78,17 +91,21 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let diffEach;
 
+  const man = people.filter(({ mother, sex }) => sex === 'm'
+  && people.find(({ name }) => (
+    (mother === name))));
+
+  const everyone = people.filter(({ mother }) => people.find(({ name }) => (
+    (mother === name))));
+
   if (arguments.length === 2) {
-    diffEach = people.filter(({ mother, sex }) => sex === 'm'
-    && people.find(({ name }) => (
-      (mother === name)))).map(son => {
+    diffEach = man.map(son => {
       const motherOb = people.find(mom => mom.name === son.mother);
 
       return son.born - motherOb.born;
     });
   } else {
-    diffEach = people.filter(({ mother }) => people.find(({ name }) => (
-      (mother === name)))).map(child => {
+    diffEach = everyone.map(child => {
       const motherOb = people.find(mom => mom.name === child.mother);
 
       return child.born - motherOb.born;
