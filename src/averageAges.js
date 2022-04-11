@@ -27,20 +27,21 @@ function ageAvarage(number, divValue) {
   return Number((number / divValue).toFixed(2));
 }
 
+function ageDiff(averageAge) {
+  return averageAge.reduce(
+    (total, person) => total + (person.died - person.born), 0);
+}
+
 function calculateMenAverageAge(people, century) {
   let menAverageAge = filterSex(people, 'm');
 
-  if (century) {
-    menAverageAge = menAverageAge.filter(
-      person => Math.ceil(person.died / 100) === century
-    );
-  }
-
-  const totalAge = menAverageAge.reduce(
-    (total, person) => total + (person.died - person.born), 0
+  menAverageAge = menAverageAge.filter(
+    person => (century)
+      ? Math.ceil(person.died / 100) === century
+      : menAverageAge
   );
 
-  return ageAvarage(totalAge, menAverageAge.length);
+  return ageAvarage(ageDiff(menAverageAge), menAverageAge.length);
 };
 
 /**
@@ -61,16 +62,13 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let womanAverageAge = filterSex(people, 'f');
 
-  if (withChildren) {
-    womanAverageAge = womanAverageAge.filter(
-      person => people.some(child => child.mother === person.name));
-  }
-
-  const totalAgeWoman = womanAverageAge.reduce(
-    (sum, person) => sum + (person.died - person.born), 0
+  womanAverageAge = womanAverageAge.filter(
+    person => (withChildren)
+      ? people.some(child => child.mother === person.name)
+      : womanAverageAge
   );
 
-  return ageAvarage(totalAgeWoman, womanAverageAge.length);
+  return ageAvarage(ageDiff(womanAverageAge), womanAverageAge.length);
 }
 
 /**
@@ -93,12 +91,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(person => people.some(child => child.mother === person.name));
   const DiffMotherChild = [];
 
-  haveMothers.forEach(mother => {
+  haveMothers.map(mother => {
     const children = people.filter(child => (onlyWithSon)
       ? child.mother === mother.name && child.sex === 'm'
       : child.mother === mother.name);
 
-    children.forEach(child =>
+    children.map(child =>
       DiffMotherChild.push(child.born - mother.born));
   });
 
