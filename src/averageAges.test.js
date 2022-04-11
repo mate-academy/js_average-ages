@@ -5,7 +5,7 @@ const {
   calculateMenAverageAge,
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
-} = require('./averageAges');
+} = require('./averageAges.js');
 
 test('Average men age', () => {
   expect(calculateMenAverageAge(people))

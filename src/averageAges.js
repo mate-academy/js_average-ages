@@ -15,12 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let man = people.filter(({ sex }) => sex === 'm');
-
-  if (century !== undefined) {
-    man = people.filter(({ sex, died }) =>
+  const man = (century === undefined) ? people.filter(({ sex }) => sex === 'm')
+    : people.filter(({ sex, died }) =>
       sex === 'm' && Math.ceil(died / 100) === century);
-  }
 
   const age = man.map(({ born, died }) => died - born);
   const sumOfAge = age.reduce((prev, current) => prev + current, 0);
@@ -44,19 +41,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(({ sex }) => sex === 'f');
-  const womenWithChildren = [];
-  let resultWomen = women;
-
-  if (withChildren !== undefined) {
-    for (const item of women) {
-      const child = people.find(({ mother }) => mother === item.name);
-
-      if (child !== undefined) {
-        womenWithChildren.push(item);
-      }
-    }
-    resultWomen = womenWithChildren;
-  }
+  const resultWomen = (withChildren === undefined) ? women
+    : women.filter(woman =>
+      (people.find(({ mother }) => mother === woman.name)));
 
   const age = resultWomen.map(({ born, died }) => died - born);
   const sumOfAge = age.reduce((prev, current) => prev + current, 0);
@@ -80,19 +67,15 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const women = people.filter(({ sex }) => sex === 'f');
-  const differenceAge = [];
-  const differenceAgeWithSon = [];
-  let resultDifference = differenceAge;
+  const resultDifference = [];
 
-  for (const item of women) {
-    const children = people.filter(({ mother }) => mother === item.name);
+  for (const woman of women) {
+    const children = people.filter(({ mother }) => mother === woman.name);
 
     for (const child of children) {
-      if (onlyWithSon !== undefined && child.sex === 'm') {
-        differenceAgeWithSon.push(child.born - item.born);
-        resultDifference = differenceAgeWithSon;
+      if (!onlyWithSon || child.sex === 'm') {
+        resultDifference.push(child.born - woman.born);
       }
-      differenceAge.push(child.born - item.born);
     }
   }
 
