@@ -1,5 +1,41 @@
 'use strict';
 
+function calculateAvrg(peoples) {
+  return peoples.map(person =>
+    person.died - person.born).reduce((x, y) => x + y) / peoples.length;
+}
+
+function sexFilter(peoples, sex) {
+  return peoples.filter(person =>
+    person.sex === sex);
+}
+
+function centuryFilter(peoples, century) {
+  return peoples.filter(person =>
+    Math.ceil(person.died / 100) === century);
+}
+
+function hasChild(peoples, parentType) {
+  return peoples.filter(parent =>
+    peoples.some(child =>
+      child[parentType] === parent.name));
+}
+
+function hasParent(peoples, parents, parentType) {
+  return peoples.filter(child =>
+    parents.some(parent =>
+      child[parentType] === parent.name));
+}
+
+function calculateDiff(peoples, theirChildrens, parentType) {
+  const result = theirChildrens.map(child =>
+    child.born - peoples.find(parent =>
+      parent.name === child[parentType]).born).reduce((x, y) =>
+    x + y) / theirChildrens.length;
+
+  return result;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +51,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menOnly = sexFilter(people, 'm');
+
+  return century
+    ? calculateAvrg(centuryFilter(menOnly, century))
+    : calculateAvrg(menOnly);
 }
 
 /**
@@ -37,7 +73,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenOnly = sexFilter(people, 'f');
+
+  return withChildren
+    ? calculateAvrg(hasChild(people, 'mother'))
+    : calculateAvrg(womenOnly);
 }
 
 /**
@@ -55,7 +95,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const parentType = 'mother';
+  const parents = hasChild(people, parentType);
+  const childrens = hasParent(people, parents, parentType);
+
+  return onlyWithSon
+    ? calculateDiff(parents, sexFilter(childrens, 'm'), parentType)
+    : calculateDiff(parents, childrens, parentType);
 }
 
 module.exports = {
