@@ -52,10 +52,9 @@ function calculateDiff(peoples, theirChildrens, parentType) {
  */
 function calculateMenAverageAge(people, century) {
   const menOnly = sexFilter(people, 'm');
-  const menCentury = centuryFilter(menOnly, century);
 
   return century
-    ? calculateAvrg(menCentury)
+    ? calculateAvrg(centuryFilter(menOnly, century))
     : calculateAvrg(menOnly);
 }
 
@@ -75,10 +74,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenOnly = sexFilter(people, 'f');
-  const womenWithChild = hasChild(people, 'mother');
 
   return withChildren
-    ? calculateAvrg(womenWithChild)
+    ? calculateAvrg(hasChild(people, 'mother'))
     : calculateAvrg(womenOnly);
 }
 
@@ -100,10 +98,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const parentType = 'mother';
   const parents = hasChild(people, parentType);
   const childrens = hasParent(people, parents, parentType);
-  const childrenFilter = sexFilter(childrens, 'm');
 
   return onlyWithSon
-    ? calculateDiff(parents, childrenFilter, parentType)
+    ? calculateDiff(parents, sexFilter(childrens, 'm'), parentType)
     : calculateDiff(parents, childrens, parentType);
 }
 
