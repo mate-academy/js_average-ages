@@ -24,9 +24,12 @@ function calculateMenAverageAge(people, century) {
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
   const getAge = getMen.map(person => person.died - person.born);
-  const averageAge = getAge.reduce((sum, age) => sum + age, 0) / getMen.length;
 
-  return averageAge;
+  return average(getAge);
+}
+
+function average(arr) {
+  return arr.reduce((sum, num) => sum + num, 0) / arr.length;
 }
 
 /**
@@ -49,10 +52,8 @@ function calculateWomenAverageAge(people, withChildren) {
     ? people.some(one => one.mother === person.name)
     : person.sex === 'f');
   const getAge = getWomen.map(person => person.died - person.born);
-  const averageAge = getAge.reduce((sum, age) => sum + age, 0)
-    / getWomen.length;
 
-  return averageAge;
+  return average(getAge);
 }
 
 /**
@@ -83,11 +84,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     children.forEach(child => agesDiffWithChild.push(child.born - mother.born));
   });
 
-  const averageAgeDiff = agesDiffWithChild
-    .reduce((sum, age) => sum + age, 0)
-    / agesDiffWithChild.length;
-
-  return averageAgeDiff;
+  return average(agesDiffWithChild);
 }
 
 module.exports = {
