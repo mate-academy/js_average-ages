@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,14 +13,23 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+
+function avgCalc(arr) {
+  return arr.reduce((prev, current) => prev + current) / arr.length;
 }
 
+function calculateMenAverageAge(people, century) {
+  const menArr = people.filter(element =>
+    century
+      ? element.sex === 'm'
+     && Math.ceil(element.died / 100) === century
+      : element.sex === 'm'
+  );
+
+  const age = menArr.map(element => element.died - element.born);
+
+  return avgCalc(age);
+}
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,8 +44,18 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArr = people.filter(element =>
+    withChildren
+      ? people.some(child => child.mother === element.name
+      && element.sex === 'f')
+      : element.sex === 'f'
+  );
+
+  const age = womenArr.map(element => element.died - element.born);
+
+  return avgCalc(age);
 }
 
 /**
@@ -55,7 +73,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenArr = people.filter(element =>
+    element.sex === 'f' && people.some(child =>
+      child.mother === element.name)
+  );
+
+  const childrenArr = people.filter(element =>
+    onlyWithSon
+      ? element.sex === 'm'
+      && people.some(mother => element.mother === mother.name)
+      : people.some(mother => element.mother === mother.name)
+  );
+
+  const dif = childrenArr.map(element =>
+    element.born - womenArr.find(mother =>
+      element.mother === mother.name).born
+  );
+
+  return avgCalc(dif);
 }
 
 module.exports = {
