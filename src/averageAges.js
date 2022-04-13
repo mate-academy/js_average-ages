@@ -1,22 +1,5 @@
 'use strict';
 
-function getChildren(arr, motherName) {
-  return arr
-    .filter(({ mother }) => {
-      return motherName
-        ? mother === motherName
-        : typeof mother === 'string';
-    });
-}
-
-function getMothers(arr) {
-  const children = getChildren(arr);
-  const motherNames = children.map(({ mother }) => mother);
-
-  return arr
-    .filter(({ name }) => motherNames.indexOf(name) !== -1);
-}
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -64,13 +47,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let mothers;
+  const women = people.filter(person => withChildren
+    ? people.some(human => human.mother === person.name)
+    : person.sex === 'f');
 
-  withChildren
-    ? mothers = getMothers(people)
-    : mothers = people.filter((ind) => ind.sex === 'f');
-
-  const womenAge = mothers
+  const womenAge = women
     .map(year => (
       year.died - year.born
     ));
