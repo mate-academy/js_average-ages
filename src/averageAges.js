@@ -20,8 +20,8 @@ function calculateMenAverageAge(people, century) {
     : person.sex === 'm'
   );
 
-  return men.map((age) => age.died - age.born)
-    .reduce((sum, age) => sum + age) / men.length;
+  return men.map((age) => (
+    (age.died - age.born))).reduce((sum, age) => sum + age) / men.length;
 }
 
 /**
@@ -44,8 +44,8 @@ function calculateWomenAverageAge(people, withChildren) {
     : person.sex === 'f'
   );
 
-  return women.map((age) => age.died - age.born)
-    .reduce((sum, age) => sum + age) / women.length;
+  return women.map((age) => (
+    (age.died - age.born))).reduce((sum, age) => sum + age) / women.length;
 }
 
 /**
