@@ -7,32 +7,32 @@ const {
   calculateAverageAgeDiff,
 } = require('./averageAges');
 
-test.only('Average men age', () => {
+test('Average men age', () => {
   expect(calculateMenAverageAge(people))
     .toBeCloseTo(61.67, 2);
 });
 
-test.only('Average men age in 18 century', () => {
+test('Average men age in 18 century', () => {
   expect(calculateMenAverageAge(people, 18))
     .toBeCloseTo(56.50, 2);
 });
 
-test.only('Average women age', () => {
+test('Average women age', () => {
   expect(calculateWomenAverageAge(people))
     .toBeCloseTo(54.56, 2);
 });
 
-test.only('Average mothers age', () => {
+test('Average mothers age', () => {
   expect(calculateWomenAverageAge(people, true))
     .toBeCloseTo(54.15, 2);
 });
 
-test.only('Average age difference', () => {
+test('Average age difference', () => {
   expect(calculateAverageAgeDiff(people))
     .toBeCloseTo(31.22, 2);
 });
 
-test.only('Average age difference with son', () => {
+test('Average age difference with son', () => {
   expect(calculateAverageAgeDiff(people, true))
     .toBeCloseTo(30.08, 2);
 });
