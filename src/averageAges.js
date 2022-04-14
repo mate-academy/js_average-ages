@@ -14,14 +14,24 @@
  *
  * @return {number}
  */
+function average(arr) {
+  return arr.reduce((prev, curr) =>
+    prev + curr, 0) / arr.length;
+}
+
+function averageAge(arr) {
+  return arr.reduce((prev, curr) =>
+    prev + (curr.died - curr.born), 0) / arr.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  const onlyMen = people.filter(person =>
-    person.sex === 'm'
-    && ((century) ? century === Math.ceil(person.died / 100) : true)
+  const onlyMen = people.filter(person => person.sex === 'm'
+    && ((century)
+      ? century === Math.ceil(person.died / 100)
+      : true)
   );
 
-  return onlyMen.reduce((prev, curr) =>
-    prev + (curr.died - curr.born), 0) / onlyMen.length;
+  return averageAge(onlyMen);
 }
 
 /**
@@ -44,11 +54,12 @@ function isMother(people, nameMother) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const onlyWomen = people.filter(person => person.sex === 'f'
-    && ((withChildren) ? isMother(people, person.name) : true)
+    && ((withChildren)
+      ? isMother(people, person.name)
+      : true)
   );
 
-  return onlyWomen.reduce((prev, curr) =>
-    prev + (curr.died - curr.born), 0) / onlyWomen.length;
+  return averageAge(onlyWomen);
 }
 
 /**
@@ -70,16 +81,17 @@ function findMother(people, nameMother) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const array = (onlyWithSon)
-    ? people.filter(person => person.sex === 'm') : people;
+  const allPeopleOrMen = (onlyWithSon)
+    ? people.filter(person => person.sex === 'm')
+    : people;
 
-  const diff = array.map(person => {
+  const diffAge = allPeopleOrMen.map(person => {
     const mother = { ...findMother(people, person.mother) };
 
     return person.born - mother.born;
   }).filter(number => !isNaN(number));
 
-  return diff.reduce((prev, curr) => prev + curr, 0) / diff.length;
+  return average(diffAge);
 }
 
 module.exports = {
