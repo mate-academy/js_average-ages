@@ -18,9 +18,9 @@ function calculateMenAverageAge(people, century) {
   let sumOfAges = 0;
   let countOfMens = 0;
 
-  people.forEach(e => {
-    const ifCentury = (Math.ceil(e.died / 100) === century || !century);
-    const menAge = e.sex === 'm' && ifCentury ? e.died - e.born : 0;
+  people.forEach(human => {
+    const ifCentury = (Math.ceil(human.died / 100) === century || !century);
+    const menAge = human.sex === 'm' && ifCentury ? human.died - human.born : 0;
 
     sumOfAges += menAge;
     countOfMens = menAge !== 0 ? countOfMens + 1 : countOfMens;
@@ -47,9 +47,11 @@ function calculateWomenAverageAge(people, withChildren) {
   let sumOfAges = 0;
   let countOfWomen = 0;
 
-  people.forEach((e, i, arr) => {
-    const isMother = !withChildren || arr.some(el => e.name === el.mother);
-    const womenAge = e.sex === 'f' && isMother ? e.died - e.born : 0;
+  people.forEach((human, i, arr) => {
+    const isMother = !withChildren
+    || arr.some(child => human.name === child.mother);
+    const womenAge = human.sex === 'f'
+    && isMother ? human.died - human.born : 0;
 
     sumOfAges += womenAge;
     countOfWomen = womenAge !== 0 ? countOfWomen + 1 : countOfWomen;
