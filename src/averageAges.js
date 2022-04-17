@@ -42,29 +42,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 
-function findChildren(arrayWithPeople) {
-  const children = arrayWithPeople.filter(person => person.mother);
-
-  return children;
-};
-
-function findMother(arrayWithPeople) {
-  const children = findChildren(arrayWithPeople);
-  const mothersNames = children.map(person => person.mother);
-  const mothersWithChildren = arrayWithPeople
-    .filter(person => mothersNames.indexOf(person.name) !== -1);
-
-  return mothersWithChildren;
-};
-
 function calculateWomenAverageAge(people, withChildren) {
-  let womens;
+  const women = people.filter(person => withChildren
+    ? people.some(human => human.mother === person.name)
+    : person.sex === 'f');
 
-  withChildren
-    ? womens = findMother(people)
-    : womens = people.filter(person => person.sex === 'f');
-
-  const womensAges = womens.map(person => person.died - person.born);
+  const womensAges = women.map(person => person.died - person.born);
   const average = womensAges
     .reduce((prev, curr) => prev + curr, 0) / womensAges.length;
 
@@ -85,25 +68,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function isChildsMother(people, nameMother) {
-  return people.find(person => person.name === nameMother);
-}
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let isOnlyWithSon;
+  const children = onlyWithSon
+    ? people.filter(person =>
+      people.some(mother =>
+        mother.name === person.mother && person.sex === 'm'))
+    : people.filter(person =>
+      people.some(mother =>
+        mother.name === person.mother));
 
-  onlyWithSon
-    ? isOnlyWithSon = people.filter(person => person.sex === 'm')
-    : isOnlyWithSon = people;
-
-  const difference = isOnlyWithSon.map(person => {
-    const mother = { ...isChildsMother(people, person.mother) };
+  const ages = children.map(person => {
+    const mother = people.find(moth => person.mother === moth.name);
 
     return person.born - mother.born;
-  }).filter(number => !isNaN(number));
+  });
 
-  const average = difference
-    .reduce((prev, curr) => prev + curr, 0) / difference.length;
+  const average = ages
+    .reduce((prev, curr) => prev + curr, 0) / ages.length;
 
   return average;
 }
