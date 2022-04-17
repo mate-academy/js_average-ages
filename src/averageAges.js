@@ -15,20 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(x => x.sex === 'm');
-
-  if (century !== undefined) {
-    men = men.filter(x => Math.ceil(x.died / 100) === century);
-  }
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm');
 
   const ageArr = men.map(x => x.died - x.born);
 
   return ageArr.reduce((a, b) => a + b) / ageArr.length;
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
 }
 
 /**
@@ -46,12 +39,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(wom => wom.sex === 'f');
-
-  if (withChildren !== undefined) {
-    women = people.filter(wom => wom.sex === 'f'
-     && people.some(kid => kid.mother === wom.name));
-  }
+  const women = people.filter(wom => withChildren
+    ? wom.sex === 'f'
+    && people.some(kid => kid.mother === wom.name)
+    : wom.sex === 'f');
 
   const ageArr = women.map(wom => wom.died - wom.born);
 
@@ -74,31 +65,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const womenWhihCh = people.filter(wom => wom.sex === 'f'
-     && people.some(kid => kid.mother === wom.name));
+  const personsWhihMother = people.filter(person => onlyWithSon
+    ? person.sex === 'm' && people.some(wom => wom.name === person.mother)
+    : people.some(wom => wom.name === person.mother));
 
-  const difAge = [];
+  const difAge = personsWhihMother.map(person => {
+    const mother = people.find(wom => person.mother === wom.name);
 
-  if (onlyWithSon !== undefined) {
-    for (let i = 0; i < womenWhihCh.length; i++) {
-      for (let x = 0; x < people.length; x++) {
-        if (womenWhihCh[i].name === people[x].mother
-          && people[x].sex === 'm') {
-          difAge.push(people[x].born - womenWhihCh[i].born);
-        }
-      }
-    }
-  }
-
-  if (onlyWithSon === undefined) {
-    for (let i = 0; i < womenWhihCh.length; i++) {
-      for (let x = 0; x < people.length; x++) {
-        if (womenWhihCh[i].name === people[x].mother) {
-          difAge.push(people[x].born - womenWhihCh[i].born);
-        }
-      }
-    }
-  }
+    return person.born - mother.born;
+  });
 
   const result = difAge.reduce((a, b) => a + b) / difAge.length;
 
