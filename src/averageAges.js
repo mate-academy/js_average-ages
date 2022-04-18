@@ -8,12 +8,17 @@
  *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
+ **
  *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
+function calculateResult(ageArr) {
+  return ageArr.reduce((sum, age) => sum + age, 0) / ageArr.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
@@ -21,7 +26,7 @@ function calculateMenAverageAge(people, century) {
 
   const ageArr = men.map(x => x.died - x.born);
 
-  return ageArr.reduce((a, b) => a + b) / ageArr.length;
+  return calculateResult(ageArr);
 }
 
 /**
@@ -46,8 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const ageArr = women.map(wom => wom.died - wom.born);
 
-  return ageArr.reduce((a, b) => a + b) / ageArr.length;
-  // write code here
+  return calculateResult(ageArr);
 }
 
 /**
@@ -75,9 +79,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return person.born - mother.born;
   });
 
-  const result = difAge.reduce((a, b) => a + b) / difAge.length;
-
-  return result;
+  return calculateResult(difAge);
 }
 
 module.exports = {
