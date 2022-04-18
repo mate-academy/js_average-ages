@@ -14,12 +14,15 @@
  *
  * @return {number}
  */
-
-function calculateMenAverageAge(people, century) {
-  const mans = people.filter(person => century
-    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+function isMan(array, condition) {
+  return array.filter(person => condition
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === condition
     : person.sex === 'm'
   );
+}
+
+function calculateMenAverageAge(people, century) {
+  const mans = isMan(people, century);
 
   const ages = mans.map(person => person.died - person.born);
   const average = ages.reduce((prev, next) => prev + next, 0) / ages.length;
@@ -42,10 +45,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 
+function isWomen(array, condition) {
+  return array.filter(person => condition
+    ? array.some(human => human.mother === person.name)
+    : person.sex === 'f'
+  );
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => withChildren
-    ? people.some(human => human.mother === person.name)
-    : person.sex === 'f');
+  const women = isWomen(people, withChildren);
 
   const womensAges = women.map(person => person.died - person.born);
   const average = womensAges
@@ -69,14 +77,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = onlyWithSon
-    ? people.filter(person =>
-      people.some(mother =>
+function isOnlyWithSon(array, condition) {
+  return condition
+    ? array.filter(person =>
+      array.some(mother =>
         mother.name === person.mother && person.sex === 'm'))
-    : people.filter(person =>
-      people.some(mother =>
-        mother.name === person.mother));
+    : array.filter(person =>
+      array.some(mother =>
+        mother.name === person.mother)
+    );
+}
+
+function calculateAverageAgeDiff(people, onlyWithSon) {
+  const children = isOnlyWithSon(people, onlyWithSon);
 
   const ages = children.map(person => {
     const mother = people.find(moth => person.mother === moth.name);
