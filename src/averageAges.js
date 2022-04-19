@@ -1,5 +1,11 @@
 'use strict';
 
+function filterSex(people, sex) {
+  return people.filter(el => {
+    return el.sex === sex;
+  });
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +21,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredGender = filterSex(people, 'm').filter(el => {
+    return century ? Math.ceil((el.died + 1) / 100) === century : true;
+  });
+
+  const result = filteredGender.reduce((sum, x) => sum + x.died - x.born, 0);
+  const average = result / filteredGender.length;
+
+  return +average.toFixed(2);
 }
 
 /**
@@ -37,7 +46,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let filteredGender = filterSex(people, 'f');
+
+  if (withChildren) {
+    filteredGender = filteredGender.filter(mother => {
+      return !!people.find(child => {
+        return child.mother === mother.name;
+      });
+    });
+  }
+
+  const result = filteredGender.reduce((sum, x) => sum + x.died - x.born, 0);
+  const average = result / filteredGender.length;
+
+  return +average.toFixed(2);
 }
 
 /**
@@ -55,7 +77,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let filteredPeople = people.filter(child => {
+    return !!people.find(person => {
+      return person.name === child.mother;
+    });
+  });
+
+  if (onlyWithSon) {
+    filteredPeople = filterSex(filteredPeople, 'm');
+  }
+
+  filteredPeople.map(child => {
+    const mother = people.find(person => {
+      return person.name === child.mother;
+    });
+
+    child.bornAge = child.born - mother.born;
+  });
+
+  const result = filteredPeople.reduce((sum, x) => sum + x.bornAge, 0);
+  const average = result / filteredPeople.length;
+
+  return +average.toFixed(2);
 }
 
 module.exports = {
