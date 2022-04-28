@@ -15,11 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const allMen = !century ? people.filter(person => {
-    return person.sex === 'm';
-  }) : people.filter(person => {
-    return Math.ceil(person.died / 100) === century && person.sex === 'm';
-  });
+  const allMen = century
+    ? people.filter(person => (
+      Math.ceil(person.died / 100) === century && person.sex === 'm'))
+    : people.filter(person => person.sex === 'm');
 
   const result = allMen.reduce((sum, person) => {
     return sum + (person.died - person.born);
@@ -43,13 +42,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const allWomen = !withChildren ? people.filter(person => {
-    return person.sex === 'f';
-  }) : people.filter(person => {
-    return person.sex === 'f' && people.some(chaild => {
-      return chaild.mother === person.name;
-    });
-  });
+  const allWomen = withChildren
+    ? people.filter(person => (
+      person.sex === 'f' && people.some(chaild => (
+        chaild.mother === person.name))))
+    : people.filter(person => person.sex === 'f');
 
   const result = allWomen.reduce((sum, person) => {
     return sum + (person.died - person.born);
@@ -73,11 +70,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = !onlyWithSon ? people.filter(kid => {
-    return people.some(mother => kid.mother === mother.name);
-  }) : people.filter(kid => {
-    return kid.sex === 'm' && people.some(mother => kid.mother === mother.name);
-  });
+  const children = onlyWithSon
+    ? people.filter(kid => (
+      kid.sex === 'm' && people.some(mother => (
+        kid.mother === mother.name))))
+    : people.filter(kid => (
+      people.some(mother => kid.mother === mother.name)));
 
   const result = children.reduce((sum, chaild) => {
     const motherOfChaild = people.find(mom => chaild.mother === mom.name);
