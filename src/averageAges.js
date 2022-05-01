@@ -20,6 +20,42 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let result = 0;
+  let summBirthDate = 0;
+  let summDeathDate = 0;
+  const man = people.filter(el => (el.sex === 'm'));
+
+  switch (arguments.length) {
+    case 0: {
+      return 0;
+    }
+
+    case 1: {
+      man.forEach(e => {
+        summBirthDate += e.born;
+        summDeathDate += e.died;
+      });
+
+      result = (summDeathDate - summBirthDate) / man.length;
+
+      return result;
+    }
+
+    case 2: {
+      const centuryMan = man.filter(
+        el => (Math.ceil(el.died / 100) === century)
+      );
+
+      centuryMan.forEach(e => {
+        summBirthDate += e.born;
+        summDeathDate += e.died;
+      });
+
+      result = (summDeathDate - summBirthDate) / centuryMan.length;
+
+      return result;
+    }
+  }
 }
 
 /**
@@ -38,6 +74,43 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let result = 0;
+  let summBirthDate = 0;
+  let summDeathDate = 0;
+  let count = 0;
+  const woman = people.filter(el => (el.sex === 'f'));
+
+  switch (arguments.length) {
+    case 0: {
+      return 0;
+    }
+
+    case 1: {
+      woman.forEach(e => {
+        summBirthDate += e.born;
+        summDeathDate += e.died;
+      });
+
+      result = (summDeathDate - summBirthDate) / woman.length;
+
+      return result;
+    }
+
+    case 2: {
+      woman.forEach(e => {
+        const isMother = people.find(el => e.name === el.mother);
+
+        if (isMother !== undefined) {
+          summBirthDate += e.born;
+          summDeathDate += e.died;
+          count++;
+        }
+      });
+      result = (summDeathDate - summBirthDate) / count;
+
+      return result;
+    }
+  }
 }
 
 /**
@@ -56,6 +129,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  // const result = 0;
 }
 
 module.exports = {
