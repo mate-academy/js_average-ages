@@ -21,8 +21,7 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   let result = 0;
-  let summBirthDate = 0;
-  let summDeathDate = 0;
+  const avAge = 0;
   const man = people.filter(el => (el.sex === 'm'));
 
   switch (arguments.length) {
@@ -31,8 +30,6 @@ function calculateMenAverageAge(people, century) {
     }
 
     case 1: {
-      const avAge = 0;
-
       result = man.reduce(
         (accum, curr) => accum + (curr.died - curr.born),
         avAge);
@@ -47,12 +44,11 @@ function calculateMenAverageAge(people, century) {
         el => (Math.ceil(el.died / 100) === century)
       );
 
-      centuryMan.forEach(e => {
-        summBirthDate += e.born;
-        summDeathDate += e.died;
-      });
+      result = centuryMan.reduce(
+        (accum, curr) => accum + (curr.died - curr.born),
+        avAge);
 
-      result = (summDeathDate - summBirthDate) / centuryMan.length;
+      result /= centuryMan.length;
 
       return result;
     }
@@ -73,12 +69,11 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   let result = 0;
-  let summBirthDate = 0;
-  let summDeathDate = 0;
-  let count = 0;
+  const avAge = 0;
   const woman = people.filter(el => (el.sex === 'f'));
 
   switch (arguments.length) {
@@ -87,27 +82,28 @@ function calculateWomenAverageAge(people, withChildren) {
     }
 
     case 1: {
-      woman.forEach(e => {
-        summBirthDate += e.born;
-        summDeathDate += e.died;
-      });
+      result = woman.reduce(
+        (accum, curr) => accum + (curr.died - curr.born),
+        avAge);
 
-      result = (summDeathDate - summBirthDate) / woman.length;
+      result /= woman.length;
 
       return result;
     }
 
     case 2: {
-      woman.forEach(e => {
-        const isMother = people.find(el => e.name === el.mother);
+      const a = function isMother(e) {
+        const motherCheck = people.find(el => e.name === el.mother);
 
-        if (isMother !== undefined) {
-          summBirthDate += e.born;
-          summDeathDate += e.died;
-          count++;
-        }
-      });
-      result = (summDeathDate - summBirthDate) / count;
+        return motherCheck !== undefined;
+      };
+      const mothers = woman.filter(a, people);
+
+      result = mothers.reduce(
+        (accum, curr) => accum + (curr.died - curr.born),
+        avAge);
+
+      result /= mothers.length;
 
       return result;
     }
