@@ -31,12 +31,13 @@ function calculateMenAverageAge(people, century) {
     }
 
     case 1: {
-      man.forEach(e => {
-        summBirthDate += e.born;
-        summDeathDate += e.died;
-      });
+      const avAge = 0;
 
-      result = (summDeathDate - summBirthDate) / man.length;
+      result = man.reduce(
+        (accum, curr) => accum + (curr.died - curr.born),
+        avAge);
+
+      result /= man.length;
 
       return result;
     }
