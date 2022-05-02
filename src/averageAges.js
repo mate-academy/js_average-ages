@@ -20,6 +20,23 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let averMenAges = 0;
+  const men = people.filter(value => value.sex === 'm');
+  let filteredMen = [];
+
+  century
+    ? filteredMen = men.filter(value => Math.ceil(value.died / 100) === century)
+    : filteredMen = men;
+
+  const menLifeDuration = filteredMen.map(value => value.died - value.born);
+
+  const sumAges = menLifeDuration.reduce(
+    (prevVal, currVal) =>
+      prevVal + currVal);
+
+  averMenAges = sumAges / filteredMen.length;
+
+  return averMenAges;
 }
 
 /**
@@ -38,6 +55,25 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let averWomenAges = 0;
+  const women = people.filter(value => value.sex === 'f');
+  let womenFilterd = [];
+
+  withChildren
+    ? womenFilterd = women.filter(value =>
+      people.find(value2 =>
+        value2.mother === value.name))
+    : womenFilterd = women;
+
+  const womenLifeDuration = womenFilterd.map(value => value.died - value.born);
+
+  const sumAges = womenLifeDuration.reduce(
+    (prevVal, currVal) =>
+      prevVal + currVal);
+
+  averWomenAges = sumAges / womenFilterd.length;
+
+  return averWomenAges;
 }
 
 /**
@@ -56,6 +92,29 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  let theAverDiffAge = 0;
+  // Detect all children who have data about thier mother
+  const children = people.filter(value =>
+    people.find(value2 =>
+      value2.name === value.mother));
+  let childrenToCalc = [];
+
+  onlyWithSon
+    ? childrenToCalc = children.filter(value =>
+      value.sex === 'm') // only sons/boys
+    : childrenToCalc = children;
+
+  const ageDiff = childrenToCalc.map(value =>
+    value.born
+    - people[people.findIndex(value2 => value2.name === value.mother)].born);
+
+  const sumAges = ageDiff.reduce(
+    (prevVal, currVal) =>
+      prevVal + currVal);
+
+  theAverDiffAge = sumAges / childrenToCalc.length;
+
+  return theAverDiffAge;
 }
 
 module.exports = {
