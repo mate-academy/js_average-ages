@@ -15,16 +15,16 @@
  * @return {number}
  */
 
-const isMale = person => person.sex === 'm';
+const isMale = (person) => person.sex === 'm';
 
-const calculateAge = person => person.died - person.born;
+const calculateAge = (person) => person.died - person.born;
 
-const calculateAverageAge = ages =>
+const calculateAverageAge = (ages) =>
   ages.reduce((age1, age2) => age1 + age2) / ages.length;
 
 const isMother = (child, mother) => child.mother === mother.name;
 
-const roundAges = age => Math.round(age * 100) / 100;
+const roundAges = (age) => Math.round(age * 100) / 100;
 
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => isMale(person));
