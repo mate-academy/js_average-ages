@@ -15,16 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const arrMan = people.filter(a => a.sex === 'm');
-  const arrManCen = arrMan.filter(a => Math.ceil(a.died / 100) === century);
+  const allMan = people.filter(element => element.sex === 'm');
+  const ManOfCentury = allMan.filter(a => Math.ceil(a.died / 100) === century);
+
+  function computedAge(man) {
+    return man
+      .map(element => element.died - element.born)
+      .reduce((accumulator, current) => accumulator + current, 0) / man.length;
+  }
 
   return century
-    ? arrManCen
-      .map(a => a.died - a.born)
-      .reduce((a, x) => a + x, 0) / arrManCen.length
-    : arrMan
-      .map(a => a.died - a.born)
-      .reduce((a, x) => a + x, 0) / arrMan.length;
+    ? computedAge(ManOfCentury)
+    : computedAge(allMan);
 }
 
 /**
@@ -42,12 +44,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const arrWo = people.filter(a => withChildren
-    ? a.sex === 'f' && people.some(b => b.mother === a.name)
-    : a.sex === 'f');
+  const amountWoman = people.filter(element => withChildren
+    ? element.sex === 'f' && people.some(item => item.mother === element.name)
+    : element.sex === 'f');
 
-  return arrWo.map(a => a.died - a.born)
-    .reduce((a, x) => a + x, 0) / arrWo.length;
+  return amountWoman.map(element => element.died - element.born)
+    .reduce((accumulator, current) => accumulator
+    + current, 0) / amountWoman.length;
 }
 
 /**
@@ -65,17 +68,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const arrManWithMo = people.filter(a => onlyWithSon
-    ? a.sex === 'm' && people.some(b => b.name === a.mother)
-    : people.some(b => b.name === a.mother));
+  const ManWithMother = people.filter(element => onlyWithSon
+    ? element.sex === 'm' && people.some(item => item.name === element.mother)
+    : people.some(item => item.name === element.mother));
 
-  const difAge = arrManWithMo.map(a => {
-    const mother = people.find(b => a.mother === b.name);
+  const difAge = ManWithMother.map(element => {
+    const mother = people.find(item => element.mother === item.name);
 
-    return a.born - mother.born;
+    return element.born - mother.born;
   });
 
-  return difAge.reduce((a, x) => a + x, 0) / difAge.length;
+  return difAge
+    .reduce((accumulator, current) => accumulator
+    + current, 0) / difAge.length;
 }
 
 module.exports = {
