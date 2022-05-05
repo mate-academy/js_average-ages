@@ -5,6 +5,8 @@ const turnToCentury = deathDate => Math.ceil(deathDate / 100);
 const calculateAge = person => person.died - person.born;
 const calculateTotalAgeOfGroup = (sum, person) => sum + person;
 const takeAverage = value => Math.round(value * 100) / 100;
+const isFemale = person => person.sex === 'f';
+const isMother = (mother, child) => mother.name === child.mother;
 
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
@@ -20,9 +22,6 @@ function calculateMenAverageAge(people, century) {
 
   return averageAge;
 }
-
-const isFemale = person => person.sex === 'f';
-const isMother = (mother, child) => mother.name === child.mother;
 
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => withChildren
