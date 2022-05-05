@@ -15,15 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const mans = people.filter(man => man.sex === 'm');
-  const centMans = mans.filter(man => Math.ceil(man.died / 100) === century);
+  const mans = century
+    ? people.filter(man => man.sex === 'm'
+      && Math.ceil(man.died / 100) === century)
+    : people.filter(man => man.sex === 'm');
 
-  return century === undefined
-    ? mans.reduce((sum, age) => sum + (age.died - age.born), 0)
-    / mans.length
-
-    : centMans.reduce((sum, age) => sum + (age.died - age.born), 0)
-    / centMans.length;
+  return mans.reduce((sum, age) => sum + (age.died - age.born), 0)
+    / mans.length;
 
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -46,17 +44,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womens = people.filter(women => women.sex === 'f');
-  const mothers = people.filter(mother => {
-    return people.some(child => child.mother === mother.name);
-  });
+  const womens = withChildren
+    ? people.filter(mother => {
+      return people.some(child => child.mother === mother.name);
+    })
+    : people.filter(women => women.sex === 'f');
 
-  return withChildren === undefined
-    ? womens.reduce((sum, age) => sum + (age.died - age.born), 0)
-    / womens.length
-
-    : mothers.reduce((sum, age) => sum + (age.died - age.born), 0)
-    / mothers.length;
+  return womens.reduce((sum, age) => sum + (age.died - age.born), 0)
+    / womens.length;
 }
 
 /**
@@ -83,10 +78,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       && (child.sex === 'm');
   });
 
-  // 1. Find childs (depending on onlyWithSon)
-  // 2. Find needed ages
-  // 3. Calculate avergae age
-
   const childAct = onlyWithSon === undefined
     ? chields
     : chieldsMans;
@@ -98,9 +89,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   });
 
   return (age.reduce((sum, x) => sum + x, 0) / age.length);
-
-  // chield.born - mothers.born
-  //  age. / mothers.lendth
 }
 
 module.exports = {
