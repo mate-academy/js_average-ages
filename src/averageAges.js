@@ -19,8 +19,8 @@ const findAge = person => person.died - person.born;
 const isMale = person => person.sex === 'm';
 const isFemale = person => person.sex === 'f';
 const isMother = (child, mother) => child.mother === mother.name;
-const calculateAvgAge = (dates) => dates.reduce((date1, date2) =>
-  date1 + date2) / dates.length;
+const calculateAvgAge = (age) => age.reduce((age1, age2) =>
+  age1 + age2) / age.length;
 
 function calculateMenAverageAge(people, century) {
   const men = people.filter(man => isMale(man));
