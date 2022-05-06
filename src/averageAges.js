@@ -21,11 +21,11 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const men = people.filter(person => person.sex === 'm');
-  const filteredMen = century
+  const filteredMen = (century
     ? men.filter(man => Math.ceil(man.died / 100) === century)
-    : men;
-  const averageMenAges = filteredMen.reduce((sum, man) =>
-    ((sum + (man.died - man.born))), 0) / filteredMen.length;
+    : men);
+  const averageMenAges = filteredMen.reduce((sum, man) => (
+    (sum + (man.died - man.born))), 0) / filteredMen.length;
 
   return averageMenAges;
 }
@@ -45,12 +45,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = withChildren
+  const women = (withChildren
     ? people.filter(person => person.sex === 'f'
       && people.some(child => child.mother === person.name))
-    : people.filter(person => person.sex === 'f');
-  const averageWomenAges = women.reduce((sum, woman) =>
-    ((sum + (woman.died - woman.born))), 0) / women.length;
+    : people.filter(person => person.sex === 'f'));
+  const averageWomenAges = women.reduce((sum, woman) => (
+    (sum + (woman.died - woman.born))), 0) / women.length;
 
   return averageWomenAges;
 }
@@ -72,11 +72,11 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const onlySons = onlyWithSon;
-  const children = onlySons
-    ? people.filter(child =>
-      people.some(person => child.mother === person.name) && child.sex === 'm')
-    : people.filter(child =>
-      people.some(person => child.mother === person.name));
+  const children = (onlySons
+    ? people.filter(child => (
+      people.some(person => child.mother === person.name) && child.sex === 'm'))
+    : people.filter(child => (
+      people.some(person => child.mother === person.name))));
 
   const mothers = people.filter(person => person.sex === 'f'
       && people.some(child => child.mother === person.name));
