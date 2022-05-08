@@ -9,19 +9,18 @@
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
+ *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const men = people.filter(person => person.sex === 'm');
 
+  return men.map((man) => man.died - man.born)
+    .reduce((a, b) => a + b) / men.length;
+};
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,8 +35,12 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  return women.map((woman) => woman.died - woman.born)
+    .reduce((a, b) => a + b) / women.length;
 }
 
 /**
@@ -56,6 +59,13 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const family = people.filter(person =>
+    people.some(mother => mother.name === person.mother));
+
+  const differenceInAge = family.map(person =>
+    person.born - people.find(mother => mother.name === person.mother).born);
+
+  return differenceInAge.reduce((a, b) => a + b) / differenceInAge.length;
 }
 
 module.exports = {
