@@ -14,12 +14,25 @@
  *
  * @return {number}
  */
+
+const calculateCentury = (person) => Math.ceil(person.died / 100);
+const calculateAge = (person) => person.died - person.born;
+const isMale = (person) => person.sex === 'm';
+const isFemale = (person) => person.sex === 'f';
+const calculateAverageAge = (ages) => ages.reduce(
+  (a, b) => a + b) / ages.length;
+const findMother = (child, mother) => child.mother === mother.name;
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menArray = people.filter(person => isMale(person));
+
+  const filteredMenArray = century
+    ? menArray.filter(man => calculateCentury(man) === century)
+    : menArray;
+
+  const menAgesArray = filteredMenArray.map(man => calculateAge(man));
+
+  return calculateAverageAge(menAgesArray);
 }
 
 /**
@@ -37,7 +50,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArray = people.filter(person => isFemale(person));
+
+  const filteredWomenArray = withChildren
+    ? womenArray.filter(woman => people.find(child =>
+      findMother(child, woman)))
+    : womenArray;
+
+  const womenAgesArray = filteredWomenArray.map(woman => calculateAge(woman));
+
+  return calculateAverageAge(womenAgesArray);
 }
 
 /**
@@ -55,7 +77,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childrenArray = onlyWithSon
+    ? people.filter(child => isMale(child)
+    && people.find(mother => findMother(child, mother)))
+    : people.filter(child =>
+      people.find(mother => findMother(child, mother)));
+
+  const ageDiffArray = childrenArray.map(child =>
+    child.born - people.find(mother => findMother(child, mother)).born);
+
+  return calculateAverageAge(ageDiffArray);
 }
 
 module.exports = {
