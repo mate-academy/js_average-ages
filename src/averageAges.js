@@ -14,27 +14,28 @@
  *
  * @return {number}
  */
+function commonAverageAge(arr) {
+  const avAge = 0;
+
+  return arr.reduce(
+    (accum, curr) => accum + (curr.died - curr.born),
+    avAge);
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const avAge = 0;
   const man = people.filter(el => (el.sex === 'm'));
   const centuryMan = man.filter(
     el => (Math.ceil(el.died / 100) === century)
   );
 
-  const currentList = century ?centuryMan : man;
+  const currentList = century ? centuryMan : man;
 
-  let menAvAge = currentList.reduce(
-    (accum, curr) => accum + (curr.died - curr.born),
-    avAge);
-
-  menAvAge /= currentList.length;
-
-  return menAvAge;
+  return (commonAverageAge(currentList) / currentList.length);
 }
 
 /**
@@ -60,20 +61,12 @@ function calculateWomenAverageAge(people, withChildren) {
     return motherCheck !== undefined;
   }
 
-  let currentList;
-  const avAge = 0;
   const woman = people.filter(el => (el.sex === 'f'));
   const mothers = woman.filter(isMother, woman);
 
-  (withChildren === undefined) ? currentList = woman : currentList = mothers;
+  const currentList = withChildren ? mothers : woman;
 
-  let womanAvAge = currentList.reduce(
-    (accum, curr) => accum + (curr.died - curr.born),
-    avAge);
-
-  womanAvAge /= currentList.length;
-
-  return womanAvAge;
+  return (commonAverageAge(currentList) / currentList.length);
 }
 
 /**
@@ -106,7 +99,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const allSons = people.filter((e) => {
     const a = people.find(el => (e.mother === el.name) && (e.sex === 'm'));
 
-    if (a !== undefined) {
+    if (a) {
       return e;
     }
   });
