@@ -13,9 +13,7 @@ function calculateMenAverageAge(people, century) {
       .map(person => calculateAge(person)) : men.map(person => (
       calculateAge(person)));
 
-  const averageAges = calculateAvgAge(menAges);
-
-  return averageAges;
+  return calculateAvgAge(menAges);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
