@@ -14,6 +14,11 @@
  *
  * @return {number}
  */
+function getAverageAges(humans) {
+  return humans.reduce((sum, human) => (
+    (sum + (human.died - human.born))), 0) / humans.length;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -24,10 +29,8 @@ function calculateMenAverageAge(people, century) {
   const filteredMen = (century
     ? men.filter(man => Math.ceil(man.died / 100) === century)
     : men);
-  const averageMenAges = filteredMen.reduce((sum, man) => (
-    (sum + (man.died - man.born))), 0) / filteredMen.length;
 
-  return averageMenAges;
+  return getAverageAges(filteredMen);
 }
 
 /**
@@ -49,10 +52,8 @@ function calculateWomenAverageAge(people, withChildren) {
     ? people.filter(person => person.sex === 'f'
       && people.some(child => child.mother === person.name))
     : people.filter(person => person.sex === 'f'));
-  const averageWomenAges = women.reduce((sum, woman) => (
-    (sum + (woman.died - woman.born))), 0) / women.length;
 
-  return averageWomenAges;
+  return getAverageAges(women);
 }
 
 /**
