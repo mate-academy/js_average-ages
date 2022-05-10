@@ -14,12 +14,21 @@
  *
  * @return {number}
  */
+function getAverage(folks) {
+  const folksAges = folks.map(person => person.died - person.born);
+
+  const sumOfFolksAges = folksAges.reduce((sum, age) => sum + age, 0);
+
+  return sumOfFolksAges / folksAges.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+
+  const menCentury
+    = men.filter(person => (Math.ceil(person.died / 100)) === century);
+
+  return century ? getAverage(menCentury) : getAverage(men);
 }
 
 /**
@@ -37,7 +46,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  const womenWithChildren
+    = women.filter(woman => {
+      const isMother = people.some(person => person.mother === woman.name);
+
+      return isMother;
+    });
+
+  return withChildren ? getAverage(womenWithChildren) : getAverage(women);
 }
 
 /**
@@ -54,8 +72,35 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childrenWithMom = people.map(person => {
+    const personMom
+      = people.find(folk => person.mother === folk.name);
+
+    return {
+      ...person,
+      mom: personMom,
+    };
+  }).filter(person => {
+    const isChild
+      = people.some(folk => person.mother === folk.name);
+
+    return isChild;
+  });
+
+  const sons = childrenWithMom.filter(child => child.sex === 'm');
+
+  const womenWithChildrenAges
+    = childrenWithMom.map((child) => child.born - child.mom.born)
+      .reduce((sum, age) => sum + age, 0)
+    / childrenWithMom.length;
+
+  const mothersOfSonsAges = sons.map((child) => child.born - child.mom.born)
+    .reduce((sum, age) => sum + age, 0)
+    / sons.length;
+
+  return onlyWithSon ? mothersOfSonsAges : womenWithChildrenAges;
 }
 
 module.exports = {
