@@ -15,24 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let foundMan = [];
-  let yearOfLife = 0;
+  const foundMan = century
+    ? people.filter(man => man.sex === 'm'
+      && Math.ceil(man.died / 100) === century)
+    : people.filter(man => man.sex === 'm');
 
-  if (century) {
-    foundMan = people
-      .filter(man => man.sex === 'm' && Math.ceil(man.died / 100) === century);
-
-    yearOfLife = foundMan
-      .map(year => year.died - year.born)
-      .reduce((a, b) => a + b);
-  } else {
-    foundMan = people
-      .filter(man => man.sex === 'm');
-
-    yearOfLife = foundMan
-      .map(year => year.died - year.born)
-      .reduce((a, b) => a + b);
-  }
+  const yearOfLife = century
+    ? foundMan.map(year => year.died - year.born).reduce((a, b) => a + b)
+    : foundMan.map(year => year.died - year.born).reduce((a, b) => a + b);
 
   return yearOfLife / foundMan.length;
 }
@@ -65,19 +55,20 @@ function calculateWomenAverageAge(people, withChildren) {
     }
   });
 
-  if (withChildren) {
-    yearOfLife = motherWithChildren
+  yearOfLife = withChildren
+    ? motherWithChildren
+      .map(year => year.died - year.born)
+      .reduce((a, b) => a + b)
+
+    : foundWoman
       .map(year => year.died - year.born)
       .reduce((a, b) => a + b);
 
-    return yearOfLife / motherWithChildren.length;
-  } else {
-    yearOfLife = foundWoman
-      .map(year => year.died - year.born)
-      .reduce((a, b) => a + b);
+  const age = withChildren
+    ? yearOfLife / motherWithChildren.length
+    : yearOfLife / foundWoman.length;
 
-    return yearOfLife / foundWoman.length;
-  }
+  return age;
 }
 
 /**
