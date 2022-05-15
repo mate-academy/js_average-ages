@@ -84,12 +84,12 @@ function calculateWomenAverageAge(people, withChildren = 0) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon = 0) {
-  let allChildren = [...people].filter(
+function calculateAverageAgeDiff(people, onlyWithSon) {
+  let allChildren = people.filter(
     child => people.some(person => child.mother === person.name)
   ); // people who have mother === our children
 
-  if (onlyWithSon !== 0) {
+  if (onlyWithSon) {
     allChildren = allChildren.filter(child => child.sex === 'm');
   } // our chilren - only boys
 
