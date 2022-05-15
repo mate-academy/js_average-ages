@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -15,11 +16,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => (
+    century
+      ? (Math.ceil(person.died / 100) === century) && (person.sex === 'm')
+      : person.sex === 'm'
+  ));
+
+  const ages = men.reduce((sum, addition) => sum + (addition.died - addition.born), 0);
+
+  return ages / men.length;
 }
 
 /**
@@ -37,7 +42,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => (
+    withChildren
+      ? people.some(child => child.mother === person.name) && person.sex === 'f'
+      : person.sex === 'f'
+  ));
+
+  // women = people.filter(person => person.sex === 'f');
+
+  // women = withChildren
+  //   ? people.filter(person => people.some(child => child.mother === person.name))
+  //   : women;
+
+  const ages = women.reduce((sum, addition) => sum + addition.died - addition.born, 0);
+
+  return ages / women.length;
 }
 
 /**
@@ -55,7 +74,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let women = people.filter(person => person.sex === 'f');
+
+  women = people.filter(person => (
+    people.some(child => child.mother === person.name)
+  ));
+
+  let children = people.filter(person => (
+    people.some(mother => mother.name === person.mother)
+  ));
+
+  children = onlyWithSon
+    ? children.filter(child => child.sex === 'm')
+    : children;
+
+  const ages = children.map((child) => (
+    child.born - women.find((woman) => woman.name === child.mother).born
+  ));
+
+  return ages.reduce((sum, addition) => sum + addition, 0) / children.length;
 }
 
 module.exports = {
