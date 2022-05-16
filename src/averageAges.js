@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const foundMan = century
+    ? people.filter(man => man.sex === 'm'
+      && Math.ceil(man.died / 100) === century)
+    : people.filter(man => man.sex === 'm');
+
+  const yearOfLife = foundMan.map(year => year.died - year.born)
+    .reduce((a, b) => a + b);
+
+  return yearOfLife / foundMan.length;
 }
 
 /**
@@ -37,7 +41,33 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let foundWoman = [];
+  let yearOfLife = 0;
+  const motherWithChildren = [];
+
+  foundWoman = people
+    .filter(woman => woman.sex === 'f');
+
+  foundWoman.forEach(element => {
+    if (people.some(woman => element.name === woman.mother)) {
+      motherWithChildren.push(element);
+    }
+  });
+
+  yearOfLife = withChildren
+    ? motherWithChildren
+      .map(year => year.died - year.born)
+      .reduce((a, b) => a + b)
+
+    : foundWoman
+      .map(year => year.died - year.born)
+      .reduce((a, b) => a + b);
+
+  const age = withChildren
+    ? yearOfLife / motherWithChildren.length
+    : yearOfLife / foundWoman.length;
+
+  return age;
 }
 
 /**
@@ -55,7 +85,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const foundMan = people.filter(man => man.sex === 'm');
+  let age = 0;
+  let count = 0;
+
+  const human = onlyWithSon ? foundMan : people;
+
+  human.forEach(man => {
+    people.forEach(woman => {
+      if (man.mother === woman.name) {
+        age += (man.born - woman.born);
+        count++;
+      }
+    });
+  });
+
+  return age / count;
 }
 
 module.exports = {
