@@ -1,5 +1,15 @@
 'use strict';
 
+const avarageDifference = (x) => {
+  return x.reduce((sum, age) => sum + age, 0) / x.length;
+};
+
+const calculate = (person) => {
+  const personAges = person.map(x => x.died - x.born);
+
+  return avarageDifference(personAges);
+};
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -21,10 +31,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm'
   );
 
-  const menAges = menAvarage.map(men => men.died - men.born);
-  const totalMenAge = menAges.reduce((sum, age) => sum + age, 0);
-
-  return totalMenAge / menAges.length;
+  return calculate(menAvarage);
 }
 
 /**
@@ -48,10 +55,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f'
   );
 
-  const womenAges = womenAvarage.map(women => women.died - women.born);
-  const totalWomenAge = womenAges.reduce((sum, age) => sum + age, 0);
-
-  return totalWomenAge / womenAges.length;
+  return calculate(womenAvarage);
 }
 
 /**
@@ -79,9 +83,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenAges = childrenAvarage.map(child =>
     child.born - (people.find(mother => mother.name === child.mother)).born
   );
-  const avarageAgeDiff = childrenAges.reduce((sum, age) => sum + age, 0);
 
-  return avarageAgeDiff / childrenAges.length;
+  return avarageDifference(childrenAges);
 }
 
 module.exports = {
