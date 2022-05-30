@@ -20,8 +20,22 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-}
+  const filterMan = people.filter((item) => item.sex === 'm');
+  const filterCentury = filterMan.filter(
+    (item) => Math.ceil(item.died / 100) === century
+  );
+  const manAge = filterMan.map((item) => item.died - item.born);
+  const manAgeCentury = filterCentury.map((item) => item.died - item.born);
+  const sumAges = (
+    manAge.reduce((prev, item) => prev + item, 0) / manAge.length
+  ).toFixed(2);
+  const sumAgesCentury = (
+    manAgeCentury.reduce((prev, item) => prev + item, 0) / manAgeCentury.length
+  ).toFixed(2);
+  const res = century === undefined ? sumAges : sumAgesCentury;
 
+  return Number(res);
+}
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,8 +50,22 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filterWomen = people.filter((item) => item.sex === 'f');
+
+  const womenWithChild = withChildren
+    ? people.filter((item) =>
+      people.find((element) => element.mother === item.name)
+    )
+    : filterWomen;
+
+  const womenAge = womenWithChild.map((item) => item.died - item.born);
+  const sumAges = (
+    womenAge.reduce((prev, item) => prev + item, 0) / womenAge.length
+  ).toFixed(2);
+
+  return Number(sumAges);
 }
 
 /**
@@ -55,7 +83,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const age = [];
+  const filterMan = people.filter((item) => item.sex === 'm');
+  const womenWithChild = onlyWithSon ? filterMan.filter((item) =>
+    people.find((element) => element.mother === item.mother)
+  ) : people;
+
+  womenWithChild.map((item) =>
+    people.filter((element) => element.name === item.mother
+      && age.push(item.born - element.born))
+  );
+
+  const sumAges = (
+    age.reduce((prev, item) => prev + item, 0) / age.length
+  ).toFixed(2);
+
+  return Number(sumAges);
 }
 
 module.exports = {
