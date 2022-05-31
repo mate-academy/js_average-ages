@@ -15,7 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = arguments.length > 1 ? people.filter((el) => {
+  const men = century ? people.filter((el) => {
     return century === Math.ceil(el.died / 100);
   }).filter(el => el.sex === 'm') : people.filter(el => el.sex === 'm');
 
@@ -82,11 +82,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   for (const child of people) {
     const mother = onlyWithSon
       ? people.find((el) => {
-        if (el.name === child.mother && child.sex === 'm') {
-          return true;
-        }
-
-        return false;
+        return el.name === child.mother && child.sex === 'm';
       })
       : people.find(el => el.name === child.mother);
 
