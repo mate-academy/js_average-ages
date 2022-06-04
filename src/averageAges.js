@@ -20,6 +20,18 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let mansArr = [];
+
+  century
+    ? mansArr = people.filter((item) => item.sex === 'm'
+      && Math.ceil(item.died / 100) === century)
+    : mansArr = people.filter((item) => item.sex === 'm');
+
+  const sumAge = mansArr.reduce(function(accum, b) {
+    return accum + (b.died - b.born);
+  }, 0);
+
+  return sumAge / mansArr.length;
 }
 
 /**
@@ -37,7 +49,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArr = people.filter(function(item) {
+    return item.sex === 'f';
+  });
+
+  const motherArr = people.filter(function(item, id, arr) {
+    return item.sex === 'f' && arr.some(function(person) {
+      return item.name === person.mother;
+    });
+  });
+
+  function calcAverage(arr) {
+    return arr.reduce(function(accum, b) {
+      return accum + (b.died - b.born);
+    }, 0) / arr.length;
+  }
+
+  return withChildren ? calcAverage(motherArr) : calcAverage(womenArr);
 }
 
 /**
@@ -55,7 +83,38 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const motherArr = people.filter(function(item, id, arr) {
+    return item.sex === 'f' && arr.some(function(person) {
+      return item.name === person.mother;
+    });
+  });
+
+  const diffAgesArr = motherArr.map(function(mother) {
+    const diffArr = [];
+    const children = people.filter(function(item) {
+      if (onlyWithSon) {
+        return mother.name === item.mother && item.sex === 'm';
+      } else {
+        return mother.name === item.mother;
+      }
+    });
+
+    for (let i = 0; i < children.length; i++) {
+      diffArr.push(children[i].born - mother.born);
+    }
+
+    return diffArr;
+  });
+
+  const resArr = diffAgesArr.reduce(function(a, b) {
+    return a.concat(b);
+  });
+
+  function calcAverage(arr) {
+    return arr.reduce((a, b) => a + b) / arr.length;
+  }
+
+  return calcAverage(resArr);
 }
 
 module.exports = {
