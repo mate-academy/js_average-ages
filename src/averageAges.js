@@ -22,10 +22,11 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   // const filterOnlyMen = people.filter(person => person.sex === 'm');
+  const men = people.filter(person => person.sex === 'm');
   const onlyMen = (century)
-    ? people.filter(person => Math.ceil(
-      person.died / 100) === century && person.sex === 'm')
-    : people.filter(person => person.sex === 'm');
+    ? men.filter(person => Math.ceil(
+      person.died / 100) === century)
+    : men;
 
   const ages = onlyMen.map((person) => person.died - person.born);
   const averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
@@ -48,10 +49,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  const women = people.filter(person => person.sex === 'f');
   const onlyWomen = (withChildren)
-    ? people.filter(person => person.sex === 'f'
-    && people.some(child => child.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+    ? women.filter(person => people.some(child => child.mother === person.name))
+    : women;
 
   const ages = onlyWomen.map((person) => person.died - person.born);
   const averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
@@ -92,3 +93,20 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+// const onlyMen = (century)
+// ?
+// people.filter(person => Math.ceil(person.died / 100) === century
+//  && person.sex === 'm')
+// :people.filter(person => person.sex === 'm');
+
+// const onlyMen = (century) ?
+//   people.filter(person => Math.ceil(
+//     person.died / 100) === century && person.sex === 'm') :
+//   people.filter(person => person.sex === 'm');
+
+// const ages = onlyMen.map((person) => person.died - person.born);
+// const averageAge = ages.reduce((sum, age) => sum + age, 0) / ages.length;
+
+// return averageAge;
+// }
