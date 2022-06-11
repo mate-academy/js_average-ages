@@ -15,15 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-  const men = people.filter(century !== undefined
-    ? person => person.sex === 'm'
-    && Math.ceil(person.died / 100) === century
-    : person => person.sex === 'm');
+  const men = people.filter(
+    century !== undefined
+      ? person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
+      : person => person.sex === 'm'
+  );
 
   const agesOfMen = men.map(man => man.died - man.born);
 
@@ -48,13 +45,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  function findMother(person) {
+    return people.find(woman => woman.mother === person.name);
+  }
+
   const femaleGender = people.filter(person => person.sex
     === 'f');
-  const womenHasCHild
-    = people.filter(person => person.sex
-      === 'f' && people.find(woman => woman.mother === person.name));
 
-  const women = withChildren !== undefined
+  const womenHasCHild
+   = people.filter(person => findMother(person) && femaleGender);
+
+  const women
+  = withChildren !== undefined
     ? womenHasCHild
     : femaleGender;
 
@@ -80,21 +82,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  function findMothers(child) {
+    return people.find(mother => mother.name === child.mother);
+  }
+
   function findFamily(child) {
-    const mothers = people.find(mother => mother.name === child.mother);
     const boy = child.sex === 'm';
 
     return onlyWithSon
-      ? boy && mothers
-      : mothers;
+      ? boy && findMothers(child)
+      : findMothers(child);
   }
 
   const family = people.filter(findFamily);
 
   const ageDifferences = family.map(child => {
-    const mothers = people.find(mother => mother.name === child.mother);
-
-    return child.born - mothers.born;
+    return child.born - findMothers(child).born;
   }
   );
 
