@@ -14,8 +14,8 @@
  *
  * @return {number}
  */
-const filterSex = (person, sex) => {
-  return person.sex === sex;
+const filterSex = (people, sex) => {
+  return people.filter(person => person.sex === sex);
 };
 
 function calculateMenAverageAge(people, century) {
@@ -25,9 +25,9 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const menDatabase = century !== undefined
-    ? people.filter(person => filterSex(person, 'm')
-      && Math.ceil(person.died / 100) === century)
-    : people.filter(person => filterSex(person, 'm'));
+    ? filterSex(people, 'm').filter(person =>
+      Math.ceil(person.died / 100) === century)
+    : filterSex(people, 'm');
 
   const ages = menDatabase.map((man) => man.died - man.born);
 
@@ -50,9 +50,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenDatabase = (withChildren)
-    ? people.filter(person => filterSex(person, 'f')
-    && people.some(child => child.mother === person.name))
-    : people.filter(person => filterSex(person, 'f'));
+    ? filterSex(people, 'f').filter(person =>
+      people.some(child => child.mother === person.name))
+    : filterSex(people, 'f');
 
   const ages = womenDatabase.map((woman) => woman.died - woman.born);
 
@@ -81,8 +81,8 @@ const someFunc = (person, people) => {
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenDatabase = (onlyWithSon)
-    ? people.filter(person => filterSex(person, 'm')
-    && someFunc(person, people))
+    ? filterSex(people, 'm').filter(person =>
+      someFunc(person, people))
     : people.filter(person => someFunc(person, people));
 
   const ageDiff = childrenDatabase.map((child) => {
