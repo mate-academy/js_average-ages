@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const findMen = arguments.length < 2
+    ? people.filter(listOfMen =>
+      listOfMen.sex === 'm')
+
+    : people.filter(listOfMen =>
+      Math.ceil(listOfMen.died / 100) === century && listOfMen.sex === 'm');
+
+  const sumOfYears = findMen.reduce((previousValue, years) =>
+    previousValue + (years.died - years.born), 0);
+
+  const getAvarage = Math.ceil((sumOfYears / findMen.length) * 100) / 100;
+
+  return getAvarage;
 }
 
 /**
@@ -38,6 +52,30 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const children = people.filter(child =>
+    child.mother !== null);
+  let findWomen = people.filter(listOfWomen =>
+    listOfWomen.sex === 'f');
+
+  if (arguments.length > 1) {
+    const listWithChildren = [];
+
+    for (let i = 0; i < children.length; i++) {
+      const trueMothers = people.find(list => list.name === children[i].mother);
+
+      if (!listWithChildren.includes(trueMothers)
+      && typeof trueMothers !== 'undefined') {
+        listWithChildren.push(trueMothers);
+      }
+    }
+    findWomen = listWithChildren;
+  }
+
+  const sumOfYears = findWomen.reduce((previousValue, years) =>
+    previousValue + (years.died - years.born), 0);
+  const getAvarage = Math.round((sumOfYears / findWomen.length) * 100) / 100;
+
+  return getAvarage;
 }
 
 /**
@@ -55,7 +93,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = arguments.length < 2
+    ? people.filter(child =>
+      child.mother !== null)
+
+    : people.filter(child =>
+      child.mother !== null && child.sex === 'm');
+
+  const differencesOfYears = [];
+
+  for (let i = 0; i < children.length; i++) {
+    const trueMothers = people.find(list => list.name === children[i].mother);
+
+    if (typeof trueMothers !== 'undefined') {
+      differencesOfYears.push(children[i].born - trueMothers.born);
+    }
+  }
+
+  const sumOfYears = differencesOfYears.reduce((previousValue, years) =>
+    previousValue + years, 0);
+  const getAvarage = Math.round(
+    (sumOfYears / differencesOfYears.length) * 100) / 100;
+
+  return getAvarage;
 }
 
 module.exports = {
