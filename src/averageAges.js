@@ -14,19 +14,26 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const callbackFilter = (a) => (
-    century === undefined
-      ? a.sex === 'm'
-      : a.sex === 'm'
-      && Math.ceil(a.died / 100) === century
-  );
-  const callbackReduce = (sum, elem) => {
-    return sum + (elem.died - elem.born);
-  };
-  const filterObjects = people.filter(callbackFilter);
+function getPeopleBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
 
-  return filterObjects.reduce(callbackReduce, 0) / filterObjects.length;
+function getAvaregeAge(people) {
+  return people.reduce((sum, person) => (
+    sum + person.died - person.born
+  ), 0) / people.length;
+}
+
+function calculateMenAverageAge(people, century) {
+  const peopleFromCentry = (century)
+    ? people.filter(person => Math.ceil(person.died / 100) === century)
+    : people;
+
+  return getAvaregeAge(getPeopleBySex(peopleFromCentry, 'm'));
+}
+
+function womenHaveChild(people, woman) {
+  return people.find(person => person.mother === woman.name);
 }
 
 /**
@@ -44,17 +51,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const callbackFilter = (a) => (
-    withChildren === true
-      ? people.find(isMother => isMother.mother === a.name)
-      : a.sex === 'f'
-  );
-  const callbackReduce = (sum, elem) => {
-    return sum + (elem.died - elem.born);
-  };
-  const filterObjects = people.filter(callbackFilter);
+  const women = getPeopleBySex(people, 'f');
 
-  return filterObjects.reduce(callbackReduce, 0) / filterObjects.length;
+  const womenWithChild = (withChildren)
+    ? women.filter(woman => womenHaveChild(people, woman))
+    : women;
+
+  return getAvaregeAge(womenWithChild);
 }
 
 /**
@@ -72,33 +75,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children
-    = onlyWithSon === undefined
-      ? people.filter(child =>
-        child.mother !== null
-      )
+  const women = getPeopleBySex(people, 'f');
+  const men = getPeopleBySex(people, 'm');
 
-      : people.filter(child =>
-        child.mother !== null && child.sex === 'm'
+  const womenWithChildren = (onlyWithSon)
+    ? women.filter(woman => womenHaveChild(men, woman))
+    : women.filter(woman => womenHaveChild(people, woman));
+
+  const getAgeDiff = (choosePeople, WithChildren) => {
+    const diff = choosePeople.map(person => {
+      const isMother = WithChildren.find(woman =>
+        woman.name === person.mother
       );
 
-  const differenceYears = [];
+      return (!isMother) ? isMother : person.born - isMother.born;
+    }).filter(a => a);
 
-  for (let i = 0; i < children.length; i++) {
-    const isMother = people.find(list => list.name === children[i].mother);
+    return diff.reduce((sum, a) => (sum + a)) / diff.length;
+  };
 
-    if (isMother !== undefined) {
-      differenceYears.push(children[i].born - isMother.born);
-    }
-  }
+  const ageDifference = (onlyWithSon)
+    ? getAgeDiff(men, womenWithChildren)
+    : getAgeDiff(people, womenWithChildren);
 
-  const sumYears = differenceYears.reduce((prevYears, years) =>
-    prevYears + years, 0);
-  const getAvarege = Math.round(
-    (sumYears / differenceYears.length) * 100)
-    / 100;
-
-  return getAvarege;
+  return ageDifference;
 }
 
 module.exports = {
