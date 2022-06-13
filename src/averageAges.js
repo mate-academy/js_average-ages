@@ -16,14 +16,14 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  const allMen = (century === undefined)
+  const allMen = !century
     ? people.filter(person => person.sex === 'm')
     : people.filter(person => person.sex === 'm'
     && Math.ceil(person.died / 100) === century);
 
-  const menAge = lifetime(allMen);
+  const menAge = getLifeDurationList(allMen);
 
-  return averageAge(menAge);
+  return getAverageAge(menAge);
 }
 
 /**
@@ -46,9 +46,9 @@ function calculateWomenAverageAge(people, withChildren) {
     && people.some(personMather => person.name === personMather.mother))
     : people.filter(person => person.sex === 'f');
 
-  const womenAge = lifetime(allWoman);
+  const womenAge = getLifeDurationList(allWoman);
 
-  return averageAge(womenAge);
+  return getAverageAge(womenAge);
 }
 
 /**
@@ -72,15 +72,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : people.filter(person => people.some(mother =>
       person.mother === mother.name));
 
-  const differencesOfAge = childs.map(child => child.born
+  const getDifferencesOfAge = childs.map(child => child.born
     - people.find(mother => child.mother === mother.name).born);
 
-  return averageAge(differencesOfAge);
+  return getAverageAge(getDifferencesOfAge);
 }
 
-const lifetime = arr => arr.map(person => person.died - person.born);
+const getLifeDurationList = arr => arr.map(person => person.died - person.born);
 
-const averageAge = arr => arr.reduce((sum, age) => sum + age) / arr.length;
+const getAverageAge = arr => arr.reduce((sum, age) => sum + age) / arr.length;
 
 module.exports = {
   calculateMenAverageAge,
