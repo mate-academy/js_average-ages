@@ -82,20 +82,20 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         child.mother !== null && child.sex === 'm'
       );
 
-  const differenceOfYears = [];
+  const differenceYears = [];
 
   for (let i = 0; i < children.length; i++) {
     const isMother = people.find(list => list.name === children[i].mother);
 
     if (isMother !== undefined) {
-      differenceOfYears.push(children[i].born - isMother.born);
+      differenceYears.push(children[i].born - isMother.born);
     }
   }
 
-  const sumOfYears = differenceOfYears.reduce((prevYears, years) =>
+  const sumYears = differenceYears.reduce((prevYears, years) =>
     prevYears + years, 0);
   const getAvarege = Math.round(
-    (sumOfYears / differenceOfYears.length) * 100)
+    (sumYears / differenceYears.length) * 100)
     / 100;
 
   return getAvarege;
