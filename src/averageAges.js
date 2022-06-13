@@ -14,12 +14,26 @@
  *
  * @return {number}
  */
+function getPeopleBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function getAvaregeAge(people) {
+  return people.reduce((sum, person) => (
+    sum + person.died - person.born
+  ), 0) / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const peopleFromCentry = (century)
+    ? people.filter(person => Math.ceil(person.died / 100) === century)
+    : people;
+
+  return getAvaregeAge(getPeopleBySex(peopleFromCentry, 'm'));
+}
+
+function womenHaveChild(people, woman) {
+  return people.find(person => person.mother === woman.name);
 }
 
 /**
@@ -37,7 +51,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = getPeopleBySex(people, 'f');
+
+  const womenWithChild = (withChildren)
+    ? women.filter(woman => womenHaveChild(people, woman))
+    : women;
+
+  return getAvaregeAge(womenWithChild);
 }
 
 /**
@@ -55,7 +75,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = getPeopleBySex(people, 'f');
+  const men = getPeopleBySex(people, 'm');
+
+  const womenWithChildren = (onlyWithSon)
+    ? women.filter(woman => womenHaveChild(men, woman))
+    : women.filter(woman => womenHaveChild(people, woman));
+
+  const getAgeDiff = (choosePeople, WithChildren) => {
+    const diff = choosePeople.map(person => {
+      const isMother = WithChildren.find(woman =>
+        woman.name === person.mother
+      );
+
+      return (!isMother) ? isMother : person.born - isMother.born;
+    }).filter(a => a);
+
+    return diff.reduce((sum, a) => (sum + a)) / diff.length;
+  };
+
+  const ageDifference = (onlyWithSon)
+    ? getAgeDiff(men, womenWithChildren)
+    : getAgeDiff(people, womenWithChildren);
+
+  return ageDifference;
 }
 
 module.exports = {
