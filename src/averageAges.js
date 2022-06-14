@@ -20,9 +20,7 @@ function calculateAgeDiffrens(people, womenHaveChildrens) {
       person.mother === woman.name
     );
 
-    const presentInList = !personMother;
-
-    return (presentInList) ? false : person.born - personMother.born;
+    return (!personMother) ? false : person.born - personMother.born;
   }).filter(mother => mother);
 
   return ageDiff.reduce((sum, a) => (sum + a)) / ageDiff.length;
