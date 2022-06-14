@@ -15,13 +15,17 @@ function getPersonHasChild(woman, people) {
 }
 
 function calculateAgeDiffrens(people, womenHaveChildrens) {
-  const ageDiff = people.map(person => {
-    const personMother = womenHaveChildrens.find(woman =>
-      person.mother === woman.name
-    );
+  const ageDiff = people
+    .map(person => {
+      const personMother = womenHaveChildrens.find(woman =>
+        person.mother === woman.name
+      );
 
-    return (!personMother) ? false : person.born - personMother.born;
-  }).filter(mother => mother);
+      return (!personMother)
+        ? false
+        : person.born - personMother.born;
+    })
+    .filter(mother => mother);
 
   return ageDiff.reduce((sum, a) => (sum + a)) / ageDiff.length;
 }
