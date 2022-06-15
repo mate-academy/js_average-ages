@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menDiedSelectCentury = people.filter(human => {
+    const sexIsMale = human.sex === 'm';
+    const diedInSelectCentury = century
+      ? Math.ceil(human.died / 100) === century
+      : human.born;
+
+    return (sexIsMale && diedInSelectCentury);
+  });
+
+  const averageAge = getAverageAge(menDiedSelectCentury);
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +44,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenHasChildren = people.filter(human => {
+    const sexIsFemale = human.sex === 'f';
+    const hasChildren = withChildren
+      ? people.some(children => children.mother === human.name)
+      : human.born;
+
+    return (sexIsFemale && hasChildren);
+  });
+  const averageAge = getAverageAge(womenHasChildren);
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +72,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(human => {
+    const hasMather = people.some(child => human.mother === child.name);
+    const sexIsMale = human.sex === 'm';
+
+    return onlyWithSon
+      ? hasMather && sexIsMale
+      : hasMather;
+  });
+
+  const averageAge = children.reduce((sum, humanData) => {
+    const hisMather = people.find(childMather =>
+      humanData.mother === childMather.name
+    );
+    const age = humanData.born - hisMather.born;
+
+    return sum + age;
+  }, 0) / children.length;
+
+  return averageAge;
+}
+
+function getAverageAge(datalist) {
+  return datalist.reduce((prevSum, humanData) => {
+    const age = humanData.died - humanData.born;
+
+    return prevSum + age;
+  }, 0) / datalist.length;
 }
 
 module.exports = {
