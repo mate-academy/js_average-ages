@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menFiltered = people.filter(person => {
+    let hasMetConditions = person.sex === 'm';
+
+    if (century) {
+      hasMetConditions
+      = hasMetConditions && century === Math.ceil(person.died / 100);
+    }
+
+    return hasMetConditions;
+  });
+
+  const menSumOfAge = menFiltered.reduce((sum, item) => (
+    sum + item.died - item.born), 0
+  );
+  const menAverageAge = menSumOfAge / menFiltered.length;
+
+  return Math.round(menAverageAge * 100) / 100;
 }
 
 /**
@@ -37,7 +49,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenFiltered = people.filter(person => {
+    let hasMetConditions = person.sex === 'f';
+
+    if (withChildren) {
+      const ifMonther = people.some(human => person.name === human.mother);
+
+      hasMetConditions = hasMetConditions && ifMonther;
+    }
+
+    return hasMetConditions;
+  });
+
+  const womenSumOfAge = womenFiltered.reduce((sum, item) => (
+    sum + item.died - item.born), 0
+  );
+  const womenAverageAge = womenSumOfAge / womenFiltered.length;
+
+  return Math.round(womenAverageAge * 100) / 100;
 }
 
 /**
@@ -55,7 +84,45 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenWithChild = people.filter(person => {
+    let hasMetConditions = false;
+
+    if (onlyWithSon) {
+      hasMetConditions = person.sex === 'f' && people.some(human =>
+        person.name === human.mother && human.sex === 'm');
+    } else {
+      hasMetConditions = person.sex === 'f' && people.some(human =>
+        person.name === human.mother);
+    }
+
+    return hasMetConditions;
+  });
+
+  let childrenCount = 0;
+
+  const womenSumOfAge = womenWithChild.reduce(function(previousValue, mother) {
+    let children = [];
+
+    if (onlyWithSon) {
+      children = people.filter(human =>
+        human.mother === mother.name && human.sex === 'm');
+    } else {
+      children = people.filter(human =>
+        human.mother === mother.name);
+    }
+
+    const sumMotherAge = children.reduce((prev, child) => {
+      childrenCount++;
+
+      return prev + child.born - mother.born;
+    }, 0);
+
+    return previousValue + sumMotherAge;
+  }, 0);
+
+  const womenAverageAge = womenSumOfAge / childrenCount;
+
+  return Math.round(womenAverageAge * 100) / 100;
 }
 
 module.exports = {
