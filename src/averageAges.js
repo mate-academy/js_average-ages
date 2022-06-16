@@ -15,8 +15,8 @@
  * @return {number}
  */
 
- const calculateAverageAge = (people) =>
- people.map((person) => person.died - person.born).reduce((a, b) => a + b, 0)
+const calculateAverageAge = (people) =>
+  people.map((person) => person.died - person.born).reduce((a, b) => a + b, 0)
  / people.length;
 
 function calculateMenAverageAge(people, century) {
