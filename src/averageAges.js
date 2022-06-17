@@ -1,5 +1,4 @@
 'use strict';
-
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,12 +13,25 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const array = people
+    .filter(person => {
+      if (
+        century && Math.ceil(person.died / 100) === century
+        && person.sex === 'm') {
+        return person;
+      }
+
+      if (century === undefined && person.sex === 'm') {
+        return person;
+      }
+    })
+    .map(person => person.died - person.born);
+
+  const avarage = array.reduce((prev, curr) => prev + curr) / array.length;
+
+  return avarage;
 }
 
 /**
@@ -37,7 +49,31 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const array = people.filter(person => person.sex === 'f');
+
+  const avarage = (women) => {
+    return women
+      .map(person => person.died - person.born)
+      .reduce((prev, curr) => prev + curr) / women.length;
+  };
+
+  let parent;
+
+  if (withChildren) {
+    parent = array.filter(female => {
+      const mother = people.find(child =>
+        female.name === child.mother
+      );
+
+      if (mother) {
+        return mother;
+      }
+    });
+
+    return avarage(parent);
+  } else {
+    return avarage(array);
+  }
 }
 
 /**
@@ -56,6 +92,32 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const diffArray = [];
+
+  const search = (arr) => {
+    arr.map(child => {
+      const parents = people.find(parent =>
+        parent.name === child.mother
+      );
+
+      if (parents) {
+        diffArray.push(child.born - parents.born);
+      }
+    });
+  };
+
+  if (onlyWithSon) {
+    const male = people.filter(person => person.sex === 'm');
+
+    search(male);
+  } else {
+    search(people);
+  }
+
+  const avarage = diffArray.reduce((prev, curr) => prev + curr)
+  / diffArray.length;
+
+  return avarage;
 }
 
 module.exports = {
