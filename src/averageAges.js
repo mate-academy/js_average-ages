@@ -32,11 +32,11 @@ function getAllMother(people, women) {
  */
 
 function calculateMenAverageAge(people, century) {
-  const AverageManAge = century
+  const menAgesSum = century
     ? people.filter(person => Math.ceil(person.died / 100) === century)
     : people;
 
-  return getAverageAge(getSex(AverageManAge, 'm'));
+  return getAverageAge(getSex(menAgesSum, 'm'));
 }
 
 /**
@@ -83,17 +83,16 @@ function findParent(people, child) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let kind = people
-    .filter(child => people.some(mother => mother.name === child.mother));
+  let children = people
+    .filter(child => people.find(mother => mother.name === child.mother));
 
-  if (onlyWithSon) {
-    kind = kind.filter(person => person.sex === 'm');
-  }
+  let result = onlyWithSon
+    ? children = children.filter(person => person.sex === 'm') : 0;
 
-  const result = kind
+  result = children
     .reduce((sum, child) => sum + child.born - findParent(people, child), 0);
 
-  return result / kind.length;
+  return result / children.length;
 }
 
 module.exports = {
