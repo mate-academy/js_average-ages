@@ -20,6 +20,30 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let num = 0;
+  const sum = people.reduce(cb, 0);
+
+  function cb(prev, person) {
+    if (century) {
+      if (person.sex === 'm' && Math.ceil(person.died / 100) === century) {
+        num++;
+
+        return prev + (person.died - person.born);
+      }
+    }
+
+    if (!century) {
+      if (person.sex === 'm') {
+        num++;
+
+        return prev + (person.died - person.born);
+      }
+    }
+
+    return prev;
+  }
+
+  return sum / num;
 }
 
 /**
@@ -37,7 +61,33 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let num = 0;
+  const sum = people.reduce(cb, 0);
+
+  function cb(prev, person) {
+    if (withChildren) {
+      const motherName = person.name;
+
+      if (person.sex === 'f'
+      && people.some(potencialChild => potencialChild.mother === motherName)) {
+        num++;
+
+        return prev + (person.died - person.born);
+      }
+    }
+
+    if (!withChildren) {
+      if (person.sex === 'f') {
+        num++;
+
+        return prev + (person.died - person.born);
+      }
+    }
+
+    return prev;
+  }
+
+  return sum / num;
 }
 
 /**
@@ -55,7 +105,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arr = people.map(cb);
+
+  function cb(potencialMother) {
+    if (potencialMother.sex === 'f') {
+      const motherName = potencialMother.name;
+
+      return people.map(person => {
+        if (!onlyWithSon) {
+          if (person.mother === motherName) {
+            return person.born - potencialMother.born;
+          }
+
+          return [];
+        }
+
+        if (onlyWithSon) {
+          if (person.mother === motherName && person.sex === 'm') {
+            return person.born - potencialMother.born;
+          }
+
+          return [];
+        }
+      });
+    }
+
+    return [];
+  }
+
+  const finalArr = arr.flat(Infinity);
+
+  return finalArr.reduce((prev, item) => prev + item) / finalArr.length;
 }
 
 module.exports = {
