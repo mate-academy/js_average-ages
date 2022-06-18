@@ -21,9 +21,9 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   let num = 0;
-  const sum = people.reduce(cb, 0);
+  const sum = people.reduce(calculateSum, 0);
 
-  function cb(prev, person) {
+  function calculateSum(prev, person) {
     if (century) {
       if (person.sex === 'm' && Math.ceil(person.died / 100) === century) {
         num++;
@@ -62,9 +62,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   let num = 0;
-  const sum = people.reduce(cb, 0);
+  const sum = people.reduce(calculateSum, 0);
 
-  function cb(prev, person) {
+  function calculateSum(prev, person) {
     if (withChildren) {
       const motherName = person.name;
 
@@ -105,9 +105,9 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const arr = people.map(cb);
+  const arr = people.map(calculateDiff);
 
-  function cb(potencialMother) {
+  function calculateDiff(potencialMother) {
     if (potencialMother.sex === 'f') {
       const motherName = potencialMother.name;
 
