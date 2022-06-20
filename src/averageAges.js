@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = getBySex(people, 'm');
+
+  const menDiedSelectCentury = men.filter(human => {
+    const diedInSelectCentury = century
+      ? Math.ceil(human.died / 100) === century
+      : human.born;
+
+    return diedInSelectCentury;
+  });
+
+  const averageAge = getAverageAge(menDiedSelectCentury);
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +45,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = getBySex(people, 'f');
+  const geWomenHasChildren = women.filter(human => {
+    const hasChildren = withChildren
+      ? people.some(children => children.mother === human.name)
+      : human.born;
+
+    return hasChildren;
+  });
+  const averageAge = getAverageAge(geWomenHasChildren);
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +73,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => {
+    const hasMather = people.some(mather => child.mother === mather.name);
+    const chidrenIsSon = child.sex === 'm';
+
+    return onlyWithSon
+      ? hasMather && chidrenIsSon
+      : hasMather;
+  });
+
+  const averageAge = children.reduce((sum, humanData) => {
+    const hisMather = people.find(childMather =>
+      humanData.mother === childMather.name
+    );
+    const age = humanData.born - hisMather.born;
+
+    return sum + age;
+  }, 0) / children.length;
+
+  return averageAge;
+}
+
+function getAverageAge(datalist) {
+  return datalist.reduce((prevSum, humanData) => {
+    const age = humanData.died - humanData.born;
+
+    return prevSum + age;
+  }, 0) / datalist.length;
+}
+
+function getBySex(people, sex) {
+  return people.filter(human => human.sex === sex);
 }
 
 module.exports = {
