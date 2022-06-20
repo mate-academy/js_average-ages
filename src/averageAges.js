@@ -30,7 +30,7 @@ function calculateMenAverageAge(people, century) {
 
   const agesOfMen = men.map(man => man.died - man.born);
 
-  const averageAge = agesOfMen.reduce((age1, age2) => age1 + age2)
+  const averageAge = agesOfMen.reduce((previous, current) => previous + current)
     / agesOfMen.length;
 
   return averageAge;
@@ -67,7 +67,8 @@ function calculateWomenAverageAge(people, withChildren) {
       : femaleGender;
 
   const womenAges = women.map(woman => woman.died - woman.born);
-  const womenAverageAge = womenAges.reduce((age1, age2) => age1 + age2)
+  const womenAverageAge
+    = womenAges.reduce((previous, current) => previous + current)
     / womenAges.length;
 
   return womenAverageAge;
