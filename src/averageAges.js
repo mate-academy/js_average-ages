@@ -14,12 +14,15 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = 0) {
+  const men = people.filter(person => person.sex === 'm');
+  const centuryFilter = men.filter(person => Math
+    .ceil(person.died / 100) === century || century === 0);
+  const age = centuryFilter.map(year => getAge(year));
+  const menAverageAge = age
+    .reduce((sum, nextYear) => sum + nextYear, 0) / age.length;
+
+  return menAverageAge;
 }
 
 /**
@@ -37,7 +40,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(person => person.sex === 'f'
+    && people.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
+
+  const age = women.map(year => getAge(year));
+  const womenAverageAge = age
+    .reduce((sum, nextYear) => sum + nextYear, 0) / age.length;
+
+  return womenAverageAge;
 }
 
 /**
@@ -55,7 +67,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(person => person.sex === 'm'
+    && people.some(mom => mom.name === person.mother))
+    : people.filter(person => people.some(mom => person.mother === mom.name));
+
+  const ageDifference = children.reduce((sum, current) => {
+    const childMother = people.find(person => current.mother === person.name);
+    const difference = current.born - childMother.born;
+
+    return sum + difference;
+  }, 0);
+
+  return ageDifference / children.length;
+}
+
+function getAge({ died, born }) {
+  return died - born;
 }
 
 module.exports = {
