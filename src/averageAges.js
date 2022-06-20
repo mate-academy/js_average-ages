@@ -14,7 +14,20 @@
  *
  * @return {number}
  */
+const checkPersonSex = ({ sex }, checkingSex) => sex === checkingSex;
+
 function calculateMenAverageAge(people, century) {
+  const men = people.filter(person => checkPersonSex(person, 'm'));
+  const menDiedInCentury = men
+    .filter(person => {
+      return century ? Math.ceil(person.died / 100) === century : person;
+    });
+
+  const summedAges = menDiedInCentury
+    .reduce((prev, person) => prev + (person.died - person.born), 0);
+
+  return summedAges / menDiedInCentury.length;
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -38,6 +51,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const womanWithChildren = people.filter(person => {
+    return (withChildren)
+      ? checkPersonSex(person, 'f')
+        && people.some(child => child.mother === person.name)
+      : checkPersonSex(person, 'f');
+  }
+  );
+  const summedAges = womanWithChildren
+    .reduce((prev, person) => prev + person.died - person.born, 0);
+
+  return summedAges / womanWithChildren.length;
 }
 
 /**
@@ -56,6 +80,30 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const children = people.filter(
+    person => people.some(
+      mother => mother.name === person.mother
+    )
+  );
+
+  const sons = children.filter(person => checkPersonSex(person, 'm'));
+  let childrenToCount = children;
+
+  if (onlyWithSon) {
+    childrenToCount = sons;
+  }
+
+  const differenceAges = childrenToCount
+    .reduce((summedAges, child) => {
+      const mother = people.find(
+        person => person.name === child.mother);
+
+      const differenceMomChild = child.born - mother.born;
+
+      return summedAges + differenceMomChild;
+    }, 0);
+
+  return differenceAges / childrenToCount.length;
 }
 
 module.exports = {
