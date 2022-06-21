@@ -21,14 +21,20 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const men = people.filter(
-    century !== undefined
-      ? person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century
-      : person => person.sex === 'm'
-  );
+  // const men = people.filter(
+  //   century !== undefined
+  //     ? person => person.sex === 'm'
+  //     && Math.ceil(person.died / 100) === century
+  //     : person => person.sex === 'm'
+  // );
 
-  const agesOfMen = men.map(man => man.died - man.born);
+  const men = people.filter(person => person.sex === 'm');
+
+  const menDiedInCentury = century !== undefined
+    ? men.filter(man => Math.ceil(man.died / 100) === century)
+    : men;
+
+  const agesOfMen = menDiedInCentury.map(man => man.died - man.born);
 
   const averageAge = agesOfMen.reduce((previous, current) => previous + current)
     / agesOfMen.length;
@@ -55,15 +61,16 @@ function calculateWomenAverageAge(people, withChildren) {
     return people.find(woman => woman.mother === person.name);
   }
 
-  const femaleGender = people.filter(person => person.sex
-    === 'f');
+  const femaleGender = people.filter(
+    person => person.sex === 'f'
+  );
 
-  const womenWithCHild
+  const womenWithChild
     = people.filter(person => findMother(person) && femaleGender);
 
   const women
-    = withChildren !== undefined
-      ? womenWithCHild
+    = withChildren
+      ? womenWithChild
       : femaleGender;
 
   const womenAges = women.map(woman => woman.died - woman.born);
@@ -89,7 +96,7 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  function findMothers(child) {
+  function findMother(child) {
     return people.find(mother => mother.name === child.mother);
   }
 
@@ -97,18 +104,18 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const boy = child.sex === 'm';
 
     return onlyWithSon
-      ? boy && findMothers(child)
-      : findMothers(child);
+      ? boy && findMother(child)
+      : findMother(child);
   }
 
   const family = people.filter(findFamily);
 
   const ageDifferences
-  = family.map(child => (child.born - findMothers(child).born));
+  = family.map(child => (child.born - findMother(child).born));
 
-  const averageAgeDifference
-    = ageDifferences.reduce((ageGap1, ageGap2) =>
-      ageGap1 + ageGap2) / ageDifferences.length;
+  const averageAgeDifference = ageDifferences.reduce(
+    (total, nextAge) => total + nextAge
+  ) / ageDifferences.length;
 
   return averageAgeDifference;
 }
