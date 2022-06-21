@@ -9,6 +9,10 @@ function getAverageAge(arrOfAges) {
     .reduce((sum, person) => sum + getAge(person), 0) / arrOfAges.length;
 }
 
+function getPeopleBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -24,13 +28,15 @@ function getAverageAge(arrOfAges) {
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menAges = people
-    .filter(person => century
-      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-      : person.sex === 'm'
-    );
+  const men = getPeopleBySex(people, 'm');
 
-  return getAverageAge(menAges);
+  const menInCentury = men.filter(
+    man => century
+      ? Math.ceil(man.died / 100) === century
+      : man
+  );
+
+  return getAverageAge(menInCentury);
 }
 
 /**
@@ -48,13 +54,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenAges = people
-    .filter(person => withChildren
-      ? person.sex === 'f' && people.some(child => child.mother === person.name)
-      : person.sex === 'f'
-    );
+  const women = getPeopleBySex(people, 'f');
 
-  return getAverageAge(womenAges);
+  const womenWithChildren = women.filter(
+    woman => withChildren
+      ? people.some(child => child.mother === woman.name)
+      : woman
+  );
+
+  return getAverageAge(womenWithChildren);
 }
 
 /**
@@ -72,11 +80,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people
-    .filter(person => onlyWithSon
-      ? people.some(mom => person.mother === mom.name) && person.sex === 'm'
-      : people.some(mom => person.mother === mom.name)
-    );
+  let children = people.filter(
+    child => people.some(mom => child.mother === mom.name)
+  );
+
+  const boys = getPeopleBySex(children, 'm');
+
+  children = onlyWithSon
+    ? boys
+    : children;
 
   const avgAgeDiff = children
     .reduce((sum, child) => sum + (
