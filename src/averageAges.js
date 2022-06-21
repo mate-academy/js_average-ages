@@ -16,18 +16,11 @@
 
 function calculateMenAverageAge(people, century) {
   const array = people
-    .filter(person => {
-      if (
-        century && Math.ceil(person.died / 100) === century
-        && person.sex === 'm') {
-        return person;
-      }
-
-      if (century === undefined && person.sex === 'm') {
-        return person;
-      }
-    })
-    .map(person => person.died - person.born);
+    .filter((person) => (century
+      ? (Math.ceil(person.died / 100) === century && person.sex === 'm')
+      : person.sex === 'm'
+    ))
+    .map((person) => person.died - person.born);
 
   const avarage = array.reduce((prev, curr) => prev + curr) / array.length;
 
