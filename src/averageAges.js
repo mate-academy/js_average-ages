@@ -47,23 +47,23 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const momsAndKidsBorn = {};
-  const differentAge = [];
 
   people
     .filter((persone) => onlyWithSon ? persone.sex === 'm' : true)
-    .forEach(persone => {
+    .map(persone => {
       momsAndKidsBorn[persone.mother] = momsAndKidsBorn[persone.mother]
         ? [...momsAndKidsBorn[persone.mother], persone.born]
         : [persone.born];
     });
 
-  people
+  const differentAge = people
     .filter((mom) => momsAndKidsBorn[mom.name])
-    .forEach(mom => {
-      momsAndKidsBorn[mom.name]
-        .forEach(kidBorn => differentAge
-          .push(kidBorn - mom.born));
-    });
+    .reduce((acc, mom) => {
+      const momsAges = momsAndKidsBorn[mom.name]
+        .map(kidBorn => kidBorn - mom.born);
+
+      return [...acc, ...momsAges];
+    }, []);
 
   const countDiffAge = differentAge.reduce((acc, age) => acc + age, 0);
 
