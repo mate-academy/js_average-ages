@@ -16,16 +16,17 @@
  */
 const getSum = (a, b) => a + b;
 
-const getSex = (people, sex) => people.filter(person => person.sex === sex);
+const getBySex = (people, sex) => people.filter(person => person.sex === sex);
 
 const calculateAverageAge = people => people.map(
   (person) => person.died - person.born).reduce(getSum, 0) / people.length;
 
 function calculateMenAverageAge(people, century) {
-  let men = getSex(people, 'm');
+  let men = getBySex(people, 'm');
 
   const menInCentury = men.filter(
-    person => Math.ceil(person.died / 100) === century);
+    person => Math.ceil(person.died / 100) === century
+  );
 
   men = !century
     ? men
@@ -49,10 +50,11 @@ function calculateMenAverageAge(people, century) {
 * @return {number}
 */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = getSex(people, 'f');
+  let women = getBySex(people, 'f');
 
   const womenHadKid = women.filter(
-    mother => people.some(kid => kid.mother === mother.name));
+    mother => people.some(kid => kid.mother === mother.name)
+  );
 
   women = !withChildren
     ? women
@@ -77,18 +79,23 @@ function calculateWomenAverageAge(people, withChildren) {
 */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let children = people.filter(
-    kid => people.some(mother => mother.name === kid.mother));
+    kid => people.some(mother => mother.name === kid.mother)
+  );
 
-  const son = getSex(children, 'm');
+  const sons = getBySex(children, 'm');
 
   children = !onlyWithSon
     ? children
-    : son;
+    : sons;
 
-  const agesDiff = children.map(
-    kid => kid.born - people.find(person => person.name === kid.mother).born);
+  const ageDifferences = children.map(kid => {
+    const mother = people.find(person => person.name === kid.mother).born;
+    const ageDifference = kid.born - mother;
 
-  const averageAgeDiff = agesDiff.reduce(getSum, 0) / children.length;
+    return ageDifference;
+  });
+
+  const averageAgeDiff = ageDifferences.reduce(getSum, 0) / children.length;
 
   return averageAgeDiff;
 }
