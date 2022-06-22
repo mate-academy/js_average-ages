@@ -77,9 +77,9 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-const getMother = (people, onlyWithSon) => people
+const getMother = (people) => people
   .filter(person => people.some(child => child.mother === person.name));
-const getChildren = (people, onlyWithSon) => people
+const getChildren = (people) => people
   .filter(child => people.some(person => child.mother === person.name));
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
