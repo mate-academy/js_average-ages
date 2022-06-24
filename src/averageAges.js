@@ -14,12 +14,16 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = 0) {
+  let men = people.filter(person => person.sex === 'm');
+
+  if (century !== 0) {
+    men = men.filter((person) => Math.ceil(person.died / 100) === century);
+  }
+
+  const years = men.map((person) => person.died - person.born);
+
+  return years.reduce((a, b) => a + b) / years.length;
 }
 
 /**
@@ -37,7 +41,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter((person) => person.sex === 'f');
+  const mothers = women
+    .filter(person => people.some(prsn => prsn.mother === person.name));
+
+  if (withChildren) {
+    women = mothers;
+  }
+
+  const years = women.map(person => person.died - person.born);
+
+  return years.reduce((a, b) => a + b) / years.length;
 }
 
 /**
@@ -54,8 +68,34 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+function getYears(childrenList, parentsList) {
+  const years = childrenList
+    .map(
+      child => (child.born - parentsList.find(
+        mother => mother.name === child.mother).born));
+
+  return years.reduce((a, b) => a + b) / years.length;
+}
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let children = people
+    .filter(
+      person => people.some(
+        child => child.name === person.mother
+      )
+    );
+  const mothers = people
+    .filter(
+      person => children.some(
+        mother => mother.mother === person.name
+      )
+    );
+
+  if (onlyWithSon) {
+    children = children.filter(child => child.sex === 'm');
+  }
+
+  return getYears(children, mothers);
 }
 
 module.exports = {
