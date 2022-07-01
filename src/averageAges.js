@@ -1,5 +1,13 @@
 'use strict';
 
+// callback for average age
+const calcAvg = (acc, curr, index, arr) => {
+  const age = curr.died - curr.born;
+
+  return index === arr.length - 1
+    ? (acc + age) / arr.length
+    : acc + age;
+};
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,6 +22,7 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -22,17 +31,13 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   const men = people.filter(person => person.sex === 'm');
 
-  const centuryFiltered = typeof century === 'number' ? men.filter(person => {
-    return century === Math.ceil(person.died / 100);
-  }) : men;
+  const centuryFiltered = century
+    ? men.filter(person => {
+      return century === Math.ceil(person.died / 100);
+    })
+    : men;
 
-  return centuryFiltered.reduce((acc, curr, index, arr) => {
-    const age = curr.died - curr.born;
-
-    return index === arr.length - 1
-      ? (acc + age) / arr.length
-      : acc + age;
-  }, 0);
+  return centuryFiltered.reduce(calcAvg, 0);
 }
 
 /**
@@ -59,13 +64,7 @@ function calculateWomenAverageAge(people, withChildren) {
     })
     : women;
 
-  return filterByChildren.reduce((acc, curr, index, arr) => {
-    const age = curr.died - curr.born;
-
-    return index === arr.length - 1
-      ? (acc + age) / arr.length
-      : acc + age;
-  }, 0);
+  return filterByChildren.reduce(calcAvg, 0);
 }
 
 /**
@@ -84,6 +83,23 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const mothers = [];
+
+  const children = people.filter(child => {
+    people.find(person => {
+      const hasChild = child.mother === person.name;
+
+      hasChild && (mothers[mothers.length] = person);
+
+      return hasChild;
+    });
+  });
+
+  const avgChildrenAge = children.reduce(calcAvg, 0);
+
+  const avgMomsName = mothers.reduce(calcAvg, 0);
+
+  return (avgMomsName - avgChildrenAge) / 2;
 }
 
 module.exports = {
