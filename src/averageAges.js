@@ -15,6 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const withCentury = people.map((person) => ({
+    ...person,
+    age: (person.died - person.born),
+    century: Math.ceil(person.died / 100),
+  }));
+
+  const men = withCentury.filter(person => person.sex === 'm');
+
+  const filteredMen = century
+    ? men.filter(person => person.century === century)
+    : men;
+  const totalAgeMen = filteredMen.reduce((sum, man) =>
+    sum + man.age, 0);
+
+  const averageAgeMen = totalAgeMen / filteredMen.length;
+
+  return +averageAgeMen.toFixed(2);
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +55,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const withAge = people.map((person) => ({
+    ...person,
+    age: (person.died - person.born),
+  }));
+  const women = withAge.filter(person => person.sex === 'f');
+  const filteredWomen = withChildren
+    ? withAge.filter(person => person.sex === 'f'
+    && withAge.some(child => child.mother === person.name))
+    : women;
+
+  const totalAgeWomen = filteredWomen.reduce((sum, woman) =>
+    sum + woman.age, 0);
+  const averageAgeWomen = totalAgeWomen / filteredWomen.length;
+
+  return +averageAgeWomen.toFixed(2);
 }
 
 /**
@@ -55,7 +87,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(
+    child => people.some(person => child.mother === person.name));
+
+  const filteredChildren = onlyWithSon
+    ? children.filter(person => person.sex === 'm')
+    : children;
+
+  const sumAges = filteredChildren.reduce((sum, child) => sum + (child.born
+    - people.find(mother => child.mother === mother.name).born), 0);
+
+  const averageAgeDiff = sumAges / filteredChildren.length;
+
+  return +averageAgeDiff.toFixed(2);
 }
 
 module.exports = {
