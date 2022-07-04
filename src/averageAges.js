@@ -15,11 +15,25 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const conditions = person => {
+    if (!century) {
+      if (person.sex === 'm') {
+        return person;
+      }
+    } else {
+      if (person.sex === 'm' && Math.ceil(person.died / 100) === century) {
+        return person;
+      }
+    }
+  };
+
+  const agesList = people.filter(conditions).map(person => {
+    return person.died - person.born;
+  });
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 /**
@@ -37,7 +51,27 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const conditions = person => {
+    if (withChildren) {
+      if (
+        people.some(child => child.mother === person.name) && person.sex === 'f'
+      ) {
+        return person;
+      }
+    } else {
+      if (person.sex === 'f') {
+        return person;
+      }
+    }
+  };
+
+  const agesList = people.filter(conditions).map(person => {
+    return person.died - person.born;
+  });
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 /**
@@ -55,7 +89,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const conditions = person => {
+    if (people.some(mother => person.mother === mother.name)) {
+      const motherIndex = people.findIndex(
+        mother => person.mother === mother.name
+      );
+
+      return onlyWithSon
+        ? person.sex === 'm'
+          ? person.born - people[motherIndex].born
+          : undefined
+        : person.born - people[motherIndex].born;
+    }
+  };
+
+  const agesList = people.map(conditions).filter(el => el !== undefined);
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 module.exports = {
