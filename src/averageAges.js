@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let result;
+
+  if (century) {
+    result = people
+      .filter(human => (human.sex === 'm'))
+      .filter(human => Math.ceil(human.died / 100) === century);
+  } else {
+    result = people
+      .filter(human => (human.sex === 'm'));
+  }
+
+  return result.reduce((sum, human) =>
+    sum + (human.died - human.born), 0) / result.length;
 }
 
 /**
@@ -37,7 +45,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let answer;
+
+  if (withChildren) {
+    const mothersNames = people
+      .filter((name) => name.mother !== null)
+      .map((name) => name.mother);
+
+    answer = people.filter(obj => mothersNames.indexOf(obj.name) !== -1);
+  } else {
+    answer = people.filter(obj => obj.sex === 'f');
+  }
+
+  return answer.reduce((sum, human) =>
+    sum + (human.died - human.born), 0) / answer.length;
 }
 
 /**
@@ -55,7 +76,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let childrens;
+
+  if (onlyWithSon) {
+    childrens = people.filter(human => human.mother !== null
+      && human.sex === 'm');
+  } else {
+    childrens = people.filter(human => human.mother !== null);
+  }
+
+  const difference = childrens
+    .map(child => {
+      if (people.findIndex(parent => parent.name === child.mother) >= 0) {
+        const positionOfMother = people.findIndex(x => x.name === child.mother);
+
+        return child.born - people[positionOfMother].born;
+      } else {
+        return 0;
+      }
+    })
+    .filter(item => item > 0);
+
+  return difference.reduce((prev, x) => prev + x) / difference.length;
 }
 
 module.exports = {
