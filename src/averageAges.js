@@ -15,16 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const conditions = person => {
-    return !century && person.sex === 'm'
-      ? person
-      : person.sex === 'm' && Math.ceil(person.died / 100) === century
-        ? person : undefined;
-  };
-
-  const agesList = people.filter(conditions).map(person => {
-    return person.died - person.born;
-  });
+  const agesList = (century
+    ? people.filter(({ sex, died }) => sex === 'm'
+      && Math.ceil(died / 100) === century)
+    : people.filter(({ sex }) => sex === 'm'))
+    .map(person => {
+      return person.died - person.born;
+    });
 
   return Math.round(
     agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
@@ -46,16 +43,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const conditions = person => {
-    return !withChildren && person.sex === 'f'
-      ? person
-      : person.sex === 'f' && people.some(child => child.mother === person.name)
-        ? person : undefined;
-  };
-
-  const agesList = people.filter(conditions).map(person => {
-    return person.died - person.born;
-  });
+  const agesList = (withChildren
+    ? people.filter(
+      ({ name }) => people.some(({ mother }) => mother === name))
+    : people.filter(({ sex }) => sex === 'f'))
+    .map(person => {
+      return person.died - person.born;
+    });
 
   return Math.round(
     agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
@@ -77,21 +71,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const children = onlyWithSon
+    ? people.filter(person => {
+      return people.some(mother => person.mother === mother.name)
+      && person.sex === 'm';
+    })
+    : people.filter(person => {
+      return people.some(mother => person.mother === mother.name);
+    });
+
   const conditions = person => {
     const motherIndex = people.findIndex(
       mother => person.mother === mother.name
     );
 
-    return people.some(mother => person.mother === mother.name)
-      ? onlyWithSon
-        ? person.sex === 'm'
-          ? person.born - people[motherIndex].born
-          : undefined
-        : person.born - people[motherIndex].born
-      : undefined;
+    return person.born - people[motherIndex].born;
   };
 
-  const agesList = people.map(conditions).filter(el => el !== undefined);
+  const agesList = children.map(conditions).filter(el => el !== undefined);
 
   return Math.round(
     agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
