@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const agesList = (century
+    ? people.filter(({ sex, died }) => sex === 'm'
+      && Math.ceil(died / 100) === century)
+    : people.filter(({ sex }) => sex === 'm'))
+    .map(person => {
+      return person.died - person.born;
+    });
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 /**
@@ -37,7 +43,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const agesList = (withChildren
+    ? people.filter(
+      ({ name }) => people.some(({ mother }) => mother === name))
+    : people.filter(({ sex }) => sex === 'f'))
+    .map(person => {
+      return person.died - person.born;
+    });
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 /**
@@ -55,7 +71,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(person => {
+      return people.some(mother => person.mother === mother.name)
+      && person.sex === 'm';
+    })
+    : people.filter(person => {
+      return people.some(mother => person.mother === mother.name);
+    });
+
+  const conditions = person => {
+    const motherIndex = people.findIndex(
+      mother => person.mother === mother.name
+    );
+
+    return person.born - people[motherIndex].born;
+  };
+
+  const agesList = children.map(conditions).filter(el => el !== undefined);
+
+  return Math.round(
+    agesList.reduce((a, b) => (a + b), 0) / agesList.length * 100
+  ) / 100;
 }
 
 module.exports = {
