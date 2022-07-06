@@ -15,13 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(person => person.sex === 'm');
-
-  if (century) {
-    men = men.filter(person => Math.ceil(person.died / 100) === century);
-  }
-
-  men = men.map(({ born, died }) => died - born);
+  const men = people
+    .filter(person => {
+      return century
+        ? person.sex === 'm'
+          && (Math.ceil(person.died / 100) === century)
+        : person.sex === 'm';
+    })
+    .map(({ born, died }) => died - born);
 
   const commonAge = men.reduce((prevValue, currValue) => prevValue + currValue);
 
@@ -43,15 +44,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
-
-  if (withChildren) {
-    women = women.filter(person => people.some(child => (
-      child.mother === person.name)
-    ));
-  }
-
-  women = women.map(({ born, died }) => died - born);
+  const women = people
+    .filter(person => {
+      return withChildren
+        ? person.sex === 'f'
+          && people.some(child => child.mother === person.name)
+        : person.sex === 'f';
+    })
+    .map(({ born, died }) => died - born);
 
   const commonAge = women.reduce(
     (prevValue, currValue) => prevValue + currValue
@@ -75,19 +75,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(person => people.some(
-    mother => mother.name === person.mother)
-  );
-
-  if (onlyWithSon) {
-    children = children.filter(person => person.sex === 'm');
-  }
-
-  children = children.map(
-    person =>
-      person.born
-      - people.find(mother => mother.name === person.mother).born
-  );
+  const children = people
+    .filter(person => {
+      return onlyWithSon
+        ? people.some(mother => mother.name === person.mother)
+          && person.sex === 'm'
+        : people.some(mother => mother.name === person.mother);
+    })
+    .map(person => {
+      return person.born
+        - people.find(mother => mother.name === person.mother).born;
+    });
 
   const commonAge = children.reduce(
     (prevValue, currValue) => prevValue + currValue
