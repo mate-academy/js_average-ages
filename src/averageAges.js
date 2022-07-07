@@ -31,13 +31,11 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   const men = people.filter(person => person.sex === 'm');
 
-  const centuryFiltered = century
-    ? men.filter(person => {
-      return century === Math.ceil(person.died / 100);
-    })
+  const menBasedCentury = century
+    ? men.filter(person => century === Math.ceil(person.died / 100))
     : men;
 
-  return centuryFiltered.reduce(calcAvg, 0);
+  return menBasedCentury.reduce(calcAvg, 0);
 }
 
 /**
@@ -55,16 +53,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  // // write code here
   const women = people.filter(person => person.sex === 'f');
-
-  const filterByChildren = withChildren
-    ? women.filter(female => {
+  const womenWithChildren = withChildren
+    && women.filter(female => {
       return people.some(person => person.mother === female.name);
-    })
-    : women;
+    });
 
-  return filterByChildren.reduce(calcAvg, 0);
+  const checkedWomen = womenWithChildren || women;
+
+  return checkedWomen.reduce(calcAvg, 0);
 }
 
 /**
@@ -82,24 +80,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-  const mothers = [];
+  const children = people.filter(person => {
+    const isChild = people.some(human => human.name === person.mother);
 
-  const children = people.filter(child => {
-    people.find(person => {
-      const hasChild = child.mother === person.name;
-
-      hasChild && (mothers[mothers.length] = person);
-
-      return hasChild;
-    });
+    return onlyWithSon ? (person.sex === 'm' && isChild) : isChild;
   });
 
-  const avgChildrenAge = children.reduce(calcAvg, 0);
+  const recentMothersAges = children.map(child => {
+    const mother = people.find(human => human.name === child.mother);
 
-  const avgMomsName = mothers.reduce(calcAvg, 0);
+    return child.born - mother.born;
+  });
 
-  return (avgMomsName - avgChildrenAge) / 2;
+  const avgMomsAge = recentMothersAges.reduce((acc, curr, index, arr) => {
+    return index === (arr.length - 1)
+      ? (acc + curr) / arr.length
+      : acc + curr;
+  }, 0);
+
+  return avgMomsAge;
 }
 
 module.exports = {
