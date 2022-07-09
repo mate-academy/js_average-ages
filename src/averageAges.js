@@ -15,7 +15,6 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-
   const filterCallback = people.filter(man => century
     ? Math.ceil(man.died / 100) === century && man.sex === 'm'
     : man.sex === 'm');
