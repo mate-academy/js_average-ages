@@ -14,12 +14,27 @@
  *
  * @return {number}
  */
+
+function getCentury(person) {
+  return Math.ceil(person.died / 100);
+}
+
+function getPeopleBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function getAverageAge(people) {
+  return people
+    .map(person => person.died - person.born)
+    .reduce((a, b) => a + b, 0) / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menOfPeople = getPeopleBySex(people, 'm');
+  const fromCentury = menOfPeople.filter(man => getCentury(man) === century);
+  const scope = !century ? menOfPeople : fromCentury;
+
+  return getAverageAge(scope);
 }
 
 /**
@@ -36,8 +51,22 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
+function getListOfMothers(people) {
+  const metionedAsMother = people
+    .map(person => person.mother)
+    .filter(motherName => motherName !== null);
+
+  return people
+    .filter(person => metionedAsMother
+      .some(mother => mother === person.name));
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenOfPeople = getPeopleBySex(people, 'f');
+  const scope = withChildren ? getListOfMothers(people) : womenOfPeople;
+
+  return getAverageAge(scope);
 }
 
 /**
@@ -54,8 +83,21 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const scope = onlyWithSon ? getPeopleBySex(people, 'm') : people;
+  const hasMother = scope.filter(person => person.mother);
+  const hasMotherInList = hasMother
+    .filter(son => people
+      .some(person => person.name === son.mother));
+
+  return hasMotherInList
+    .map(child => {
+      const kidsMom = people.find(person => person.name === child.mother);
+
+      return child.born - kidsMom.born;
+    })
+    .reduce((a, b) => a + b, 0) / hasMotherInList.length;
 }
 
 module.exports = {
