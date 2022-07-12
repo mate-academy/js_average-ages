@@ -14,6 +14,7 @@
  *
  * @return {number}
  */
+
 function getCentury(person) {
   return Math.ceil(person.died / 100);
 }
@@ -29,10 +30,11 @@ function getAverageAge(people) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const fromCentury = people.filter(person => getCentury(person) === century);
-  const scope = century === undefined ? people : fromCentury;
+  const menOfPeople = getPeopleBySex(people, 'm');
+  const fromCentury = menOfPeople.filter(man => getCentury(man) === century);
+  const scope = !century ? menOfPeople : fromCentury;
 
-  return getAverageAge(getPeopleBySex(scope, 'm'));
+  return getAverageAge(scope);
 }
 
 /**
@@ -61,9 +63,10 @@ function getListOfMothers(people) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const scope = withChildren ? getListOfMothers(people) : people;
+  const womenOfPeople = getPeopleBySex(people, 'f');
+  const scope = withChildren ? getListOfMothers(people) : womenOfPeople;
 
-  return getAverageAge(getPeopleBySex(scope, 'f'));
+  return getAverageAge(scope);
 }
 
 /**
@@ -83,16 +86,18 @@ function calculateWomenAverageAge(people, withChildren) {
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const scope = onlyWithSon ? getPeopleBySex(people, 'm') : people;
-  const hasMother = scope.filter(person => person.mother !== null);
+  const hasMother = scope.filter(person => person.mother);
   const hasMotherInList = hasMother
     .filter(son => people
       .some(person => person.name === son.mother));
 
-  return hasMotherInList.map(child => {
-    const kidsMom = people.find(person => person.name === child.mother);
+  return hasMotherInList
+    .map(child => {
+      const kidsMom = people.find(person => person.name === child.mother);
 
-    return child.born - kidsMom.born;
-  }).reduce((a, b) => a + b, 0) / hasMotherInList.length;
+      return child.born - kidsMom.born;
+    })
+    .reduce((a, b) => a + b, 0) / hasMotherInList.length;
 }
 
 module.exports = {
