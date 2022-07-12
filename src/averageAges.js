@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const mans = people
+    .filter(human => ((Math.ceil(human.died / 100) === century)
+      && (human.sex === 'm')) || (human.sex === 'm' && !century));
+
+  const mansAge = mans.reduce((acc, human) => {
+    return (human.died - human.born) + acc;
+  }, 0);
+
+  return mansAge / mans.length;
 }
 
 /**
@@ -37,7 +41,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(human => human.sex === 'f'
+      && people.some(person => person.mother === human.name))
+    : people.filter(human => human.sex === 'f');
+
+  const womanAge = women.reduce((acc, human) => {
+    return (human.died - human.born) + acc;
+  }, 0);
+
+  return womanAge / women.length;
 }
 
 /**
@@ -55,7 +68,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(human => people
+      .some(mother => mother.name === human.mother)
+      && human.sex === 'm')
+    : people.filter(human => people
+      .some(mother => mother.name === human.mother));
+
+  const egeDifference = children
+    .reduce((acc, human) => {
+      return acc + human.born - people
+        .find(person => person.name === human.mother).born;
+    }, 0);
+
+  return egeDifference / children.length;
 }
 
 module.exports = {
