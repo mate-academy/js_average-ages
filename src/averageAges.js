@@ -15,15 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const cent = arguments.length === 1 ? -1 : century;
-  const men = people.filter((man) => {
-    return man.sex === 'm'
-      && (cent === -1 ? true : Math.ceil(man.died / 100) === cent);
-  });
+  const men = people.filter(person => (century)
+    ? person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
+    : person.sex === 'm',
+  );
 
-  return men.reduce((prev, curr) => {
-    return prev + curr.died - curr.born;
-  }, 0) / men.length;
+  return men.reduce((prev, curr) => (
+    prev + curr.died - curr.born
+  ), 0) / men.length;
 }
 /**
  * Implement calculateWomenAverageAge function
@@ -41,17 +41,15 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter((woman) => {
-    return woman.sex === 'f';
-  });
+  let women = people.filter((woman) => woman.sex === 'f');
 
-  women = withChildren ? women.filter(woman => people.some(human => {
-    return human.mother === woman.name;
-  })) : women;
+  women = withChildren
+    ? women.filter(woman => people.some(human => human.mother === woman.name))
+    : women;
 
-  return women.reduce((prev, curr) => {
-    return prev + curr.died - curr.born;
-  }, 0) / women.length;
+  return women.reduce((prev, curr) => (
+    prev + curr.died - curr.born
+  ), 0) / women.length;
 }
 
 /**
@@ -69,15 +67,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrens = people.filter(child =>
-    child.mother && people.find(mother =>
-      child.mother === mother.name)
-      && (onlyWithSon ? child.sex === 'm' : true));
+  const childrens = people.filter(child => child.mother
+    && people.find(mother => child.mother === mother.name)
+      && (onlyWithSon
+        ? child.sex === 'm'
+        : true));
 
-  return childrens.reduce((prev, curr) => {
-    return prev + Math.abs(curr.born - people.find(human =>
-      human.name === curr.mother).born);
-  }, 0) / childrens.length;
+  return childrens.reduce((prev, curr) => (
+    prev + Math.abs(curr.born - people.find(human => (
+      human.name === curr.mother
+    )).born)
+  ), 0) / childrens.length;
 }
 
 module.exports = {
