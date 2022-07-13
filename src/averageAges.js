@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable */
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,6 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const men = findOutGender(people, 'm');
+  const menAges = century
+    ? men.filter(guy => Math.ceil(guy.died / 100) === century).map(guy => guy.died - guy.born)
+    : calculateAge(men);
+
+  const sumOfMenAges = calculateAverageAge(menAges);
+
+  return sumOfMenAges / menAges.length;
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +46,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = findOutGender(people, 'f');
+  const womenAreMothers = women.filter(
+    women => people.some(person => person.mother === women.name)
+  );
+  const womenAges = withChildren
+    ? calculateAge(womenAreMothers)
+    : calculateAge(women);
+
+  const sumOfWomanAges = calculateAverageAge(womenAges);
+
+
+  return sumOfWomanAges / womenAges.length;
 }
 
 /**
@@ -55,7 +75,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const isChild = people.filter(
+    person => people.some(mother => mother.name === person.mother))
+  const sons = findOutGender(isChild, 'm');
+
+  const haveMothers = onlyWithSon
+    ? sons
+    : isChild;
+
+  const agesDiff = haveMothers.map(
+    child => child.born - people.find(
+      person => person.name === child.mother
+    ).born
+  )
+
+  const sumOfChildsAge = calculateAverageAge(agesDiff);
+
+  return sumOfChildsAge / agesDiff.length;
+}
+
+
+
+function findOutGender(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function calculateAge(people) {
+  return people.map(person => person.died - person.born)
+}
+
+function calculateAverageAge(people) {
+  return people.reduce((sum, x) => sum + x)
 }
 
 module.exports = {
