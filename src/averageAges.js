@@ -49,7 +49,8 @@ function calculateWomenAverageAge(people, withChildren) {
     : people.filter(person => person.sex === 'f');
 
   const sumOfAges = filteredWomen
-    .reduce((a, b) => (a + (b.died - b.born)), 0);
+    .reduce((totalYears, person) =>
+      (totalYears + (person.died - person.born)), 0);
 
   return sumOfAges / filteredWomen.length;
 }
