@@ -15,11 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let totalAge = 0;
+
+  const men = people.filter(persone =>
+    persone.sex === 'm');
+
+  let menByCentury;
+
+  typeof century === 'undefined'
+    ? menByCentury = men
+    : menByCentury = men.filter(human =>
+      century === Math.ceil(human.died / 100));
+
+  totalAge = menByCentury.map(human =>
+    human.died - human.born).reduce((a, b) => (a + b), 0);
+
+  return totalAge / menByCentury.length;
 }
 
 /**
@@ -37,7 +48,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let totalAge = 0;
+
+  const females = people.filter(human => human.sex === 'f');
+
+  const mothersList = people.map(human => human.mother);
+
+  const femalesWithChildren = females.filter(human =>
+    mothersList.some(mother => mother === human.name));
+
+  const womens = (typeof withChildren === 'undefined')
+    ? females
+    : femalesWithChildren;
+
+  totalAge = womens.map(human =>
+    human.died - human.born).reduce((a, b) => (a + b), 0);
+
+  return totalAge / womens.length;
 }
 
 /**
@@ -55,7 +82,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let children = 0;
+
+  typeof onlyWithSon === 'undefined'
+    ? children = people.filter(human =>
+      people.find(mama => human.mother === mama.name))
+    : children = people.filter(human => human.sex === 'm'
+    && people.find(mama => human.mother === mama.name));
+
+  const totalDifference = children.reduce((previous, current) =>
+    previous + current.born - people.find(human =>
+      current.mother === human.name).born, 0);
+
+  return totalDifference / children.length;
 }
 
 module.exports = {
