@@ -23,14 +23,15 @@ function calculateMenAverageAge(people, century) {
 
   const menOnly = filterBySex(people, 'm');
 
-  const menOnlyCentury = menOnly.filter((person) =>
-    Math.ceil(person.died / 100) === century);
+  const menOnlyCentury = menOnly.filter((person) => (
+    Math.ceil(person.died / 100) === century)
+  );
 
   let menOnlyAverageAge;
 
   isFinite(century)
-    ? menOnlyAverageAge = averageAge(menOnlyCentury)
-    : menOnlyAverageAge = averageAge(menOnly);
+    ? menOnlyAverageAge = calculateAverageAge(menOnlyCentury)
+    : menOnlyAverageAge = calculateAverageAge(menOnly);
 
   return menOnlyAverageAge;
 }
@@ -51,13 +52,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenOnly = filterBySex(people, 'f');
-  const womenOnlyHasChild = mothersHasChild(people);
+  const womenOnlyHasChild = filterMothers(people);
 
   let womenOnlyAverageAge;
 
   withChildren
-    ? womenOnlyAverageAge = averageAge(womenOnlyHasChild)
-    : womenOnlyAverageAge = averageAge(womenOnly);
+    ? womenOnlyAverageAge = calculateAverageAge(womenOnlyHasChild)
+    : womenOnlyAverageAge = calculateAverageAge(womenOnly);
 
   return womenOnlyAverageAge;
 }
@@ -77,8 +78,8 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = mothersHasChild(people);
-  const sonsAndDaughters = hasMother(people);
+  const mothers = filterMothers(people);
+  const sonsAndDaughters = filterHasMother(people);
   const sonsOnly = filterBySex(sonsAndDaughters, 'm');
   let children;
 
@@ -103,19 +104,19 @@ function filterBySex(peopleArray, sex) {
   return peopleArray.filter((person) => person.sex === sex);
 }
 
-function averageAge(peopleArray) {
+function calculateAverageAge(peopleArray) {
   return peopleArray.reduce((prev, curr) =>
     prev + curr.died - curr.born, 0) / peopleArray.length;
 }
 
-function mothersHasChild(peopleArray) {
+function filterMothers(peopleArray) {
   const womenOnly = filterBySex(peopleArray, 'f');
   const mothers = peopleArray.map(person => person.mother);
 
   return womenOnly.filter(person => mothers.includes(person.name));
 }
 
-function hasMother(peopleArray) {
+function filterHasMother(peopleArray) {
   return peopleArray.filter(({ mother }) =>
     peopleArray.find(({ name }) => name === mother));
 }
