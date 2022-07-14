@@ -15,9 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const male = people
-    .filter(human => ((Math.ceil(human.died / 100) === century)
-      && (human.sex === 'm')) || (human.sex === 'm' && !century));
+  const male = people.filter((human) => (
+    century
+      ? human.sex === 'm' && Math.ceil(human.died / 100) === century
+      : human.sex === 'm'
+  ));
 
   const maleAge = male.reduce((acc, human) => {
     return (human.died - human.born) + acc;
@@ -41,10 +43,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const female = withChildren
-    ? people.filter(human => human.sex === 'f'
-      && people.some(person => person.mother === human.name))
-    : people.filter(human => human.sex === 'f');
+  const hasChild = (name) => people.some((human) => (
+    human.mother === name
+  ));
+
+  const female = people.filter((human) => (
+    withChildren
+      ? human.sex === 'f' && hasChild(human.name)
+      : human.sex === 'f'
+  ));
 
   const femaleAge = female.reduce((acc, human) => {
     return (human.died - human.born) + acc;
@@ -68,18 +75,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = onlyWithSon
-    ? people.filter(human => people
-      .some(mother => mother.name === human.mother)
-      && human.sex === 'm')
-    : people.filter(human => people
-      .some(mother => mother.name === human.mother));
+  const hasParent = (parent) => people.some(human => (
+    parent === human.name
+  ));
+
+  const getParentBorthDate = (parentName) => people.find(human => (
+    parentName === human.name
+  ))['born'];
+
+  const children = people.filter((human) => (
+    onlyWithSon
+      ? human.sex === 'm' && hasParent(human.mother)
+      : hasParent(human.mother)
+  ));
 
   const egeDifference = children
-    .reduce((acc, human) => {
-      return acc + human.born - people
-        .find(person => person.name === human.mother).born;
-    }, 0);
+    .reduce((acc, human) => (
+      acc + human.born - getParentBorthDate(human.mother)
+    ), 0);
 
   return egeDifference / children.length;
 }
