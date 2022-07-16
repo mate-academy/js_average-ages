@@ -40,20 +40,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let answer;
+  let mother;
 
-  if (withChildren) {
-    const mothersNames = people
-      .filter((name) => name.mother !== null)
-      .map((name) => name.mother);
+  const mothersNames = people
+    .filter((name) => name.mother !== null)
+    .map((name) => name.mother);
 
-    answer = people.filter(obj => mothersNames.indexOf(obj.name) !== -1);
-  } else {
-    answer = people.filter(obj => obj.sex === 'f');
-  }
+  mother = withChildren
+    ? mother = people.filter(obj => mothersNames.indexOf(obj.name) !== -1)
+    : mother = people.filter(obj => obj.sex === 'f');
 
-  return answer.reduce((sum, human) =>
-    sum + (human.died - human.born), 0) / answer.length;
+  return mother.reduce((sum, human) =>
+    sum + (human.died - human.born), 0) / mother.length;
 }
 
 /**
@@ -73,21 +71,22 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let childrens;
 
-  if (onlyWithSon) {
-    childrens = people.filter(human => human.mother !== null
-      && human.sex === 'm');
-  } else {
-    childrens = people.filter(human => human.mother !== null);
-  }
+  childrens = onlyWithSon
+    ? childrens = people.filter(human => human.mother !== null
+    && human.sex === 'm')
+    : childrens = people.filter(human => human.mother !== null);
 
   const difference = childrens
     .map(child => {
-      if (people.findIndex(parent => parent.name === child.mother) >= 0) {
-        const positionOfMother = people.findIndex(x => x.name === child.mother);
+      switch (people.findIndex(parent => parent.name === child.mother) >= 0) {
+        case true:
+          const positionOfMother
+          = people.findIndex(x => x.name === child.mother);
 
-        return child.born - people[positionOfMother].born;
-      } else {
-        return 0;
+          return child.born - people[positionOfMother].born;
+
+        default:
+          return 0;
       }
     })
     .filter(item => item > 0);
