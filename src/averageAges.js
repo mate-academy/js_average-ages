@@ -1,9 +1,13 @@
 'use strict';
 
 // callback for average age from first two tasks
-const calcAvg = (people) => {
-  return people.reduce((acc, { died, born }) => (
-    acc + died - born), 0) / people.length;
+const calcAvg = ages => {
+  return ages.reduce((a, b) => (
+    a + b), 0) / ages.length;
+};
+
+function roundAge(age) {
+  return Number(age.toFixed(2));
 };
 /**
  * Implement calculateMenAverageAge function
@@ -31,8 +35,9 @@ function calculateMenAverageAge(people, century) {
   const menBasedCentury = century
     ? men.filter(person => century === Math.ceil(person.died / 100))
     : men;
+  const menAges = menBasedCentury.map(({ died, born }) => died - born);
 
-  return calcAvg(menBasedCentury);
+  return roundAge(calcAvg(menAges));
 }
 
 /**
@@ -59,7 +64,9 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const checkedWomen = womenWithChildren || women;
 
-  return calcAvg(checkedWomen);
+  const womenAges = checkedWomen.map(({ died, born }) => died - born);
+
+  return roundAge(calcAvg(womenAges));
 }
 
 /**
@@ -89,7 +96,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return child.born - mother.born;
   });
 
-  return diffAges.reduce((a, b) => a + b, 0) / diffAges.length;
+  return roundAge(calcAvg(diffAges));
 }
 
 module.exports = {
