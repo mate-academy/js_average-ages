@@ -1,5 +1,14 @@
 'use strict';
 
+// callback for average age from first two tasks
+const calcAvg = ages => {
+  return ages.reduce((a, b) => (
+    a + b), 0) / ages.length;
+};
+
+function roundAge(age) {
+  return Number(age.toFixed(2));
+};
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,12 +23,21 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const men = people.filter(person => person.sex === 'm');
+
+  const menBasedCentury = century
+    ? men.filter(person => century === Math.ceil(person.died / 100))
+    : men;
+  const menAges = menBasedCentury.map(({ died, born }) => died - born);
+
+  return roundAge(calcAvg(menAges));
 }
 
 /**
@@ -37,7 +55,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  // // write code here
+  const women = people.filter(person => person.sex === 'f');
+  const womenWithChildren = withChildren
+    && women.filter(female => {
+      return people.some(person => person.mother === female.name);
+    });
+
+  const checkedWomen = womenWithChildren || women;
+
+  const womenAges = checkedWomen.map(({ died, born }) => died - born);
+
+  return roundAge(calcAvg(womenAges));
 }
 
 /**
@@ -55,7 +84,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(person => {
+    const isChild = people.some(human => human.name === person.mother);
+
+    return onlyWithSon ? (person.sex === 'm' && isChild) : isChild;
+  });
+
+  const diffAges = children.map(child => {
+    const mother = people.find(human => human.name === child.mother);
+
+    return child.born - mother.born;
+  });
+
+  return roundAge(calcAvg(diffAges));
 }
 
 module.exports = {
