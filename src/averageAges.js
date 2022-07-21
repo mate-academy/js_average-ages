@@ -14,6 +14,8 @@
  *
  * @return {number}
  */
+const callback = (a, b) => a + b;
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -25,7 +27,7 @@ function calculateMenAverageAge(people, century) {
     : person.sex === 'm'))
     .map(person => person.died - person.born);
 
-  return menAgeArr.reduce((a, b) => a + b, 0) / menAgeArr.length;
+  return menAgeArr.reduce(callback, 0) / menAgeArr.length;
 }
 
 /**
@@ -48,7 +50,7 @@ function calculateWomenAverageAge(people, withChildren) {
     : person.sex === 'f')
     .map(person => person.died - person.born);
 
-  return womenAgeArr.reduce((a, b) => a + b, 0) / womenAgeArr.length;
+  return womenAgeArr.reduce(callback, 0) / womenAgeArr.length;
 }
 
 /**
@@ -73,7 +75,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .map(child => child.born
         - people.find(mom => mom.name === child.mother).born);
 
-  return ageDiffArray.reduce((a, b) => a + b, 0) / ageDiffArray.length;
+  return ageDiffArray.reduce(callback, 0) / ageDiffArray.length;
 }
 
 module.exports = {
