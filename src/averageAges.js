@@ -41,29 +41,21 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const array = people.filter(female => female.sex === 'f');
+  const women = people.filter((person) =>
+    withChildren
+      ? person.sex === 'f' && isMother(people, person)
+      : person.sex === 'f'
+  );
 
-  const avarage = (women) => {
-    return women
-      .map(person => person.died - person.born)
-      .reduce((prev, curr) => prev + curr) / women.length;
-  };
+  const womenAverageAge = women
+    .map((age) => age.died - age.born)
+    .reduce((sum, index) => sum + index) / women.length;
 
-  if (withChildren) {
-    const parent = array.filter(female => {
-      const mother = people.find(child =>
-        female.name === child.mother
-      );
+  return womenAverageAge;
+}
 
-      if (mother) {
-        return mother;
-      }
-    });
-
-    return avarage(parent);
-  } else {
-    return avarage(array);
-  }
+function isMother(people, mother) {
+  return people.some((person) => person.mother === mother.name);
 }
 
 /**
@@ -82,32 +74,31 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const diff = [];
+  const children = people.filter((person) =>
+    onlyWithSon
+      ? person.sex === 'm' && hasMother(people, person)
+      : hasMother(people, person)
+  );
 
-  const search = (arr) => {
-    arr.map(child => {
-      const parents = people.find(parent =>
-        parent.name === child.mother
-      );
+  const mothers = people.filter(
+    (person) => person.sex === 'f' && isMother(people, person)
+  );
 
-      if (parents) {
-        diff.push(child.born - parents.born);
-      }
-    });
-  };
+  const ageDifference = children.map(
+    (child) =>
+      child.born - mothers.find((person) => person.name === child.mother).born
+  );
 
-  if (onlyWithSon) {
-    const male = people.filter(person => person.sex === 'm');
+  const averageAgeDifference =
+    ageDifference.reduce((sum, index) => sum + index) / ageDifference.length;
 
-    search(male);
-  } else {
-    search(people);
-  }
+  return averageAgeDifference;
+}
 
-  const avarage = diff.reduce((prev, curr) => prev + curr)
-  / diff.length;
-
-  return avarage;
+function hasMother(people, child) {
+  return people.some(
+    (person) => person.sex === 'f' && person.name === child.mother
+  );
 }
 
 module.exports = {
