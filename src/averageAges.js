@@ -14,22 +14,15 @@
  *
  * @return {number}
  */
+const sumOfAges = (filter) => (filter
+  .reduce((sum, { died, born }) => (sum + (died - born)), 0));
+
 function calculateMenAverageAge(people, century) {
-  const manFiltered = (!century)
-    ? people.filter((person) => person.sex === 'm')
-    : people.filter((person) =>
-      Math.ceil(person.died / 100) === century && person.sex === 'm');
+  const manFilter = people.filter(person => person.sex === 'm'
+    && (century ? (Math.ceil(person.died / 100) === century) : 1)
+  );
 
-  const manAgeOfLife = manFiltered
-    .map(person => person.died - person.born);
-
-  return manAgeOfLife
-    .reduce((a, b) => a + b) / manFiltered.length;
-
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  return sumOfAges(manFilter) / manFilter.length;
 }
 
 /**
@@ -47,18 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const allMothers = people.map(person => person.mother);
-  const isMother = people.filter(person => allMothers.includes(person.name));
+  const mothers = people.map(person => person.mother);
 
-  const womanFiltered = (withChildren)
-    ? isMother
-    : people.filter((person) => person.sex === 'f');
+  const womanFilter = people.filter(person => withChildren
+    ? (mothers.includes(person.name))
+    : person.sex === 'f'
+  );
 
-  const womanAgeOfLife = womanFiltered
-    .map(person => person.died - person.born);
-
-  return womanAgeOfLife
-    .reduce((a, b) => a + b) / womanFiltered.length;
+  return sumOfAges(womanFilter) / womanFilter.length;
 };
 
 /**
@@ -76,25 +65,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const allMothers = people.map(person => person.mother);
-  const isMother = people.filter(person => allMothers.includes(person.name));
-  const isMotherNames = isMother.map(person => person.name);
+  const isMother = (name) => (
+    people.find(mother => name === mother.name)
+  );
 
-  const hasMotherOnList = (onlyWithSon)
-    ? people.filter(person => isMotherNames.includes(person.mother)
-        && person.sex === 'm')
-    : people.filter(person => isMotherNames.includes(person.mother));
+  const kidsFilter = people
+    .filter(person => isMother(person.mother)
+    && (onlyWithSon ? person.sex === 'm' : 1));
 
-  const motherObj = {};
+  const sumOfMathersAge = kidsFilter
+    .reduce((sum, { born, mother }) => (
+      sum + born - isMother(mother).born
+    ), 0);
 
-  isMother.map(function(person) {
-    motherObj[person.name] = person.born;
-  });
-
-  const arrResult = hasMotherOnList.map(person =>
-    person.born - motherObj[person.mother]);
-
-  return arrResult.reduce((a, b) => a + b) / arrResult.length;
+  return sumOfMathersAge / kidsFilter.length;
 }
 
 module.exports = {
