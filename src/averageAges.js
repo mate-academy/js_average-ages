@@ -25,27 +25,13 @@ function calculateAverageAge(obj) {
   return averageAge;
 }
 
-function determineSex(arr, sex) {
-  return arr.filter(person => person.sex === `${sex}`);
-}
-
-function calculateWithChildren(obj, array) {
-  const womenWithChildren = obj.filter(woman => array.some(person => (
-    person.mother === woman.name
-  )));
-
-  return womenWithChildren;
-}
-
 // First task
 function calculateMenAverageAge(people, century) {
-  let onlyMen = determineSex(people, 'm');
+  const onlyMen = century
 
-  if (century) {
-    onlyMen = onlyMen.filter(person => (
-      Math.ceil(person.died / 100) === century)
-    );
-  }
+    ? people.filter(person =>
+      (Math.ceil(person.died / 100) === century) && person.sex === 'm')
+    : people.filter(person => person.sex === 'm');
 
   const menAgeAverage = calculateAverageAge(onlyMen);
 
@@ -67,11 +53,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let onlyWomen = determineSex(people, 'f');
+  const onlyWomen = withChildren
 
-  if (withChildren) {
-    onlyWomen = calculateWithChildren(onlyWomen, people);
-  }
+    ? people.filter(woman => people.some(person => (
+      person.mother === woman.name && woman.sex === 'f'
+    )))
+
+    : people.filter(woman => woman.sex === 'f');
 
   const womenAgeAverage = calculateAverageAge(onlyWomen);
 
