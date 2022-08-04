@@ -67,7 +67,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(({ sex, mother }) =>
       people.some(({ name }) => name === mother)
       && (!onlyWithSon || sex === 'm')
-    )
+    );
+  const peopleWithMotherBornYear = filteredPeople
     .map(person => {
       person.motherBorn = people
         .find(({ name }) => name === person.mother)
@@ -76,7 +77,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       return person;
     });
 
-  return calculateAverage(filteredPeople, 'born', 'motherBorn');
+  return calculateAverage(peopleWithMotherBornYear, 'born', 'motherBorn');
 }
 
 /**
