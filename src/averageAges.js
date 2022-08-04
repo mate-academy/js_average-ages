@@ -20,14 +20,9 @@ function calculateMenAverageAge(people, century) {
   const menList = people.filter(person => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
-  // quantity of choosed men
-  const menQuantity = menList.length;
-  // with reduce calculate man ages
-  const menAvarageAge = menList.reduce((sumOfAges, man) => (
-    sumOfAges + (man.died - man.born)
-  ), 0) / menQuantity;
 
-  return +menAvarageAge.toFixed(2);
+  // call function to calculate average age of founded men
+  return calcAverageAge(menList);
 }
 
 /**
@@ -51,14 +46,9 @@ function calculateWomenAverageAge(people, withChildren) {
     ? person.sex === 'f'
     && people.some(anyPeople => anyPeople.mother === person.name)
     : person.sex === 'f');
-  // quantity of choosed womens
-  const womenQuantity = womenList.length;
-  // with reduce calculate woman ages
-  const womenAvarageAge = womenList.reduce((sumOfAges, woman) => (
-    sumOfAges + (woman.died - woman.born)
-  ), 0) / womenQuantity;
 
-  return +womenAvarageAge.toFixed(2);
+  // call function to calculate average age of founded women
+  return calcAverageAge(womenList);
 }
 
 /**
@@ -95,6 +85,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   ), 0) / ageDiff.length;
 
   return +averageAgeDiff.toFixed(2);
+}
+
+// create callback function for calculating average age in people list
+function calcAverageAge(listOfPeople) {
+  return +listOfPeople.reduce((sumOfAges, sex) => (
+    sumOfAges + (sex.died - sex.born)
+  ), 0) / listOfPeople.length;
 }
 
 module.exports = {
