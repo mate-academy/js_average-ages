@@ -18,26 +18,18 @@ function calculateMenAverageAge(people, century) {
   let sumOfAgeMan = 0;
   let man = [];
 
-  if (century) {
-    man = people
-      .filter(person => (person.sex === 'm')
-      && (Math.ceil(person.died / 100) === century));
+  man = people.filter(person => {
+    const menCalculated = century
+      ? (person.sex === 'm') && (Math.ceil(person.died / 100) === century)
+      : (person.sex === 'm');
 
-    sumOfAgeMan = man.reduce((sum, age) => sum + (age.died - age.born), 0);
+    return menCalculated;
+  });
+  sumOfAgeMan = man.reduce((sum, age) => sum + (age.died - age.born), 0);
 
-    const ageAver = sumOfAgeMan / man.length;
+  const ageAver = sumOfAgeMan / man.length;
 
-    return ageAver;
-  } else {
-    man = people
-      .filter(person => person.sex === 'm');
-
-    sumOfAgeMan = man.reduce((sum, age) => sum + (age.died - age.born), 0);
-
-    const ageAverMan = sumOfAgeMan / man.length;
-
-    return ageAverMan;
-  }
+  return ageAver;
 }
 
 /**
@@ -57,12 +49,13 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let women = [];
 
-  women = people.filter(person => (person.sex === 'f')
-   && (people.find(mam => mam.mother === person.name)));
+  women = people.filter(person => {
+    const womenCalc = withChildren
+      ? (person.sex === 'f') && (people.find(mam => mam.mother === person.name))
+      : (person.sex === 'f');
 
-  if (withChildren === undefined) {
-    women = people.filter(person => person.sex === 'f');
-  }
+    return womenCalc;
+  });
 
   const sumOfAgeWoman = women.reduce((sum, age) =>
     sum + (age.died - age.born), 0);
@@ -89,8 +82,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = people.filter(person => {
     const womenCalculated = onlyWithSon
-      ? people.find((child) => child.mother
-                               === person.name && child.sex === 'm')
+      ? people.find((child) => (
+        child.mother === person.name && child.sex === 'm')
+      )
       : people.find((child) => child.mother === person.name);
 
     return womenCalculated;
