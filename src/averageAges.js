@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrMen = people.filter((person) => century === undefined ? (
+    person.sex === 'm') : (
+    person.sex === 'm') && Math.ceil(person.died / 100) === century);
+
+  const arrAges = arrMen.map((el) => (el.died - el.born));
+  const ageSum = arrAges.reduce((sum, el) => sum + el);
+
+  return ageSum / arrAges.length;
 }
 
 /**
@@ -36,8 +39,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
+function calculateWomenAverageAge(people, withChildren = false) {
   // write code here
+  const arrWomen = people.filter(
+    (person) => withChildren === false ? person.sex === 'f' : (
+      people.some((el) => el.mother === person.name)));
+
+  const arrAges = arrWomen.map((el) => (el.died - el.born));
+  const ageSum = arrAges.reduce((sum, el) => sum + el);
+
+  return ageSum / arrAges.length;
 }
 
 /**
@@ -54,8 +65,22 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
   // write code here
+  const arrWomen = people.filter((person) => onlyWithSon === false ? (
+    people.some((el) => el.mother === person.name)) : people.some(
+    (el) => el.mother === person.name && el.sex === 'm'));
+
+  const arrChild = people.filter((person) => onlyWithSon === false ? (
+    arrWomen.some((el) => el.name === person.mother))
+    : arrWomen.some((el) => (el.name === person.mother && person.sex === 'm')));
+
+  const arrAges = arrChild.map((child) => child.born - arrWomen.find(
+    (el) => el.name === child.mother).born);
+
+  const arrSumDiff = arrAges.reduce((sum, n) => sum + n);
+
+  return arrSumDiff / arrAges.length;
 }
 
 module.exports = {
