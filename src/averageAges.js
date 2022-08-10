@@ -15,9 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const arrMen = people.filter((person) => century === undefined ? (
-    person.sex === 'm') : (
-    person.sex === 'm') && Math.ceil(person.died / 100) === century);
+  const arrMen = people.filter((person) => century ? (
+    person.sex === 'm' && Math.ceil(person.died / 100) === century) : (
+    person.sex === 'm'));
 
   const arrAges = arrMen.map((el) => (el.died - el.born));
   const ageSum = arrAges.reduce((sum, el) => sum + el);
@@ -39,11 +39,11 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren = false) {
+function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const arrWomen = people.filter(
-    (person) => withChildren === false ? person.sex === 'f' : (
-      people.some((el) => el.mother === person.name)));
+    (person) => withChildren ? (
+      people.some((el) => el.mother === person.name)) : person.sex === 'f');
 
   const arrAges = arrWomen.map((el) => (el.died - el.born));
   const ageSum = arrAges.reduce((sum, el) => sum + el);
@@ -65,15 +65,15 @@ function calculateWomenAverageAge(people, withChildren = false) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon = false) {
+function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const arrWomen = people.filter((person) => onlyWithSon === false ? (
-    people.some((el) => el.mother === person.name)) : people.some(
-    (el) => el.mother === person.name && el.sex === 'm'));
+  const arrWomen = people.filter((person) => onlyWithSon ? people.some(
+    (el) => el.mother === person.name && el.sex === 'm') : (
+    people.some((el) => el.mother === person.name)));
 
-  const arrChild = people.filter((person) => onlyWithSon === false ? (
-    arrWomen.some((el) => el.name === person.mother))
-    : arrWomen.some((el) => (el.name === person.mother && person.sex === 'm')));
+  const arrChild = people.filter((person) => onlyWithSon ? arrWomen.some(
+    (el) => (el.name === person.mother && person.sex === 'm')) : (
+    arrWomen.some((el) => el.name === person.mother)));
 
   const arrAges = arrChild.map((child) => child.born - arrWomen.find(
     (el) => el.name === child.mother).born);
