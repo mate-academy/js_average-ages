@@ -17,11 +17,11 @@
 function calculateMenAverageAge(people, century) {
   const filterMen = !century
     ? people.filter(person => person.sex === 'm')
-    : people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century);
+    : people.filter(person => (
+      person.sex === 'm' && Math.ceil(person.died / 100) === century));
 
-  return filterMen.reduce((sum, per) =>
-    sum + (per.died - per.born), 0) / filterMen.length;
+  return filterMen.reduce((sum, per) => (
+    sum + (per.died - per.born)), 0) / filterMen.length;
 }
 
 /**
@@ -41,11 +41,11 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const filterWomen = !withChildren
     ? people.filter(person => person.sex === 'f')
-    : people.filter(person =>
-      people.find(child => child.mother === person.name));
+    : people.filter(person => (
+      people.find(child => child.mother === person.name)));
 
-  return filterWomen.reduce((sum, per) =>
-    sum + (per.died - per.born), 0) / filterWomen.length;
+  return filterWomen.reduce((sum, per) => (
+    sum + (per.died - per.born)), 0) / filterWomen.length;
 }
 
 /**
@@ -64,15 +64,14 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const filterChildren = !onlyWithSon
-    ? people.filter(person =>
-      people.find(mom => person.mother === mom.name))
-    : people.filter(person =>
-      people.find(mom => person.mother === mom.name)
-      && person.sex === 'm');
+    ? people.filter(person => (
+      people.find(mom => person.mother === mom.name)))
+    : people.filter(person => (
+      people.find(mom => person.mother === mom.name) && person.sex === 'm'));
 
-  return filterChildren.reduce((sum, per) =>
-    sum + per.born - people.find(person =>
-      per.mother === person.name).born, 0) / filterChildren.length;
+  return filterChildren.reduce((sum, per) => (
+    sum + per.born - people.find(person => (
+      per.mother === person.name)).born), 0) / filterChildren.length;
 }
 
 module.exports = {
