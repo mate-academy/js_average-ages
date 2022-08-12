@@ -15,11 +15,31 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let copyPips = [...people];
+
+  copyPips = people.filter((x) => {
+    return x.sex === 'm';
+  });
+
+  if (century) {
+    copyPips = copyPips.filter((x) => {
+      return Math.ceil(x.died / 100) === century;
+    });
+  }
+
+  const ages = copyPips.map((x) => {
+    return x.died - x.born;
+  });
+
+  let count = 0;
+
+  const avg = ages.reduce((prev, curr) => {
+    count++;
+
+    return curr + prev;
+  }, 0);
+
+  return (Math.round(avg / count * 100)) / 100;
 }
 
 /**
@@ -37,7 +57,33 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let copyPips = [...people];
+
+  copyPips = people.filter((x) => {
+    return x.sex === 'f';
+  });
+
+  if (withChildren) {
+    copyPips = copyPips.filter((x) => {
+      if (people.some(child => x.name === child.mother)) {
+        return true;
+      };
+    });
+  }
+
+  const ages = copyPips.map((x) => {
+    return x.died - x.born;
+  });
+
+  let count = 0;
+
+  const avg = ages.reduce((prev, curr) => {
+    count++;
+
+    return curr + prev;
+  }, 0);
+
+  return (Math.round(avg / count * 100)) / 100;
 }
 
 /**
@@ -55,7 +101,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childPips = people.filter(child => onlyWithSon
+    ? people.some(mom => mom.name === child.mother)
+    && child.sex === 'm'
+    : people.some(mom => mom.name === child.mother));
+
+  const ages = childPips.map(child => {
+    const mother = people.find(mom => mom.name === child.mother);
+
+    return child.born - mother.born;
+  });
+
+  let count = 0;
+
+  const avg = ages.reduce((prev, curr) => {
+    count++;
+
+    return curr + prev;
+  }, 0);
+
+  return (Math.round(avg / count * 100)) / 100;
 }
 
 module.exports = {
