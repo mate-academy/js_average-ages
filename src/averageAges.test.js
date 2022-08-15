@@ -20,7 +20,7 @@ test('Average men age in 18 century', () => {
 test('Average women age', () => {
   expect(calculateWomenAverageAge(people))
     .toBeCloseTo(54.56, 2);
-}); 
+});
 
 test('Average mothers age', () => {
   expect(calculateWomenAverageAge(people, true))
