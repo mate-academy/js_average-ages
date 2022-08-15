@@ -14,12 +14,14 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMan = people.filter((i) => i.sex === 'm');
+  const normalizeMan = !century ? onlyMan : onlyMan
+    .filter((i) => Math.ceil(i.died / 100) === century);
+  const sum = normalizeMan.reduce((prev, i) => prev + (i.died - i.born), 0);
+
+  return sum / normalizeMan.length;
 }
 
 /**
@@ -37,7 +39,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const onlyWoman = people.filter((i) => i.sex === 'f');
+  const mothers = people.map((i) => i.mother);
+
+  const norlizeWoman = !withChildren ? onlyWoman : onlyWoman
+    .filter((i) => mothers.includes(i.name));
+
+  const sum = norlizeWoman.reduce((prev, i) => prev + (i.died - i.born), 0);
+
+  return sum / norlizeWoman.length;
 }
 
 /**
@@ -55,7 +65,36 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const normalizeChildren = !onlyWithSon ? people
+    : people.filter((i) => i.sex === 'm');
+
+  const mothersNames = normalizeChildren.map((i) => i.mother);
+  const mothers = people.filter((i) => mothersNames.includes(i.name));
+
+  const objOfMothers = mothers.reduce((prev, i) => {
+    return {
+      ...prev,
+      [i.name]: i.born,
+    };
+  }, {});
+
+  let sum = 0;
+  let countOfUnknown = 0;
+
+  for (let i = 0; i < normalizeChildren.length; i++) {
+    const motherName = normalizeChildren[i].mother;
+
+    let difference = normalizeChildren[i].born - objOfMothers[motherName];
+
+    if (isNaN(difference)) {
+      countOfUnknown++;
+      difference = 0;
+    }
+
+    sum += difference;
+  }
+
+  return sum / (normalizeChildren.length - countOfUnknown);
 }
 
 module.exports = {
