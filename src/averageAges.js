@@ -16,11 +16,6 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  // const isMan = `sex === 'm'`;
-  // const centuryFilter = `Math.ceil(died / 100) === century`;
-  // const filteredPeople = century
-  //   ? people.filter(({ sex, died }) => centuryFilter && isMan)
-  //   : people.filter(({ sex }) => isMan);
   const filteredPeople = century
     ? people.filter(({ sex, died }) => Math.ceil(died / 100) === century
       && sex === 'm')
