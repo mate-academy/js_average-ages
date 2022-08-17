@@ -14,12 +14,22 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  // const isMan = `sex === 'm'`;
+  // const centuryFilter = `Math.ceil(died / 100) === century`;
+  // const filteredPeople = century
+  //   ? people.filter(({ sex, died }) => centuryFilter && isMan)
+  //   : people.filter(({ sex }) => isMan);
+  const filteredPeople = century
+    ? people.filter(({ sex, died }) => Math.ceil(died / 100) === century
+      && sex === 'm')
+    : people.filter(({ sex }) => sex === 'm');
+  const length = filteredPeople.length;
+
+  return ((filteredPeople
+    .reduce((sumAges, { born, died }) => sumAges + (died - born), 0)) / length
+  );
 }
 
 /**
@@ -36,8 +46,17 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeople = withChildren
+    ? people.filter(({ sex, name }) => (
+      people.some(({ mother }) => mother === name)) && sex === 'f')
+    : people.filter(({ sex }) => sex === 'f');
+  const length = filteredPeople.length;
+
+  return ((filteredPeople
+    .reduce((sumAges, { born, died }) => sumAges + (died - born), 0)) / length
+  );
 }
 
 /**
@@ -55,7 +74,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filteredPeople = onlyWithSon
+    ? people.filter(({ sex, mother }) => (
+      people.find(({ name }) => mother === name)) && sex === 'm')
+    : people.filter(({ mother }) => (
+      people.find(({ name }) => mother === name)));
+  const length = filteredPeople.length;
+
+  return ((filteredPeople.reduce((sumAges, { born, mother }) => (
+    sumAges + born - people.find(({ name }) => mother === name).born), 0))
+    / length);
 }
 
 module.exports = {
