@@ -48,7 +48,14 @@ function getAverageAge(filteredArr) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const isWoman = people.filter(({ sex }) => sex === 'f');
+  const mothersNames = people.map(({ mother }) => mother);
+  const mothersArr = isWoman.filter(({ name }) => {
+    return withChildren ? mothersNames.includes(name)
+    === withChildren : isWoman;
+  });
+
+  return getAverageAge(mothersArr);
 }
 
 /**
