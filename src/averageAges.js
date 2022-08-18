@@ -1,51 +1,42 @@
 'use strict';
 
 function calculateMenAverageAge(people, century) {
-  let manArray = [];
+  const menArray = people.filter((man) => !century
+    ? man.sex === 'm'
+    : man.sex === 'm' && Math.ceil(man.died / 100) === century);
 
-  century
-    ? manArray = people.filter((man) => man.sex === 'm'
-    && Math.ceil(man.died / 100) === century)
-
-    : manArray = people.filter((man) => man.sex === 'm');
-
-  return manArray.reduce(
-    (averageAge, person) => averageAge + (person.died - person.born),
-    0,
-  ) / manArray.length;
+  return averageLifeDuration(menArray);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  let womenArray = [];
   const motherNames = people.filter((woman) => woman.mother !== null)
     .map((a) => a.mother);
 
-  !withChildren
-    ? womenArray = people.filter((woman) => woman.sex === 'f')
+  const womenArray = people.filter((woman) => !withChildren
+    ? woman.sex === 'f'
+    : motherNames.includes(woman.name)
+  );
 
-    : womenArray = people.filter((woman) => motherNames.includes(woman.name));
-
-  return womenArray.reduce(
-    (averageAge, woman) => averageAge + (woman.died - woman.born),
-    0,
-  ) / womenArray.length;
+  return averageLifeDuration(womenArray);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = [];
+  const childrenArray = people.filter((child) => !onlyWithSon
+    ? (people.find(mother => child.mother === mother.name))
+    : (people.find(mother => child.mother === mother.name
+      && child.sex === 'm')));
 
-  !onlyWithSon
-    ? children = people.filter((child) =>
-      (people.find(mother => child.mother === mother.name)))
-
-    : children = people.filter((child) =>
-      (people.find(mother =>
-        child.mother === mother.name && child.sex === 'm')));
-
-  return (children.reduce((total, child) => {
-    return total + child.born - people.find(mother => (
+  return (childrenArray.reduce((difference, child) => {
+    return difference + child.born - people.find(mother => (
       child.mother === mother.name)).born;
-  }, 0) / children.length);
+  }, 0) / childrenArray.length);
+}
+
+function averageLifeDuration(array) {
+  return array.reduce((averageAge, person) =>
+    averageAge + (person.died - person.born),
+  0,
+  ) / array.length;
 }
 
 module.exports = {
