@@ -22,12 +22,12 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   let average = 0;
   const arrayOfMen = people.filter(person => person.sex === 'm');
-  const old = (!century)
+  const lifeYears = (!century)
     ? arrayOfMen.map(men => men.died - men.born)
     : arrayOfMen.filter(person => Math.ceil(person.died / 100) === century)
       .map(men => men.died - men.born);
 
-  average = (old.reduce((sum, age) => sum + age, 0)) / old.length;
+  average = (lifeYears.reduce((sum, age) => sum + age, 0)) / lifeYears.length;
 
   return average;
 }
@@ -53,11 +53,11 @@ function calculateWomenAverageAge(people, withChildren) {
   const nameMothers = people.map(person => person.mother);
   const arrayOfMothers = arrayOfWomen.filter(person =>
     nameMothers.includes(person.name));
-  const old = (!withChildren)
+  const lifeYears = (!withChildren)
     ? arrayOfWomen.map(women => women.died - women.born)
     : arrayOfMothers.map(women => women.died - women.born);
 
-  average = (old.reduce((sum, age) => sum + age, 0)) / old.length;
+  average = (lifeYears.reduce((sum, age) => sum + age, 0)) / lifeYears.length;
 
   return average;
 }
