@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menAgeFiltr = !century
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century);
+  const menAverageAge = menAgeFiltr.reduce((sum, person) => (
+    sum + person.died - person.born
+  ), 0) / menAgeFiltr.length;
+
+  return menAverageAge;
 }
 
 /**
@@ -37,7 +41,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const hoIsWoman = people.filter(person => person.sex === 'f');
+
+  const womenFiltr = !withChildren
+    ? hoIsWoman
+    : hoIsWoman.filter(
+      mathers => people.find(child => child.mother === mathers.name)
+    );
+
+  const womenAverageAge = womenFiltr.reduce((sum, women) => (
+    sum + women.died - women.born
+  ), 0) / womenFiltr.length;
+
+  return womenAverageAge;
 }
 
 /**
@@ -55,8 +71,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  const age = [];
+  const hoIsWoman = people.filter(
+    person => person.sex === 'f'
+  );
+
+  hoIsWoman.forEach((mather) => {
+    const childrens = (people.filter(child => (
+      child.mother === mather.name
+    )));
+
+    childrens.forEach((chaild) => {
+      if (!onlyWithSon) {
+        age.push(chaild.born - mather.born);
+      } else {
+        if (chaild.sex === 'm') {
+          age.push(chaild.born - mather.born);
+        }
+      }
+    });
+  });
+
+  const averageAgeDiff = age.reduce(
+    (sum, difAge) => sum + difAge, 0) / age.length;
+
+  return averageAgeDiff;
+};
 
 module.exports = {
   calculateMenAverageAge,
