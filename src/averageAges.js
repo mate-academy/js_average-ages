@@ -13,26 +13,26 @@
  * @param {number} century - optional
  *
  * @return {number}
+ *
  */
+
+function peopleAgeArray(object) {
+  return object
+    .map(person => person.died - person.born)
+    .reduce((ageOne, ageTwo) => ageOne + ageTwo, 0) / object.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  const peopleFilter
+  const filterPeople
     = people.filter(person => person.sex === 'm' && filterCentury(person));
 
   function filterCentury(person) {
-    if (century !== undefined) {
-      const age = Math.ceil(person.died / 100);
+    const age = Math.ceil(person.died / 100);
 
-      return age === century;
-    }
-
-    return true;
+    return century ? age === century : true;
   }
 
-  const reopleAgeArray
-    = peopleFilter.map(person => person.died - person.born);
-
-  return reopleAgeArray.reduce((a, b) => a + b)
-  / reopleAgeArray.length;
+  return peopleAgeArray(filterPeople);
 }
 
 /**
@@ -50,22 +50,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womanFilter
+  const filterWoman
     = people.filter(person => person.sex === 'f' && filterChildren(person));
 
   function filterChildren(person) {
-    if (withChildren !== undefined) {
-      return people.some(element => element.mother === person.name);
-    }
-
-    return true;
+    return withChildren
+      ? people.some(element => element.mother === person.name)
+      : true;
   }
 
-  const peopleAgeArray
-  = womanFilter.map(person => person.died - person.born);
-
-  return peopleAgeArray.reduce((a, b) => a + b)
-  / peopleAgeArray.length;
+  return peopleAgeArray(filterWoman);
 }
 
 /**
@@ -83,22 +77,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let peopleCyrent = [...people];
+  let curentPeople = [...people];
   const diferenAga = [];
 
-  if (onlyWithSon !== undefined) {
-    peopleCyrent = people.filter(person => person.sex === 'm');
+  if (onlyWithSon) {
+    curentPeople = people.filter(person => person.sex === 'm');
   }
 
-  for (const object of peopleCyrent) {
-    const findMom = people.find(mom => mom.name === object.mother);
+  for (const object of curentPeople) {
+    const findmother = people.find(mother => mother.name === object.mother);
 
-    if (findMom !== undefined) {
-      diferenAga.push(object.born - findMom.born);
+    if (findmother) {
+      diferenAga.push(object.born - findmother.born);
     }
   }
 
-  return diferenAga.reduce((a, b) => a + b) / diferenAga.length;
+  return diferenAga
+    .reduce((ageOne, ageTwo) => ageOne + ageTwo, 0) / diferenAga.length;
 }
 
 module.exports = {
