@@ -23,6 +23,8 @@ test('Average women age', () => {
 });
 
 test('Average mothers age', () => {
+  ;
+
   expect(calculateWomenAverageAge(people, true))
     .toBeCloseTo(54.15, 2);
 });
