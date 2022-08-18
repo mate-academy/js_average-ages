@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Implement calculateMenAverageAge function
+ * Implement function
  *
  * Function returns average age of men in array. If `century` is specified then
  * function calculates average age only for men who died in this century
@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMans = people.filter(({ sex }) => sex === 'm');
+  const mansWithCentury = onlyMans.filter(({ died }) =>
+    Math.ceil(died / 100) === century);
+  const currentSearch = century ? mansWithCentury : onlyMans;
+
+  const mansAges = currentSearch.map(({ born, died }) => died - born);
+  const sumOfAges = mansAges.reduce((sum, current) => sum + current);
+
+  return sumOfAges / mansAges.length;
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const onlyWomans = people.filter(({ sex }) => sex === 'f');
+  const womanWithChildren = onlyWomans.filter(woman =>
+    people.some(child => child.mother === woman.name));
+  const currentSearch = withChildren ? womanWithChildren : onlyWomans;
+
+  const womansAge = currentSearch.map(({ born, died }) => died - born);
+  const sumOfAges = womansAge.reduce((sum, current) => sum + current);
+
+  return sumOfAges / womansAge.length;
 }
 
 /**
@@ -55,7 +67,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people
+    .filter(child => people
+      .some(woman => woman.name === child.mother));
+
+  const son = people
+    .filter(child => people
+      .some(woman => child.mother === woman.name && child.sex === 'm'));
+
+  const currentSearch = onlyWithSon ? son : children;
+  const diff = currentSearch
+    .map(child =>
+      child.born - (people.find(woman => woman.name === child.mother)).born);
+
+  const sumOfAges = diff.reduce((sum, age) => sum + age);
+
+  return sumOfAges / diff.length;
 }
 
 module.exports = {
