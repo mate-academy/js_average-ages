@@ -1,5 +1,7 @@
 'use strict';
 
+// const people = require('./people');
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +17,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArray = people.filter(person => person.sex === 'm'
+  && (century !== undefined ? Math.ceil(person.died / 100) === century : true));
+  let average = manArray
+    .map(man => man.died - man.born)
+    .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+
+  average /= manArray.length;
+
+  return +average.toFixed(2);
 }
 
 /**
@@ -37,7 +43,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womanArray = people.filter(female => female.sex === 'f' && (withChildren
+    ? people.find(woman => female.name === woman.mother) : true));
+  let averageWoman = womanArray
+    .map(woman => woman.died - woman.born)
+    .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+
+  averageWoman /= womanArray.length;
+
+  return +averageWoman.toFixed(2);
 }
 
 /**
@@ -55,7 +69,35 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childrenAndMotherArray = people
+    .map(person => {
+      const personMom = people
+        .find(folk => folk.name === person.mother);
+
+      return {
+        ...person, mom: personMom,
+      };
+    })
+    .filter(folk => {
+      const isChild = people
+        .some(person => folk.mother === person.name);
+
+      return isChild;
+    })
+    .filter(folk => (onlyWithSon ? folk.sex === 'm' : true));
+
+  let childrenAndMotherAverage = childrenAndMotherArray
+    .map(person =>
+      ({
+        born: person.born,
+        bornMother: person.mom.born,
+      }))
+    .map(folk => folk.born - folk.bornMother)
+    .reduce((last, current) => last + current, 0);
+
+  childrenAndMotherAverage /= (childrenAndMotherArray.length);
+
+  return +childrenAndMotherAverage.toFixed(2);
 }
 
 module.exports = {
