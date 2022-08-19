@@ -77,18 +77,20 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     : people.filter(kids => people.find(mother => mother.name === kids.mother));
 
-  return different.reduce((prev, cur) => prev + cur.born - people
-    .find(mother => (cur.mother === mother.name)).born, 0) / different.length;
+  const diffLen = different.length;
+  const differenceAge = different
+    .reduce((savedValue, iterValue) => savedValue + iterValue.born - people
+      .find(mother => (iterValue.mother === mother.name)).born, 0) / diffLen;
+
+  return differenceAge;
 }
 
-// function getAverege() {
-//   const average = arr.reduce((savedValue, iterValue) =>
-//     savedValue + (iterValue.died - iterValue.born), 0) / arr.length;
-// };
-
 const getAverege = (arr) => {
-  return arr.reduce((savedValue, iterValue) =>
-    savedValue + (iterValue.died - iterValue.born), 0) / arr.length;
+  const arrLength = arr.length;
+  const sumAge = arr.reduce((savedValue, iterValue) =>
+    savedValue + (iterValue.died - iterValue.born), 0);
+
+  return sumAge / arrLength;
 };
 
 module.exports = {
