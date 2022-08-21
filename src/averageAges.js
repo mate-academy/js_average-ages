@@ -15,15 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = (!century)
+  const getAverageMen = (!century)
     ? people.filter(person => person.sex === 'm')
     : people.filter(person =>
       person.sex === 'm' && Math.ceil(person.died / 100) === century);
 
-  const averageAge = men.reduce((total, current) =>
-    total + (current.died - current.born), 0) / men.length;
-
-  return averageAge;
+  return getAverage(getAverageMen, 'died', 'born');
 }
 
 /**
@@ -41,15 +38,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = (!withChildren)
+  const getAverageWomen = (!withChildren)
     ? people.filter(gender => gender.sex === 'f')
     : people.filter(mother => mother.sex === 'f'
-    && (people.find(person => mother.name === person.mother)));
+    && (people.some(person => mother.name === person.mother)));
 
-  const averageAge = women.reduce((total, current) =>
-    total + (current.died - current.born), 0) / women.length;
+  return getAverage(getAverageWomen, 'died', 'born');
+}
 
-  return averageAge;
+function getAverage(people, value1, value2) {
+  const averageAge = people
+    .reduce((sum, { [value1]: diedYear, [value2]: bornYear }) =>
+      sum + (diedYear - bornYear), 0);
+
+  return people.length && averageAge / people.length;
 }
 
 /**
@@ -69,9 +71,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const difference = (!onlyWithSon)
     ? people.filter(child =>
-      people.find(mother => child.mother === mother.name))
+      people.some(mother => child.mother === mother.name))
     : people.filter(child =>
-      people.find(mother => child.mother === mother.name) && child.sex === 'm');
+      people.some(mother => child.mother === mother.name) && child.sex === 'm');
 
   const averageAgeDiff = difference.reduce((total, child) =>
     total + (child.born - people.find(mother =>
