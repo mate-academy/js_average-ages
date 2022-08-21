@@ -1,14 +1,6 @@
 'use strict';
 
 /**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
  * @param {object[]} people
  * @param {number} century - optional
  *
@@ -27,26 +19,18 @@ function calculateMenAverageAge(people, century) {
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const hoIsWoman = people.filter(person => person.sex === 'f');
+  const whoIsWoman = people.filter(person => person.sex === 'f');
 
   const womenFiltr = !withChildren
-    ? hoIsWoman
-    : hoIsWoman.filter(
-      mathers => people.find(child => child.mother === mathers.name)
+    ? whoIsWoman
+    : whoIsWoman.filter(
+      mather => people.some(child => child.mother === mather.name)
     );
 
   const womenAverageAge = womenFiltr.reduce((sum, women) => (
@@ -57,14 +41,6 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 /**
- * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for sons and their mothers.
- *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
  *
@@ -72,21 +48,21 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const age = [];
-  const hoIsWoman = people.filter(
+  const whoIsWoman = people.filter(
     person => person.sex === 'f'
   );
 
-  hoIsWoman.forEach((mather) => {
-    const childrens = (people.filter(child => (
-      child.mother === mather.name
+  whoIsWoman.forEach((mother) => {
+    const children = (people.filter(child => (
+      child.mother === mother.name
     )));
 
-    childrens.forEach((chaild) => {
+    children.forEach((child) => {
       if (!onlyWithSon) {
-        age.push(chaild.born - mather.born);
+        age.push(child.born - mother.born);
       } else {
-        if (chaild.sex === 'm') {
-          age.push(chaild.born - mather.born);
+        if (child.sex === 'm') {
+          age.push(child.born - mother.born);
         }
       }
     });
