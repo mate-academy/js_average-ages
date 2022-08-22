@@ -43,4 +43,6 @@ const people = [
   { 'name': 'Jacobus Bernardus van Brussel', 'sex': 'm', 'born': 1736, 'died': 1809, 'father': 'Jan van Brussel', 'mother': 'Elisabeth Haverbeke' },
 ];
 
+// export {people};
+
 module.exports = people;

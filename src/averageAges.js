@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let count = 0;
+  const sumAge = people.reduce((total, person) => {
+    let age = 0;
+
+    if (((Math.ceil(person.died / 100) === century) || !century)
+    && person.sex === 'm') {
+      age = person.died - person.born;
+      count++;
+    }
+
+    return total + age;
+  }, 0);
+
+  return sumAge / count;
 }
 
 /**
@@ -37,7 +46,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let count = 0;
+  const women = people.filter(person => person.sex === 'f');
+  let averageWomen = women;
+
+  if (withChildren) {
+    averageWomen = women.filter((person) => {
+      return people.some(el => el.mother === person.name);
+    });
+  }
+
+  const sumAge = averageWomen.reduce((total, person) => {
+    let age = 0;
+
+    age = person.died - person.born;
+    count++;
+
+    return total + age;
+  }, 0);
+
+  return sumAge / count;
 }
 
 /**
@@ -55,7 +83,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let count = 0;
+
+  const sumAgeMaternity = people.reduce((total, person) => {
+    let diffAge = 0;
+
+    if (person.sex === 'f') {
+      people.forEach(child => {
+        if (onlyWithSon) {
+          if (child.mother === person.name && child.sex === 'm') {
+            diffAge += child.born - person.born;
+            count++;
+          }
+        } else {
+          if (child.mother === person.name) {
+            diffAge += child.born - person.born;
+            count++;
+          }
+        }
+      });
+    }
+
+    return total + diffAge;
+  }, 0);
+
+  return sumAgeMaternity / count;
 }
 
 module.exports = {
