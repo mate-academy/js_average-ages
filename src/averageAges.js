@@ -20,12 +20,13 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const filterMen = people.filter(person => person.sex === 'm');
-  const sortMen = !century ? filterMen : filterMen
+  const men = people.filter(person => person.sex === 'm');
+  const filteredMen = !century ? men : men
     .filter(man => Math.ceil(man.died / 100) === century);
-  const sumAges = sortMen.reduce((sum, man) => sum + (man.died - man.born), 0);
+  const sumAges = filteredMen
+    .reduce((sum, man) => sum + (man.died - man.born), 0);
 
-  return sumAges / sortMen.length;
+  return sumAges / filteredMen.length;
 }
 
 /**
@@ -43,14 +44,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filterWomen = !withChildren
+  const filteredWomen = !withChildren
     ? people.filter(person => person.sex === 'f')
     : people.filter(person =>
-      (people.find(child => child.mother === person.name)));
-  const sumAges = filterWomen
+      (people.some(child => child.mother === person.name)));
+  const sumAges = filteredWomen
     .reduce((sum, woman) => sum + (woman.died - woman.born), 0);
 
-  return sumAges / filterWomen.length;
+  return sumAges / filteredWomen.length;
 }
 
 /**
@@ -68,18 +69,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filterKid = people
-    .filter(person => people.find(mother => person.mother === mother.name));
+  const kids = people
+    .filter(person => people.some(mother => person.mother === mother.name));
 
-  const sortKid = !onlyWithSon ? filterKid : filterKid
+  const filteredKids = !onlyWithSon ? kids : kids
     .filter(kid => kid.sex === 'm');
 
-  const difference = sortKid
+  const motherBorn = filteredKids
     .reduce((sum, kid) =>
       sum + (kid.born - people.find(mother =>
         (mother.name === kid.mother)).born), 0);
 
-  return difference / sortKid.length;
+  return motherBorn / filteredKids.length;
 }
 
 module.exports = {
