@@ -16,11 +16,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // eslint-disable-next-line no-param-reassign
-  century || 0 ? people = (people.filter(persone =>
+  let peopleArray = people;
+
+  century || 0 ? peopleArray = (peopleArray.filter(persone =>
     Math.ceil(persone.died / 100) === century)) : 0;
 
-  const men = (people.filter(persone => persone.sex === 'm'));
+  const men = (peopleArray.filter(persone => persone.sex === 'm'));
   const ages = men.map((persone) => persone.died - persone.born);
   const menAverageAge = ages.reduce((sum, i) => sum + i) / ages.length;
 
@@ -44,7 +45,6 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let women = (people.filter(persone => persone.sex === 'f'));
 
-  // eslint-disable-next-line no-param-reassign
   withChildren || 0 ? women = women.filter(persone =>
     people.find(children =>
       children.mother === persone.name)) : 0;
