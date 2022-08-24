@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let count = 0;
+
+  const men = century
+    ? people.filter(person => (Math.ceil(person.died / 100) === century)
+      && person.sex === 'm')
+    : people.filter(person => person.sex === 'm');
+
+  const sumAge = men.reduce((total, person) => {
+    let age = 0;
+
+    age = person.died - person.born;
+    count++;
+
+    return total + age;
+  }, 0);
+
+  return sumAge / count;
 }
 
 /**
@@ -37,7 +49,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let count = 0;
+
+  const women = withChildren
+    ? people.filter(person => person.sex === 'f').filter((person) => {
+      return people.some(el => el.mother === person.name);
+    })
+    : people.filter(person => person.sex === 'f');
+
+  const sumAge = women.reduce((total, person) => {
+    let age = 0;
+
+    age = person.died - person.born;
+    count++;
+
+    return total + age;
+  }, 0);
+
+  return sumAge / count;
 }
 
 /**
@@ -55,7 +84,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let count = 0;
+
+  const women = people.filter(person => person.sex === 'f');
+
+  const sumAgeMaternity = women.reduce((total, person) => {
+    let diffAge = 0;
+
+    people.forEach(child => {
+      if (onlyWithSon) {
+        if (child.mother === person.name && child.sex === 'm') {
+          diffAge += child.born - person.born;
+          count++;
+        }
+      } else if (child.mother === person.name) {
+        diffAge += child.born - person.born;
+        count++;
+      }
+    });
+
+    return total + diffAge;
+  }, 0);
+
+  return sumAgeMaternity / count;
 }
 
 module.exports = {
