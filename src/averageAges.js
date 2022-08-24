@@ -16,14 +16,17 @@
  */
 function calculateMenAverageAge(people, century) {
   let count = 0;
-  const sumAge = people.reduce((total, person) => {
+
+  const men = century
+    ? people.filter(person => (Math.ceil(person.died / 100) === century)
+      && person.sex === 'm')
+    : people.filter(person => person.sex === 'm');
+
+  const sumAge = men.reduce((total, person) => {
     let age = 0;
 
-    if (((Math.ceil(person.died / 100) === century) || !century)
-    && person.sex === 'm') {
-      age = person.died - person.born;
-      count++;
-    }
+    age = person.died - person.born;
+    count++;
 
     return total + age;
   }, 0);
@@ -47,16 +50,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   let count = 0;
-  const women = people.filter(person => person.sex === 'f');
-  let averageWomen = women;
 
-  if (withChildren) {
-    averageWomen = women.filter((person) => {
+  const women = withChildren
+    ? people.filter(person => person.sex === 'f').filter((person) => {
       return people.some(el => el.mother === person.name);
-    });
-  }
+    })
+    : people.filter(person => person.sex === 'f');
 
-  const sumAge = averageWomen.reduce((total, person) => {
+  const sumAge = women.reduce((total, person) => {
     let age = 0;
 
     age = person.died - person.born;
@@ -85,24 +86,22 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let count = 0;
 
-  const sumAgeMaternity = people.reduce((total, person) => {
+  const women = people.filter(person => person.sex === 'f');
+
+  const sumAgeMaternity = women.reduce((total, person) => {
     let diffAge = 0;
 
-    if (person.sex === 'f') {
-      people.forEach(child => {
-        if (onlyWithSon) {
-          if (child.mother === person.name && child.sex === 'm') {
-            diffAge += child.born - person.born;
-            count++;
-          }
-        } else {
-          if (child.mother === person.name) {
-            diffAge += child.born - person.born;
-            count++;
-          }
+    people.forEach(child => {
+      if (onlyWithSon) {
+        if (child.mother === person.name && child.sex === 'm') {
+          diffAge += child.born - person.born;
+          count++;
         }
-      });
-    }
+      } else if (child.mother === person.name) {
+        diffAge += child.born - person.born;
+        count++;
+      }
+    });
 
     return total + diffAge;
   }, 0);
