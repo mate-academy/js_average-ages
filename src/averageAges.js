@@ -63,8 +63,16 @@ function calculateWomenAverageAge(people, withChildren) {
   });
 
   const women = peopleWithChild.filter((person) => {
+    /*
     return withChildren ? person.sex
       === 'f' && person.child : person.sex === 'f';
+      */
+
+    if (withChildren) {
+      return person.sex === 'f' && person.child;
+    } else {
+      return person.sex === 'f';
+    }
   }
   );
 
