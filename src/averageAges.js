@@ -20,10 +20,7 @@ function calculateMenAverageAge(people, century) {
     Math.ceil(died / 100) === century);
   const currentSearch = century ? mansWithCentury : onlyMans;
 
-  const mansAges = currentSearch.map(({ born, died }) => died - born);
-  const sumOfAges = mansAges.reduce((sum, current) => sum + current);
-
-  return sumOfAges / mansAges.length;
+  return calculateAverageAge(currentSearch);
 }
 
 /**
@@ -46,10 +43,7 @@ function calculateWomenAverageAge(people, withChildren) {
     people.some(child => child.mother === woman.name));
   const currentSearch = withChildren ? womanWithChildren : onlyWomans;
 
-  const womansAge = currentSearch.map(({ born, died }) => died - born);
-  const sumOfAges = womansAge.reduce((sum, current) => sum + current);
-
-  return sumOfAges / womansAge.length;
+  return calculateAverageAge(currentSearch);
 }
 
 /**
@@ -68,21 +62,29 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people
-    .filter(child => people
-      .some(woman => woman.name === child.mother));
+    .filter(child => (people
+      .some(woman => woman.name === child.mother)));
 
   const son = people
-    .filter(child => people
-      .some(woman => child.mother === woman.name && child.sex === 'm'));
+    .filter(sons => (people
+      .some(woman => sons.mother === woman.name && sons.sex === 'm')));
 
   const currentSearch = onlyWithSon ? son : children;
-  const diff = currentSearch
+  const ageDifference = currentSearch
     .map(child =>
-      child.born - (people.find(woman => woman.name === child.mother)).born);
+      (child.born - (people
+        .find(motherBorn => motherBorn.name === child.mother)).born));
 
-  const sumOfAges = diff.reduce((sum, age) => sum + age);
+  const sumOfAges = ageDifference.reduce((sum, age) => sum + age);
 
-  return sumOfAges / diff.length;
+  return sumOfAges / ageDifference.length;
+}
+
+function calculateAverageAge(filteredPeople) {
+  const personAge = filteredPeople.map(({ born, died }) => died - born);
+  const sumOfAges = personAge.reduce((sum, current) => sum + current);
+
+  return sumOfAges / personAge.length;
 }
 
 module.exports = {
