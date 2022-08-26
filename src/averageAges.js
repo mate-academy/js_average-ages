@@ -60,9 +60,6 @@ function calculateWomenAverageAge(people, withChildren) {
   return averageAge;
 }
 
-// console.log(calculateWomenAverageAge(allPeople, true));
-// console.log(calculateWomenAverageAge(allPeople ));
-
 /**
  * Implement calculateAverageAgeDiff function.
  *
