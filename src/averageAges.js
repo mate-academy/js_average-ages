@@ -27,8 +27,6 @@ function calculateMenAverageAge(people, century) {
   return averageAge;
 }
 
-// console.log(calculateMenAverageAge(allPeople, 18));
-
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -62,6 +60,9 @@ function calculateWomenAverageAge(people, withChildren) {
   return averageAge;
 }
 
+// console.log(calculateWomenAverageAge(allPeople, true));
+// console.log(calculateWomenAverageAge(allPeople ));
+
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -78,38 +79,29 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person => {
-    const allChildren = people.find((child) => person.mother === child.name);
-
-    return allChildren;
-  })
-    .map(person => {
-      const boysMother = people.find(folk => person.mother === folk.name);
+  function addMomBorn(peopleObj, allPeople) {
+    return peopleObj.map(person => {
+      const boysMother = allPeople.find(folk => person.mother === folk.name);
 
       return {
         ...person,
         motherBorn: boysMother.born,
       };
     });
+  }
+
+  const children = people.filter(person => {
+    return people.find((child) => person.mother === child.name);
+  });
 
   const childrenBoy = people.filter(person => {
-    const boy = people.find((child) => person.mother === child.name
+    return people.find((child) => person.mother === child.name
     && person.sex === 'm');
-
-    return boy;
-  })
-    .map(person => {
-      const boysMother = people.find(folk => person.mother === folk.name);
-
-      return {
-        ...person,
-        motherBorn: boysMother.born,
-      };
-    });
+  });
 
   const filteredPeople = !onlyWithSon
-    ? children
-    : childrenBoy;
+    ? addMomBorn(children, people)
+    : addMomBorn(childrenBoy, people);
 
   const averageAge = filteredPeople.map(current =>
     current.born - current.motherBorn)
