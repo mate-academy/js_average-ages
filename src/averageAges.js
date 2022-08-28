@@ -14,20 +14,21 @@
  *
  * @return {number}
  */
+
+// function returns the average age
+
+function averageFunction(arr) {
+  const summary = arr.reduce((sum, person) =>
+    sum + person.died - person.born, 0);
+  const average = summary / arr.length;
+
+  return average;
+}
+
 function calculateMenAverageAge(people, century) {
   // create the array of men
 
   const men = people.filter(person => person.sex === 'm');
-
-  // function returns the average age
-
-  function averageFunction(menArray) {
-    const summary = menArray.reduce((sum, person) =>
-      sum + person.died - person.born, 0);
-    const average = summary / menArray.length;
-
-    return average;
-  }
 
   // array of the men died in specified century
 
@@ -57,16 +58,6 @@ function calculateWomenAverageAge(people, withChildren) {
   // create the array of a women
 
   const women = people.filter(person => person.sex === 'f');
-
-  // function returns the average age
-
-  function averageFunction(womenArray) {
-    const summary = womenArray.reduce((sum, person) =>
-      sum + person.died - person.born, 0);
-    const average = summary / womenArray.length;
-
-    return average;
-  }
 
   // function returns true if qurrent name match some persons mother name
 
