@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let onlyMen = filterBySex(people, 'm');
+
+  const onlyMenInSpecificCentury = onlyMen.filter(
+    men => Math.ceil(men.died / 100) === century);
+
+  onlyMen = century
+    ? onlyMenInSpecificCentury
+    : onlyMen;
+
+  return getAverageAge(onlyMen);
 }
 
 /**
@@ -37,7 +42,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let onlyWomen = filterBySex(people, 'f');
+
+  const onlyWomenWithChildren = onlyWomen.filter(
+    women => people.some(person => person.mother === women.name));
+
+  onlyWomen = withChildren
+    ? onlyWomenWithChildren
+    : onlyWomen;
+
+  return getAverageAge(onlyWomen);
 }
 
 /**
@@ -55,7 +69,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let haveMother = people.filter(
+    person => people.some(
+      possibleMother => possibleMother.name === person.mother
+    )
+  );
+
+  const onlySons = filterBySex(haveMother, 'm');
+
+  haveMother = !onlyWithSon
+    ? haveMother
+    : onlySons;
+
+  const agesDiff = haveMother.map(
+    child => child.born - people.find(
+      person => person.name === child.mother
+    ).born
+  );
+
+  return agesDiff.reduce(
+    (sum, curr) => sum + curr, 0
+  ) / haveMother.length;
 }
 
 module.exports = {
@@ -63,3 +97,14 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function filterBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function getAverageAge(people) {
+  const ageArray = people.map(person => person.died - person.born);
+
+  return ageArray.reduce(
+    (sum, curr) => sum + curr, 0) / ageArray.length;
+}
