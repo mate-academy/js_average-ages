@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+  const centuryMen = century ? men.filter(function(item) {
+    return Math.ceil(item.died / 100) === century;
+  }) : men;
+  const years = centuryMen.map(el => el.died - el.born);
+  const average = (years.reduce((a, b) => a + b));
+
+  return Math.round(average / centuryMen.length * 100) / 100;
 }
 
 /**
@@ -37,7 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const female = people.filter(person => person.sex === 'f');
+  const checkChildren = withChildren ? female.filter(function(person) {
+    return people.some(el => el.mother === person.name);
+  }) : female;
+  const years = checkChildren.map(el => el.died - el.born);
+  const average = (years.reduce((a, b) => a + b));
+
+  return Math.round(average / checkChildren.length * 100) / 100;
 }
 
 /**
@@ -55,7 +65,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const female = people.filter(person => person.sex === 'f');
+
+  const withChild = female.filter(woman => {
+    return people.filter(person => person.mother === woman.name);
+  });
+
+  const children = onlyWithSon
+    ? people.filter(person => withChild.some(mother => {
+      return mother.name === person.mother && person.sex === 'm';
+    }))
+    : people.filter(person => {
+      return withChild.some(mother => mother.name === person.mother);
+    });
+
+  let calc = 0;
+
+  const result = children.reduce(function(prev, item) {
+    calc++;
+
+    const mother = withChild.find(el => el.name === item.mother).born;
+    const child = item.born;
+
+    return prev + (child - mother);
+  }, 0);
+
+  return Math.round(result / calc * 100) / 100;
 }
 
 module.exports = {
