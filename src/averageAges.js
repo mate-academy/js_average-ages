@@ -9,20 +9,26 @@
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
- * @param {object[]} people
- * @param {number} century - optional
  *
  * @return {number}
+ * @param filteredList
  */
-function calculateMenAverageAge(people, century) {
-  const mans = people.filter(person => person.sex === 'm');
-  const filteredMans = century
-    ? mans.filter(person => Math.ceil(person.died / 100) === century)
-    : mans;
 
-  const sumAge = filteredMans.reduce(
+function getSumAge(filteredList) {
+  return filteredList.reduce(
     (sum, person) => sum + (person.died - person.born), 0
   );
+}
+
+function calculateMenAverageAge(people, century) {
+  const filteredMans = century
+    ? people.filter(
+      person => Math.ceil(person.died / 100) === century
+      && person.sex === 'm'
+    )
+    : people.filter(person => person.sex === 'm');
+
+  const sumAge = getSumAge(filteredMans);
 
   return sumAge / filteredMans.length;
 }
@@ -43,14 +49,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const moms = people.map(person => person.mother);
-  const women = people.filter(person => person.sex === 'f');
   const filteredWomen = withChildren
-    ? women.filter(person => moms.some(mom => mom === person.name))
-    : women;
+    ? people.filter(
+      person => moms.some(mom => mom === person.name)
+    && person.sex === 'f'
+    )
+    : people.filter(person => person.sex === 'f');
 
-  const sumAge = filteredWomen.reduce(
-    (sum, person) => sum + (person.died - person.born), 0
-  );
+  const sumAge = getSumAge(filteredWomen);
 
   return sumAge / filteredWomen.length;
 }
