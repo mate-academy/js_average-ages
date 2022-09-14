@@ -17,17 +17,21 @@
 // - Here is some crazy solutions
 // |-- to solve it with no loops, if\else statements etc
 // |-- ...but a lot of variables))
+function averager(people) {
+  const agesOnly = people.map((person) => person.died - person.born);
+
+  return agesOnly.reduce((prev, curr) => prev + curr, 0) / agesOnly.length;
+}
+
 function calculateMenAverageAge(people, century = true) {
   const men = people.filter(person => person.sex === 'm');
-  const ages = men
-    .map((person) =>
-      Math.ceil(person.died / 100) === century || century === true
-        ? person.died - person.born
-        : 0)
-    .filter(age => age !== 0);
+  const centuryAges = men
+    .filter((person) =>
+      Math.ceil(person.died / 100) === century || century === true);
 
-  return ages.reduce((prev, curr) => prev + curr) / ages.length;
+  return averager(centuryAges);
 }
+
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -45,17 +49,12 @@ function calculateMenAverageAge(people, century = true) {
 
 function calculateWomenAverageAge(people, withChildren = false) {
   const female = people.filter(person => person.sex === 'f');
-  const mothers = [...new Set(people
-    .filter(person => person.mother !== null)
-    .map((person) => person.mother))];
   const women = withChildren
-    ? female.filter(person => mothers.includes(person.name))
+    ? female.filter(person => people.find(
+      child => child.mother === person.name))
     : female;
-  const ages = women
-    .map((person) => person.died - person.born)
-    .filter(age => age !== 0);
 
-  return ages.reduce((prev, curr) => prev + curr) / ages.length;
+  return averager(women);
 }
 
 /**
