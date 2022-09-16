@@ -69,10 +69,9 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function findWomenWithChildren(people) {
-  return people.filter(person =>
-    people.find(child => person.name === child.mother)
-    && person.sex === 'f'
-  );
+  return people.filter(person => (
+    people.find(child => person.name === child.mother) && person.sex === 'f'
+  ));
 }
 
 /**
