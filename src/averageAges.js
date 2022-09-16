@@ -9,17 +9,27 @@
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
- * @param {object[]} people
- * @param {number} century - optional
  *
  * @return {number}
+ * @param filteredList
  */
+
+function getAverageAge(filteredList) {
+  const sumAge = filteredList.reduce(
+    (sum, person) => sum + (person.died - person.born), 0
+  );
+
+  return sumAge / filteredList.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredMans = people.filter(century
+    ? person => Math.ceil(person.died / 100) === century
+      && person.sex === 'm'
+    : person => person.sex === 'm'
+  );
+
+  return getAverageAge(filteredMans);
 }
 
 /**
@@ -37,7 +47,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const moms = people.map(person => person.mother);
+  const filteredWomen = people.filter(withChildren
+    ? person => moms.some(mom => mom === person.name) && person.sex === 'f'
+    : person => person.sex === 'f');
+
+  return getAverageAge(filteredWomen);
 }
 
 /**
@@ -55,7 +70,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const child = people.reduce((arr, person) => {
+    arr.push(
+      {
+        ...person,
+        mother: people.find(mother => mother.name === person.mother),
+      },
+    );
+
+    return arr;
+  }, []);
+
+  const agesList = child
+    .filter(onlyWithSon
+      ? person => person.sex === 'm' && person.mother !== undefined
+      : person => person.mother !== undefined)
+    .map(person => person.born - person.mother.born);
+
+  return agesList.reduce(
+    (accumulator, age) => accumulator + age / agesList.length, 0
+  );
 }
 
 module.exports = {
