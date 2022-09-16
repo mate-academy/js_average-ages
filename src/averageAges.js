@@ -23,12 +23,11 @@ function getAverageAge(filteredList) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const filteredMans = century
-    ? people.filter(
-      person => Math.ceil(person.died / 100) === century
+  const filteredMans = people.filter(century
+    ? person => Math.ceil(person.died / 100) === century
       && person.sex === 'm'
-    )
-    : people.filter(person => person.sex === 'm');
+    : person => person.sex === 'm'
+  );
 
   return getAverageAge(filteredMans);
 }
