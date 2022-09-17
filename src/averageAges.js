@@ -15,6 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const filtredPeopleBySex = people.filter(person => person.sex === 'm');
+  let whatWeFiler = filtredPeopleBySex;
+
+  if (arguments.length > 1) {
+    const filtredByCentury = filtredPeopleBySex.filter(person => {
+      return Math.ceil(person.died / 100) === century;
+    });
+
+    whatWeFiler = filtredByCentury;
+  }
+
+  const averageAge = whatWeFiler.reduce((accumulator, current) => {
+    const currentAge = current.died - current.born;
+
+    return accumulator + currentAge;
+  }, 0);
+
+  return +(averageAge / whatWeFiler.length).toFixed(2);
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +55,28 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filtredPeopleBySex = people.filter(person => person.sex === 'f');
+  const peopleMothers = people.map(about => about.mother);
+
+  let whatWeFiler = filtredPeopleBySex;
+
+  if (withChildren) {
+    const filtredMotherOrNot = filtredPeopleBySex.filter(person => {
+      const motherName = person.name;
+
+      return peopleMothers.includes(motherName);
+    });
+
+    whatWeFiler = filtredMotherOrNot;
+  }
+
+  const averageAge = whatWeFiler.reduce((accumulator, current) => {
+    const currentAge = current.died - current.born;
+
+    return accumulator + currentAge;
+  }, 0);
+
+  return +(averageAge / whatWeFiler.length).toFixed(2);
 }
 
 /**
@@ -55,7 +94,40 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filtredPeopleBySex = people.filter(person => person.sex === 'f');
+  const peopleMothers = people.map(about => about.mother);
+  const filtredMotherOrNot = filtredPeopleBySex.filter(person => {
+    const motherName = person.name;
+
+    return peopleMothers.includes(motherName);
+  });
+
+  const ageDiffArray = [];
+
+  for (const mother of filtredMotherOrNot) {
+    if (people.some(person => person.mother === mother.name)) {
+      const childrens = people.filter(person => person.mother === mother.name);
+
+      for (let j = 0; j < childrens.length; j++) {
+        const checkOnFemale = childrens[j].sex === 'f';
+        const ageDiff = childrens[j].born - mother.born;
+
+        if (onlyWithSon && checkOnFemale) {
+          continue;
+        }
+
+        ageDiffArray.push(ageDiff);
+      }
+    }
+  }
+
+  const whatWeFiler = ageDiffArray;
+
+  const averageAge = whatWeFiler.reduce((accumulator, current) => {
+    return accumulator + current;
+  }, 0);
+
+  return +(averageAge / whatWeFiler.length).toFixed(2);
 }
 
 module.exports = {
