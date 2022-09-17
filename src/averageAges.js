@@ -20,6 +20,16 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const filterMan = !century
+    ? people.filter(human => human.sex === 'm')
+    : people.filter(human =>
+      Math.ceil(human.died / 100) === century && human.sex === 'm');
+
+  const calcAge = filterMan.map(human => human.died - human.born);
+
+  const calcAverageAge = calcAge.reduce((a, b) => a + b) / calcAge.length;
+
+  return calcAverageAge;
 }
 
 /**
@@ -37,7 +47,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const takingMothersList = people.map(human => human.mother);
+
+  const findMothersWeNeed = people.filter(human =>
+    takingMothersList.includes(human.name)
+  );
+
+  const filterWoman = !withChildren
+    ? people.filter(human => human.sex === 'f')
+    : findMothersWeNeed;
+
+  const calcAge = filterWoman.map(human => human.died - human.born);
+
+  const calcAverageAge = calcAge.reduce((a, b) => a + b) / calcAge.length;
+
+  return calcAverageAge;
 }
 
 /**
@@ -55,7 +79,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const takingMothersList = people.map(human => human.mother);
+
+  const findMothersWeNeed = people.filter(human =>
+    takingMothersList.includes(human.name)
+  );
+
+  const takingMothersNames = findMothersWeNeed.map(human => human.name);
+
+  const kidsHasMothers = !onlyWithSon
+    ? people.filter(human => takingMothersNames.includes(human.mother))
+    : people.filter(human => takingMothersNames.includes(human.mother)
+      && human.sex === 'm');
+
+  const mothers = {};
+
+  findMothersWeNeed.map(function(human) {
+    mothers[human.name] = human.born;
+  });
+
+  const calcAgeDiff = kidsHasMothers.map(human =>
+    human.born - mothers[human.mother]);
+
+  return calcAgeDiff.reduce((a, b) => a + b) / calcAgeDiff.length;
 }
 
 module.exports = {
