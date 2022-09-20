@@ -56,13 +56,9 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const mothersList = people.map(human => human.mother);
 
-  const mothersWithChildrens = people.filter(human =>
-    mothersList.includes(human.name)
-  );
-
   const filteredWoman = !withChildren
     ? people.filter(human => human.sex === 'f')
-    : mothersWithChildrens;
+    : people.filter(human => mothersList.includes(human.name));
 
   return findAverageAge(filteredWoman);
 }
@@ -82,31 +78,45 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothersList = people.map(human => human.mother);
+  // const mothersList = people.map(human => human.mother);
 
-  const mothersWithChildrens = people.filter(human =>
-    mothersList.includes(human.name)
-  );
+  // const mothersWithChildrens = people.filter(human =>
+  //   mothersList.includes(human.name)
+  // );
 
-  const mothersNames = mothersWithChildrens.map(human => human.name);
+  // const mothersNames = mothersWithChildrens.map(human => human.name);
 
-  const kidsHasMothers = people.filter(human => {
-    if (!onlyWithSon) {
-      return mothersNames.includes(human.mother);
-    }
+  // const kidsHasMothers = people.filter(human => {
+  //   if (!onlyWithSon) {
+  //     return mothersNames.includes(human.mother);
+  //   }
 
-    return mothersNames.includes(human.mother) && human.sex === 'm';
+  //   return mothersNames.includes(human.mother) && human.sex === 'm';
+  // });
+
+  // const mothers = {};
+
+  // mothersWithChildrens.map(function(human) {
+  //   mothers[human.name] = human.born;
+  // });
+
+  // const ageDiff = kidsHasMothers.map((human) => (
+  //   human.born - mothers[human.mother]
+  // ));
+
+  const kids = people.filter(kid => {
+    return people.some(mother => (
+      onlyWithSon
+        ? kid.sex === 'm' && kid.mother === mother.name
+        : kid.mother === mother.name
+    ));
   });
 
-  const mothers = {};
+  const ageDiff = kids.map(kid => {
+    const mother = people.find(woman => woman.name === kid.mother);
 
-  mothersWithChildrens.map(function(human) {
-    mothers[human.name] = human.born;
+    return kid.born - mother.born;
   });
-
-  const ageDiff = kidsHasMothers.map((human) => (
-    human.born - mothers[human.mother]
-  ));
 
   return ageDiff.reduce((a, b) => a + b) / ageDiff.length;
 }
