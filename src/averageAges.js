@@ -81,7 +81,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ? people.filter(person => {
       const hasMother = person.mother !== null;
       const hasMotherData = people
-        .find(mother => mother.name === person.mother) !== undefined;
+        .some(mother => mother.name === person.mother);
       const isSon = person.sex === 'm';
 
       return hasMother && hasMotherData && isSon;
@@ -89,7 +89,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : people.filter(person => {
       const hasMother = person.mother !== null;
       const hasMotherData = people
-        .find(mother => mother.name === person.mother) !== undefined;
+        .some(mother => mother.name === person.mother);
 
       return hasMother && hasMotherData;
     });
@@ -102,7 +102,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const childrenCount = filteredChildren.length;
 
-  return totalDifference / childrenCount;
+  return Math.round(totalDifference / childrenCount * 100) / 100;
 }
 
 function calculateAverageAge(persons) {
@@ -111,10 +111,9 @@ function calculateAverageAge(persons) {
 
     return total + age;
   }, 0);
-
   const personsCount = persons.length;
 
-  return totalAge / personsCount;
+  return Math.round(totalAge / personsCount * 100) / 100;
 }
 
 module.exports = {
