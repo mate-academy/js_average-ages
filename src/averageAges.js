@@ -20,12 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const filterMan = !century
-    ? people.filter(human => human.sex === 'm')
-    : people.filter(human =>
-      Math.ceil(human.died / 100) === century && human.sex === 'm');
+  const filteredMan = people.filter(human => {
+    if (!century) {
+      return human.sex === 'm';
+    }
 
-  const menAge = filterMan.map(human => human.died - human.born);
+    return Math.ceil(human.died / 100) === century && human.sex === 'm';
+  });
+
+  const menAge = filteredMan.map(human => human.died - human.born);
 
   const averageAge = menAge.reduce((a, b) => a + b) / menAge.length;
 
@@ -53,11 +56,11 @@ function calculateWomenAverageAge(people, withChildren) {
     mothersList.includes(human.name)
   );
 
-  const filterWoman = !withChildren
+  const filteredWoman = !withChildren
     ? people.filter(human => human.sex === 'f')
     : mothersWithChildrens;
 
-  const womenAge = filterWoman.map(human => human.died - human.born);
+  const womenAge = filteredWoman.map(human => human.died - human.born);
 
   const averageAge = womenAge.reduce((a, b) => a + b) / womenAge.length;
 
@@ -87,10 +90,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const mothersNames = mothersWithChildrens.map(human => human.name);
 
-  const kidsHasMothers = !onlyWithSon
-    ? people.filter(human => mothersNames.includes(human.mother))
-    : people.filter(human => mothersNames.includes(human.mother)
-      && human.sex === 'm');
+  const kidsHasMothers = people.filter(human => {
+    if (!onlyWithSon) {
+      return mothersNames.includes(human.mother);
+    }
+
+    return mothersNames.includes(human.mother) && human.sex === 'm';
+  });
 
   const mothers = {};
 
@@ -98,8 +104,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     mothers[human.name] = human.born;
   });
 
-  const ageDiff = kidsHasMothers.map(human =>
-    human.born - mothers[human.mother]);
+  const ageDiff = kidsHasMothers.map((human) => (
+    human.born - mothers[human.mother]
+  ));
 
   return ageDiff.reduce((a, b) => a + b) / ageDiff.length;
 }
