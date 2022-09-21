@@ -14,6 +14,12 @@
  *
  * @return {number}
  */
+
+function calculateAverageAge(fiteredList) {
+  return fiteredList.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / fiteredList.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = century
     ? people.filter(person => person.sex === 'm'
@@ -94,8 +100,3 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
-
-function calculateAverageAge(fiteredList) {
-  return fiteredList.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / fiteredList.length;
-}
