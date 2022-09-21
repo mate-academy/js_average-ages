@@ -1,17 +1,12 @@
 'use strict';
 
 function calculateMenAverageAge(people, century) {
-  const filtredPeopleBySex = people.filter(person => person.sex === 'm');
-  let whatWeFiler = filtredPeopleBySex;
+  const whatWeFiler = people.filter(person => (
+    arguments.length === 1
+      ? person.sex === 'm'
+      : person.sex === 'm' && Math.ceil(person.died / 100) === century
+  ));
   const ageDiffArray = [];
-
-  if (arguments.length > 1) {
-    const filtredByCentury = filtredPeopleBySex.filter(person => {
-      return Math.ceil(person.died / 100) === century;
-    });
-
-    whatWeFiler = filtredByCentury;
-  }
 
   whatWeFiler.forEach(person => {
     ageDiffArray.push(person.died - person.born);
@@ -21,21 +16,12 @@ function calculateMenAverageAge(people, century) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const filtredPeopleBySex = people.filter(person => person.sex === 'f');
-  const peopleMothers = people.map(about => about.mother);
+  const whatWeFiler = people.filter(person => (
+    arguments.length === 1
+      ? person.sex === 'f'
+      : person.sex === 'f' && people.some(some => some.mother === person.name)
+  ));
   const ageDiffArray = [];
-
-  let whatWeFiler = filtredPeopleBySex;
-
-  if (withChildren) {
-    const filtredMotherOrNot = filtredPeopleBySex.filter(person => {
-      const motherName = person.name;
-
-      return peopleMothers.includes(motherName);
-    });
-
-    whatWeFiler = filtredMotherOrNot;
-  }
 
   whatWeFiler.forEach(person => {
     ageDiffArray.push(person.died - person.born);
@@ -48,11 +34,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const ageDiffArray = [];
 
   people.forEach((person, index, list) => {
-    const motherIndex = list.some(someone => someone.name === person.mother)
-      ? list.findIndex(someone => someone.name === person.mother)
-      : null;
+    const motherIndex = list.findIndex(some => some.name === person.mother);
 
-    if (motherIndex !== null) {
+    if (motherIndex !== -1) {
       if ((onlyWithSon && person.sex === 'm') || (onlyWithSon === undefined)) {
         ageDiffArray.push(person.born - list[motherIndex].born);
       }
@@ -67,7 +51,7 @@ function calculateAverageAge(data) {
     accumulator + current
   ), 0);
 
-  return +(averageAge / data.length).toFixed(2);
+  return averageAge / data.length;
 }
 
 module.exports = {
