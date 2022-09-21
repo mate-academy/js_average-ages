@@ -36,9 +36,10 @@ function calculateMenAverageAge(people, century) {
 
   if (century) {
     return calculateAveragePeopleAge(artMenCentury);
-  } else {
-    return calculateAveragePeopleAge(srtMen);
   }
+
+  return calculateAveragePeopleAge(srtMen);
+
 }
 
 /**
@@ -68,9 +69,10 @@ function calculateWomenAverageAge(people, withChildren) {
 
   if (withChildren) {
     return calculateAveragePeopleAge(womenWithChild);
-  } else {
-    return calculateAveragePeopleAge(srtWomen);
   }
+
+  return calculateAveragePeopleAge(srtWomen);
+
 }
 
 /**
