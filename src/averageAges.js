@@ -13,7 +13,14 @@
  * @param {number} century - optional
  *
  * @return {number}
+ *
  */
+function Sum(years) {
+  return years.reduce((acumulator, person) => {
+    return acumulator + (person.died - person.born);
+  }, 0);
+}
+
 function calculateMenAverageAge(people, century) {
   let manList = [];
 
@@ -23,9 +30,7 @@ function calculateMenAverageAge(people, century) {
       person => Math.ceil(person.died / 100) === century && person.sex === 'm'
     );
 
-  const manAverage = manList.reduce((acumulator, person) => {
-    return acumulator + (person.died - person.born);
-  }, 0);
+  const manAverage = Sum(manList);
 
   return manAverage / manList.length;
   // write code here
@@ -59,9 +64,7 @@ function calculateWomenAverageAge(people, withChildren) {
     ? womenList = people.filter(person => person.sex === 'f')
     : womenList = people.filter(person => mothers.includes(person.name));
 
-  const womenAverage = womenList.reduce((acumulator, person) => {
-    return acumulator + (person.died - person.born);
-  }, 0);
+  const womenAverage = Sum(womenList);
 
   return womenAverage / womenList.length;
 }
