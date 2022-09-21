@@ -20,6 +20,14 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let men;
+
+  century
+    ? men = people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : men = people.filter(person => person.sex === 'm');
+
+  return +calculateAverageAge(men).toFixed(2);
 }
 
 /**
@@ -37,7 +45,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let female;
+
+  withChildren
+    ? female = people.filter(person =>
+      people.map(human => human.mother).includes(person.name))
+    : female = people.filter(person => person.sex === 'f');
+
+  return +calculateAverageAge(female).toFixed(2);
 }
 
 /**
@@ -55,7 +70,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(person =>
+    people.map(human => human.mother).includes(person.name));
+  let children;
+  const ageDifference = [];
+
+  onlyWithSon
+    ? children = people.filter(person =>
+      people.map(human => human.name).includes(person.mother)
+      && person.sex === 'm')
+    : children = people.filter(person =>
+      people.map(human => human.name).includes(person.mother));
+
+  children.forEach((child) => {
+    const mother = mothers.find(human => human.name === child.mother);
+
+    if (mother) {
+      ageDifference.push(child.born - mother.born);
+    }
+  });
+
+  const averageDifference = ageDifference.reduce((sum, difference) =>
+    sum + difference, 0) / ageDifference.length;
+
+  return averageDifference;
 }
 
 module.exports = {
@@ -63,3 +101,8 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function calculateAverageAge(fiteredList) {
+  return fiteredList.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / fiteredList.length;
+}
