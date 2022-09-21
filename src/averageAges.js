@@ -14,12 +14,32 @@
  *
  * @return {number}
  */
+
+function calculateAveragePeopleAge(people) {
+  const ages = people.map(person => person.died - person.born);
+
+  const averageAge = ages.reduce((x, y) => x + y, 0) / ages.length;
+
+  return averageAge;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const srtMen = people.filter(human => human.sex === 'm');
+  const artMenCentury = srtMen.filter(person =>
+    Math.ceil(person.died / 100) === century);
+
+  // return age / arrAge.length;
+  if (century) {
+    return calculateAveragePeopleAge(artMenCentury);
+  } else {
+    return calculateAveragePeopleAge(srtMen);
+  }
 }
 
 /**
@@ -36,8 +56,23 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+function findLostChild(people, mother) {
+  const children = people.filter(child => child.mother === mother.name);
+
+  return children.length !== 0;
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const srtWomen = people.filter(human => human.sex === 'f');
+  const womenWithChild = srtWomen.filter(woman =>
+    findLostChild(people, woman));
+
+  // return age / arrAge.length;
+  if (withChildren) {
+    return calculateAveragePeopleAge(womenWithChild);
+  } else {
+    return calculateAveragePeopleAge(srtWomen);
+  }
 }
 
 /**
@@ -54,8 +89,34 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = people.filter(human => human.sex === 'f');
+  const ages = [];
+
+  women.forEach(woman => {
+    const children = findChildren(people, woman, onlyWithSon);
+
+    children.forEach(child => {
+      ages[ages.length] = child.born - woman.born;
+    });
+  });
+
+  return ages.reduce((x, y) => {
+    return x + y;
+  }, 0) / ages.length;
+}
+
+// child
+// onlyWithSon === true;
+
+function findChildren(people, mother, onlyWithSon) {
+  return people.filter(child => {
+    const isChild = child.mother === mother.name;
+    const maleChild = child.sex === 'm';
+
+    return onlyWithSon ? isChild && maleChild : isChild;
+  });
 }
 
 module.exports = {
