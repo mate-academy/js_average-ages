@@ -34,7 +34,6 @@ function calculateMenAverageAge(people, century) {
   const artMenCentury = srtMen.filter(person =>
     Math.ceil(person.died / 100) === century);
 
-  // return age / arrAge.length;
   if (century) {
     return calculateAveragePeopleAge(artMenCentury);
   } else {
@@ -67,7 +66,6 @@ function calculateWomenAverageAge(people, withChildren) {
   const womenWithChild = srtWomen.filter(woman =>
     findLostChild(people, woman));
 
-  // return age / arrAge.length;
   if (withChildren) {
     return calculateAveragePeopleAge(womenWithChild);
   } else {
@@ -106,9 +104,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return x + y;
   }, 0) / ages.length;
 }
-
-// child
-// onlyWithSon === true;
 
 function findChildren(people, mother, onlyWithSon) {
   return people.filter(child => {
