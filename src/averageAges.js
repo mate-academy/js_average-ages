@@ -16,8 +16,8 @@
  */
 
 function calculateAverageAge(peopleList) {
-  const averageAge = peopleList.reduce((firstPerson, secondPerson) =>
-    (firstPerson + secondPerson)
+  const averageAge = peopleList.reduce((accumulator, current) =>
+    accumulator + (current.died - current.born), 0
   ) / peopleList.length;
 
   return averageAge;
@@ -30,9 +30,7 @@ function calculateMenAverageAge(people, century) {
     : person.sex === 'm'
   );
 
-  const menAges = men.map(person => person.died - person.born);
-
-  const menAverageAge = calculateAverageAge(menAges);
+  const menAverageAge = calculateAverageAge(men);
 
   return menAverageAge;
 };
@@ -59,9 +57,7 @@ function calculateWomenAverageAge(people, withChildren) {
     : person.sex === 'f'
   );
 
-  const womenAges = women.map(person => person.died - person.born);
-
-  const womenAverageAge = calculateAverageAge(womenAges);
+  const womenAverageAge = calculateAverageAge(women);
 
   return womenAverageAge;
 };
@@ -88,26 +84,22 @@ function womenWithChildren(people, mother) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(person => onlyWithSon
     ? person.sex === 'm'
-    && hasMother(people, person.mother)
-    : hasMother(people, person.mother)
+    && findMother(people, person.mother)
+    : findMother(people, person.mother)
   );
 
   const motherAges = children
-    .map(person => person.born - bornMother(people, person.mother));
+    .map(person => person.born - findMother(people, person.mother).born);
 
-  const motherAverageAge = calculateAverageAge(motherAges);
+  const motherAverageAge = motherAges
+    .reduce((accumulator, current) =>
+      (accumulator + current)) / motherAges.length;
 
   return motherAverageAge;
 };
 
-function hasMother(people, motherName) {
-  return people.some(person => person.name === motherName);
-};
-
-function bornMother(people, motherName) {
-  const mother = people.find(person => person.name === motherName);
-
-  return mother.born;
+function findMother(people, motherName) {
+  return people.find(person => person.name === motherName);
 };
 
 module.exports = {
