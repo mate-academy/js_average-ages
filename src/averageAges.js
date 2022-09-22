@@ -3,8 +3,8 @@
 function avarageAge(persons) {
   const ages = persons.reduce(
     (sum, person) => (
-      sum + (person.died - person.born)),
-    0
+      sum + (person.died - person.born)
+    ), 0
   );
 
   const averageAge = ages / persons.length;
@@ -44,9 +44,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       )));
 
   const ages = hasMother.reduce((sum, person) => {
-    const ageDifference = (person.born - people.find((mother) =>
-      mother.name === person.mother).born
-    );
+    const ageDifference = person.born - people.find((mother) => (
+      mother.name === person.mother
+    )).born;
 
     return sum + ageDifference;
   }, 0);
