@@ -92,9 +92,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return childBorn - motherBorn + sum;
   }, 0);
 
-  const AverageAgeDiff = calculateAverageAge(listOfChildrens, sumOfAgeDiff);
+  const averageAgeDiff = calculateAverageAge(listOfChildrens, sumOfAgeDiff);
 
-  return +AverageAgeDiff.toFixed(2);
+  return +averageAgeDiff.toFixed(2);
 }
 
 const sumOfAges = (list) =>
