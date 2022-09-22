@@ -15,11 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menList = [...people].filter(person => (
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  ));
+
+  const sumOfAge = menList.reduce((sum, currentMan) => {
+    const currentManAge = currentMan.died - currentMan.born;
+
+    return sum + currentManAge;
+  }, 0);
+
+  const averageAge = sumOfAge / menList.length;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +47,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenList = [...people].filter(person => (
+    withChildren
+      ? people.some(human => human.mother === person.name)
+      : person.sex === 'f'
+  ));
+
+  const sumOfAge = womenList.reduce((sum, currentWoman) => {
+    const currentWomanAge = currentWoman.died - currentWoman.born;
+
+    return sum + currentWomanAge;
+  }, 0);
+
+  const averageAge = sumOfAge / womenList.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +79,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childrenList = [...people].filter(person => (
+    onlyWithSon
+      ? people.some(woman => woman.name === person.mother
+        && person.sex === 'm')
+      : people.some(woman => woman.name === person.mother)
+  ));
+
+  const ageDifferenceList = childrenList.map(child => {
+    const ageDifference = child.born - people.find(woman => (
+      woman.name === child.mother
+    )).born;
+
+    return ageDifference;
+  });
+
+  const AgeDifference = ageDifferenceList.reduce((sum, currentDiff) => (
+    sum + currentDiff)
+  , 0);
+
+  const averageAgeDifference = AgeDifference / ageDifferenceList.length;
+
+  return averageAgeDifference;
 }
 
 module.exports = {
