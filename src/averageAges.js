@@ -21,18 +21,21 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const men = (Number.isInteger(century))
-    ? people.filter(person =>
-      (person.sex === 'm'
-      && Math.ceil(person.died / 100) === century))
-    : people.filter(person =>
-      person.sex === 'm');
+  const men = people.filter(person =>
+    (Number.isInteger(century))
+      ? (person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+      : person.sex === 'm');
 
-  const agedSum = men.reduce((prev, { born, died }) =>
-    prev + died - born,
-  0);
+  const agedSum = getAverageAge(men);
 
   return agedSum / men.length;
+}
+
+function getAverageAge(people) {
+  return people.reduce((prev, { born, died }) =>
+    prev + died - born,
+  0);
 }
 
 /**
@@ -52,13 +55,12 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
 
-  const women = (withChildren)
-    ? people.filter(person => getWomenWithChildren(people, person))
-    : people.filter(person => person.sex === 'f');
+  const women = people.filter(person =>
+    (withChildren)
+      ? getWomenWithChildren(people, person)
+      : person.sex === 'f');
 
-  const ageSum = women.reduce((prev, { born, died }) =>
-    prev + died - born,
-  0);
+  const ageSum = getAverageAge(women);
 
   return ageSum / women.length;
 }
@@ -83,16 +85,14 @@ function getWomenWithChildren(people, person) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const children = (onlyWithSon)
-    ? people.filter(child =>
-      getChildren(people, child)
-      && child.sex === 'm')
-    : people.filter(child =>
-      getChildren(people, child));
+  const children = people.filter(child =>
+    (onlyWithSon)
+      ? getChildren(people, child)
+        && child.sex === 'm'
+      : getChildren(people, child));
 
-  const ages = children.map(child => getDiffAge(children, people, child));
-
-  return ages.reduce((prev, age) => prev + age) / children.length;
+  return children.reduce((prev, child) =>
+    prev + getDiffAge(children, people, child), 0) / children.length;
 }
 
 function getChildren(people, child) {
