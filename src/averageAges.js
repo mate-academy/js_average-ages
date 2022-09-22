@@ -15,24 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let manAvarageAge = people.filter((man) => {
+  let men = people.filter((man) => {
     return man.sex === 'm';
   });
 
   if (century) {
-    manAvarageAge = manAvarageAge.filter(man => {
+    men = men.filter(man => {
       return Math.ceil(man.died / 100) === century;
     });
   }
 
-  const age = manAvarageAge.map(man => {
-    return man.died - man.born;
-  });
-  const avarageAge = age.reduce((man, prev) => {
-    return man + prev;
-  });
-
-  return avarageAge / age.length;
+  return calcAvarageAge(men);
 
   // console.log(people, century);
   // write code here
@@ -67,15 +60,7 @@ function calculateWomenAverageAge(people, withChildren) {
     });
   }
 
-  const age = women.map(woman => {
-    return woman.died - woman.born;
-  });
-
-  const sum = age.reduce((woman, prev) => {
-    return woman + prev;
-  });
-
-  return sum / age.length;
+  return calcAvarageAge(women);
 }
 
 /**
@@ -109,6 +94,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   });
 
   return ageDifference.reduce((a, b) => a + b) / ageDifference.length;
+}
+
+function calcAvarageAge(humans) {
+  const age = humans.map(person => {
+    return person.died - person.born;
+  });
+  const sum = age.reduce((prev, curr) => prev + curr, 0);
+
+  return sum / age.length;
 }
 
 module.exports = {
