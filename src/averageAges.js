@@ -14,13 +14,26 @@
  *
  * @return {number}
  */
+
+function calculateAverageAge(peopleList) {
+  const averageAge = peopleList.reduce((accumulator, current) =>
+    accumulator + (current.died - current.born), 0
+  ) / peopleList.length;
+
+  return averageAge;
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const men = people.filter(person => century
+    ? person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
+    : person.sex === 'm'
+  );
+
+  const menAverageAge = calculateAverageAge(men);
+
+  return menAverageAge;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -36,9 +49,22 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+  const women = people.filter(person => withChildren
+    ? person.sex === 'f'
+      && womenWithChildren(people, person)
+    : person.sex === 'f'
+  );
+
+  const womenAverageAge = calculateAverageAge(women);
+
+  return womenAverageAge;
+};
+
+function womenWithChildren(people, mother) {
+  return people.some(person => person.mother === mother.name);
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -54,9 +80,27 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+  const children = people.filter(person => onlyWithSon
+    ? person.sex === 'm'
+      && findMother(people, person.mother)
+    : findMother(people, person.mother)
+  );
+
+  const motherAges = children
+    .map(person => person.born - findMother(people, person.mother).born);
+
+  const motherAverageAge = motherAges
+    .reduce((accumulator, current) =>
+      (accumulator + current)) / motherAges.length;
+
+  return motherAverageAge;
+};
+
+function findMother(people, motherName) {
+  return people.find(person => person.name === motherName);
+};
 
 module.exports = {
   calculateMenAverageAge,
