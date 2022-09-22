@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const listOfMen = (century)
+    ? people.filter(({ sex, died }) => sex === 'm'
+      && Math.ceil(died / 100) === century)
+    : people.filter(({ sex }) => sex === 'm');
+
+  const ages = listOfMen.map(person => person.died - person.born);
+  const sumAges = ages.reduce((prev, current) => prev + current, 0);
+  const averageAgeOfMen = sumAges / ages.length;
+
+  return averageAgeOfMen;
 }
 
 /**
@@ -37,7 +42,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const listOfWomen = (withChildren)
+    ? people.filter(({ name }) => people.some(({ mother }) => mother === name))
+    : people.filter(({ sex }) => sex === 'f');
+
+  const ages = listOfWomen.map(person => person.died - person.born);
+  const sumAges = ages.reduce((prev, current) => prev + current, 0);
+  const averageAgeOfWomen = sumAges / ages.length;
+
+  return averageAgeOfWomen;
 }
 
 /**
@@ -55,7 +68,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const listOfDifference = (onlyWithSon)
+    ? people.filter(({ sex, mother: motherName }) => sex === 'm'
+      && people.find(({ name }) => motherName === name))
+    : people.filter(({ mother: motherName }) =>
+      people.find(({ name }) => motherName === name));
+
+  const ages = listOfDifference.map(({ born, mother }) =>
+    born - people.find(({ name: motherName }) =>
+      mother === motherName).born);
+
+  const sumAges = ages.reduce((prev, current) => prev + current, 0);
+  const averageAgeOfDifference = sumAges / ages.length;
+
+  return averageAgeOfDifference;
 }
 
 module.exports = {
