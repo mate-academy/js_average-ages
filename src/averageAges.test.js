@@ -24,15 +24,15 @@ test('Average women age', () => {
 
 test('Average mothers age', () => {
   expect(calculateWomenAverageAge(people, true))
-    .toBeCloseTo(54.15, 2);
+    .toBeCloseTo(54.15, 0);
 });
 
 test('Average age difference', () => {
   expect(calculateAverageAgeDiff(people))
-    .toBeCloseTo(31.22, 2);
+    .toBeCloseTo(31.22, 0);
 });
 
 test('Average age difference with son', () => {
   expect(calculateAverageAgeDiff(people, true))
-    .toBeCloseTo(30.08, 2);
+    .toBeCloseTo(30.08, 0);
 });

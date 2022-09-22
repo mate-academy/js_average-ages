@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const allMens = people.filter(person => person.sex === 'm');
+  const requiredMens = century
+    ? allMens.filter(men => Math.ceil(men.died / 100) === century)
+    : allMens;
+
+  const menAges = requiredMens.map(men => men.died - men.born);
+
+  const menAgesSum = menAges.reduce((pv, cv) => pv + cv, 0);
+
+  return +(menAgesSum / menAges.length).toFixed(2);
 }
 
 /**
@@ -37,7 +42,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomens = people.filter(women => women.sex === 'f');
+  const requiredWomens = withChildren
+    ? allWomens.filter(women =>
+      people.filter(person => person.mother === women.name)
+    )
+    : allWomens;
+
+  const womensAges = requiredWomens.map(women => women.died - women.born);
+
+  const womensAgesSum = womensAges.reduce((pv, cv) => pv + cv, 0);
+
+  return +(womensAgesSum / womensAges.length).toFixed(2);
 }
 
 /**
@@ -55,7 +71,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const onlyMothers = people.filter(person =>
+    person.sex === 'f' && people.some(child =>
+      child.mother === person.name));
+  const requiredMothers = onlyWithSon
+    ? onlyMothers.filter(mother => people.some(child =>
+      child.sex === 'm' && child.mother === mother.name)
+    )
+    : onlyMothers;
+
+  const motherAges = requiredMothers.map(mother => {
+    const childOfMother = people.filter(child => child.mother === mother.name);
+    const motherAgeAtChildBirth = childOfMother[0].born - mother.born;
+
+    return motherAgeAtChildBirth;
+  });
+
+  const sumOfAllAges = motherAges.reduce((pv, cv) => pv + cv, 0);
+
+  return +(sumOfAllAges / motherAges.length).toFixed(2);
 }
 
 module.exports = {
