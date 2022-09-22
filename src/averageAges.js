@@ -18,9 +18,9 @@
 function calculateAveragePeopleAge(people) {
   const ages = people.map(person => person.died - person.born);
 
-  const averageAge = ages.reduce((x, y) => x + y, 0) / ages.length;
+  const sumOfAge = ages.reduce((x, y) => x + y, 0);
 
-  return averageAge;
+  return sumOfAge / ages.length;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -39,7 +39,6 @@ function calculateMenAverageAge(people, century) {
   }
 
   return calculateAveragePeopleAge(srtMen);
-
 }
 
 /**
@@ -56,7 +55,7 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function findLostChild(people, mother) {
+function hasChild(people, mother) {
   const children = people.filter(child => child.mother === mother.name);
 
   return children.length !== 0;
@@ -65,14 +64,13 @@ function findLostChild(people, mother) {
 function calculateWomenAverageAge(people, withChildren) {
   const srtWomen = people.filter(human => human.sex === 'f');
   const womenWithChild = srtWomen.filter(woman =>
-    findLostChild(people, woman));
+    hasChild(people, woman));
 
   if (withChildren) {
     return calculateAveragePeopleAge(womenWithChild);
   }
 
   return calculateAveragePeopleAge(srtWomen);
-
 }
 
 /**
