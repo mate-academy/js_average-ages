@@ -15,11 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let count = 0;
+
+  const average = people
+    .filter((person) => {
+      return century
+        ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+        : person.sex === 'm';
+    })
+    .reduce((total, person) => {
+      count++;
+
+      return total + (person.died - person.born);
+    }, 0);
+
+
+  return average / count;
 }
 
 /**
@@ -37,7 +48,35 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let count = 0;
+  const women = people.filter((person) => {
+    return person.sex === 'f';
+  });
+  const womenWithChildren = [];
+
+  for (const human of people) {
+    for (const nextHuman of people) {
+      if (human.name === nextHuman.mother) {
+        if (!womenWithChildren.includes(human)) {
+          womenWithChildren.push(human);
+        }
+      }
+    }
+  }
+
+  const average = !withChildren
+    ? women.reduce((total, person) => {
+      count++;
+
+      return total + (person.died - person.born);
+    }, 0)
+    : womenWithChildren.reduce((total, person) => {
+      count++;
+
+      return total + (person.died - person.born);
+    }, 0);
+
+  return average / count;
 }
 
 /**
@@ -55,7 +94,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenWithChildren = [];
+  const womenWithSons = [];
+
+  for (const human of people) {
+    for (const nextHuman of people) {
+      if (human.name === nextHuman.mother) {
+        if (!womenWithChildren.includes(human)) {
+          womenWithChildren.push(nextHuman.born - human.born);
+        }
+
+        if (nextHuman.sex === 'm') {
+          if (!womenWithSons.includes(human)) {
+            womenWithSons.push(nextHuman.born - human.born);
+          }
+        }
+      }
+    }
+  }
+
+  return onlyWithSon
+    ? womenWithSons.reduce((partialSum, a) => partialSum + a, 0)
+        / womenWithSons.length
+    : womenWithChildren.reduce((partialSum, a) => partialSum + a, 0)
+        / womenWithChildren.length;
 }
 
 module.exports = {
