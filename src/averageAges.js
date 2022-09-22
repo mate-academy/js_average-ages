@@ -23,10 +23,7 @@ function calculateMenAverageAge(people, century) {
     )
     : people.filter(person => person.sex === 'm');
 
-  return men.reduce(
-    (sumAges, man) =>
-      (sumAges + (man.died - man.born)), 0
-  ) / men.length;
+  return getAverageAge(men);
 }
 
 /**
@@ -51,10 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
     )
     : people.filter(person => person.sex === 'f');
 
-  return women.reduce(
-    (sumAges, woman) =>
-      (sumAges + (woman.died - woman.born)), 0
-  ) / women.length;
+  return getAverageAge(women);
 }
 
 /**
@@ -87,6 +81,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       + child.born
       - people.find(mother => child.mother === mother.name).born
       ), 0) / children.length;
+}
+
+function getAverageAge(people) {
+  return people.reduce(
+    (sumAges, person) =>
+      (sumAges + (person.died - person.born)), 0
+  ) / people.length;
 }
 
 module.exports = {
