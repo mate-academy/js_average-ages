@@ -14,6 +14,23 @@
  *
  * @return {number}
  */
+
+// const calcAverageAgeValue = function(sum, currentPerson) {
+//   const currentPersonAge = currentPerson.died - currentPerson.born;
+
+//   return sum + currentPersonAge;
+// };
+
+const calculateAverageAge = (peopleList) => {
+  const sumOfAge = peopleList.reduce((sum, person) => {
+    const currentManAge = person.died - person.born;
+
+    return sum + currentManAge;
+  }, 0);
+
+  return sumOfAge / peopleList.length;
+};
+
 function calculateMenAverageAge(people, century) {
   const menList = people.filter(person => (
     century
@@ -21,13 +38,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm'
   ));
 
-  const sumOfAge = menList.reduce((sum, currentMan) => {
-    const currentManAge = currentMan.died - currentMan.born;
-
-    return sum + currentManAge;
-  }, 0);
-
-  const averageAge = sumOfAge / menList.length;
+  const averageAge = calculateAverageAge(menList);
 
   return averageAge;
 }
@@ -53,13 +64,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f'
   ));
 
-  const sumOfAge = womenList.reduce((sum, currentWoman) => {
-    const currentWomanAge = currentWoman.died - currentWoman.born;
-
-    return sum + currentWomanAge;
-  }, 0);
-
-  const averageAge = sumOfAge / womenList.length;
+  const averageAge = calculateAverageAge(womenList);
 
   return averageAge;
 }
@@ -94,11 +99,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return ageDifference;
   });
 
-  const AgeDifference = ageDifferenceList.reduce((sum, currentDiff) => (
+  const ageDifferenceSum = ageDifferenceList.reduce((sum, currentDiff) => (
     sum + currentDiff)
   , 0);
 
-  const averageAgeDifference = AgeDifference / ageDifferenceList.length;
+  const averageAgeDifference = ageDifferenceSum / ageDifferenceList.length;
 
   return averageAgeDifference;
 }
