@@ -14,7 +14,7 @@
  *
  * @return {number}
  */
-const middleAge = (arr) => arr.reduce((sum, person) =>
+const getAverageAge = (arr) => arr.reduce((sum, person) =>
   sum + (person.died - person.born), 0) / arr.length;
 
 function calculateMenAverageAge(people, century) {
@@ -24,7 +24,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm'
   );
 
-  return middleAge(men);
+  return getAverageAge(men);
 }
 
 /**
@@ -48,7 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f'
   );
 
-  return middleAge(woman);
+  return getAverageAge(woman);
 }
 
 /**
