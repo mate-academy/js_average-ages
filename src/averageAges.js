@@ -14,12 +14,13 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = 0) {
+  const men = (century)
+    ? people.filter((man) => man.sex === 'm'
+    && Math.ceil(man.died / 100) === century)
+    : people.filter((man) => man.sex === 'm');
+
+  return averageAge(men);
 }
 
 /**
@@ -36,8 +37,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  const women = people.filter((woman) => woman.sex === 'f');
+  const age = (withChildren)
+    ? women.filter(woman => {
+      return people.some(child => child.mother === woman.name);
+    })
+    : [...women];
+
+  return averageAge(age);
 }
 
 /**
@@ -54,9 +62,32 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const motherArr = (onlyWithSon)
+    ? people.filter((person) => {
+      return people.find(mother => person.mother === mother.name
+        && person.sex === 'm');
+    })
+    : people.filter((person) => {
+      return people.find(mother => person.mother === mother.name);
+    });
+
+  return averageAge(motherArr, people);
 }
+
+// separate function for get average age
+const averageAge = (arr, people = []) => {
+  const result = (!people.length)
+    ? arr.map(person => person.died - person.born)
+      .reduce((prev, current) => prev + current, 0)
+    : arr.reduce((prev, current) => {
+      const child = people.find(mother => current.mother === mother.name);
+
+      return prev + (current.born - child.born);
+    }, 0);
+
+  return result / arr.length;
+};
 
 module.exports = {
   calculateMenAverageAge,
