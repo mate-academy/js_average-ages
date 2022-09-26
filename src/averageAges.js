@@ -14,12 +14,20 @@
  *
  * @return {number}
  */
-function calculateAverageAge(people) {
-  const peopleAgeMap = people.map(person => person.died - person.born);
-  const sumOfAges = peopleAgeMap
-    .reduce((accumulator, age) => accumulator + age, 0);
+// function calculateAverageAge(people) {
+//   const peopleAgeMap = people.map(person => person.died - person.born);
+//   const sumOfAges = peopleAgeMap
+//     .reduce((accumulator, age) => accumulator + age, 0);
 
-  return sumOfAges / peopleAgeMap.length || 0;
+//   return sumOfAges / peopleAgeMap.length || 0;
+// }
+
+function calculateAverageAge(people) {
+  const sumOfAges = people
+    .reduce((accumulator, person) =>
+      accumulator + (person.died - person.born), 0);
+
+  return sumOfAges / people.length || 0;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -84,7 +92,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   return ageDifference
     .reduce((accumulator, difference) => accumulator + difference, 0)
-    / ageDifference.length;
+  / ageDifference.length;
 }
 
 module.exports = {
