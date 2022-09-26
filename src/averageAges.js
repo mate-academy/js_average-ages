@@ -15,10 +15,9 @@
  */
 
 function calculateAvarageAge(people) {
-  const ages = people.map(person => person.died - person.born);
-  const agesArr = ages.reduce((prev, person) => {
-    return prev + person;
-  }, 0) / ages.length;
+  const peopleAges = people.map(person => person.died - person.born);
+  const agesArr = peopleAges
+    .reduce((prevPerson, person) => prevPerson + person, 0) / peopleAges.length;
 
   return agesArr;
 }
