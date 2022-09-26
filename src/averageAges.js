@@ -31,14 +31,16 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   const srtMen = people.filter(human => human.sex === 'm');
-  const artMenCentury = srtMen.filter(person =>
-    Math.ceil(person.died / 100) === century);
+
+  const menYears = century
+    ? srtMen.filter(person => Math.ceil(person.died / 100) === century)
+    : srtMen;
 
   if (century) {
-    return calculateAveragePeopleAge(artMenCentury);
+    return calculateAveragePeopleAge(menYears);
   }
 
-  return calculateAveragePeopleAge(srtMen);
+  return calculateAveragePeopleAge(menYears);
 }
 
 /**
@@ -63,14 +65,16 @@ function hasChild(people, mother) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const srtWomen = people.filter(human => human.sex === 'f');
-  const womenWithChild = srtWomen.filter(woman =>
-    hasChild(people, woman));
+
+  const womenYear = withChildren
+    ? srtWomen.filter(woman => hasChild(people, woman))
+    : srtWomen;
 
   if (withChildren) {
-    return calculateAveragePeopleAge(womenWithChild);
+    return calculateAveragePeopleAge(womenYear);
   }
 
-  return calculateAveragePeopleAge(srtWomen);
+  return calculateAveragePeopleAge(womenYear);
 }
 
 /**
