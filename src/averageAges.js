@@ -15,14 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const males = [...people].filter(person => (
+  const males = people.filter(person => (
     century
       ? (Math.ceil(person.died / 100) === century && person.sex === 'm')
       : (person.sex === 'm')
   ));
 
   return Math.round(males.map(man => man.died - man.born)
-    .reduce((man1, man2) => man1 + man2) / males.length * 100) / 100;
+    .reduce((acc, man2) => acc + man2) / males.length * 100) / 100;
 }
 
 /**
@@ -40,7 +40,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = [...people].filter(person => (
+  const women = people.filter(person => (
     withChildren
       ? (people.some(child => child.mother === person.name)
         && person.sex === 'f')
@@ -66,7 +66,7 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = [...people].filter(person => (
+  const children = people.filter(person => (
     onlyWithSon
       ? (people.some(woman => woman.name === person.mother)
         && person.sex === 'm')
@@ -76,7 +76,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return Math.round(children
     .map(child => child.born - people.find(person =>
       person.name === child.mother).born)
-    .reduce((diff1, diff2) => diff1 + diff2) / children.length * 100) / 100;
+    .reduce((accDiff, diff2) => accDiff + diff2) / children.length * 100) / 100;
 }
 
 module.exports = {
