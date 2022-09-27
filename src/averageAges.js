@@ -16,16 +16,14 @@
  */
 
 function averageAge(persons) {
-  return persons
-    .map(person => person.died - person.born)
-    .reduce((firstPerson, secondPerson) => (
-      firstPerson + secondPerson)) / persons.length;
+  return persons.reduce((acc, { died, born }) => (
+    acc + (died - born)), 0) / persons.length;
 };
 
 function calculateMenAverageAge(people, century) {
   const everyMan = people.filter(person => person.sex === 'm');
 
-  return (century === undefined)
+  return !century
     ? averageAge(everyMan)
     : averageAge(everyMan.filter(person => (
       Math.ceil(person.died / 100) === century)));
