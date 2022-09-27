@@ -1,9 +1,11 @@
 'use strict';
 
 function avarageAge(people) {
-  return people.reduce((prev, current) => prev
+  const reducerPeople = people.reduce((prev, current) => prev
   + (current.died - current.born), 0)
    / people.length;
+
+  return reducerPeople;
 }
 
 /**
@@ -22,12 +24,13 @@ function avarageAge(people) {
  */
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-  const menCentury = men
-    .filter(person => Math.ceil(person.died / 100) === century);
+  const men = people.filter(person => (
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  ));
 
-  return !century ? avarageAge(men)
-    : avarageAge(menCentury);
+  return avarageAge(men);
 }
 
 /**
