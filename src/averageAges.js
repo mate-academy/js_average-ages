@@ -14,12 +14,29 @@
  *
  * @return {number}
  */
+
+function calculateAveragePeopleAge(people) {
+  const averageAge = people
+    .reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / people.length;
+
+  return averageAge;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const listOfALLMen = people.filter(human => human.sex === 'm');
+
+  const listOfMen = century
+    ? listOfALLMen.filter(person => Math.ceil(person.died / 100) === century)
+    : listOfALLMen;
+
+  return calculateAveragePeopleAge(listOfMen);
 }
 
 /**
@@ -36,8 +53,19 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+function hasChild(people, mother) {
+  return people.some(child => child.mother === mother.name);
+
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const listOfAllWomen = people.filter(human => human.sex === 'f');
+
+  const listOfWomen = withChildren
+    ? listOfAllWomen.filter(woman => hasChild(people, woman))
+    : listOfAllWomen;
+
+  return calculateAveragePeopleAge(listOfWomen);
 }
 
 /**
@@ -54,8 +82,30 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = people.filter(human => human.sex === 'f');
+  const ages = [];
+
+  women.forEach(woman => {
+    const children = findChildren(people, woman, onlyWithSon);
+
+    children.forEach(child => {
+      ages[ages.length] = child.born - woman.born;
+    });
+  });
+
+  return ages.reduce((x, y) => (
+    x + y
+  ), 0) / ages.length;
+}
+
+function findChildren(people, mother, onlyWithSon) {
+  return people.filter(child => {
+    return onlyWithSon
+      ? child.mother === mother.name && child.sex === 'm'
+      : child.mother === mother.name;
+  });
 }
 
 module.exports = {
