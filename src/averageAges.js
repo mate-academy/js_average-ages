@@ -39,14 +39,16 @@ function calculateMenAverageAge(people, century = 0) {
 
   const peopleM = people.filter((person) => person.sex === 'm');
 
-  if (century === 0) {
-    return getAverageAge(peopleM);
-  } else {
-    const peopleMCentryFilter = peopleM.filter((person) => {
-      return Math.ceil(person.died / 100) === century;
-    });
+  switch (century) {
+    case 0:
+      return getAverageAge(peopleM);
 
-    return getAverageAge(peopleMCentryFilter);
+    default:
+      const peopleMCentryFilter = peopleM.filter((person) => {
+        return Math.ceil(person.died / 100) === century;
+      });
+
+      return getAverageAge(peopleMCentryFilter);
   }
 }
 
@@ -70,21 +72,16 @@ function calculateWomenAverageAge(people, withChildren = false) {
   addAgePeople(people);
 
   const peopleF = people.filter((person) => person.sex === 'f');
+  const peopleFWithChild = peopleF.filter((personF) =>
+    people.find((child) => child.mother === personF.name)
+  );
 
-  function getMother(person) {
-    for (const child of people) {
-      if (child.mother === person.name) {
-        return true;
-      }
-    }
-  }
+  switch (withChildren) {
+    case false:
+      return getAverageAge(peopleF);
 
-  if (withChildren === false) {
-    return getAverageAge(peopleF);
-  } else {
-    const peopleFWithChild = peopleF.filter(getMother);
-
-    return getAverageAge(peopleFWithChild);
+    default:
+      return getAverageAge(peopleFWithChild);
   }
 }
 
@@ -111,49 +108,42 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
 
   const peopleF = people.filter((person) => person.sex === 'f');
 
-  function getMother(person) {
-    for (const child of people) {
-      if (child.mother === person.name) {
-        return true;
-      }
-    }
-  }
+  const peopleFWithChild = peopleF.filter((personF) =>
+    people.find((child) => child.mother === personF.name)
+  );
+  const peopleChildren = people.filter((child) =>
+    peopleFWithChild.find((mother) => child.mother === mother.name)
+  );
 
-  function getChild(children) {
-    for (const mother of peopleFWithChild) {
-      if (mother.name === children.mother) {
-        return true;
-      }
-    }
-  }
-
-  const peopleFWithChild = peopleF.filter(getMother);
-  const peopleChild = people.filter(getChild);
-
-  function getPair(peopleChild1, peopleFWithChild1, pair) {
-    for (const child of peopleChild1) {
-      for (const mother of peopleFWithChild1) {
-        if (mother.name === child.mother) {
-          pair.push([mother, child]);
+  function getPair(mother, children) {
+    children.map((child) =>
+      mother.find((motherF) => {
+        if (motherF.name === child.mother) {
+          pairs.push([motherF, child]);
         }
-      }
-    }
-  };
+      })
+    );
+  }
 
   const pairs = [];
   let countetAge = 0;
 
-  if (onlyWithSon === false) {
-    getPair(peopleChild, peopleFWithChild, pairs);
-  } else {
-    const peopleChildM = peopleChild.filter((person) => person.sex === 'm');
+  switch (onlyWithSon) {
+    case false:
+      getPair(peopleFWithChild, peopleChildren, pairs);
+      break;
 
-    getPair(peopleChildM, peopleFWithChild, pairs);
+    default:
+      const peopleChildM = peopleChildren.filter(
+        (person) => person.sex === 'm'
+      );
+
+      getPair(peopleFWithChild, peopleChildM, pairs);
   }
 
-  for (const pair of pairs) {
+  pairs.map((pair) => {
     countetAge += pair[1].born - pair[0].born;
-  }
+  });
 
   return countetAge / pairs.length;
 }
