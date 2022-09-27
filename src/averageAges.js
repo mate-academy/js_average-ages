@@ -17,7 +17,7 @@
 function calculateMenAverageAge(people, century) {
   const checkResult = people.filter((person) =>
     century
-      ? (Math.ceil(person.died / 100) === century && person.sex === 'm')
+      ? (Boolean(calcCentury(person, century)) && person.sex === 'm')
       : person.sex === 'm'
   );
 
@@ -86,6 +86,10 @@ function calculateAverage(filteredData) {
 
 function findMother(people, person) {
   return people.find((female) => person.mother === female.name);
+}
+
+function calcCentury(person, century) {
+  return Math.ceil(person.died / 100) === century;
 }
 
 module.exports = {
