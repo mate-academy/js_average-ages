@@ -15,24 +15,21 @@
  * @return {number}
  *
  */
-function sum(years) {
+function getAverageAge(years) {
   return years.reduce((acumulator, person) => {
     return acumulator + (person.died - person.born);
-  }, 0);
+  }, 0) / years.length;
 }
 
 function calculateMenAverageAge(people, century) {
-  let manList = [];
+  let manList = people.filter(person => person.sex === 'm');
 
-  century === undefined
-    ? manList = people.filter(person => person.sex === 'm')
-    : manList = people.filter(
-      person => Math.ceil(person.died / 100) === century && person.sex === 'm'
-    );
+  if (century) {
+    manList = manList.filter(
+      person => Math.ceil(person.died / 100) === century);
+  }
 
-  const manTotalAge = sum(manList);
-
-  return manTotalAge / manList.length;
+  return getAverageAge(manList);
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -55,18 +52,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenList = [];
+  let womenList = people.filter(person => person.sex === 'f');
   const mothers = [];
 
   people.map(person => mothers.push(person.mother));
 
-  withChildren === undefined
-    ? womenList = people.filter(person => person.sex === 'f')
-    : womenList = people.filter(person => mothers.includes(person.name));
+  if (withChildren) {
+    womenList = people.filter(person => mothers.includes(person.name));
+  }
 
-  const womenTotalAge = sum(womenList);
-
-  return womenTotalAge / womenList.length;
+  return getAverageAge(womenList);
 }
 
 /**
@@ -85,11 +80,11 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const diferAge = [];
-  let peopleList = [];
+  let peopleList = people;
 
-  onlyWithSon === undefined
-    ? peopleList = people
-    : peopleList = people.filter(person => person.sex === 'm');
+  if (onlyWithSon) {
+    peopleList = people.filter(person => person.sex === 'm');
+  }
 
   peopleList.forEach((person) => {
     const mother = people.find(
