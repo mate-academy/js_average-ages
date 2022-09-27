@@ -25,8 +25,12 @@ function calculateMenAverageAge(people, century) {
 }
 
 function getAverageAge(peopleSort) {
-  const averageAge = peopleSort.map(person => person.died - person.born)
-    .reduce((sum, x) => sum + x, 0) / peopleSort.length;
+  const averageAge = peopleSort
+    .reduce((sum, person) => {
+      const age = person.died - person.born;
+
+      return sum + age;
+    }, 0) / peopleSort.length;
 
   return averageAge;
 }
