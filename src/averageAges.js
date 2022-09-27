@@ -50,14 +50,10 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const women = people.filter(person => withChildren
     ? (person.sex === 'f'
-      && isMother(people, person))
+      && people.find(child => child.mother === person.name))
     : person.sex === 'f');
 
   return getAverageAge(women);
-}
-
-function isMother(people, person) {
-  return people.find(child => child.mother === person.name);
 }
 
 /**
@@ -78,22 +74,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const children = people.filter(child =>
     onlyWithSon
-      ? getChildren(people, child)
+      ? people.find(mother => mother.name === child.mother)
         && child.sex === 'm'
-      : getChildren(people, child));
+      : people.find(mother => mother.name === child.mother));
 
   return children.reduce((sum, child) =>
-    sum + getDiffAge(children, people, child), 0) / children.length;
-}
-
-function getChildren(people, child) {
-  return people.find(mother => mother.name === child.mother);
-}
-
-function getDiffAge(children, people, child) {
-  const motherBirth = people.find(mother => mother.name === child.mother);
-
-  return child.born - motherBirth.born;
+    sum + (child.born - people
+      .find(mother => mother.name === child.mother)
+      .born), 0) / children.length;
 }
 
 module.exports = {
