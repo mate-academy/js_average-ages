@@ -15,7 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let filteredMen = people.filter(x => x.sex === 'm');
+  let filteredMen = people.filter(person => person.sex === 'm');
 
   if (arguments.length > 1) {
     const filterByCentury = filteredMen.filter(x => Math
@@ -46,8 +46,8 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let filteredWoman = people.filter(x => x.sex === 'f');
-  const mothers = people.map(x => x.mother);
+  let filteredWoman = people.filter(person => person.sex === 'f');
+  const mothers = people.map(person => person.mother);
 
   if (withChildren) {
     const motherWithCH = filteredWoman.filter(x => {
