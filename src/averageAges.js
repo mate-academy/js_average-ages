@@ -16,12 +16,11 @@
  */
 
 function averageAge(people) {
-  const allAge = [];
 
-  allAge.push(people.map(human => human.died - human.born));
+  const ages = people.map(person => person.died - person.born)
+    .reduce((sum, current) => sum + current, 0);
 
-  const sumAllAge = allAge.flat().reduce((sum, age) => sum + age, 0);
-  const averageAgeTotal = sumAllAge / allAge.flat().length;
+  const averageAgeTotal = ages / people.length;
 
   return averageAgeTotal;
 }
@@ -52,13 +51,12 @@ function calculateMenAverageAge(people, century = true) {
 function calculateWomenAverageAge(people, withChildren = false) {
   const allWomens = people.filter(human => human.sex === 'f');
 
-  const AgesWomens = withChildren === true
+  const ageWomens = withChildren
     ? allWomens.filter(human => people
       .find(child => child.mother === human.name))
     : allWomens;
 
-  // console.log(centuryAgesWomens)
-  return averageAge(AgesWomens);
+  return averageAge(ageWomens);
 }
 
 /**
