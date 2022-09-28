@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const listOfPeople = people.filter(person => (
+    century === undefined
+      ? person.sex === 'm'
+      : person.sex === 'm' && Math.ceil(person.died / 100) === century
+  ));
+
+  const ageDiff = ageDifference(listOfPeople);
+
+  return calculateAverageAge(ageDiff);
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const listOfPeople = people.filter(person => (
+    withChildren === undefined
+      ? person.sex === 'f'
+      : person.sex === 'f' && people.some(some => some.mother === person.name)
+  ));
+
+  const ageDiff = ageDifference(listOfPeople);
+
+  return calculateAverageAge(ageDiff);
 }
 
 /**
@@ -46,16 +58,46 @@ function calculateWomenAverageAge(people, withChildren) {
  * The function returns an average age difference between a child and his or her
  * mother in the array. (A mother's age at child birth)
  *
- * If `onlyWithSon` is specified then function calculates age difference only
+ * If `withSon` is specified then function calculates age difference only
  * for sons and their mothers.
  *
  * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
+ * @param {boolean} withSon - optional
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, withSon) {
+  const ageDiff = [];
+
+  people.forEach((person, index, list) => {
+    const motherIndex = list.findIndex(some => some.name === person.mother);
+
+    if (motherIndex !== -1) {
+      if ((withSon && person.sex === 'm') || (withSon === undefined)) {
+        ageDiff.push(person.born - list[motherIndex].born);
+      }
+    }
+  });
+
+  return calculateAverageAge(ageDiff);
+}
+
+function calculateAverageAge(data) {
+  const averageAge = data.reduce((accumulator, current) => (
+    accumulator + current
+  ), 0);
+
+  return averageAge / data.length;
+}
+
+function ageDifference(list) {
+  const ageDiff = [];
+
+  list.forEach(person => {
+    ageDiff.push(person.died - person.born);
+  });
+
+  return ageDiff;
 }
 
 module.exports = {
