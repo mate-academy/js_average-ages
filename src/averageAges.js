@@ -1,10 +1,9 @@
 'use strict';
 
 function calculateAverageAge(persons) {
-  const ages = persons.reduce(
-    (sum, person) => sum + (person.died - person.born),
-    0
-  );
+  const ages = persons.reduce((sum, { died, born }) => (
+    sum + died - born
+  ), 0);
 
   return ages / persons.length;
 }
@@ -30,10 +29,11 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const hasMother = people.filter((child) => !onlyWithSon
-    ? child.mother && people.find((person) => person.name === child.mother)
-    : child.mother && people.find((person) => person.name === child.mother)
-    && child.sex === 'm'
+  const hasMother = people.filter((child) =>
+    !onlyWithSon
+      ? child.mother && people.find((person) => person.name === child.mother)
+      : child.mother && people.find((person) => person.name === child.mother)
+      && child.sex === 'm'
   );
 
   const ages = hasMother.reduce((sum, person) => {
