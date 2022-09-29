@@ -24,7 +24,8 @@ function addAgePeople(people) {
 function getAverageAge(array) {
   return (
     Math.round(
-      parseFloat(array.reduce((sum, x) => sum + x.age, 0) / +array.length) * 100
+      parseFloat(array.reduce((sum, person) => sum + person.age, 0)
+      / +array.length) * 100
     ) / 100
   );
 }
@@ -37,19 +38,15 @@ function calculateMenAverageAge(people, century = 0) {
   // without nesting
   addAgePeople(people);
 
-  const peopleM = people.filter((person) => person.sex === 'm');
+  let peopleMen = people.filter((person) => person.sex === 'm');
 
-  switch (century) {
-    case 0:
-      return getAverageAge(peopleM);
+  century === 0
+    ? getAverageAge(peopleMen)
+    : peopleMen = peopleMen.filter((person) => {
+      return Math.ceil(person.died / 100) === century;
+    });
 
-    default:
-      const peopleMCentryFilter = peopleM.filter((person) => {
-        return Math.ceil(person.died / 100) === century;
-      });
-
-      return getAverageAge(peopleMCentryFilter);
-  }
+  return getAverageAge(peopleMen);
 }
 
 /**
@@ -71,18 +68,16 @@ function calculateWomenAverageAge(people, withChildren = false) {
   // write code here
   addAgePeople(people);
 
-  const peopleF = people.filter((person) => person.sex === 'f');
-  const peopleFWithChild = peopleF.filter((personF) =>
-    people.find((child) => child.mother === personF.name)
-  );
+  let peopleF = people.filter((person) => person.sex === 'f');
 
-  switch (withChildren) {
-    case false:
-      return getAverageAge(peopleF);
+  withChildren === false
+    ? getAverageAge(peopleF)
+    : peopleF = peopleF.filter((personF) =>
+      people.find((child) => child.mother === personF.name)
+    );
 
-    default:
-      return getAverageAge(peopleFWithChild);
-  }
+  return getAverageAge(peopleF);
+
 }
 
 /**
@@ -127,19 +122,13 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
 
   const pairs = [];
   let countetAge = 0;
+  const peopleChildM = peopleChildren.filter(
+    (person) => person.sex === 'm'
+  );
 
-  switch (onlyWithSon) {
-    case false:
-      getPair(peopleFWithChild, peopleChildren, pairs);
-      break;
-
-    default:
-      const peopleChildM = peopleChildren.filter(
-        (person) => person.sex === 'm'
-      );
-
-      getPair(peopleFWithChild, peopleChildM, pairs);
-  }
+  onlyWithSon === false
+    ? getPair(peopleFWithChild, peopleChildren, pairs)
+    : getPair(peopleFWithChild, peopleChildM, pairs);
 
   pairs.map((pair) => {
     countetAge += pair[1].born - pair[0].born;
