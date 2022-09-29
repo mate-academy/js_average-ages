@@ -77,7 +77,6 @@ function calculateWomenAverageAge(people, withChildren = false) {
     );
 
   return getAverageAge(peopleF);
-
 }
 
 /**
