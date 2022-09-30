@@ -22,7 +22,7 @@ function calculateMenAverageAge(people, century) {
   ));
 
   return Math.round(males.map(man => man.died - man.born)
-    .reduce((acc, man2) => acc + man2) / males.length * 100) / 100;
+    .reduce((acc, age) => acc + age) / males.length * 100) / 100;
 }
 
 /**
@@ -48,7 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
   ));
 
   return Math.round(women.map(woman => woman.died - woman.born)
-    .reduce((woman1, woman2) => woman1 + woman2) / women.length * 100) / 100;
+    .reduce((acc, age) => acc + age) / women.length * 100) / 100;
 }
 
 /**
@@ -76,7 +76,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return Math.round(children
     .map(child => child.born - people.find(person =>
       person.name === child.mother).born)
-    .reduce((accDiff, diff2) => accDiff + diff2) / children.length * 100) / 100;
+    .reduce((acc, age) => acc + age) / children.length * 100) / 100;
 }
 
 module.exports = {
