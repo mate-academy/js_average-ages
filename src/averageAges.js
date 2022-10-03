@@ -62,7 +62,7 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const objMoms = people.map(el => {
+  const childrenWithMoms = people.map(el => {
     const newObj = {};
 
     newObj.sex = el.sex;
@@ -71,7 +71,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return newObj;
   });
-  const onlyRealMoms = objMoms.filter(person =>
+  const onlyRealMoms = childrenWithMoms.filter(person =>
     person.motherBorn !== undefined);
   const ages = !onlyWithSon ? onlyRealMoms.map(el =>
     el.born - el.motherBorn.born) : onlyRealMoms.filter(
