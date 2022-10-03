@@ -15,6 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const men = !century
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century);
+
+  const menAge = men.map(man => man.died - man.born);
+
+  const averageAge = findEveregeAge(menAge, menAge.length);
+
+  return averageAge;
+
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +48,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  const womenWithChildren = women.filter(woman => hasChildren(people, woman));
+
+  const womenAge = !withChildren
+    ? women.map(woman => woman.died - woman.born)
+    : womenWithChildren.map(woman => woman.died - woman.born);
+
+  const averageAge = findEveregeAge(womenAge, womenAge.length);
+
+  return averageAge;
+}
+
+function hasChildren(people, woman) {
+  return people.some(person => person.mother === woman.name);
 }
 
 /**
@@ -55,7 +80,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const womenWithChildren = people.filter(woman => hasChildren(people, woman));
+
+  const womenWithSons = womenWithChildren.filter(mother => (
+    findChild(people, mother).sex === 'm'));
+
+  const ageDifferences = mothers => mothers.map(mother => {
+    const child = findChild(people, mother);
+
+    return child.born - mother.born;
+  });
+
+  const averageAgeDiff = onlyWithSon
+    ? findEveregeAge(ageDifferences(womenWithSons), womenWithSons.length)
+    : findEveregeAge(
+      ageDifferences(womenWithChildren), womenWithChildren.length
+    );
+
+  return averageAgeDiff;
+}
+
+function findChild(people, mother) {
+  return people.find(person => mother.name === person.mother);
+}
+
+function findEveregeAge(people, quantity) {
+  return people.reduce((prev, curr) => prev + curr, 0)
+    / quantity;
 }
 
 module.exports = {
