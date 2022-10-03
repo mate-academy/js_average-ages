@@ -6,30 +6,38 @@ function calculateAge(people) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const menArr = people.filter((person) => person.sex === 'm');
+  const men = people.filter((person) => person.sex === 'm');
+
+  let menOrMenCentury = [];
 
   if (century) {
-    const menCenturyArr = menArr
+    const menCentury = men
       .filter((person) => Math.ceil(person.died / 100) === century);
 
-    return calculateAge(menCenturyArr);
+    menOrMenCentury = [...menCentury];
+  } else {
+    menOrMenCentury = [...men];
   }
 
-  return calculateAge(menArr);
+  return calculateAge(menOrMenCentury);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const womenArr = people.filter((person) => person.sex === 'f');
+  const women = people.filter((person) => person.sex === 'f');
+
+  let womenOrWomenWithChild = [];
 
   if (withChildren) {
-    const womenWithChildArr = womenArr.filter((person) =>
+    const womenWithChild = women.filter((person) =>
       people.find((children) => children.mother === person.name)
     );
 
-    return calculateAge(womenWithChildArr);
+    womenOrWomenWithChild = [...womenWithChild];
+  } else {
+    womenOrWomenWithChild = [...women];
   }
 
-  return calculateAge(womenArr);
+  return calculateAge(womenOrWomenWithChild);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
@@ -42,13 +50,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .find((person) => person.name === item.mother)
       .born, 0) / arr.length;
 
+  let onlySonOrWithChild = [];
+
   if (onlyWithSon) {
     const onlySon = withChild.filter((person) => person.sex === 'm');
 
-    return calcAge(onlySon);
+    onlySonOrWithChild = [...onlySon];
+  } else {
+    onlySonOrWithChild = [...withChild];
   }
 
-  return calcAge(withChild);
+  return calcAge(onlySonOrWithChild);
 }
 
 module.exports = {
