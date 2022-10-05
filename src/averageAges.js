@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let man = people.filter(person => person.sex === 'm');
+
+  if (century) {
+    man = man.filter(
+      person => century === Math.ceil(person.died / 100));
+  }
+
+  const totalAge = man.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+
+  const totalAgeAverage = totalAge / man.length;
+
+  return Math.round(totalAgeAverage * 100) / 100;
 }
 
 /**
@@ -37,7 +45,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = people.filter(person => person.sex === 'f');
+  const listMother = people.map(x => x.mother);
+  const womanWithChildren = woman.filter(x => listMother.includes(x.name));
+
+  if (withChildren) {
+    woman = womanWithChildren;
+  }
+
+  const totalAge = woman.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+
+  const totalAgeAverage = totalAge / woman.length;
+
+  return Math.round(totalAgeAverage * 100) / 100;
 }
 
 /**
@@ -55,7 +76,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arrDifferenceYears = people.map(person => {
+    const mother = people.find(x => {
+      if (onlyWithSon) {
+        return person.mother === x.name && person.sex === 'm';
+      } else {
+        return person.mother === x.name;
+      }
+    });
+
+    if (mother) {
+      return person.born - mother.born;
+    }
+  }).filter(number => number !== undefined);
+
+  const totalAge = arrDifferenceYears.reduce(
+    (sum, DifferenceYear) => sum + DifferenceYear, 0);
+
+  const totalAgeAverage = totalAge / arrDifferenceYears.length;
+
+  return Math.round(totalAgeAverage * 100) / 100;
 }
 
 module.exports = {
