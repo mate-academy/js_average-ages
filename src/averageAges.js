@@ -20,6 +20,17 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const menOnlyArray = people.filter(el => el.sex === 'm');
+
+  const filteredMenArray = !century
+    ? menOnlyArray
+    : menOnlyArray.filter(el => Math.ceil(el.died / 100) === century);
+
+  const agesArr = filteredMenArray.map(el => el.died - el.born);
+  const avgAge = agesArr.reduce((sum, age) => (sum + age), 0) / agesArr.length;
+
+  return avgAge;
 }
 
 /**
@@ -38,6 +49,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const womenOnlyArray = people.filter(el => el.sex === 'f');
+  const motherNamesList = people.map(el => el.mother);
+
+  const filteredWomenArray = !withChildren
+    ? womenOnlyArray
+    : womenOnlyArray.filter(el => motherNamesList.includes(el.name));
+
+  const agesArr = filteredWomenArray.map(el => el.died - el.born);
+  const avgAge = agesArr.reduce((sum, age) => (sum + age), 0) / agesArr.length;
+
+  return avgAge;
 }
 
 /**
@@ -55,7 +77,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+
+  // function to search birth year by name
+  const bornYearByName = (name) =>
+    people.find(el => el.name === name)
+      ? people.find(el => el.name === name).born
+      : null;
+
+  // add new property to object
+  people.forEach(el => {
+    el.motherBorn = bornYearByName(el.mother);
+  });
+
+  // find an input array depends on 'onlyWithSon' param to provide calculations
+  const mothersAndChildren = onlyWithSon
+    ? people.filter(el => el.motherBorn !== null && el.sex === 'm')
+    : people.filter(el => el.motherBorn !== null);
+
+  // get age differences
+  const ageDiff = mothersAndChildren.map(el => el.born - el.motherBorn);
+
+  // get sum of age differences
+  const ageDiffSum = ageDiff.reduce((sum, age) => (sum + age), 0);
+
+  return ageDiffSum / mothersAndChildren.length;
 }
 
 module.exports = {
