@@ -15,17 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let manList;
-
-  if (century) {
-    manList = people.filter(
-      person => person.sex === 'm' && Math.ceil(person.died / 100) === century,
-    );
-  } else {
-    manList = people.filter(
-      person => person.sex === 'm',
-    );
-  }
+  const manList = century
+    ? people.filter(
+      person => person.sex === 'm' && Math.ceil(person.died / 100) === century,)
+    : people.filter(person => person.sex === 'm');
 
   const totalAge = manList.reduce(
     (sum, person) => sum + (person.died - person.born), 0
@@ -49,20 +42,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womanList;
-
-  if (withChildren) {
-    womanList = people.filter(
+  const womanList = withChildren
+    ? people.filter(
       person => person.sex === 'f'
-      && people.find(
-        child => child.mother === person.name,
-      )
-    );
-  } else {
-    womanList = people.filter(
-      person => person.sex === 'f',
-    );
-  }
+        && people.find(
+          child => child.mother === person.name))
+    : people.filter(
+      person => person.sex === 'f');
 
   const totalAge = womanList.reduce(
     (sum, person) => sum + (person.died - person.born), 0
@@ -86,15 +72,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(
-    child => child.mother && people.find(
-      person => person.name === child.mother
-    )
-  );
-
-  if (onlyWithSon) {
-    children = children.filter(child => child.sex === 'm');
-  }
+  const children = onlyWithSon
+    ? people.filter(
+      child => child.sex === 'm' && child.mother && people.find(
+        person => person.name === child.mother
+      ))
+    : people.filter(
+      child => child.mother && people.find(
+        person => person.name === child.mother
+      )
+    );
 
   let averageAge = children.reduce((sum, child) =>
     sum + child.born - (people.find(
