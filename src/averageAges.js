@@ -1,11 +1,21 @@
 'use strict';
 
+function getAverageAge(arg, arg2) {
+  const result = arg2
+    ? arg.reduce((sum, child) =>
+      sum + child.born - (arg2.find(
+        person => person.name === child.mother).born), 0) / arg.length
+    : arg.reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / arg.length;
+
+  return result;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
  * function calculates average age only for men who died in this century
- *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
@@ -15,11 +25,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manList = century
+    ? people.filter(
+      person => person.sex === 'm' && Math.ceil(person.died / 100) === century,)
+    : people.filter(person => person.sex === 'm');
+
+  return getAverageAge(manList);
 }
 
 /**
@@ -36,8 +47,17 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womanList = withChildren
+    ? people.filter(
+      person => person.sex === 'f'
+        && people.find(
+          child => child.mother === person.name))
+    : people.filter(
+      person => person.sex === 'f');
+
+  return getAverageAge(womanList);
 }
 
 /**
@@ -55,7 +75,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(
+      child => child.sex === 'm' && child.mother && people.find(
+        person => person.name === child.mother
+      ))
+    : people.filter(
+      child => child.mother && people.find(
+        person => person.name === child.mother
+      )
+    );
+
+  return getAverageAge(children, people);
 }
 
 module.exports = {
