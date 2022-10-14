@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const man = people.filter(person =>
+    (person.sex === 'm' && century === Math.ceil(person.died / 100))
+    || (person.sex === 'm' && !century));
+
+  return findAverageAge(man);
+}
+
+function findAverageAge(array) {
+  const totalAge = array.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+
+  const totalAgeAverage = totalAge / array.length;
+
+  return Math.round(totalAgeAverage * 100) / 100;
 }
 
 /**
@@ -28,7 +37,7 @@ function calculateMenAverageAge(people, century) {
  * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
- * Hint: To check if a woman has children you should find someone who mention
+ * Hint: To check if a women has children you should find someone who mention
  * her as mother.
  *
  * @param {object[]} people
@@ -37,7 +46,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const listMother = people.map(x => x.mother);
+  const women = people.filter(person =>
+    (person.sex === 'f' && listMother.includes(person.name))
+    || (person.sex === 'f' && !withChildren));
+
+  return findAverageAge(women);
 }
 
 /**
@@ -55,7 +69,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const differenceYears = people.map(person => {
+    const mother = people.find(x =>
+      (person.mother === x.name && person.sex === 'm' && onlyWithSon)
+      || (person.mother === x.name && !onlyWithSon));
+
+    if (mother) {
+      return person.born - mother.born;
+    }
+  }).filter(number => number !== undefined);
+
+  const totalAge = differenceYears.reduce(
+    (sum, element) => sum + element, 0);
+
+  const totalAgeAverage = totalAge / differenceYears.length;
+
+  return Math.round(totalAgeAverage * 100) / 100;
 }
 
 module.exports = {
