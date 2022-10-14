@@ -1,11 +1,21 @@
 'use strict';
 
+function getAverageAge(arg, arg2) {
+  const result = arg2
+    ? arg.reduce((sum, child) =>
+      sum + child.born - (arg2.find(
+        person => person.name === child.mother).born), 0) / arg.length
+    : arg.reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / arg.length;
+
+  return result;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
  * function calculates average age only for men who died in this century
- *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
@@ -23,16 +33,6 @@ function calculateMenAverageAge(people, century) {
   return getAverageAge(manList);
 }
 
-function getAverageAge(arg, arg2) {
-  const result = arg2
-    ? arg.reduce((sum, child) =>
-      sum + child.born - (arg2.find(
-        person => person.name === child.mother).born), 0) / arg.length
-    : arg.reduce((sum, person) =>
-      sum + (person.died - person.born), 0) / arg.length;
-
-  return result;
-}
 /**
  * Implement calculateWomenAverageAge function
  *
