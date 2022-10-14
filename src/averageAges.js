@@ -19,10 +19,10 @@ function calculateMenAverageAge(people, century) {
     (person.sex === 'm' && century === Math.ceil(person.died / 100))
     || (person.sex === 'm' && !century));
 
-  return foundAverageAge(man);
+  return findAverageAge(man);
 }
 
-function foundAverageAge(array) {
+function findAverageAge(array) {
   const totalAge = array.reduce(
     (sum, person) => sum + (person.died - person.born), 0);
 
@@ -51,7 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
     (person.sex === 'f' && listMother.includes(person.name))
     || (person.sex === 'f' && !withChildren));
 
-  return foundAverageAge(women);
+  return findAverageAge(women);
 }
 
 /**
