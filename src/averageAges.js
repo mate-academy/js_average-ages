@@ -18,28 +18,24 @@
 function calculateMenAverageAge(people, century) {
   // write code here
   const men = people.filter(person => person.sex === 'm');
-
   const ages = [];
+  const agesWithCentury = [];
 
-  men.map(function(person) {
-    ages.push(person.died - person.born);
-  });
-
-  const avWithoutCent = ages.reduce((a, b) => a + b, 0) / ages.length;
-
-  const withCent = men.filter((person) => {
+  const withCentury = men.filter((person) => {
     return Math.ceil(person.died / 100) === century;
   });
 
-  const agesWith = [];
+  (!century)
+    ? men.map(function(person) {
+      ages.push(person.died - person.born);
+    })
+    : withCentury.map(function(person) {
+      agesWithCentury.push(person.died - person.born);
+    });
 
-  withCent.map(function(person) {
-    agesWith.push(person.died - person.born);
-  });
-
-  const avWithCent = agesWith.reduce((a, b) => a + b, 0) / agesWith.length;
-
-  const result = (!century) ? avWithoutCent : avWithCent;
+  const result = (!century)
+    ? (ages.reduce((a, b) => a + b, 0) / ages.length)
+    : (agesWithCentury.reduce((a, b) => a + b, 0) / agesWithCentury.length);
 
   return result;
 }
@@ -64,13 +60,11 @@ function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
   // calculate the ages of women
   const ages = [];
+  const agesWithChild = [];
 
   women.map(function(person) {
     ages.push(person.died - person.born);
   });
-  // calculate the average of women age
-
-  const avWithoutChild = ages.reduce((a, b) => a + b, 0) / ages.length;
 
   // find women with a child
   const womenWithChild = people.filter((a) => {
@@ -80,17 +74,15 @@ function calculateWomenAverageAge(people, withChildren) {
       }
     }
   });
-  // calculate the average age of women with child
-  const agesWithChild = [];
 
+  // calculate the average age of women with child
   womenWithChild.map(function(person) {
     agesWithChild.push(person.died - person.born);
   });
 
-  const avWitChild = agesWithChild.reduce((a, b) =>
-    a + b, 0) / agesWithChild.length;
-  // chech the condition for 'withChild'
-  const result = (withChildren) ? avWitChild : avWithoutChild;
+  const result = (withChildren)
+    ? (agesWithChild.reduce((a, b) => a + b, 0) / agesWithChild.length)
+    : (ages.reduce((a, b) => a + b, 0) / ages.length);
 
   return result;
 }
@@ -121,7 +113,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   });
 
-  const averageGenral = ageDiff.reduce((a, b) => a + b, 0) / ageDiff.length;
   // diff with sons
   const ageDiffSon = [];
 
@@ -135,9 +126,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   });
 
-  const avWithSon = ageDiffSon.reduce((a, b) => a + b, 0) / ageDiffSon.length;
-
-  const result = (!onlyWithSon) ? averageGenral : avWithSon;
+  const result = (!onlyWithSon)
+    ? (ageDiff.reduce((a, b) => a + b, 0) / ageDiff.length)
+    : (ageDiffSon.reduce((a, b) => a + b, 0) / ageDiffSon.length);
 
   return result;
 }
