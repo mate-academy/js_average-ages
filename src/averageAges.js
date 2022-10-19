@@ -15,7 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(person => person.sex === 'm');
+  let men = filterBySex(people, 'm');
 
   if (century) {
     men = men.filter(man => Math.ceil(man.died / 100) === century);
@@ -41,11 +41,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
+  let women = filterBySex(people, 'f');
 
   if (withChildren) {
-    women = women.filter((woman) =>
-      people.some(person => woman.name === person.mother));
+    women = filterByWithChild(people, women);
   }
 
   const womenAge = women.map(woman => woman.died - woman.born);
@@ -68,23 +67,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const women = people.filter(person => person.sex === 'f');
-
-  const womenWithChild = women.filter(woman => {
-    return people.filter(person => person.mother === woman.name);
-  });
+  const women = filterBySex(people, 'f');
 
   const children = onlyWithSon
     ? people.filter(person => {
-      return womenWithChild
+      return filterByWithChild(people, women)
         .some(mother => mother.name === person.mother && person.sex === 'm');
     })
     : people.filter(person => {
-      return womenWithChild.some(mother => mother.name === person.mother);
+      return filterByWithChild(people, women)
+        .some(mother => mother.name === person.mother);
     });
 
   const diffAge = children.map(child => {
-    const motherBorn = womenWithChild
+    const motherBorn = filterByWithChild(people, women)
       .find(woman => woman.name === child.mother).born;
     const childBorn = child.born;
 
@@ -96,6 +92,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
 function averageAge(arr) {
   return arr.reduce((sum, age) => sum + age, 0) / arr.length;
+}
+
+function filterBySex(arr, sex) {
+  return arr.filter(el => el.sex === sex);
+}
+
+function filterByWithChild(arr, persons) {
+  return persons.filter((person) =>
+    arr.some(el => person.name === el.mother));
 }
 
 module.exports = {
