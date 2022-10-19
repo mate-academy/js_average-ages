@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = filterBySex(people, 'm');
+
+  if (century) {
+    men = men.filter(man => Math.ceil(man.died / 100) === century);
+  }
+
+  const menAge = men.map(man => man.died - man.born);
+
+  return averageAge(menAge);
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = filterBySex(people, 'f');
+
+  if (withChildren) {
+    women = filterByWithChild(people, women);
+  }
+
+  const womenAge = women.map(woman => woman.died - woman.born);
+
+  return averageAge(womenAge);
 }
 
 /**
@@ -55,7 +67,40 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const women = filterBySex(people, 'f');
+
+  const children = onlyWithSon
+    ? people.filter(person => {
+      return filterByWithChild(people, women)
+        .some(mother => mother.name === person.mother && person.sex === 'm');
+    })
+    : people.filter(person => {
+      return filterByWithChild(people, women)
+        .some(mother => mother.name === person.mother);
+    });
+
+  const diffAge = children.map(child => {
+    const motherBorn = filterByWithChild(people, women)
+      .find(woman => woman.name === child.mother).born;
+    const childBorn = child.born;
+
+    return childBorn - motherBorn;
+  });
+
+  return averageAge(diffAge);
+}
+
+function averageAge(arr) {
+  return arr.reduce((sum, age) => sum + age, 0) / arr.length;
+}
+
+function filterBySex(arr, sex) {
+  return arr.filter(el => el.sex === sex);
+}
+
+function filterByWithChild(arr, persons) {
+  return persons.filter((person) =>
+    arr.some(el => person.name === el.mother));
 }
 
 module.exports = {
