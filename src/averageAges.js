@@ -20,8 +20,10 @@ function calculateMenAverageAge(people, century) {
     centuryDeath: Math.ceil(person.died / 100),
     age: person.died - person.born,
   }));
-  const menFilteredByDeathCentury
-  = getResultArr(menWithCenturyDeathAndAge, century);
+  const menFilteredByDeathCentury = getFilteredResult(
+    menWithCenturyDeathAndAge,
+    century
+  );
 
   return getAverageAge(menFilteredByDeathCentury);
 }
@@ -47,12 +49,9 @@ function calculateWomenAverageAge(people, withChildren) {
     age: person.died - person.born,
   })).filter(person => person.sex === 'f');
 
-  const mother
-  = womenIsMotherWithAge.filter(person => person.isMother);
-
   return !withChildren
     ? getAverageAge(womenIsMotherWithAge)
-    : getAverageAge(mother);
+    : getAverageAge(womenIsMotherWithAge.filter(person => person.isMother));
 }
 
 /**
@@ -73,27 +72,30 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const motherDiff = people.map(person => ({
     ...person,
     children: people.filter(one => one.mother === person.name),
-  })).map(person => ({
-    ...person,
-    diffAge: person.children.map(child => child.born - person.born),
-  }));
+  })).filter(person => person.children.length !== 0)
+    .map(person => ({
+      children: person.children.map(child => ({
+        ...child, diffAge: child.born - person.born,
+      })),
+    }));
 
   const motherOfSon = motherDiff.map(person => ({
     ...person,
     children: person.children.filter(item => item.sex === 'm'),
-  })).map(person => ({
-    diffAge: person.children.map(child => child.born - person.born),
   }));
 
   const differenceAge = !onlyWithSon
-    ? (motherDiff.map(person => person.diffAge)).flat()
-    : (motherOfSon.map(person => person.diffAge)).flat();
+    ? motherDiff.map(
+      person => person.children.map(child => child.diffAge)).flat()
+    : motherOfSon.map(
+      person => person.children.map(child => child.diffAge)).flat();
 
-  return differenceAge.reduce((
-    sum, item) => sum + item, 0) / differenceAge.length;
+  return differenceAge.reduce(
+    (sum, item) => sum + item, 0
+  ) / differenceAge.length;
 }
 
-function getResultArr(arr, value) {
+function getFilteredResult(arr, value) {
   return value
     ? arr.filter(item => item.centuryDeath === value)
     : arr;
