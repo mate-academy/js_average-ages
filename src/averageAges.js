@@ -16,15 +16,31 @@
  */
 function calculateMenAverageAge(people, century) {
   const males = !century
-    ? people.filter(man => man.sex === 'm')
-    : people.filter(man => man.sex === 'm'
-      && century === Math.ceil(man.died / 100));
+    ? getPersonByGender('m', people)
+    : getPersonByGender('m', people).filter(man => (
+      century === Math.ceil(man.died / 100)
+    ));
 
-  return males.reduce((s, man) => (
-    s + (man.died - man.born)
-  ), 0) / males.length;
+  return getAverageAge(males);
 }
 
+const getAverageAge = (people) => {
+  return people.reduce((s, person) => (
+    s + (person.died - person.born)
+  ), 0) / people.length;
+};
+
+const getPersonByGender = (gender, people) => {
+  if (gender === 'm') {
+    return people.filter(person => person.sex === 'm');
+  }
+
+  if (gender === 'f') {
+    return people.filter(person => person.sex === 'f');
+  }
+
+  throw new Error('Nobody in our database not idetified himself that way');
+};
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -39,15 +55,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   const women = !withChildren
-    ? people.filter(woman => woman.sex === 'f')
-    : people.filter(woman => woman.sex === 'f'
-      && people.find(person => person.mother === woman.name));
+    ? getPersonByGender('f', people)
+    : getPersonByGender('f', people).filter(woman => (
+      people.find(person => person.mother === woman.name)
+    ));
 
-  return women.reduce((s, woman) => (
-    s + (woman.died - woman.born)
-  ), 0) / women.length;
+  return getAverageAge(women);
 }
 
 /**
