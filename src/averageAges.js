@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menArray = people.filter((p) => p.sex === 'm');
+
+  const menArrayFilteredByCentury = menArray.reduce((acc, m) => {
+    const manCenturyDied = Math.ceil(m.died / 100);
+
+    return century === manCenturyDied ? [...acc, m] : acc;
+  }, []);
+
+  const menArr = century ? menArrayFilteredByCentury : menArray;
+
+  const sumAges = menArr.reduce((acc, m) => {
+    return acc + (m.died - m.born);
+  }, 0);
+
+  const result = menArr.length === 0 ? 0 : sumAges / menArr.length;
+
+  return result;
 }
 
 /**
@@ -37,7 +49,29 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((p) => p.sex === 'f');
+
+  const mothersNames = people.reduce((acc, child) => {
+    const isDouble = acc.some((name) => name === child.mother);
+
+    return !isDouble ? [...acc, child.mother] : acc;
+  }, []);
+
+  const mothers = mothersNames.reduce((acc, name) => {
+    const mother = women.find((p) => p.name === name);
+
+    return mother ? [...acc, mother] : acc;
+  }, []);
+
+  const womenArr = withChildren ? mothers : women;
+
+  const sumAges = womenArr.reduce((acc, w) => {
+    return acc + (w.died - w.born);
+  }, 0);
+
+  const result = womenArr.length === 0 ? 0 : sumAges / womenArr.length;
+
+  return result;
 }
 
 /**
@@ -55,7 +89,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter((p) => p.mother !== null);
+  const sons = children.filter((p) => p.sex === 'm');
+
+  const childrenArr = onlyWithSon ? sons : children;
+
+  const childrenRes = childrenArr.reduce((acc, child) => {
+    const mother = people.find((p) => p.name === child.mother);
+
+    const diff = mother ? child.born - mother.born : 0;
+
+    const childWithDiffAge
+      = diff !== 0
+        ? {
+          ...child,
+          ageDiff: diff,
+        }
+        : null;
+
+    return childWithDiffAge ? [...acc, childWithDiffAge] : acc;
+  }, []);
+
+  const sumAgeDiff = childrenRes.reduce((acc, child) => acc + child.ageDiff, 0);
+
+  const result = childrenRes.length === 0 ? 0 : sumAgeDiff / childrenRes.length;
+
+  return result;
 }
 
 module.exports = {
