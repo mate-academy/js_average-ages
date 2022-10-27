@@ -15,18 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter((p) => p.sex === 'm');
+  const menArray = people.filter((p) => p.sex === 'm');
 
-  const menCentury = men.reduce((acc, m) => {
-    const centuryManDied
-      = m.died % 100 === 0 ? m.died / 100 : Math.floor(m.died / 100 + 1);
+  const menArrayFilteredByCentury = menArray.reduce((acc, m) => {
+    const manCenturyDied = Math.ceil(m.died / 100);
 
-    const isCorrectCentury = century ? centuryManDied === century : false;
-
-    return isCorrectCentury ? [...acc, m] : acc;
+    return century === manCenturyDied ? [...acc, m] : acc;
   }, []);
 
-  const menArr = century ? menCentury : men;
+  const menArr = century ? menArrayFilteredByCentury : menArray;
 
   const sumAges = menArr.reduce((acc, m) => {
     return acc + (m.died - m.born);
@@ -99,23 +96,21 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const childrenRes = childrenArr.reduce((acc, child) => {
     const mother = people.find((p) => p.name === child.mother);
+
     const diff = mother ? child.born - mother.born : 0;
 
-    return mother
-      ? [
-        ...acc,
-        {
+    const childWithDiffAge
+      = diff !== 0
+        ? {
           ...child,
-          ageMotherDiff: diff,
-        },
-      ]
-      : acc;
+          ageDiff: diff,
+        }
+        : null;
+
+    return childWithDiffAge ? [...acc, childWithDiffAge] : acc;
   }, []);
 
-  const sumAgeDiff = childrenRes.reduce(
-    (acc, child) => acc + child.ageMotherDiff,
-    0
-  );
+  const sumAgeDiff = childrenRes.reduce((acc, child) => acc + child.ageDiff, 0);
 
   const result = childrenRes.length === 0 ? 0 : sumAgeDiff / childrenRes.length;
 
