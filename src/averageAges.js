@@ -31,15 +31,7 @@ const getAverageAge = (people) => {
 };
 
 const getPersonByGender = (gender, people) => {
-  if (gender === 'm') {
-    return people.filter(person => person.sex === 'm');
-  }
-
-  if (gender === 'f') {
-    return people.filter(person => person.sex === 'f');
-  }
-
-  throw new Error('Nobody in our database not idetified himself that way');
+  return people.filter(person => person.sex === gender);
 };
 /**
  * Implement calculateWomenAverageAge function
