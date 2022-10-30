@@ -15,7 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people.filter(person => person.sex === 'm'
+    && ((Math.ceil(person.died / 100) === century) || (century === undefined)));
+
+  const ages = men.map(person => person.died - person.born);
+
+  const amount = ages.reduce((sum, x) => x + sum, 0);
+
+  return amount / ages.length;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +44,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+  let mothersAge = 0;
+  let ages = [];
+
+  if (withChildren) {
+    for (let step = 0; step < women.length; step++) {
+      if (people.find(person => person.mother === women[step].name)) {
+        ages.push(women[step].died - women[step].born);
+      }
+    }
+  } else {
+    ages = women.map(person => person.died - person.born);
+  }
+
+  mothersAge = ages.reduce((sum, x) => x + sum, 0);
+
+  return mothersAge / ages.length;
 }
 
 /**
@@ -55,7 +78,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let diffAge = 0;
+  const diffAges = [];
+
+  if (onlyWithSon) {
+    for (let step = 0; step < people.length; step++) {
+      people.map(person => {
+        if ((person.mother === people[step].name) && (person.sex === 'm')) {
+          diffAges.push(person.born - people[step].born);
+        }
+      });
+    }
+  } else {
+    for (let step = 0; step < people.length; step++) {
+      people.map(person => {
+        if (person.mother === people[step].name) {
+          diffAges.push(person.born - people[step].born);
+        }
+      });
+    }
+  }
+
+  diffAge = diffAges.reduce((sum, x) => x + sum, 0);
+
+  return diffAge / diffAges.length;
 }
 
 module.exports = {
