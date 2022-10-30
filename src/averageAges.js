@@ -20,6 +20,17 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let menArr = people.filter(el => el.sex === 'm');
+
+  if (century) {
+    menArr = menArr.filter(el => {
+      const deathCentury = Math.ceil(el.died / 100);
+
+      return deathCentury === century;
+    });
+  }
+
+  return getAverageAge(menArr);
 }
 
 /**
@@ -36,8 +47,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.map(el => el.mother);
+  let womenArr = people.filter(el => el.sex === 'f');
+
+  if (withChildren) {
+    womenArr = getMothersWithCild(womenArr, mothers);
+  }
+
+  return getAverageAge(womenArr);
 }
 
 /**
@@ -55,7 +74,45 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const diffAgeArr = [];
+  const mothers = people.map(el => el.mother);
+  const mothersArr = getMothersWithCild(people, mothers);
+  let kids = people.filter(el => el.mother !== null);
+
+  if (onlyWithSon) {
+    kids = kids.filter(el => el.sex === 'm');
+  }
+
+  for (const child of kids) {
+    const mom = mothersArr.find(el => el.name === child.mother);
+
+    if (mom) {
+      diffAgeArr.push(child.born - mom.born);
+    }
+  }
+
+  const diffAverageAge = diffAgeArr.reduce((sum, el) => sum + el, 0);
+
+  return diffAverageAge / diffAgeArr.length;
+}
+
+function getAverageAge(people) {
+  const age = people.map(el => el.died - el.born);
+  const ageSum = age.reduce((sum, el) => sum + el, 0);
+
+  return ageSum / age.length;
+}
+
+function getMothersWithCild(peopleArr, motherNamesArr) {
+  const newArr = [];
+
+  for (let i = 0; i < motherNamesArr.length; i++) {
+    if (!newArr.find(el => el.name === motherNamesArr[i])) {
+      newArr.push(...peopleArr.filter(el => el.name === motherNamesArr[i]));
+    }
+  }
+
+  return newArr;
 }
 
 module.exports = {
