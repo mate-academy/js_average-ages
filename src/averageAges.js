@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = true) {
+  const filterArr = people.filter((person) => {
+    return person.sex === 'm'
+    && (Math.ceil(person.died / 100) === century || century === true);
+  });
+
+  const ages = filterArr.map((person) => {
+    return person.died - person.born;
+  });
+
+  const getSum = (sum, currentNum) => {
+    return sum + currentNum;
+  };
+
+  const sumAge = ages.reduce(getSum, 0);
+
+  return sumAge / ages.length;
 }
 
 /**
@@ -37,7 +48,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filterArr = people.filter((person) => {
+    const fullName = person.name;
+
+    const hasChildren = (item) => fullName === item.mother;
+
+    return (person.sex === 'f' && people.some(hasChildren))
+      || (person.sex === 'f' && (!withChildren));
+  });
+
+  const ages = filterArr.map((person) => {
+    return person.died - person.born;
+  });
+
+  const getSum = (sum, currentNum) => {
+    return sum + currentNum;
+  };
+
+  const sumAge = ages.reduce(getSum, 0);
+
+  return sumAge / ages.length;
 }
 
 /**
@@ -55,7 +85,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const newArr = onlyWithSon
+    ? people.filter(person => person.sex === 'm')
+    : people;
+
+  const ages = newArr.map((person) => {
+    const mother = person.mother;
+
+    const findMother = item => {
+      return mother === item.name;
+    };
+
+    const differenceAges = people.find(findMother)
+      ? person.born - people.find(findMother).born
+      : undefined;
+
+    return differenceAges;
+  });
+
+  const filterAges = ages.filter(age => age !== undefined);
+
+  const getSum = (sum, currentNum) => {
+    return sum + currentNum;
+  };
+
+  const sumAge = filterAges.reduce(getSum, 0);
+
+  return sumAge / filterAges.length;
 }
 
 module.exports = {
