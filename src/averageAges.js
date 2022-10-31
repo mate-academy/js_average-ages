@@ -6,21 +6,25 @@
  *
  * @return {number}
  */
+
+const getPersonByGender = (gender, people) => {
+  return people.filter(person => person.sex === gender);
+};
+
+const getAverageAge = (people) => {
+  return people.reduce((sex, person) => (
+    sex + (person.died - person.born)
+  ), 0) / people.length;
+};
+
 function calculateMenAverageAge(people, century) {
   const males = century
-    ? people.filter(person => person.sex === 'm'
-    && Math.ceil(person.died / 100) === century
-    )
+    ? getPersonByGender('m', people)
+      .filter(male => (Math.ceil(male.died / 100) === century))
 
-    : people.filter(person => person.sex === 'm');
+    : getPersonByGender('m', people);
 
-  const malesLifeLength = males
-    .map(person => person.died - person.born);
-
-  const malesAverageAge = malesLifeLength
-    .reduce((ages, current) => ages + current) / malesLifeLength.length;
-
-  return malesAverageAge;
+  return getAverageAge(males);
 }
 
 /**
@@ -31,19 +35,12 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const females = withChildren
-    ? people
-      .filter(person => person.sex === 'f')
+    ? getPersonByGender('f', people)
       .filter(female => (people.find(person => person.mother === female.name)))
 
-    : people.filter(person => person.sex === 'f');
+    : getPersonByGender('f', people);
 
-  const femaleLifeLength = females
-    .map(person => person.died - person.born);
-
-  const femalesAverageAge = femaleLifeLength
-    .reduce((ages, current) => ages + current) / femaleLifeLength.length;
-
-  return femalesAverageAge;
+  return getAverageAge(females);
 }
 
 /**
@@ -69,10 +66,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .map(person => person.born - people
       .find(mother => person.mother === mother.name).born);
 
-  const averageAgeDiff = diff
-    .reduce((ages, current) => ages + current) / diff.length;
-
-  return averageAgeDiff;
+  return diff.reduce((ages, current) => ages + current) / diff.length;
 }
 
 module.exports = {
