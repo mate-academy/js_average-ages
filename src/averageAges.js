@@ -48,7 +48,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ? [...people]
     : [...people].filter(findMen);
 
-  peopleEdited = peopleEdited.filter(person => person.mother !== null);
+  peopleEdited.filter(person => person.mother !== null);
 
   peopleEdited = peopleEdited.filter(child => (people.find(person => (
     child.mother === person.name
