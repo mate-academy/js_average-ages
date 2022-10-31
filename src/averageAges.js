@@ -48,15 +48,10 @@ function calculateWomenAverageAge(people, withChildren) {
   let mothersAge = 0;
   let ages = [];
 
-  if (withChildren) {
-    for (let step = 0; step < women.length; step++) {
-      if (people.find(person => person.mother === women[step].name)) {
-        ages.push(women[step].died - women[step].born);
-      }
-    }
-  } else {
-    ages = women.map(person => person.died - person.born);
-  }
+  withChildren ? women.map(woman =>
+    (people.find(person => person.mother === woman.name))
+      ? ages.push(woman.died - woman.born) : null)
+    : ages = women.map(person => person.died - person.born);
 
   mothersAge = ages.reduce((sum, x) => x + sum, 0);
 
@@ -81,23 +76,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let diffAge = 0;
   const diffAges = [];
 
-  if (onlyWithSon) {
-    for (let step = 0; step < people.length; step++) {
-      people.map(person => {
-        if ((person.mother === people[step].name) && (person.sex === 'm')) {
-          diffAges.push(person.born - people[step].born);
-        }
-      });
-    }
-  } else {
-    for (let step = 0; step < people.length; step++) {
-      people.map(person => {
-        if (person.mother === people[step].name) {
-          diffAges.push(person.born - people[step].born);
-        }
-      });
-    }
-  }
+  onlyWithSon ? people.map(woman => {
+    people.map(person =>
+      ((person.mother === woman.name) && (person.sex === 'm'))
+        ? diffAges.push(person.born - woman.born) : null);
+  }) : people.map(woman => {
+    people.map(person => (person.mother === woman.name)
+      ? diffAges.push(person.born - woman.born) : null);
+  });
 
   diffAge = diffAges.reduce((sum, x) => x + sum, 0);
 
