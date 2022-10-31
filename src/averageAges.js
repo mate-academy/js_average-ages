@@ -31,6 +31,22 @@ function calculateMenAverageAge(people, century) {
   return getAverageAge(age);
 }
 
+function getAverageAge(age) {
+  const ageSum = age.reduce((sum, el) => sum + el, 0);
+
+  return ageSum / age.length;
+}
+
+function getPeopleOnCondition(peopleArr, mainField, relatedField) {
+  // if we need to find kids, "mainField" is 'mother'
+  // and "relatedField" is 'name'.
+  // if we need to find mothers, "mainField" is 'name'
+  // and "relatedField" is 'mother'.
+  return peopleArr.filter(person =>
+    (peopleArr.some((relatedPerson) =>
+      (person[mainField] === relatedPerson[relatedField]))));
+}
+
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -83,22 +99,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       (mom.name === child.mother)).born));
 
   return getAverageAge(diffAgeArr);
-}
-
-function getAverageAge(age) {
-  const ageSum = age.reduce((sum, el) => sum + el, 0);
-
-  return ageSum / age.length;
-}
-
-function getPeopleOnCondition(peopleArr, mainField, relatedField) {
-  // if we need to find kids, "mainField" is 'mother'
-  // and "relatedField" is 'name'.
-  // if we need to find mothers, "mainField" is 'name'
-  // and "relatedField" is 'mother'.
-  return peopleArr.filter(person =>
-    (peopleArr.some((relatedPerson) =>
-      (person[mainField] === relatedPerson[relatedField]))));
 }
 
 module.exports = {
