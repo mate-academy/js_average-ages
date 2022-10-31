@@ -1,5 +1,13 @@
 'use strict';
 
+function getAverageAge(arr) {
+  const getSum = (sum, currentNum) => {
+    return sum + currentNum;
+  };
+
+  return arr.reduce(getSum, 0) / arr.length;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,23 +22,19 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century = true) {
-  const filterArr = people.filter((person) => {
-    return person.sex === 'm'
-    && (Math.ceil(person.died / 100) === century || century === true);
-  });
+function calculateMenAverageAge(people, century) {
+  const filterArr = century
+    ? people.filter(person => person.sex === 'm'
+    && (Math.ceil(person.died / 100) === century)
+    )
+
+    : people.filter(person => person.sex === 'm');
 
   const ages = filterArr.map((person) => {
     return person.died - person.born;
   });
 
-  const getSum = (sum, currentNum) => {
-    return sum + currentNum;
-  };
-
-  const sumAge = ages.reduce(getSum, 0);
-
-  return sumAge / ages.length;
+  return getAverageAge(ages);
 }
 
 /**
@@ -61,13 +65,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return person.died - person.born;
   });
 
-  const getSum = (sum, currentNum) => {
-    return sum + currentNum;
-  };
-
-  const sumAge = ages.reduce(getSum, 0);
-
-  return sumAge / ages.length;
+  return getAverageAge(ages);
 }
 
 /**
@@ -92,8 +90,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const ages = newArr.map((person) => {
     const mother = person.mother;
 
-    const findMother = item => {
-      return mother === item.name;
+    const findMother = female => {
+      return mother === female.name;
     };
 
     const differenceAges = people.find(findMother)
@@ -105,13 +103,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const filterAges = ages.filter(age => age !== undefined);
 
-  const getSum = (sum, currentNum) => {
-    return sum + currentNum;
-  };
-
-  const sumAge = filterAges.reduce(getSum, 0);
-
-  return sumAge / filterAges.length;
+  return getAverageAge(filterAges);
 }
 
 module.exports = {
