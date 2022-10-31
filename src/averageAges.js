@@ -26,7 +26,9 @@ function calculateMenAverageAge(people, century) {
     menArr = menArr.filter(el => Math.ceil(el.died / 100) === century);
   }
 
-  return getAverageAge(menArr);
+  const age = menArr.map(men => men.died - men.born);
+
+  return getAverageAge(age);
 }
 
 /**
@@ -45,14 +47,15 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const mothers = people.map(el => el.mother);
   let womenArr = people.filter(el => el.sex === 'f');
 
   if (withChildren) {
-    womenArr = getMothersWithCild(womenArr, mothers);
+    womenArr = getPeopleOnCondition(people, 'name', 'mother');
   }
 
-  return getAverageAge(womenArr);
+  const age = womenArr.map(women => women.died - women.born);
+
+  return getAverageAge(age);
 }
 
 /**
@@ -70,45 +73,34 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const diffAgeArr = [];
-  const mothers = people.map(el => el.mother);
-  const mothersArr = getMothersWithCild(people, mothers);
-  let kids = people.filter(el => el.mother !== null);
+  const mothersArr = getPeopleOnCondition(people, 'name', 'mother');
+  let kids = getPeopleOnCondition(people, 'mother', 'name');
 
   if (onlyWithSon) {
     kids = kids.filter(el => el.sex === 'm');
   }
 
-  for (const child of kids) {
-    const mom = mothersArr.find(el => el.name === child.mother);
+  const diffAgeArr = kids.map(child =>
+    (child.born - mothersArr.find((mom) =>
+      (mom.name === child.mother)).born));
 
-    if (mom) {
-      diffAgeArr.push(child.born - mom.born);
-    }
-  }
-
-  const diffAverageAge = diffAgeArr.reduce((sum, el) => sum + el, 0);
-
-  return diffAverageAge / diffAgeArr.length;
+  return getAverageAge(diffAgeArr);
 }
 
-function getAverageAge(people) {
-  const age = people.map(el => el.died - el.born);
+function getAverageAge(age) {
   const ageSum = age.reduce((sum, el) => sum + el, 0);
 
   return ageSum / age.length;
 }
 
-function getMothersWithCild(peopleArr, motherNamesArr) {
-  const newArr = [];
-
-  for (let i = 0; i < motherNamesArr.length; i++) {
-    if (!newArr.find(el => el.name === motherNamesArr[i])) {
-      newArr.push(...peopleArr.filter(el => el.name === motherNamesArr[i]));
-    }
-  }
-
-  return newArr;
+function getPeopleOnCondition(peopleArr, mainField, relatedField) {
+  // if we need to find kids, "mainField" is 'mother'
+  // and "relatedField" is 'name'.
+  // if we need to find mothers, "mainField" is 'name'
+  // and "relatedField" is 'mother'.
+  return peopleArr.filter(person =>
+    (peopleArr.some((relatedPerson) =>
+      (person[mainField] === relatedPerson[relatedField]))));
 }
 
 module.exports = {
