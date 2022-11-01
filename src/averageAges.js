@@ -14,6 +14,16 @@
  *
  * @return {number}
  */
+
+const listPeopleBySex = (people, sex) => {
+  return people.filter(person => person.sex === sex);
+};
+
+const calculateAverageAge = (people) => {
+  return people.reduce((sumOfAges, person) =>
+    (person.died - person.born) + sumOfAges, 0) / people.length;
+};
+
 function calculateMenAverageAge(people, century) {
   const pickMen = century
     ? listPeopleBySex(people, 'm').filter(men =>
@@ -77,15 +87,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   return ageDifference;
 }
-
-const listPeopleBySex = (people, sex) => {
-  return people.filter(person => person.sex === sex);
-};
-
-const calculateAverageAge = (people) => {
-  return people.reduce((sumOfAges, person) =>
-    (person.died - person.born) + sumOfAges, 0) / people.length;
-};
 
 module.exports = {
   calculateMenAverageAge,
