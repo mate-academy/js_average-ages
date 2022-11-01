@@ -24,27 +24,11 @@ function calculateMenAverageAge(people, century) {
     ? people.filter(el => Math.ceil(el.died / 100) === century)
     : people;
 
-  menArr = menArr.filter(el => el.sex === 'm');
+  menArr = getPeopleByGender(menArr, 'm');
 
   const age = menArr.map(men => men.died - men.born);
 
   return getAverageAge(age);
-}
-
-function getAverageAge(age) {
-  const ageSum = age.reduce((sum, el) => sum + el, 0);
-
-  return ageSum / age.length;
-}
-
-function getPeopleOnCondition(peopleArr, mainField, relatedField) {
-  // if we need to find kids, "mainField" is 'mother'
-  // and "relatedField" is 'name'.
-  // if we need to find mothers, "mainField" is 'name'
-  // and "relatedField" is 'mother'.
-  return peopleArr.filter(person =>
-    (peopleArr.some((relatedPerson) =>
-      (person[mainField] === relatedPerson[relatedField]))));
 }
 
 /**
@@ -65,7 +49,7 @@ function getPeopleOnCondition(peopleArr, mainField, relatedField) {
 function calculateWomenAverageAge(people, withChildren) {
   const womenArr = (withChildren)
     ? getPeopleOnCondition(people, 'name', 'mother')
-    : people.filter(el => el.sex === 'f');
+    : getPeopleByGender(people, 'f');
 
   const age = womenArr.map(women => women.died - women.born);
 
@@ -91,7 +75,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let kids = getPeopleOnCondition(people, 'mother', 'name');
 
   if (onlyWithSon) {
-    kids = kids.filter(el => el.sex === 'm');
+    kids = getPeopleByGender(kids, 'm');
   }
 
   const diffAgeArr = kids.map(child =>
@@ -99,6 +83,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       (mom.name === child.mother)).born));
 
   return getAverageAge(diffAgeArr);
+}
+
+function getPeopleByGender(peopleArr, gender) {
+  return peopleArr
+    .filter(person => person.sex === gender);
+}
+
+function getAverageAge(age) {
+  const ageSum = age.reduce((sum, el) => sum + el, 0);
+
+  return ageSum / age.length;
+}
+
+function getPeopleOnCondition(peopleArr, mainField, relatedField) {
+  // if we need to find kids, "mainField" is 'mother'
+  // and "relatedField" is 'name'.
+  // if we need to find mothers, "mainField" is 'name'
+  // and "relatedField" is 'mother'.
+  return peopleArr.filter(person =>
+    (peopleArr.some((relatedPerson) =>
+      (person[mainField] === relatedPerson[relatedField]))));
 }
 
 module.exports = {
