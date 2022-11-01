@@ -30,7 +30,7 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   let filteredPeople = people.filter((person) => person.sex === 'm');
 
-  if (arguments.length === 2) {
+  if (century) {
     filteredPeople = filteredPeople.filter(
       (person) => Math.ceil(person.died / 100) === century
     );
