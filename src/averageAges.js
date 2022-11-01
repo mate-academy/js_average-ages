@@ -17,8 +17,8 @@
 
 const calculateAverageAge = (people) => {
   return (
-    people.reduce((prev, person) => person.died - person.born + prev, 0) /
-    people.length
+    people.reduce((prev, person) => person.died - person.born + prev, 0)
+    / people.length
   );
 };
 
@@ -100,8 +100,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   );
 
   return (
-    childMotherAgeDiff.reduce((prev, age) => age + prev, 0) /
-    childMotherAgeDiff.length
+    childMotherAgeDiff.reduce((prev, age) => age + prev, 0)
+    / childMotherAgeDiff.length
   );
 }
 
