@@ -20,7 +20,8 @@ function getFilteredGender(people, gender) {
 
 function getAverageAge(people) {
   const TotalAge = people.map(person => person.died - person.born);
-  const AverageAge = TotalAge.reduce((a, b) => a + b) / TotalAge.length;
+  const AverageAge = TotalAge.reduce((total, current) =>
+    total + current) / TotalAge.length;
 
   return AverageAge;
 };
@@ -82,7 +83,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     (children.born - people.find(mother =>
       (mother.name === children.mother)).born));
 
-  return AgeDiff.reduce((a, b) => a + b) / AgeDiff.length;
+  return AgeDiff.reduce((total, current) => total + current) / AgeDiff.length;
 }
 
 module.exports = {
