@@ -42,8 +42,9 @@ function calculateWomenAverageAge(people, withChildren) {
   const females = getPeopleBySex(people, 'f');
 
   const neededFemales = withChildren
-    ? females.filter(female => people.find(
-      person => female.name === person.mother))
+    ? females
+      .filter(female => people
+        .find(person => female.name === person.mother))
     : females;
 
   return getAverageAge(neededFemales);
