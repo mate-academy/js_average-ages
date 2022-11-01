@@ -124,13 +124,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   if (!onlyWithSon) {
     totalDiffAge = children
       .reduce((prev, person) => prev + (person.born - womenWithChildren
-        .find(woman => woman.name === person.mother).born), 0);
+        .find(woman => woman.name === person.mother).born
+      ), 0);
 
     averageDiffAge = totalDiffAge / children.length;
   } else {
     totalDiffAge = sons
       .reduce((prev, person) => prev + (person.born - womenWithSons
-        .find(woman => woman.name === person.mother).born), 0);
+        .find(woman => woman.name === person.mother).born
+      ), 0);
 
     averageDiffAge = totalDiffAge / sons.length;
   }
