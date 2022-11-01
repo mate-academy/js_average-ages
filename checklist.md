@@ -1,12 +1,12 @@
-1. [NAMING] - Name of functions should start with verbs. It will be easier to understand a function's purpose.
+/1. [NAMING] - Name of functions should start with verbs. It will be easier to understand a function's purpose.
 
 BAD EXAMPLE:
 ```
-function averageAges() {} 
+function averageAges() {}
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 function calculateAverageAge() {}
 ```
@@ -18,13 +18,13 @@ BAD EXAMPLE:
 const humans = people.map((a, b) =>
     a + b);
 
-const babies = people.map(person => children 
+const babies = people.map(person => children
  ? a
  : b
- 
+
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const humans = people.reduce((a, b) => (
   a + b
@@ -40,10 +40,10 @@ if ((a && b === c && d === 'm')
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const hasMetCondition = a && (b === c)
 ```
 
 4. [CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
-(`forEach` is exception). These methods return a new array, so you should use it. 
+(`forEach` is exception). These methods return a new array, so you should use it.
