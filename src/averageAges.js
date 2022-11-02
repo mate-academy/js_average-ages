@@ -20,6 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const menArr = (century)
+    ? people.filter(el => Math.ceil(el.died / 100) === century)
+    : people;
+
+  const neededPeople = getPeopleByGender(menArr, 'm');
+
+  const age = neededPeople.map(men => men.died - men.born);
+
+  return getAverageAge(age);
 }
 
 /**
@@ -36,8 +45,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArr = (withChildren)
+    ? getPeopleOnCondition(people, 'name', 'mother')
+    : getPeopleByGender(people, 'f');
+
+  const age = womenArr.map(women => women.died - women.born);
+
+  return getAverageAge(age);
 }
 
 /**
@@ -55,7 +71,39 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothersArr = getPeopleOnCondition(people, 'name', 'mother');
+  const kids = getPeopleOnCondition(people, 'mother', 'name');
+
+  const neededKids = onlyWithSon
+    ? getPeopleByGender(kids, 'm')
+    : kids;
+
+  const diffAgeArr = neededKids.map(child =>
+    (child.born - mothersArr.find((mom) =>
+      (mom.name === child.mother)).born));
+
+  return getAverageAge(diffAgeArr);
+}
+
+function getPeopleByGender(peopleArr, gender) {
+  return peopleArr
+    .filter(person => person.sex === gender);
+}
+
+function getAverageAge(age) {
+  const ageSum = age.reduce((sum, el) => sum + el, 0);
+
+  return ageSum / age.length;
+}
+
+function getPeopleOnCondition(peopleArr, mainField, relatedField) {
+  // if we need to find kids, "mainField" is 'mother'
+  // and "relatedField" is 'name'.
+  // if we need to find mothers, "mainField" is 'name'
+  // and "relatedField" is 'mother'.
+  return peopleArr.filter(person =>
+    (peopleArr.some((relatedPerson) =>
+      (person[mainField] === relatedPerson[relatedField]))));
 }
 
 module.exports = {
