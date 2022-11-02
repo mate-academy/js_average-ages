@@ -99,26 +99,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       return person;
     }
   });
+  let filtered;
 
-  if (onlyWithSon) {
-    sons.map(person => {
-      const motherBurnDate = getMotherAge(person.mother);
+  onlyWithSon
+    ? filtered = sons
+    : filtered = people;
 
-      if (motherBurnDate !== undefined) {
-        result.push(Math.abs(motherBurnDate - person.born));
-      }
-    });
-  }
+  filtered.map(person => {
+    const motherBurnDate = getMotherAge(person.mother);
 
-  if (!onlyWithSon) {
-    people.map(person => {
-      const motherBurnDate = getMotherAge(person.mother);
+    if (motherBurnDate !== undefined) {
+      result.push(Math.abs(motherBurnDate - person.born));
+    }
+  });
 
-      if (motherBurnDate !== undefined) {
-        result.push(Math.abs(motherBurnDate - person.born));
-      }
-    });
-  }
+  filtered.map(person => {
+    const motherBurnDate = getMotherAge(person.mother);
+
+    if (motherBurnDate !== undefined) {
+      result.push(Math.abs(motherBurnDate - person.born));
+    }
+  });
 
   const ages = result.reduce(
     (a, b) => a + b,
