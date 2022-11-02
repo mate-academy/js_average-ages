@@ -25,10 +25,12 @@ const calculateAverageAge = (people) => {
 };
 
 function calculateMenAverageAge(people, century) {
+  const kozaky = listPeopleBySex(people, 'm');
+
   const pickMen = century
-    ? listPeopleBySex(people, 'm').filter(men =>
+    ? kozaky.filter(men =>
       Math.ceil(men.died / 100) === century)
-    : listPeopleBySex(people, 'm');
+    : kozaky;
 
   return calculateAverageAge(pickMen);
 }
@@ -50,10 +52,12 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const getMothersList = people.map(person => person.mother);
 
+  const panianky = listPeopleBySex(people, 'f');
+
   const pickWomen = withChildren
-    ? listPeopleBySex(people, 'f').filter(women =>
+    ? panianky.filter(women =>
       getMothersList.includes(women.name))
-    : listPeopleBySex(people, 'f');
+    : panianky;
 
   return calculateAverageAge(pickWomen);
 }
