@@ -17,21 +17,20 @@
  * @return {number}
  */
 
+const getAverageLife = (persons) => persons
+  .map(human => human.died - human.born)
+  .reduce((life1, life2) =>
+    life1 + life2) / persons.length;
+
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(person => person.sex === 'm');
+  const men = people.filter(person => person.sex === 'm');
 
   const menInCentury = men.filter(man => Math.ceil(man.died / 100) === century);
 
-  men = century ? menInCentury : men;
+  const sortedMen = century ? menInCentury : men;
 
-  const menLifeTime = men.map(man => man.died - man.born);
-
-  const averageMenLife = menLifeTime.reduce((life1, life2) =>
-    life1 + life2) / men.length;
-
-  return averageMenLife;
+  return getAverageLife(sortedMen);
 }
-// calculateMenAverageAge(people);
 
 /**
  * Implement calculateWomenAverageAge function
@@ -57,14 +56,8 @@ function calculateWomenAverageAge(people, withChildren) {
     ? women.filter(mother => allMothers.includes(mother.name))
     : women;
 
-  const lifeTime = womenWithChild.map(woman => woman.died - woman.born);
-
-  const averageWomanLife = (lifeTime.reduce((life1, life2) =>
-    life1 + life2)) / womenWithChild.length;
-
-  return averageWomanLife;
+  return getAverageLife(womenWithChild);
 }
-// calculateWomenAverageAge(people);
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -81,23 +74,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(child =>
+  const children = people.filter(child =>
     people.find(mother => mother.name === child.mother));
 
-  children = onlyWithSon
+  const sortedChildren = onlyWithSon
     ? children.filter(child => child.sex === 'm')
     : children;
 
-  const totalLife = children
+  const totalLife = sortedChildren
     .reduce((prev, child) => (prev + child.born - people
       .find(woman => (woman.name === child.mother)).born), 0);
 
-  const averageAge = totalLife / children.length;
+  const averageAge = totalLife / sortedChildren.length;
 
   return averageAge;
 }
-
-// calculateAverageAgeDiff(people);
 
 module.exports = {
   calculateMenAverageAge,
