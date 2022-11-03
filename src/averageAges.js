@@ -16,8 +16,9 @@
  */
 
 function calculateSumAges(people) {
-  const sumAges = people.reduce((ages, person) =>
-    (person.died - person.born) + ages, 0);
+  const sumAges = people.reduce((ages, person) => (
+    (person.died - person.born) + ages
+  ), 0);
 
   return sumAges / people.length;
 }
@@ -27,10 +28,11 @@ function getPersonsGender(people, gender) {
 }
 
 function calculateMenAverageAge(people, century) {
+  const sexM = getPersonsGender(people, 'm');
   const mens = century
-    ? getPersonsGender(people, 'm')
+    ? sexM
       .filter(person => Math.ceil(person.died / 100) === century)
-    : getPersonsGender(people, 'm');
+    : sexM;
 
   return calculateSumAges(mens);
 }
@@ -50,10 +52,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  const sexF = getPersonsGender(people, 'f');
   const womens = withChildren
-    ? getPersonsGender(people, 'f')
+    ? sexF
       .filter(person => (people.find(human => human.mother === person.name)))
-    : getPersonsGender(people, 'f');
+    : sexF;
 
   return calculateSumAges(womens);
 }
@@ -73,21 +76,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const humans = people.filter(child => people.find(
+    person => person.name === child.mother));
+
   const children = onlyWithSon
-    ? getPersonsGender(
-      people.filter(child =>
-        people.find(mother => child.mother === mother.name)), 'm')
-    : people.filter(child =>
-      people.find(mother => child.mother === mother.name));
+    ? getPersonsGender(humans, 'm')
+    : humans;
 
-  const sumDiffAge = children.reduce((sum, child) => {
-    const age = child.born
-    - people.find(mother => child.mother === mother.name).born;
+  const resultAge = children.reduce(
+    (sum, child) => sum + child.born - people.find(
+      person => person.name === child.mother).born, 0);
 
-    return sum + age;
-  }, 0);
-
-  return sumDiffAge / children.length;
+  return resultAge / children.length;
 }
 
 module.exports = {
