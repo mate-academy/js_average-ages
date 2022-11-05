@@ -9,26 +9,28 @@
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
- * 1. write code here
- * 2. learn how to use array methods like .filter .map .some .every .find .reduce
- * 3. avoid using loop and forEach
- * 4. replace `if ()` statement with &&, || or ?:
- * 5. without nesting
- *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
+
+const filterPeopleByGender = (people, sex) => {
+  return people.filter(person => person.sex === sex);
+};
+
+const calculateAverageAge = (people) => {
+  return people.reduce((sumOfAges, person) =>
+    (person.died - person.born) + sumOfAges, 0) / people.length;
+};
+
 function calculateMenAverageAge(people, century) {
-  const filteredPeople = century
+  const men = century
     ? people.filter(person => Math.ceil(person.died / 100) === century
       && person.sex === 'm')
-    : people.filter(person => person.sex === 'm');
+    : filterPeopleByGender(people, 'm');
 
-  return filteredPeople
-    .map(person => person.died - person.born)
-    .reduce((sum, age) => sum + age, 0) / filteredPeople.length;
+  return calculateAverageAge(men);
 }
 
 /**
@@ -46,15 +48,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredPeople = withChildren
+  const women = withChildren
     ? people.filter(person => {
       return people.some(human => human.mother === person.name);
     })
-    : people.filter(person => person.sex === 'f');
+    : filterPeopleByGender(people, 'f');
 
-  return filteredPeople
-    .map(person => person.died - person.born)
-    .reduce((sum, age) => sum + age, 0) / filteredPeople.length;
+  return calculateAverageAge(women);
 }
 
 /**
@@ -72,7 +72,6 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-
   const children = onlyWithSon
     ? people.filter(person => {
       return person.sex === 'm' && people
