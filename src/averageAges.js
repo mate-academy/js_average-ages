@@ -26,8 +26,9 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   const manFiltered = century
-    ? people.filter(human => human.sex === 'm'
-    && Math.ceil(human.died / 100) === century)
+    ? people.filter(human => (
+      human.sex === 'm' && Math.ceil(human.died / 100) === century
+    ))
     : people.filter(human => human.sex === 'm');
 
   const manAge = manFiltered.map(human => human.died - human.born)
@@ -55,8 +56,9 @@ function calculateWomenAverageAge(people, withChildren) {
   = people.filter(human => human.mother).map(human => human.mother);
 
   const womanList = withChildren
-    ? people.filter(
-      human => human.sex === 'f' && motherList.includes(human.name))
+    ? people.filter((human) => (
+      human.sex === 'f' && motherList.includes(human.name)
+    ))
     : people.filter(human => human.sex === 'f');
 
   const womanAge = womanList.map(human => human.died - human.born)
@@ -81,8 +83,9 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const ageList = onlyWithSon
-    ? (people.filter(human => human.sex === 'm'
-  && people.find(mother => human.mother === mother.name)))
+    ? (people.filter(human =>
+      human.sex === 'm' && people.find(mother => human.mother === mother.name)
+    ))
     : people.filter(
       human => people.find(mother => human.mother === mother.name));
 
