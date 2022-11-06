@@ -17,8 +17,9 @@
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => person.sex === 'm');
 
-  const requiredMen = century ? men.filter(person =>
-    Math.ceil(person.died / 100) === century) : men;
+  const requiredMen = century
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
 
   const totalMenAge = requiredMen.reduce((prev, person) =>
     prev + (person.died - person.born), 0);
@@ -45,10 +46,11 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
 
-  const reqiredWomen = withChildren ? women.filter(person =>
-    people.find(mother =>
+  const reqiredWomen = withChildren
+    ? women.filter(person => people.find(mother =>
       person.name === mother.mother
-    )) : women;
+    ))
+    : women;
 
   const totalWomenAge = reqiredWomen.reduce((prev, person) =>
     prev + (person.died - person.born), 0);
@@ -75,21 +77,21 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const women = people.filter(person => person.sex === 'f');
 
-  const requiredWomen = onlyWithSon ? women.filter(woman =>
-    people.find(person =>
+  const requiredWomen = onlyWithSon
+    ? women.filter(woman => people.find(person =>
       person.mother === woman.name && person.sex === 'm'
-    )) : women.filter(woman =>
-    people.find(person =>
+    ))
+    : women.filter(woman => people.find(person =>
       woman.name === person.mother
     ));
 
   const men = people.filter(person => person.sex === 'm');
 
-  const requiredChildren = onlyWithSon ? men.filter(person =>
-    requiredWomen.find(mother =>
+  const requiredChildren = onlyWithSon
+    ? men.filter(person => requiredWomen.find(mother =>
       person.mother === mother.name
-    )) : people.filter(person =>
-    people.find(mother =>
+    ))
+    : people.filter(person => people.find(mother =>
       person.mother === mother.name
     ));
 
