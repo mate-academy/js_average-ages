@@ -22,9 +22,9 @@ function averageAgePeople(people) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const peopleFilter = people.filter(men => ((century > 0)
-    ? men.sex === 'm' && Math.ceil(men.died * 0.01) === century
-    : men.sex === 'm')
+  const peopleFilter = people.filter(man => ((century > 0)
+    ? man.sex === 'm' && Math.ceil(man.died * 0.01) === century
+    : man.sex === 'm')
   );
 
   return averageAgePeople(peopleFilter);
