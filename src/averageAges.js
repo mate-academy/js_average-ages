@@ -50,17 +50,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const woman = people.filter(person => person.sex === 'f');
+  const women = people.filter(person => person.sex === 'f');
 
-  const allMotherPeople = people.map(person => person.mother);
+  const motherNames = people.map(person => person.mother);
 
-  const mothers = woman.filter(person => allMotherPeople.includes(person.name));
+  const mothers = women.filter(person => motherNames.includes(person.name));
 
-  const averageAge = getAverageAge(mothers);
+  if (withChildren) {
+    return getAverageAge(mothers);
+  }
 
-  const averageAgeWoman = getAverageAge(woman);
-
-  return withChildren ? averageAge : averageAgeWoman;
+  return getAverageAge(women);
 }
 
 /**
