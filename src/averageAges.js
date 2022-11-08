@@ -17,21 +17,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const male = !century
-    ? personGender('m', people)
-    : personGender('m', people).filter(man =>
-      (century === Math.ceil(man.died / 100)));
+  const men = personGender('m', people);
+  const male = century
+    ? men.filter(person => (
+      century === Math.ceil(person.died / 100)
+    ))
+    : men;
 
   return calculateAvarageAge(male);
 }
 
-const calculateAvarageAge = (people) => {
+function calculateAvarageAge(people) {
   return people.reduce((sum, person) => (
-    sum + (person.died - person.born)), 0)
-  / people.length;
+    sum + (person.died - person.born)
+  ), 0) / people.length;
 };
 
-const personGender = (gender, people) => {
+function personGender(gender, people) {
   return people.filter(person => person.sex === gender);
 };
 
@@ -50,10 +52,12 @@ const personGender = (gender, people) => {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const female = !withChildren
-    ? personGender('f', people)
-    : personGender('f', people).filter(woman => (
-      people.find(person => person.mother === woman.name)));
+  const women = personGender('f', people);
+  const female = withChildren
+    ? women.filter(woman => (
+      people.find(person => person.mother === woman.name)
+    ))
+    : women;
 
   return calculateAvarageAge(female);
 }
@@ -73,13 +77,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = !onlyWithSon
-    ? people.filter(child => (
-      people.find(person => child.mother === person.name)
-    ))
-    : people.filter(child => (
-      people.find(person => child.mother === person.name) && child.sex === 'm'
-    ));
+  const kids = people.filter(child => (
+    people.find(person => child.mother === person.name)
+  ));
+
+  const children = onlyWithSon
+    ? personGender('m', kids)
+    : kids;
 
   const findAgeDifference = children.map(child => (
     child.born - people.find(person => (
