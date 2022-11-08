@@ -54,11 +54,10 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const mothers = women.filter(person => motherNames.includes(person.name));
 
-  if (withChildren) {
-    return getAverageAge(mothers);
-  }
+  const kids = withChildren
+    ? getAverageAge(mothers) : getAverageAge(women);
 
-  return getAverageAge(women);
+  return kids;
 }
 
 /**
