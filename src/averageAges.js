@@ -24,9 +24,7 @@ function calculateMenAverageAge(people, century) {
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
 
-  const averageAge = getAverageAge(men);
-
-  return averageAge;
+  return getAverageAge(men);
 
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -94,16 +92,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const mothersNames = mothers.map(person => person.name);
 
-  let children = people.filter(person => mothersNames.includes(person.mother));
+  const children = people.filter(person =>
+    mothersNames.includes(person.mother));
 
-  const sonChildren = children.filter(person =>
-    person.sex === 'm');
+  const kids = onlyWithSon
+    ? children.filter(person =>
+      person.sex === 'm') : children;
 
-  if (onlyWithSon === true) {
-    children = sonChildren;
-  }
-
-  const ageDifferences = children.reduce((list, person) => {
+  const ageDifferences = kids.reduce((list, person) => {
     const childYrBorn = person.born;
     const motherName = person.mother;
     const motherYrBorn = getMothersYrBorn(mothers, motherName);
@@ -114,7 +110,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return list;
   }, []);
   const result = ageDifferences.reduce((prev, nextVal) =>
-    prev + nextVal) / children.length;
+    prev + nextVal) / kids.length;
 
   return result;
 }
