@@ -14,8 +14,23 @@
  *
  * @return {number}
  */
+function sumAndRound(arrayOfReduce) {
+  const sumAges = arrayOfReduce.reduce((sum, age) => sum + age, 0);
+
+  return Math.round((sumAges / arrayOfReduce.length) * 100) / 100;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const arrayPeople = century
+    ? people
+      .filter(item => (Math.ceil(item.died / 100)) === century)
+      .filter(({ sex }) => sex === 'm')
+      .map((item) => item.died - item.born)
+    : people
+      .filter((item) => item.sex === 'm')
+      .map(({ died, born }) => died - born);
+
+  return sumAndRound(arrayPeople);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +52,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomenAges = withChildren
+    ? people
+      .filter(item => people.some(({ mother }) => mother === item.name))
+    : people
+      .filter(({ sex }) => sex === 'f');
+
+  const arrWomenAges = filteredWomenAges.map((item) => item.died - item.born);
+
+  return sumAndRound(arrWomenAges);
 }
 
 /**
@@ -55,7 +78,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people
+      .filter((item) => item.mother != null)
+      .filter(item => item.sex === 'm')
+      .filter(item => people.some(({ name }) => name === item.mother))
+    : people
+      .filter((item) => item.mother != null)
+      .filter(item => people.some(({ name }) => name === item.mother));
+
+  const arrayYears = children.map((item) => {
+    const mother = people.find((element) => element.name === item.mother);
+
+    return (item.born - mother.born);
+  });
+
+  return sumAndRound(arrayYears);
 }
 
 module.exports = {
