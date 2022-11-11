@@ -21,16 +21,17 @@ function sumAndRound(arrayOfReduce) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const arrayPeople = century
+  const arrayOfAges = century
     ? people
-      .filter(item => (Math.ceil(item.died / 100)) === century)
-      .filter(({ sex }) => sex === 'm')
-      .map((item) => item.died - item.born)
+      .filter(person => {
+        return (Math.ceil(person.died / 100) === century) && person.sex === 'm';
+      })
+      .map((person) => person.died - person.born)
     : people
-      .filter((item) => item.sex === 'm')
+      .filter((person) => person.sex === 'm')
       .map(({ died, born }) => died - born);
 
-  return sumAndRound(arrayPeople);
+  return sumAndRound(arrayOfAges);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -52,13 +53,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomenAges = withChildren
+  const filteredWomen = withChildren
     ? people
-      .filter(item => people.some(({ mother }) => mother === item.name))
+      .filter(person => people.some(({ mother }) => mother === person.name))
     : people
       .filter(({ sex }) => sex === 'f');
 
-  const arrWomenAges = filteredWomenAges.map((item) => item.died - item.born);
+  const arrWomenAges = filteredWomen.map(
+    (person) => {
+      return person.died - person.born;
+    });
 
   return sumAndRound(arrWomenAges);
 }
@@ -80,17 +84,25 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon
     ? people
-      .filter((item) => item.mother != null)
-      .filter(item => item.sex === 'm')
-      .filter(item => people.some(({ name }) => name === item.mother))
+      .filter((person) => {
+        return (
+          person.mother != null
+            && person.sex === 'm'
+              && people.some(({ name }) => name === person.mother)
+        );
+      })
     : people
-      .filter((item) => item.mother != null)
-      .filter(item => people.some(({ name }) => name === item.mother));
+      .filter((person) => {
+        return (
+          person.mother != null
+            && people.some(({ name }) => name === person.mother)
+        );
+      });
 
-  const arrayYears = children.map((item) => {
-    const mother = people.find((element) => element.name === item.mother);
+  const arrayYears = children.map((person) => {
+    const mother = people.find((women) => women.name === person.mother);
 
-    return (item.born - mother.born);
+    return (person.born - mother.born);
   });
 
   return sumAndRound(arrayYears);
