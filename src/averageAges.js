@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filtered = people.filter(person => {
+    return century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm';
+  });
+
+  const diedTotal = filtered.reduce((accamulator, object) =>
+    accamulator + object.died, 0);
+  const bornTotal = filtered.reduce((accamulator, object) =>
+    accamulator + object.born, 0);
+
+  return (diedTotal - bornTotal) / filtered.length;
 }
 
 /**
@@ -37,7 +44,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filtered = people.filter(person => {
+    return withChildren
+      ? people.some(son => son.mother === person.name)
+      : person.sex === 'f';
+  });
+
+  const diedTotal = filtered.reduce((accamulator, object) =>
+    accamulator + object.died, 0);
+  const bornTotal = filtered.reduce((accamulator, object) =>
+    accamulator + object.born, 0);
+
+  return (diedTotal - bornTotal) / filtered.length;
 }
 
 /**
@@ -55,7 +73,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filteredMothers = people.filter(person =>
+    people.some(child => child.mother === person.name));
+
+  const filteredChildren = people.filter(person => {
+    return onlyWithSon
+      ? person.sex === 'm'
+        && filteredMothers.some(mother => mother.name === person.mother)
+      : filteredMothers.some(mother => mother.name === person.mother);
+  });
+
+  const motherIndexes = new Map();
+
+  const differences = filteredChildren.map(child => {
+    let motherIndex;
+
+    motherIndexes.has(child.mother)
+      ? motherIndex = motherIndexes.get(child.mother)
+      : motherIndexes.set(child.mother,
+        filteredMothers.findIndex(person => person.name === child.mother));
+
+    motherIndex = motherIndexes.get(child.mother);
+
+    return child.born - filteredMothers[motherIndex].born;
+  });
+
+  return differences.reduce((a, b) => a + b) / differences.length;
 }
 
 module.exports = {
