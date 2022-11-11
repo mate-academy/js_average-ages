@@ -14,8 +14,24 @@
  *
  * @return {number}
  */
+function sumAndRound(arrayOfReduce) {
+  const sumAges = arrayOfReduce.reduce((sum, age) => sum + age, 0);
+
+  return Math.round((sumAges / arrayOfReduce.length) * 100) / 100;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const arrayOfAges = century
+    ? people
+      .filter(person => {
+        return (Math.ceil(person.died / 100) === century) && person.sex === 'm';
+      })
+      .map((person) => person.died - person.born)
+    : people
+      .filter((person) => person.sex === 'm')
+      .map(({ died, born }) => died - born);
+
+  return sumAndRound(arrayOfAges);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +53,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomen = withChildren
+    ? people
+      .filter(person => people.some(({ mother }) => mother === person.name))
+    : people
+      .filter(({ sex }) => sex === 'f');
+
+  const arrWomenAges = filteredWomen.map(
+    (person) => {
+      return person.died - person.born;
+    });
+
+  return sumAndRound(arrWomenAges);
 }
 
 /**
@@ -55,7 +82,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people
+      .filter((person) => {
+        return (
+          person.mother != null
+            && person.sex === 'm'
+              && people.some(({ name }) => name === person.mother)
+        );
+      })
+    : people
+      .filter((person) => {
+        return (
+          person.mother != null
+            && people.some(({ name }) => name === person.mother)
+        );
+      });
+
+  const arrayYears = children.map((person) => {
+    const mother = people.find((women) => women.name === person.mother);
+
+    return (person.born - mother.born);
+  });
+
+  return sumAndRound(arrayYears);
 }
 
 module.exports = {
