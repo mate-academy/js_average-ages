@@ -20,6 +20,21 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const arrOfMen = (century !== undefined) ? people.filter((obj) => {
+    return obj.sex === 'm' && Math.ceil(obj.died / 100) === century;
+  }) : people.filter((obj) => {
+    return obj.sex === 'm';
+  });
+
+  const arrOfAges = arrOfMen.map((man) => {
+    return man.died - man.born;
+  });
+
+  const sum = arrOfAges.reduce((accum, value) => {
+    return accum + value;
+  });
+
+  return sum / arrOfAges.length;
 }
 
 /**
@@ -37,7 +52,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrOfWomen = (withChildren) ? people.filter((obj) => {
+    return obj.sex === 'f' && people.some((person) => {
+      return person.mother === obj.name;
+    });
+  }) : people.filter((obj) => {
+    return obj.sex === 'f';
+  });
+
+  const arrOfAges = arrOfWomen.map((man) => {
+    return man.died - man.born;
+  });
+
+  const sum = arrOfAges.reduce((accum, value) => {
+    return accum + value;
+  });
+
+  return sum / arrOfAges.length;
 }
 
 /**
@@ -55,7 +86,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const arrOfPeople = (onlyWithSon) ? people.filter((obj) => {
+    return obj.sex === 'm' && obj.mother !== null;
+  }) : people.filter((obj) => {
+    return obj.mother !== null;
+  });
+
+  const filteredArrOfPeople = arrOfPeople.filter((person) => {
+    const mother = people.find((element) => {
+      return element.name === person.mother;
+    });
+
+    return mother !== undefined;
+  });
+
+  const arrOfDiff = filteredArrOfPeople.map((person) => {
+    const mother = people.find((element) => {
+      return element.name === person.mother;
+    });
+
+    return person.born - mother.born;
+  });
+
+  const sum = arrOfDiff.reduce((accum, value) => {
+    return accum + value;
+  });
+
+  return sum / arrOfDiff.length;
 }
 
 module.exports = {
