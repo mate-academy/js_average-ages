@@ -23,10 +23,9 @@ function calculateMenAverageAge(people, century) {
     );
   }
 
-  const agesInArray = men.map(x => x.died - x.born);
-  const sumArray = agesInArray.reduce((sum, index) => sum + index);
+  const sumOfAges = men.reduce((sum, man) => sum + (man.died - man.born), 0);
 
-  return sumArray / men.length;
+  return sumOfAges / men.length;
 }
 
 /**
@@ -52,10 +51,10 @@ function calculateWomenAverageAge(people, withChildren) {
     });
   }
 
-  const ages = women.map(x => x.died - x.born);
-  const sumAges = ages.reduce((sum, index) => sum + index);
+  const sumOfAges = women.reduce((sum, wom) =>
+    sum + (wom.died - wom.born), 0);
 
-  return sumAges / women.length;
+  return sumOfAges / women.length;
 }
 
 /**
