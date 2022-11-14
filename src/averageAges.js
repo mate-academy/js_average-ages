@@ -14,10 +14,10 @@ function calculateMenAverageAge(people, century) {
       && (Math.ceil(person.died / 100) === century || century === undefined),
   );
 
-  const allMenAge = menArray.reduce((sum, person) =>
-    sum + (person.died - person.born), 0);
+  const menAges = menArray.map((person) => person.died - person.born);
+  const sumMenAges = menAges.reduce((sum, age) => sum + age, 0);
 
-  return Math.round(allMenAge / menArray.length * 100) / 100;
+  return sumMenAges / menAges.length;
 }
 
 /**
