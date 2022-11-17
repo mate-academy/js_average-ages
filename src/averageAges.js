@@ -14,6 +14,13 @@
  *
  * @return {number}
  */
+
+const isMale = (person) => person.sex === 'm';
+const isFemale = (person) => person.sex === 'f';
+const calculateAverage = (sumAges, array) => {
+  return Math.round((sumAges / array.length) * 100) / 100;
+};
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter((person) =>
     century
