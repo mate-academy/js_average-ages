@@ -15,19 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-  const men = genderFilter(people, 'm');
+  const men = getPeopleByGender(people, 'm');
   const menResult = century
     ? men.filter(person => (Math.ceil(person.died / 100) === century))
     : men;
 
-  const ageMenFiltered = menResult.map(person => person.died - person.born);
+  const averageMenLifeDuration
+    = menResult.map(person => person.died - person.born);
 
-  return ageMenFiltered.reduce((a, b) => a + b) / menResult.length;
+  return averageMenLifeDuration.reduce((a, b) => a + b) / menResult.length;
 }
 
 /**
@@ -45,15 +41,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = genderFilter(people, 'f');
+  const women = getPeopleByGender(people, 'f');
   const womenResult = withChildren
     ? women.filter(person => people.find(item =>
       item.mother === person.name) !== undefined)
     : women;
 
-  const ageWomenFiltered = womenResult.map(person => person.died - person.born);
+  const averageWomenLifeDuration
+    = womenResult.map(person => person.died - person.born);
 
-  return ageWomenFiltered.reduce((a, b) => a + b) / womenResult.length;
+  return averageWomenLifeDuration.reduce((a, b) => a + b) / womenResult.length;
 }
 
 /**
@@ -74,7 +71,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(child =>
     people.find(woman => woman.name === child.mother));
   const childrenResult = onlyWithSon
-    ? genderFilter(children, 'm')
+    ? getPeopleByGender(children, 'm')
     : children;
 
   const ageDifference = childrenResult.map(child => (
@@ -84,7 +81,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return ageDifference.reduce((a, b) => a + b) / childrenResult.length;
 }
 
-const genderFilter = (people, sex) => {
+const getPeopleByGender = (people, sex) => {
   return people.filter(person => person.sex === sex);
 };
 
