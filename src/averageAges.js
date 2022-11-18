@@ -7,19 +7,19 @@ function arrayAverage(arr) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => person.sex === 'm');
-  const menOfTheCentury = !century ? men
-    : men.filter(person => Math.ceil(person.died / 100) === century);
+  const menOfTheCentury = people.filter(man => century
+    ? (man.sex === 'm' && Math.ceil(man.died / 100) === century)
+    : man.sex === 'm');
+
   const ages = menOfTheCentury.map(man => man.died - man.born);
 
   return arrayAverage(ages);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
-  const filteredWomen = withChildren
-    ? women.filter(woman => people.some(person => person.mother === woman.name))
-    : women;
+  const filteredWomen = people.filter(woman => withChildren
+    ? people.some(person => person.mother === woman.name)
+    : woman.sex === 'f');
   const ages = filteredWomen.map(woman => woman.died - woman.born);
 
   return arrayAverage(ages);
