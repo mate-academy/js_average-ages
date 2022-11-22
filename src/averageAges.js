@@ -14,17 +14,20 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const list
-  = century === undefined
-    ? people.filter(item => item.sex === 'm')
-    : people.filter(item => item.sex === 'm'
-    && Math.ceil(item.died / 100) === century);
+function getAverage(list) {
   const sumOfAges = list.reduce((sum, a) => sum + (a.died - a.born), 0);
 
-  const averageMan = +(sumOfAges / list.length).toFixed(2);
+  return +(sumOfAges / list.length).toFixed(2);
+}
 
-  return averageMan;
+function calculateMenAverageAge(people, century) {
+  const list = people.filter(item => item.sex === 'm');
+
+  const maleList = century
+    ? list.filter(item => Math.ceil(item.died / 100) === century)
+    : list;
+
+  return getAverage(maleList);
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -48,16 +51,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.map(person => `${person.mother}`);
-  const list
-   = withChildren === undefined
-     ? people.filter(item => item.sex === 'f')
-     : people.filter(item => item.sex === 'f'
-     && mothers.some((mum) => mum === item.name));
-  const sumOfAges = list.reduce((sum, a) => sum + (a.died - a.born), 0);
 
-  const averageWoman = +(sumOfAges / list.length).toFixed(2);
+  const list = people.filter(item => item.sex === 'f');
+  const femaleList = withChildren
+    ? list.filter((item) => mothers.some((mum) => mum === item.name))
+    : list;
 
-  return averageWoman;
+  return getAverage(femaleList);
   // write code here
 }
 
@@ -76,12 +76,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const kids
-  = onlyWithSon === undefined
-    ? people.filter((child) => (people.find((mother) =>
-      (child.mother === mother.name))))
-    : people.filter((child) => (people.find((mother) =>
-      (child.mother === mother.name) && (child.sex === 'm'))));
+  const children = people.filter((child) => (people.find((mother) =>
+    (child.mother === mother.name))));
+
+  const kids = onlyWithSon
+    ? children.filter((child) => child.sex === 'm')
+    : children;
 
   const ageDiffList = kids.map((child) => {
     const mum = people.find((mummy) => mummy.name === child.mother);
