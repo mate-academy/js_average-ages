@@ -53,10 +53,7 @@ function calculateWomenAverageAge(people, withChildren) {
     && people.some(child => person.name === child.mother));
   }
 
-  const sumOfAges = women.reduce((sum, wom) =>
-    sum + (wom.died - wom.born), 0);
-
-  return sumOfAges / women.length;
+  return calculateAverageAge(women);
 }
 
 /**
