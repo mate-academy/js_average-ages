@@ -15,11 +15,33 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let count = 0;
+  let result;
+
+  if (century) {
+    result = people.reduce((a, b) => {
+      if (b.sex === 'm' // Sex is male && death in the specified century
+            && (Math.ceil(b.died / 100) === century)) {
+        count++;
+
+        return a + b.died - b.born;
+      } else {
+        return a;
+      }
+    }, 0);
+  } else {
+    result = people.reduce((a, b) => {
+      if (b.sex === 'm') { // Sex is male
+        count++;
+
+        return a + b.died - b.born;
+      } else {
+        return a;
+      }
+    }, 0);
+  }
+
+  return result / (count > 0 ? count : 1);
 }
 
 /**
@@ -37,7 +59,33 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let count = 0;
+  let result;
+
+  if (withChildren) {
+    result = people.reduce((a, b) => {
+      if (b.sex === 'f' // Sex is female && is a mother
+            && people.findIndex(person => person.mother === b.name) !== -1) {
+        count++;
+
+        return a + b.died - b.born;
+      } else {
+        return a;
+      }
+    }, 0);
+  } else {
+    result = people.reduce((a, b) => {
+      if (b.sex === 'f') { // Sex is female
+        count++;
+
+        return a + b.died - b.born;
+      } else {
+        return a;
+      }
+    }, 0);
+  }
+
+  return result / (count > 0 ? count : 1);
 }
 
 /**
@@ -55,7 +103,40 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let count = 0;
+  let result;
+
+  if (onlyWithSon) {
+    result = people.reduce((a, b) => {
+      const valueToAdd = people.reduce((x, y) => {
+        if (y.mother === b.name && y.sex === 'm') {
+          count++;
+
+          return x + y.born - b.born;
+        }
+
+        return x;
+      }, 0);
+
+      return a + valueToAdd;
+    }, 0);
+  } else {
+    result = people.reduce((a, b) => {
+      const valueToAdd = people.reduce((x, y) => {
+        if (y.mother === b.name) {
+          count++;
+
+          return x + y.born - b.born;
+        }
+
+        return x;
+      }, 0);
+
+      return a + valueToAdd;
+    }, 0);
+  }
+
+  return result / (count > 0 ? count : 1);
 }
 
 module.exports = {
