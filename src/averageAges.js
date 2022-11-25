@@ -15,15 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menOnly = people.filter(
-    person => !century
+  const menOnly = people.filter(person =>
+    !century
       ? person.sex === 'm'
       : person.sex === 'm' && century === Math.ceil(person.died / 100)
   );
 
-  const age = menOnly.map(man => man.died - man.born);
+  return calculateAverageAge(menOnly);
+}
+
+function calculateAverageAge(people) {
+  const age = people.map(person => person.died - person.born);
   const sumOfAges = age.reduce((a, b) => a + b);
-  const averageAge = sumOfAges / menOnly.length;
+  const averageAge = sumOfAges / people.length;
 
   return averageAge;
 }
@@ -45,17 +49,13 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.map(person => person.mother);
 
-  const womenOnly = people.filter(
-    person => !withChildren
+  const womenOnly = people.filter(person =>
+    !withChildren
       ? person.sex === 'f'
       : mothers.includes(person.name)
   );
 
-  const age = womenOnly.map(woman => woman.died - woman.born);
-  const sumOfAges = age.reduce((a, b) => a + b);
-  const averageAge = sumOfAges / womenOnly.length;
-
-  return averageAge;
+  return calculateAverageAge(womenOnly);
 }
 
 /**
@@ -73,17 +73,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let children = people.filter(
-    person => people.find(mother => mother.name === person.mother)
+  let children = people.filter(person =>
+    people.find(mother => mother.name === person.mother)
   );
 
   if (onlyWithSon) {
     children = children.filter(child => child.sex === 'm');
   }
 
-  const diff = children.map(
-    child =>
-      child.born - people.find(mother => mother.name === child.mother).born
+  const diff = children.map(child =>
+    child.born - people.find(mother => mother.name === child.mother).born
   );
 
   const averageDiff = diff.reduce((a, b) => a + b) / diff.length;
