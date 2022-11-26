@@ -1,6 +1,17 @@
 'use strict';
 
 /**
+ * Helper function to get the average age of an array of persons
+ * @param {object[]} people
+ * @return {number}
+ */
+const calculateAverageAge = (ppl) => {
+  const len = ppl.length || 1;
+
+  return ppl.reduce((a, b) => a + b.died - b.born, 0) / len;
+};
+
+/**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
@@ -17,11 +28,10 @@
 function calculateMenAverageAge(people, century) {
   const selectedPeople = people
     .filter(p => p.sex === 'm'
-      && (century ? Math.ceil(p.died / 100) === century : true));
-  const count = selectedPeople.length;
+      && (!century || Math.ceil(p.died / 100) === century)
+    );
 
-  return selectedPeople
-    .reduce((a, b) => a + b.died - b.born, 0) / (count > 0 ? count : 1);
+  return calculateAverageAge(selectedPeople);
 }
 
 /**
@@ -41,13 +51,12 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const selectedPeople = people
     .filter(p => p.sex === 'f'
-      && (withChildren
-        ? (people.findIndex(person => person.mother === p.name) !== -1)
-        : true));
-  const count = selectedPeople.length;
+      && (!withChildren
+        || (people.findIndex(person => person.mother === p.name) !== -1)
+      )
+    );
 
-  return selectedPeople
-    .reduce((a, b) => a + b.died - b.born, 0) / (count > 0 ? count : 1);
+  return calculateAverageAge(selectedPeople);
 }
 
 /**
@@ -65,8 +74,10 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const selectedPeople = people
-    .filter(p => onlyWithSon ? p.sex === 'm' : true);
+  const selectedPeople = onlyWithSon
+    ? people.filter(p => p.sex === 'm')
+    : people;
+
   let count = 0;
   let mother;
 
@@ -82,7 +93,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   }, 0);
 
-  return total / (count > 0 ? count : 1);
+  return total / (count || 1);
 }
 
 module.exports = {
