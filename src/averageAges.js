@@ -27,14 +27,11 @@ function findGender(list, gender) {
 }
 
 function findAverageAgeDiff(list, mothersList) {
-  const ageDiffSum = list
-    .reduce(
-      (sum, currPerson) => {
-        const mother = mothersList
-          .find(person => currPerson.mother === person.name);
+  const ageDiffSum = list.reduce((sum, curr) => {
+    const mother = mothersList.find(person => curr.mother === person.name);
 
-        return sum + (currPerson.born - mother.born);
-      }, 0);
+    return sum + (curr.born - mother.born);
+  }, 0);
   const averageAgeDiff = ageDiffSum / list.length;
 
   return Math.round(averageAgeDiff * 100, 2) / 100;
