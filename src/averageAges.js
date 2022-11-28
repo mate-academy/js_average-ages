@@ -14,7 +14,7 @@
  *
  * @return {number}
  */
-function CountAverageAge(list) {
+function countAverageAge(list) {
   const ageSum = list.reduce(
     (sum, currPerson) => sum + (currPerson.died - currPerson.born), 0);
   const averageAge = ageSum / list.length;
@@ -47,7 +47,7 @@ function calculateMenAverageAge(people, century) {
       Math.ceil(man.died / 100) === century))
     : men;
 
-  return CountAverageAge(menList);
+  return countAverageAge(menList);
 }
 
 /**
@@ -72,7 +72,7 @@ function calculateWomenAverageAge(people, withChildren) {
         person.mother === woman.name))))
     : women;
 
-  return CountAverageAge(womenList);
+  return countAverageAge(womenList);
 }
 
 /**
