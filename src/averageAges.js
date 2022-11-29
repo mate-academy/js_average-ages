@@ -16,7 +16,8 @@
  */
 function countAverageAge(list) {
   const ageSum = list.reduce(
-    (sum, currPerson) => sum + (currPerson.died - currPerson.born), 0);
+    (sum, currPerson) => sum + (currPerson.died - currPerson.born), 0
+  );
   const averageAge = ageSum / list.length;
 
   return Math.round(averageAge * 100, 2) / 100;
@@ -86,7 +87,8 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = findGender(people, 'f');
   const children = people.filter(child =>
-    people.some(woman => child.mother === woman.name));
+    people.some(woman => child.mother === woman.name)
+  );
   const ageDiffList = onlyWithSon
     ? children.filter(person => person.sex === 'm')
     : children;
