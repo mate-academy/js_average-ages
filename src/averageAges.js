@@ -1,6 +1,5 @@
 'use strict';
 
-// #region calculateMenAverageAge
 /**
  * Implement calculateMenAverageAge function
  *
@@ -25,9 +24,7 @@ function calculateMenAverageAge(people, century) {
 
   return menAverageAge;
 };
-// #endregion
 
-// #region calculateWomenAverageAge
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -52,9 +49,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   return womenAverageAge;
 }
-// #endregion
 
-// #region calculateAverageAgeDiff
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -70,21 +65,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
-// #endregion
-
-function getAgesSum(filtratedPeople) {
-  return filtratedPeople.reduce(
-    (sum, year) => (sum + year.died - year.born), 0
+  const children = people.filter(child =>
+    onlyWithSon
+      ? people.find(mother => child.mother === mother.name)
+        && child.sex === 'm'
+      : people.find(mother => child.mother === mother.name)
   );
+  const ageDifferenceSum = children.reduce((sum, child) =>
+    sum + child.born - people.find(
+      mother => child.mother === mother.name
+    ).born, 0
+  );
+  const averageAgeDiff = getAverageAge(ageDifferenceSum, children.length);
+
+  return averageAgeDiff;
 };
 
-function getAverageAge(sum, peopleAmount) {
-  return Math.round(sum / peopleAmount * 100) / 100;
-};
+const getAgesSum = (filtratedPeople) =>
+  filtratedPeople.reduce(
+    (sum, year) => (sum + year.died - year.born), 0);
 
-// WRITE GETSUM AND GETAVERAGE
+const getAverageAge = (sum, peopleAmount) =>
+  Math.round(sum / peopleAmount * 100) / 100;
 
 module.exports = {
   calculateMenAverageAge,
