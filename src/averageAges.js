@@ -28,7 +28,9 @@ const calculateAverageAge = (ppl) => {
 function calculateMenAverageAge(people, century) {
   const selectedPeople = people
     .filter(p => p.sex === 'm'
-      && (!century || Math.ceil(p.died / 100) === century)
+      && (!century
+        || Math.ceil(p.died / 100) === century
+      )
     );
 
   return calculateAverageAge(selectedPeople);
@@ -74,26 +76,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const selectedPeople = onlyWithSon
+  const filteredPeople = onlyWithSon
     ? people.filter(p => p.sex === 'm')
     : people;
 
   let count = 0;
   let mother;
 
-  const total = selectedPeople.reduce((a, b) => {
-    mother = people.find(p => p.name === b.mother);
+  const totalDifference = filteredPeople
+    .reduce((accumulation, currentPerson) => {
+      mother = people.find(person => person.name === currentPerson.mother);
 
-    if (mother) { // mother was found
-      count++;
+      if (mother) { // mother was found
+        count++;
 
-      return a + b.born - mother.born;
-    } else {
-      return a;
-    }
-  }, 0);
+        return accumulation + currentPerson.born - mother.born;
+      } else {
+        return accumulation;
+      }
+    }, 0);
 
-  return total / (count || 1);
+  return totalDifference / (count || 1);
 }
 
 module.exports = {
