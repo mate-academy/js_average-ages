@@ -1,6 +1,17 @@
 'use strict';
 
 /**
+ * Helper function to get the average age of an array of persons
+ * @param {object[]} people
+ * @return {number}
+ */
+const calculateAverageAge = (ppl) => {
+  const len = ppl.length || 1;
+
+  return ppl.reduce((a, b) => a + b.died - b.born, 0) / len;
+};
+
+/**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
@@ -15,11 +26,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const selectedPeople = people
+    .filter(p => p.sex === 'm'
+      && (!century
+        || Math.ceil(p.died / 100) === century
+      )
+    );
+
+  return calculateAverageAge(selectedPeople);
 }
 
 /**
@@ -37,7 +51,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const selectedPeople = people
+    .filter(p => p.sex === 'f'
+      && (!withChildren
+        || (people.findIndex(person => person.mother === p.name) !== -1)
+      )
+    );
+
+  return calculateAverageAge(selectedPeople);
 }
 
 /**
@@ -55,7 +76,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filteredPeople = onlyWithSon
+    ? people.filter(p => p.sex === 'm')
+    : people;
+
+  let count = 0;
+  let mother;
+
+  const totalDifference = filteredPeople
+    .reduce((accumulation, currentPerson) => {
+      mother = people.find(person => person.name === currentPerson.mother);
+
+      if (mother) { // mother was found
+        count++;
+
+        return accumulation + currentPerson.born - mother.born;
+      } else {
+        return accumulation;
+      }
+    }, 0);
+
+  return totalDifference / (count || 1);
 }
 
 module.exports = {
