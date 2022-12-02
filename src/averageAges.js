@@ -20,6 +20,22 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const manWithCentery = people.filter(item => {
+    return Math.ceil(item.died / 100) === century && item.sex === 'm';
+  });
+
+  const manWithoutCentery = people.filter(item => item.sex === 'm');
+
+  const avAgeWithCent = manWithCentery.reduce((a, b) => {
+    return a + (b.died - b.born);
+  }, 0) / manWithCentery.length;
+
+  const avAgeWithoutCent = manWithoutCentery.reduce((a, b) => {
+    return a + (b.died - b.born);
+  }, 0) / manWithoutCentery.length;
+
+  return century ? avAgeWithCent : avAgeWithoutCent;
 }
 
 /**
@@ -38,6 +54,23 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const womanWithoutChildren = people.filter(item => item.sex === 'f');
+
+  const avAgeWomanWithoutCh = womanWithoutChildren.reduce((a, b) => {
+    return a + (b.died - b.born);
+  }, 0) / womanWithoutChildren.length;
+
+  const mothers = people.map((x) => x.mother);
+
+  const womanWithChildren = people.filter(item => {
+    return item.sex === 'f' && mothers.includes(item.name);
+  });
+
+  const avAgeWomanWithCh = womanWithChildren.reduce((a, b) => {
+    return a + (b.died - b.born);
+  }, 0) / womanWithChildren.length;
+
+  return withChildren ? avAgeWomanWithCh : avAgeWomanWithoutCh;
 }
 
 /**
@@ -56,6 +89,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  let children = people.filter(
+    person => people.find(mother => mother.name === person.mother)
+  );
+
+  if (onlyWithSon) {
+    children = children.filter((child) => child.sex === 'm');
+  }
+
+  const difference = children.map(child => {
+    return child.born - people.find(mother =>
+      mother.name === child.mother).born;
+  });
+
+  const averageDiff = difference.reduce((a, b) => {
+    return (a + b);
+  }, 0);
+
+  return averageDiff / children.length;
 }
 
 module.exports = {
