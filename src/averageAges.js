@@ -73,6 +73,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ? people.filter(person => people.find(
       mother => person.mother === mother.name
     ) && person.sex === 'm')
+
     : people.filter(person => people.find(
       mother => person.mother === mother.name
     ));
