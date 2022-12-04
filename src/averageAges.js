@@ -2,43 +2,36 @@
 
 /**
  * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
+
+function calculatePersonsAvgAge(persons) {
+  const calcAges = persons.map(person => person.died - person.born);
+  const personAvgAge = (calcAges.reduce((total, age) =>
+    (total + age)) / calcAges.length);
+
+  return personAvgAge;
+}
+
 function calculateMenAverageAge(people, century) {
-  const menOnly = (century)
-    ? people.filter(man => (man.sex === 'm'
-    && Math.ceil(man.died / 100) === century))
-    : people.filter(man => (man.sex === 'm'));
-    /*
-    if century is valid, only those men added to the array,
-    whos died in the given century
-    */
+  let menOnly = people.filter(man => (man.sex === 'm'));
 
-  const calcAges = menOnly.map(man => man.died - man.born);
-  const menAvg = calcAges.reduce((total, age) => (total + age));
+  if (century) {
+    menOnly = menOnly.filter(man => (Math.ceil(man.died / 100) === century));
+  }
+  /*
+  if century is valid, only those men added to the array,
+  whos died in the given century, easy to add more params in future.
+  */
 
-  return menAvg / calcAges.length;
+  return calculatePersonsAvgAge(menOnly);
 }
 
 /**
  * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
@@ -46,36 +39,32 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.map(eachPerson => eachPerson['mother']);
-  const womenOnly = (withChildren)
-    ? people.filter(woman => woman.sex === 'f' && mothers.includes(woman.name))
-    : people.filter(woman => woman.sex === 'f');
-    /**
-     * when withChildren is valid, it checks if a person is a mother
-     */
-  const calcAges = womenOnly.map(woman => woman.died - woman.born);
-  const womenAgeSum = calcAges.reduce((total, age) => (total + age));
+  let womenOnly = people.filter(woman => woman.sex === 'f');
 
-  return womenAgeSum / calcAges.length;
+  if (withChildren) {
+    womenOnly = people.filter(woman => woman.sex === 'f'
+    && mothers.includes(woman.name));
+  }
+  /**
+  * when withChildren is valid, it checks if a person is a mother
+  */
+
+  return calculatePersonsAvgAge(womenOnly);
 }
 
 /**
  * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for sons and their mothers.
- *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
  *
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const personsToCheck = (onlyWithSon)
-    ? people.filter(person => person.sex === 'm')
-    : people;
+  let children = people;
+
+  if (onlyWithSon) {
+    children = people.filter(person => person.sex === 'm');
+  }
 
   function calcMotherChildDiff(obj) {
     const motherId = people.findIndex(mother => mother.name === obj.mother);
@@ -85,13 +74,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }
   }
 
-  const ageDiffAll = personsToCheck.map(person => calcMotherChildDiff(person));
+  const getAllAgeDiff = children.map(person =>
+    calcMotherChildDiff(person));
   /**
    * ageDiffAll have some undefined values,
    * when mother is not listed in 'people'.
    * validAgeDiff solve this problem.
    */
-  const validAgeDiff = ageDiffAll.filter(age => age);
+  const validAgeDiff = getAllAgeDiff.filter(age => age);
 
   return (validAgeDiff.reduce((total, age) =>
     total + age)) / validAgeDiff.length;
