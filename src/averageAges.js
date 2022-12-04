@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menOnly = (century)
+    ? people.filter(man => (man.sex === 'm'
+    && Math.ceil(man.died / 100) === century))
+    : people.filter(man => (man.sex === 'm'));
+    /*
+    if century is valid, only those men added to the array,
+    whos died in the given century
+    */
+
+  const calcAges = menOnly.map(man => man.died - man.born);
+  const menAvg = calcAges.reduce((total, age) => (total + age));
+
+  return menAvg / calcAges.length;
 }
 
 /**
@@ -37,7 +45,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.map(eachPerson => eachPerson['mother']);
+  const womenOnly = (withChildren)
+    ? people.filter(woman => woman.sex === 'f' && mothers.includes(woman.name))
+    : people.filter(woman => woman.sex === 'f');
+    /**
+     * when withChildren is valid, it checks if a person is a mother
+     */
+  const calcAges = womenOnly.map(woman => woman.died - woman.born);
+  const womenAgeSum = calcAges.reduce((total, age) => (total + age));
+
+  return womenAgeSum / calcAges.length;
 }
 
 /**
@@ -55,7 +73,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const personsToCheck = (onlyWithSon)
+    ? people.filter(person => person.sex === 'm')
+    : people;
+
+  function calcMotherChildDiff(obj) {
+    const motherId = people.findIndex(mother => mother.name === obj.mother);
+
+    if (motherId > -1) {
+      return obj.born - people[motherId].born;
+    }
+  }
+
+  const ageDiffAll = personsToCheck.map(person => calcMotherChildDiff(person));
+  /**
+   * ageDiffAll have some undefined values,
+   * when mother is not listed in 'people'.
+   * validAgeDiff solve this problem.
+   */
+  const validAgeDiff = ageDiffAll.filter(age => age);
+
+  return (validAgeDiff.reduce((total, age) =>
+    total + age)) / validAgeDiff.length;
 }
 
 module.exports = {
