@@ -21,19 +21,17 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const manWithCentery = people.filter(item => {
+  const manArray = century ? people.filter(item => {
     return Math.ceil(item.died / 100) === century && item.sex === 'm';
-  });
+  }) : people.filter(item => item.sex === 'm');
 
-  const manWithoutCentery = people.filter(item => item.sex === 'm');
-
-  const avAgeWithCent = manWithCentery.reduce((a, b) => {
+  const avAgeWithCent = manArray.reduce((a, b) => {
     return a + (b.died - b.born);
-  }, 0) / manWithCentery.length;
+  }, 0) / manArray.length;
 
-  const avAgeWithoutCent = manWithoutCentery.reduce((a, b) => {
+  const avAgeWithoutCent = manArray.reduce((a, b) => {
     return a + (b.died - b.born);
-  }, 0) / manWithoutCentery.length;
+  }, 0) / manArray.length;
 
   return century ? avAgeWithCent : avAgeWithoutCent;
 }
@@ -54,21 +52,19 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const womanWithoutChildren = people.filter(item => item.sex === 'f');
-
-  const avAgeWomanWithoutCh = womanWithoutChildren.reduce((a, b) => {
-    return a + (b.died - b.born);
-  }, 0) / womanWithoutChildren.length;
-
   const mothers = people.map((x) => x.mother);
 
-  const womanWithChildren = people.filter(item => {
+  const womanArr = withChildren ? people.filter(item => {
     return item.sex === 'f' && mothers.includes(item.name);
-  });
+  }) : people.filter(item => item.sex === 'f');
 
-  const avAgeWomanWithCh = womanWithChildren.reduce((a, b) => {
+  const avAgeWomanWithoutCh = womanArr.reduce((a, b) => {
     return a + (b.died - b.born);
-  }, 0) / womanWithChildren.length;
+  }, 0) / womanArr.length;
+
+  const avAgeWomanWithCh = womanArr.reduce((a, b) => {
+    return a + (b.died - b.born);
+  }, 0) / womanArr.length;
 
   return withChildren ? avAgeWomanWithCh : avAgeWomanWithoutCh;
 }
