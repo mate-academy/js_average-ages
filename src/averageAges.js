@@ -45,20 +45,15 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const women = people.filter(p => p.sex === 'f');
 
-  if (withChildren) {
+  if (withChildren === true) {
     const motherName = people.map(p => p.mother);
     const womenMothers = women.filter(woman => motherName.includes(woman.name));
-    const result = womenMothers.map(p => p.died - p.born);
-    const sum = result.reduce((a, b) => a + b, 0);
-    const average = sum / womenMothers.length;
 
-    return +(average.toFixed(2));
+    return womenMothers.map(p => p.died - p.born)
+      .reduce((a, b) => a + b, 0) / womenMothers.length;
   } else {
-    const result = women.map(p => p.died - p.born);
-    const sum = result.reduce((a, b) => a + b, 0);
-    const average = sum / women.length;
-
-    return +(average.toFixed(2));
+    return women.map(p => p.died - p.born)
+      .reduce((a, b) => a + b, 0) / women.length;
   }
 }
 
