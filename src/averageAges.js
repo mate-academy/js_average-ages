@@ -21,17 +21,13 @@ function calculateMenAverageAge(people, century) {
     const arrMenCentury = arrMen.filter(person => Math.ceil(person.died / 100)
     === century);
 
-    const initialValue = 0;
-    const sumAgeMen = arrMenCentury.reduce((a, b) => a + (b.died - b.born),
-      initialValue);
+    const sumAgeMen = arrMenCentury.reduce((a, b) => a + (b.died - b.born), 0);
 
     return Number((sumAgeMen / arrMenCentury.length).toFixed(2));
   };
 
   const calcAge = function() {
-    const initialValue = 0;
-    const sumAgeMen = arrMen.reduce((a, b) => a + (b.died - b.born),
-      initialValue);
+    const sumAgeMen = arrMen.reduce((a, b) => a + (b.died - b.born), 0);
 
     return Number((sumAgeMen / arrMen.length).toFixed(2));
   };
@@ -61,17 +57,14 @@ function calculateWomenAverageAge(people, withChildren) {
     const arrWomenWithChidren = arrWomen.filter(woman =>
       mother.includes(woman.name));
 
-    const initialValue = 0;
     const sumAgeWomen = arrWomenWithChidren.reduce((a, b) =>
-      a + (b.died - b.born), initialValue);
+      a + (b.died - b.born), 0);
 
     return Number((sumAgeWomen / arrWomenWithChidren.length).toFixed(2));
   };
 
   const calcAgeWomen = function() {
-    const initialValue = 0;
-    const sumAgeWomen = arrWomen.reduce((a, b) => a + (b.died - b.born),
-      initialValue);
+    const sumAgeWomen = arrWomen.reduce((a, b) => a + (b.died - b.born), 0);
 
     return Number((sumAgeWomen / arrWomen.length).toFixed(2));
   };
