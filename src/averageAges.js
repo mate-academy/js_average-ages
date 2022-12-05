@@ -55,8 +55,8 @@ function calculateWomenAverageAge(people, withChildren) {
       : isFemale;
   });
 
-  const milfsAge = mothers.map(milf => milf.died - milf.born);
-  const lastValue = averageAge(milfsAge, milfsAge.length);
+  const motherAge = mothers.map(mother => mother.died - mother.born);
+  const lastValue = averageAge(motherAge, motherAge.length);
 
   return lastValue;
 }
@@ -78,10 +78,10 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(child => {
     const boyHasMother = people.some(mother => mother.name === child.mother);
-    const isBoy = child.sex === 'm';
+    const isMale = child.sex === 'm';
 
     return (onlyWithSon)
-      ? boyHasMother && isBoy
+      ? boyHasMother && isMale
       : boyHasMother;
   });
 
