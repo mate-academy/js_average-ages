@@ -15,11 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredPeople = century
+    ? people.filter((person) => Math.ceil(person.died / 100) === century)
+    : people;
+
+  return calculateAverageAge(filteredPeople, 'm');
 }
 
 /**
@@ -37,8 +37,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeople = withChildren
+    ? people.filter((person, id, peopleArr) => peopleArr.some((candidate) => (
+      candidate.mother === person.name
+    )))
+    : people;
+
+  return calculateAverageAge(filteredPeople, 'f');
 }
+
+const calculateAverageAge = (people, gender) => {
+  let filteredPeople = people.filter((person) => person.sex === gender);
+
+  filteredPeople = filteredPeople.map((person) => person.died - person.born);
+
+  return filteredPeople.reduce((person1, person2) => (
+    person1 + person2
+  )) / filteredPeople.length;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -55,7 +71,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let filteredPeople = people.filter((person) => person.mother !== null);
+
+  filteredPeople = onlyWithSon
+    ? filteredPeople.filter((person) => person.sex === 'm')
+    : filteredPeople;
+
+  filteredPeople = filteredPeople.map((person) => {
+    const foundMother = people.find((mother) => mother.name === person.mother);
+
+    return foundMother ? person.born - foundMother.born : 'not found';
+  });
+  filteredPeople = filteredPeople.filter((age) => age !== 'not found');
+
+  return filteredPeople.reduce((mother1, mother2) => (
+    mother1 + mother2
+  )) / filteredPeople.length;
 }
 
 module.exports = {
