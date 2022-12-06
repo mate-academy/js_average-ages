@@ -18,17 +18,11 @@ function calculateMenAverageAge(people, century) {
   const gender = people.filter(person => {
     return century
       ? person.sex === 'm'
-    && Math.ceil(person.died / 100) === century
+        && Math.ceil(person.died / 100) === century
       : person.sex === 'm';
   });
 
-  const age = gender.map((person) => person.died - person.born);
-
-  const result = age.reduce((prev, curr) =>
-    prev + curr, 0) / age.length;
-
-  return result;
-
+  return repetitive(gender);
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -56,12 +50,8 @@ function calculateWomenAverageAge(people, withChildren) {
       ? people.some(kid => kid.mother === person.name)
       : person.sex === 'f';
   });
-  const age = woman.map((person) => person.died - person.born);
 
-  const result = age.reduce((prev, curr) =>
-    prev + curr, 0) / age.length;
-
-  return result;
+  return repetitive(woman);
 }
 
 /**
@@ -92,6 +82,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const result = age.reduce((prev, curr) =>
     prev - curr, 0) / age.length;
+
+  return result;
+}
+
+function repetitive(men) {
+  const age = men.map((person) => person.died - person.born);
+
+  const result = age.reduce((prev, curr) =>
+    prev + curr, 0) / age.length;
 
   return result;
 }
