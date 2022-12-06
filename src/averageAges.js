@@ -1,5 +1,11 @@
 'use strict';
 
+function getAverage(arr) {
+  return arr
+    .map(user => user.died - user.born)
+    .reduce((acc, user) => acc + user) / arr.length;
+}
+
 function calculateMenAverageAge(people, century) {
   let mans = people.filter(user => user.sex === 'm');
 
@@ -7,43 +13,19 @@ function calculateMenAverageAge(people, century) {
     mans = mans.filter(man => Math.ceil(man.died / 100) === century);
   }
 
-  return mans
-    .map(man => man.died - man.born)
-    .reduce((acc, age) => {
-      return acc + age;
-    }) / mans.length;
+  return getAverage(mans);
 }
 
-/**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withChildren) {
   let gorilas = people.filter(user => user.sex === 'f');
 
   if (withChildren) {
     gorilas = people
-      .filter(user => user.sex === 'f'
-        && people
-          .some(little => little.mother === user.name)
+      .filter(user => people.some(little => little.mother === user.name)
       );
   }
 
-  return gorilas
-    .map(gorila => gorila.died - gorila.born)
-    .reduce((acc, age) => {
-      return acc + age;
-    }) / gorilas.length;
+  return getAverage(gorilas);
 }
 
 /**
