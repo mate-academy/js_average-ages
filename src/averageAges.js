@@ -21,8 +21,9 @@ function calculateMenAverageAge(people, century) {
     ? men.filter(p => Math.ceil(p.died / 100) === century)
     : men;
 
-  return selectedMen.map(p => p.died - p.born)
-    .reduce((a, b) => a + b, 0) / selectedMen.length;
+  const menAges = selectedMen.map(p => p.died - p.born);
+
+  return calculateAverage(menAges);
 }
 
 /**
@@ -46,12 +47,13 @@ function calculateWomenAverageAge(people, withChildren) {
   if (withChildren) {
     const motherName = people.map(p => p.mother);
     const womenMothers = women.filter(woman => motherName.includes(woman.name));
+    const mathersAges = womenMothers.map(p => p.died - p.born);
 
-    return womenMothers.map(p => p.died - p.born)
-      .reduce((a, b) => a + b, 0) / womenMothers.length;
+    return calculateAverage(mathersAges);
   } else {
-    return women.map(p => p.died - p.born)
-      .reduce((a, b) => a + b, 0) / women.length;
+    const womenAges = women.map(p => p.died - p.born);
+
+    return calculateAverage(womenAges);
   }
 }
 
@@ -71,18 +73,23 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const women = people.filter(p => p.sex === 'f');
+  const children = people.filter(person => (
+    people.some(mother => mother.name === person.mother)
+    && (onlyWithSon
+      ? person.sex === 'm'
+      : true
+    )
+  ));
+  const ageDiffs = children
+    .map(child => (
+      child.born - people.find(mother => mother.name === child.mother).born)
+    );
 
-  const determiner = (onlyWithSon)
+  return calculateAverage(ageDiffs);
+}
 
-    ? people.filter(p => p.sex === 'm')
-      .filter(m => women.find(w => m.mother === w.name))
-      .map(s => s.born - women.find(w => s.mother === w.name).born)
-
-    : people.filter(p => women.find(w => p.mother === w.name))
-      .map(ch => ch.born - women.find(w => ch.mother === w.name).born);
-
-  return determiner.reduce((a, b) => a + b, 0) / determiner.length;
+function calculateAverage(input) {
+  return input.reduce((a, b) => a + b, 0) / input.length;
 }
 
 module.exports = {
