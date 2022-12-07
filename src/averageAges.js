@@ -15,16 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = (century)
+    ? people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const TotalMenAge = men.reduce((prev, current) => {
+    const sum = prev + current.died - current.born;
+
+    return sum;
+  }, 0);
+
+  return TotalMenAge / men.length;
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
  * Function returns average age of women in array. If `withChildren` is
  * specified then function calculates average age only for women with children
  *
@@ -37,7 +42,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = (withChildren)
+    ? people
+      .filter(woman => (
+        people.find(person => woman.name === person.mother)
+      ))
+    : people.filter(person => person.sex === 'f');
+
+  const TotalWomenAge = women.reduce((prev, current) => {
+    const sum = prev + current.died - current.born;
+
+    return sum;
+  }, 0);
+
+  return TotalWomenAge / women.length;
 }
 
 /**
@@ -55,7 +73,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child => {
+    return people.find(person => person.name === child.mother);
+  });
+
+  const onlySons = (onlyWithSon)
+    ? children.filter(person => person.sex === 'm')
+    : children;
+
+  const sumDifference = onlySons.reduce((prev, child) => {
+    const motherAgeAtBirth = people
+      .find(person => person.name === child.mother).born;
+    const sum = prev + child.born - motherAgeAtBirth;
+
+    return sum;
+  }, 0);
+
+  return sumDifference / onlySons.length;
 }
 
 module.exports = {
