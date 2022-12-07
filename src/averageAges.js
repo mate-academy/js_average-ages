@@ -53,7 +53,6 @@ function calculateWomenAverageAge(people, withChildren) {
 
   return calculateAverage(calculateAge);
 }
-
 /**
  * Implement calculateAverageAgeDiff function.
  *
