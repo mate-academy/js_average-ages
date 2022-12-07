@@ -17,15 +17,15 @@ function calculateMenAverageAge(people, century) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  let gorilas = people.filter(user => user.sex === 'f');
+  let womens = people.filter(user => user.sex === 'f');
 
   if (withChildren) {
-    gorilas = people
+    womens = people
       .filter(user => people.some(little => little.mother === user.name)
       );
   }
 
-  return getAverage(gorilas);
+  return getAverage(womens);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
