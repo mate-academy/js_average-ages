@@ -45,15 +45,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  if (withChildren === false || withChildren === undefined) {
-    return (people
-      .filter((x) => x.sex === 'f')
-      .map((x) => (x.died - x.born))
-      .reduce((x, y) => (x + y)))
-      / (people
-        .filter((x) => x.sex === 'f')
-        .map((x) => (x.died - x.born)).length);
-  } else {
+  if (withChildren) {
     const arrayAllMothers = people.filter(x => x.mother).map(x => x.mother);
     const arrayWithChildren = [];
 
@@ -67,6 +59,14 @@ function calculateWomenAverageAge(people, withChildren) {
       .map(x => x.died - x.born)
       .reduce((x, y) => (x + y)) / arrayWithChildren.length;
   }
+
+  return (people
+    .filter((x) => x.sex === 'f')
+    .map((x) => (x.died - x.born))
+    .reduce((x, y) => (x + y)))
+      / (people
+        .filter((x) => x.sex === 'f')
+        .map((x) => (x.died - x.born)).length);
 }
 
 /**
