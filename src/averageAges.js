@@ -15,14 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  return century === undefined || century === false
+  return !century
     ? people.filter(person => person.sex === 'm')
       .map(person => person.died - person.born)
-      .reduce((a, b, i) => +(a + (b - a) / (i + 1)).toFixed(3), 0)
+      .reduce(calcAverage)
     : people.filter(person =>
       Math.ceil(person.died / 100) === century && person.sex === 'm')
       .map(person => person.died - person.born)
-      .reduce((a, b, i) => +(a + (b - a) / (i + 1)).toFixed(3), 0);
+      .reduce(calcAverage);
 }
 
 /**
@@ -40,14 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  return withChildren === undefined || withChildren === false
+  return !withChildren
     ? people.filter(person => person.sex === 'f')
       .map(person => person.died - person.born)
-      .reduce((a, b, i) => +(a + (b - a) / (i + 1)).toFixed(3), 0)
+      .reduce(calcAverage)
     : people.filter(person =>
       person.sex === 'f' && people.some(child => child.mother === person.name))
       .map(person => person.died - person.born)
-      .reduce((a, b, i) => +(a + (b - a) / (i + 1)).toFixed(3), 0);
+      .reduce(calcAverage);
 }
 
 /**
@@ -65,18 +65,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  return onlyWithSon === undefined || onlyWithSon === false
+  return !onlyWithSon
     ? people.filter(child =>
       people.some(mother => child.mother === mother.name))
       .map(child =>
         child.born - people.find(mother => child.mother === mother.name).born)
-      .reduce((a, b, i) => a + +((b - a) / (i + 1)).toFixed(3), 0)
+      .reduce(calcAverage)
     : people.filter(child =>
       people.some(mother => child.mother === mother.name && child.sex === 'm'))
       .map(child =>
         child.born - people.find(mother => child.mother === mother.name).born)
-      .reduce((a, b, i) => a + +((b - a) / (i + 1)).toFixed(3), 0);
+      .reduce(calcAverage);
 }
+
+const calcAverage = (sum, nextElement, index) => {
+  return sum + +((nextElement - sum) / (index + 1)).toFixed(4);
+};
 
 module.exports = {
   calculateMenAverageAge,
