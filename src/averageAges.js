@@ -79,36 +79,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let women = people.filter(person => person.sex === 'f');
+  const women = people.filter(person => person.sex === 'f');
 
   const sons = people.filter(
     person => person.sex === 'm' && person.mother !== null
   );
 
-  let childbirthAge;
-
   if (onlyWithSon) {
-    women = women.filter(
-      woman => sons.some(son => son.mother === woman.name)
-    );
+    const ageDiff = sons
+      .filter(son => women.some(woman => woman.name === son.mother))
+      .map(son => son.born - women.find(
+        woman => woman.name === son.mother).born
+      );
 
-    childbirthAge = women.map(
-      woman => sons.find(son => son.mother === woman.name).born - woman.born
-    );
+    const sumOfAges = ageDiff.reduce((prev, x) => prev + x, 0);
+
+    return sumOfAges / ageDiff.length;
   } else {
-    women = women.filter(
-      woman => people.some(child => child.mother === woman.name)
-    );
+    const ageDiff = people
+      .filter(person => women.some(woman => woman.name === person.mother))
+      .map(person => person.born - women.find(
+        woman => woman.name === person.mother).born
+      );
 
-    childbirthAge = women.map(
-      woman => people.find(
-        child => child.mother === woman.name).born - woman.born
-    );
+    const sumOfAges = ageDiff.reduce((prev, x) => prev + x, 0);
+
+    return sumOfAges / ageDiff.length;
   }
-
-  const sumOfAges = childbirthAge.reduce((prev, x) => prev + x, 0);
-
-  return sumOfAges / childbirthAge.length;
 }
 
 module.exports = {
