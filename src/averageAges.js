@@ -22,12 +22,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm';
   });
 
-  return repetitive(gender);
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  return theAverageAgeOfPeople(gender);
 }
 
 /**
@@ -51,7 +46,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f';
   });
 
-  return repetitive(woman);
+  return theAverageAgeOfPeople(woman);
 }
 
 /**
@@ -74,19 +69,19 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       ? child.sex === 'm' && people.some(mom => mom.name === child.mother)
       : people.some(mom => mom.name === child.mother);
   });
-  const age = pupils.map(kid => {
+  const kidAndMother = pupils.map(kid => {
     const mother = people.find(mom => mom.name === kid.mother);
 
     return mother.born - kid.born;
   });
 
-  const result = age.reduce((prev, curr) =>
-    prev - curr, 0) / age.length;
+  const result = kidAndMother.reduce((prev, curr) =>
+    prev - curr, 0) / kidAndMother.length;
 
   return result;
 }
 
-function repetitive(men) {
+function theAverageAgeOfPeople(men) {
   const age = men.map((person) => person.died - person.born);
 
   const result = age.reduce((prev, curr) =>
