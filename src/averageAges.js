@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const malePerson = people.filter(person => {
+    return century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm';
+  });
+
+  const menAges = malePerson.map(person => person.died - person.born);
+  const sumOfAges = menAges.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAges / menAges.length;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +43,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const femalePerson = people.filter(person => {
+    return withChildren
+      ? person.sex === 'f' && people.some(child => child.mother === person.name)
+      : person.sex === 'f';
+  });
+
+  const womenAges = femalePerson.map(person => person.died - person.born);
+  const sumOfAges = womenAges.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAges / womenAges.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +71,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(person => {
+    return onlyWithSon
+      ? people.some(mother => mother.name === person.mother
+        && person.sex === 'm')
+      : people.some(mother => mother.name === person.mother);
+  });
+
+  const ageDifference = children.map(child => {
+    const mother = people.find(person => person.name === child.mother);
+
+    return (child.born - mother.born);
+  });
+
+  const sumOfAges = ageDifference.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAges / ageDifference.length;
+
+  return averageAge;
 }
 
 module.exports = {
