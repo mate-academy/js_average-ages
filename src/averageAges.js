@@ -39,12 +39,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return averageAgeDiff(mothers, childs, onlyWithSon);
 }
 
-const averageAge = (obj) => {
+const averageAge = (people) => {
   const averageAgeCount
-    = obj.reduce(
+    = people.reduce(
       (sum, currentObjKey) => sum + (currentObjKey.died - currentObjKey.born),
       0
-    ) / obj.length;
+    ) / people.length;
 
   return +averageAgeCount.toFixed(2);
 };
