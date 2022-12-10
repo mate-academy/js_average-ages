@@ -73,8 +73,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         ? people.some(mother => mother.name === person.mother)
         && person.sex === 'm'
         : people.some(mother => mother.name === person.mother))
-    .map(child =>
-      child.born - people.find(mother => mother.name === child.mother).born);
+    .map(child => {
+      const mom = people.find(mother => mother.name === child.mother);
+
+      return (child.born - mom.born);
+    });
 
   return getAverageAge(womenAverageAge);
 }
