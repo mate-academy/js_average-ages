@@ -16,14 +16,19 @@
  */
 function calculateMenAverageAge(people, century) {
   const malePerson = people.filter(person => {
-    return century
-      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-      : person.sex === 'm';
+    return person.sex === 'm' && (
+      !century
+      || Math.ceil(person.died / 100) === century
+    );
   });
 
-  const menAges = malePerson.map(person => person.died - person.born);
-  const sumOfAges = menAges.reduce((sum, age) => sum + age, 0);
-  const averageAge = sumOfAges / menAges.length;
+  return calculateAvgAge(malePerson);
+}
+
+function calculateAvgAge(callback) {
+  const personAges = callback.map(person => person.died - person.born);
+  const sumOfAges = personAges.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAges / personAges.length;
 
   return averageAge;
 }
@@ -44,16 +49,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const femalePerson = people.filter(person => {
-    return withChildren
-      ? person.sex === 'f' && people.some(child => child.mother === person.name)
-      : person.sex === 'f';
+    return person.sex === 'f' && (
+      !withChildren
+      || people.some(child => child.mother === person.name)
+    );
   });
 
-  const womenAges = femalePerson.map(person => person.died - person.born);
-  const sumOfAges = womenAges.reduce((sum, age) => sum + age, 0);
-  const averageAge = sumOfAges / womenAges.length;
-
-  return averageAge;
+  return calculateAvgAge(femalePerson);
 }
 
 /**
@@ -72,10 +74,8 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(person => {
-    return onlyWithSon
-      ? people.some(mother => mother.name === person.mother
-        && person.sex === 'm')
-      : people.some(mother => mother.name === person.mother);
+    return people.some(mother => mother.name === person.mother)
+    && (!onlyWithSon || person.sex === 'm');
   });
 
   const ageDifference = children.map(child => {
