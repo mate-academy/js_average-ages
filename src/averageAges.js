@@ -39,7 +39,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const getPeople = people.filter(
+  const women = people.filter(
     (person) =>
       person.sex === 'f'
       && (withChildren
