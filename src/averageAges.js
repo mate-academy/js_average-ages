@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMen = people.filter(men => {
+    const menSex = men.sex === 'm';
+
+    return century
+      ? menSex && Math.ceil(men.died / 100) === century
+      : menSex;
+  });
+
+  const MenYearsOfLife = getYearsOfLife(onlyMen);
+
+  const menAverageAge = getAverageAge(MenYearsOfLife, MenYearsOfLife.length);
+
+  return menAverageAge;
 }
 
 /**
@@ -37,7 +45,23 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenWithChildren = people.filter(person => {
+    const allWomen = person.sex === 'f';
+
+    if (withChildren) {
+      return people.some(child => child.mother === person.name);
+    }
+
+    return allWomen;
+  });
+
+  const womenYearsOfLife = getYearsOfLife(womenWithChildren);
+
+  const womenAverageAge = getAverageAge(
+    womenYearsOfLife, womenYearsOfLife.length
+  );
+
+  return womenAverageAge;
 }
 
 /**
@@ -55,8 +79,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const childs = people.filter(child => {
+    const motherOfChild = people.some(mom => child.mother === mom.name);
+
+    return onlyWithSon
+      ? motherOfChild && child.sex === 'm'
+      : motherOfChild;
+  });
+
+  const differenceAge = childs.map(
+    child => child.born - people.find(mom => mom.name === child.mother).born);
+
+  const differenceAverageAge = getAverageAge(differenceAge, childs.length);
+
+  return differenceAverageAge;
 }
+
+const getYearsOfLife = (people) => {
+  return people.map(person => person.died - person.born);
+};
+
+const getAverageAge = (yearsLife, numberOfYearsLife) => {
+  return yearsLife.reduce((sum, years) => sum + years, 0) / numberOfYearsLife;
+};
 
 module.exports = {
   calculateMenAverageAge,
