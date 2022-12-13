@@ -14,12 +14,24 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const men = people.filter(person => {
+    const isMan = person.sex === 'm';
+
+    return century
+      ? isMan && Math.ceil(person.died / 100) === century
+      : isMan;
+  });
+  const menAgesArray = men.map(person => person.died - person.born);
+  const menAvgAge = findAverageAge(menAgesArray);
+
+  return menAvgAge;
 }
 
 /**
@@ -37,7 +49,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => {
+    const isWoman = person.sex === 'f';
+
+    return withChildren
+      ? isWoman && people.find(woman => woman.mother === person.name)
+      : isWoman;
+  });
+  const womensAgesArray = women.map(person => person.died - person.born);
+  const womenAvgAge = findAverageAge(womensAgesArray);
+
+  return womenAvgAge;
 }
 
 /**
@@ -55,8 +77,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const kids = people.filter(kid => {
+    const condition = people.find(mother => mother.name === kid.mother);
+
+    return onlyWithSon
+      ? condition
+        && kid.sex === 'm'
+      : condition;
+  });
+  const averageAgeDifferences = kids.map(
+    kid => kid.born - people.find(mother => mother.name === kid.mother).born
+  );
+
+  return findAverageAge(averageAgeDifferences);
 }
+
+const findAverageAge = persons => {
+  const personsAgeSum = persons.reduce(
+    (previousValue, currentValue) => previousValue + currentValue, 0);
+  const personsAvgAge = personsAgeSum / persons.length;
+
+  return personsAvgAge;
+};
 
 module.exports = {
   calculateMenAverageAge,
