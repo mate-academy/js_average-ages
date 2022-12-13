@@ -18,11 +18,11 @@ const male = person => person.sex === 'm';
 const female = person => person.sex === 'f';
 
 const calculateAverage = (ages) => {
-  const sumOfAge = ages
+  const averageAge = ages
     .map(person => person.died - person.born)
     .reduce((sum, age) => sum + age, 0) / ages.length;
 
-  return sumOfAge;
+  return averageAge;
 };
 
 function calculateMenAverageAge(people, century) {
