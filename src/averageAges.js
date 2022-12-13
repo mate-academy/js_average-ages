@@ -15,10 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  const sexMan = 'm';
+
   const men = people.filter(man => (
     century
-      ? man.sex === 'm' && Math.ceil(man.died / 100) === century
-      : man.sex === 'm'
+      ? man.sex === sexMan && Math.ceil(man.died / 100) === century
+      : man.sex === sexMan
   ));
   const menAges = men.map(man => man.died - man.born);
   const averageMenAge = getAverageValue(menAges, men.length);
