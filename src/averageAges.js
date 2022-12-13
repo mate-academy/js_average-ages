@@ -22,39 +22,31 @@ function getAverageAge(array) {
 
 function calculateMenAverageAge(people, century) {
   const manArray = century
-    ? people.filter(item => (
-      Math.ceil(item.died / 100) === century && item.sex === 'm'
+    ? people.filter(person => (
+      Math.ceil(person.died / 100) === century && person.sex === 'm'
     ))
-    : people.filter(item => item.sex === 'm');
+    : people.filter(person => person.sex === 'm');
 
   return getAverageAge(manArray);
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const mothers = people.map((x) => x.mother);
 
-  const womanArr = withChildren ? people.filter(item => {
-    return item.sex === 'f' && mothers.includes(item.name);
-  }) : people.filter(item => item.sex === 'f');
+  const womanArr = withChildren ? people.filter(person => {
+    return mothers.includes(person.name);
+  }) : people.filter(person => person.sex === 'f');
 
-  return womanArr.reduce((a, b) => {
-    return a + (b.died - b.born);
-  }, 0) / womanArr.length;
+  return getAverageAge(womanArr);
 }
 
 /**
@@ -78,13 +70,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon ? childrens.filter((child) => child.sex === 'm')
     : childrens;
 
-  const difference = children.map(child => {
-    return child.born - people.find(mother =>
-      mother.name === child.mother).born;
-  });
+  return children.reduce((sum, child) => {
+    const mothers = people.find(mother => mother.name === child.mother);
 
-  return difference.reduce((a, b) => {
-    return (a + b);
+    return sum + (child.born - mothers.born);
   }, 0) / children.length;
 }
 
