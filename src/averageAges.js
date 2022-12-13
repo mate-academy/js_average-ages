@@ -14,20 +14,20 @@
  *
  * @return {number}
  */
+function getAverageAge(array) {
+  const ages = array.map(element => element.died - element.born);
+
+  return ages.reduce((a, b) => a + b, 0) / ages.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArray = century
+    ? people.filter(item => (
+      Math.ceil(item.died / 100) === century && item.sex === 'm'
+    ))
+    : people.filter(item => item.sex === 'm');
 
-  const manArray = century ? people.filter(item => {
-    return Math.ceil(item.died / 100) === century && item.sex === 'm';
-  }) : people.filter(item => item.sex === 'm');
-
-  return manArray.reduce((a, b) => {
-    return a + (b.died - b.born);
-  }, 0) / manArray.length;
+  return getAverageAge(manArray);
 }
 
 /**
