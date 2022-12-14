@@ -24,11 +24,9 @@ function calculateMenAverageAge(people, century) {
       && Math.ceil(men.died / 100) === century)
     : people.filter(men => men.sex === 'm');
 
-  const ages = onlyMen.map(men => (men.died - men.born));
+  const sumOfAge = onlyMen.reduce((sum, men) => sum + (men.died - men.born), 0);
 
-  const sumOfAge = ages.reduce((sum, age) => sum + age, 0);
-
-  const menAverageAge = sumOfAge / ages.length;
+  const menAverageAge = sumOfAge / onlyMen.length;
 
   return menAverageAge;
 }
@@ -49,15 +47,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const onlyWomen = withChildren
-    ? people.filter(women => people
-      .some(kid => kid.mother === women.name))
+    ? people.filter(women => people.some(kid => women.name === kid.mother))
     : people.filter(women => women.sex === 'f');
 
-  const ages = onlyWomen.map(women => (women.died - women.born));
+  const sumOfAge
+   = onlyWomen.reduce((sum, women) => sum + (women.died - women.born), 0);
 
-  const sumOfAge = ages.reduce((sum, age) => sum + age, 0);
-
-  const womenAverageAge = sumOfAge / ages.length;
+  const womenAverageAge = sumOfAge / onlyWomen.length;
 
   return womenAverageAge;
 }
@@ -80,18 +76,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon
     ? people.filter(kid => people
       .some(mom => kid.sex === 'm' && mom.name === kid.mother))
-    : people.filter(kid => people
-      .some(mom => mom.name === kid.mother));
+    : people.filter(kid => people.some(mom => mom.name === kid.mother));
 
-  const ageDifference = children.map(kid => {
+  const sumOfAge = children.reduce((sum, kid) => {
     const mother = people.find(mom => kid.mother === mom.name);
 
-    return kid.born - mother.born;
-  });
+    return sum + (kid.born - mother.born);
+  }, 0);
 
-  const sumOfAge = ageDifference.reduce((sum, age) => sum + age, 0);
-
-  const averageDifference = sumOfAge / ageDifference.length;
+  const averageDifference = sumOfAge / children.length;
 
   return averageDifference;
 }
