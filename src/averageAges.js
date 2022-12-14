@@ -14,30 +14,39 @@
  *
  * @return {number}
  */
+function getAverageAge(array) {
+  const ages = array.map(element => element.died - element.born);
+
+  return ages.reduce((a, b) => a + b, 0) / ages.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArray = century
+    ? people.filter(person => (
+      Math.ceil(person.died / 100) === century && person.sex === 'm'
+    ))
+    : people.filter(person => person.sex === 'm');
+
+  return getAverageAge(manArray);
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const mothers = people.map((x) => x.mother);
+
+  const womanArr = withChildren ? people.filter(person => {
+    return mothers.includes(person.name);
+  }) : people.filter(person => person.sex === 'f');
+
+  return getAverageAge(womanArr);
 }
 
 /**
@@ -56,6 +65,16 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const childrens = people.filter(
+    person => people.find(mother => mother.name === person.mother));
+  const children = onlyWithSon ? childrens.filter((child) => child.sex === 'm')
+    : childrens;
+
+  return children.reduce((sum, child) => {
+    const mothers = people.find(mother => mother.name === child.mother);
+
+    return sum + (child.born - mothers.born);
+  }, 0) / children.length;
 }
 
 module.exports = {
