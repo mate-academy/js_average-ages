@@ -55,7 +55,7 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 /**
- * Implement calculateAverageAgeDiff function.
+ * Implement calculateAverageAgeDiff function
  *
  * The function returns an average age difference between a child and his or her
  * mother in the array. (A mother's age at child birth)
