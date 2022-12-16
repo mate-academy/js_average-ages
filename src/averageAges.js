@@ -1,9 +1,9 @@
 'use strict';
 
-function getAverage(arr) {
-  return arr
+function getAverageAge(ages) {
+  return ages
     .map(user => user.died - user.born)
-    .reduce((acc, user) => acc + user) / arr.length;
+    .reduce((acc, user) => acc + user) / ages.length;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -13,7 +13,7 @@ function calculateMenAverageAge(people, century) {
     mans = mans.filter(man => Math.ceil(man.died / 100) === century);
   }
 
-  return getAverage(mans);
+  return getAverageAge(mans);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
@@ -25,7 +25,7 @@ function calculateWomenAverageAge(people, withChildren) {
       );
   }
 
-  return getAverage(womens);
+  return getAverageAge(womens);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
