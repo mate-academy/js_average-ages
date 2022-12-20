@@ -14,12 +14,30 @@
  *
  * @return {number}
  */
+function getResult(ageArray) {
+  const agesArray = ageArray.filter(x => x > 0);
+
+  const result = agesArray.reduce((sum, x) => sum + x, 0) / agesArray.length;
+
+  return result;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+
+  const menAge = men.map(person => {
+    person.age = person.died - person.born;
+
+    century && (person.century = Math.ceil(person.died / 100));
+
+    return person;
+  });
+
+  const ageArray = menAge.map(person => {
+    return ((person.century === century) && person.age);
+  });
+
+  return getResult(ageArray);
 }
 
 /**
@@ -37,7 +55,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  const womenAge = women.map(person => {
+    person.age = person.died - person.born;
+
+    return person;
+  });
+
+  const motherArr = people.map(person => person.mother);
+
+  const ageArray = womenAge.map(person => ((withChildren
+  && (motherArr.includes(person.name))) && person.age)
+  || ((!withChildren) && person.age));
+
+  return getResult(ageArray);
 }
 
 /**
@@ -55,7 +87,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const men = people.filter(person => person.sex === 'm');
+
+  let newPeople;
+
+  onlyWithSon ? newPeople = men : newPeople = people;
+
+  const ageArray = newPeople.map(person1 => {
+    people.map(person2 => {
+      (person1.mother === person2.name)
+      && (person1.difference = person1.born - person2.born);
+    });
+
+    return person1.difference;
+  });
+
+  return getResult(ageArray);
 }
 
 module.exports = {
