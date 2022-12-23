@@ -20,6 +20,22 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const lifetime = (deathYear) => {
+    return Math.ceil(deathYear / 100);
+  };
+
+  const men = (!century)
+    ? people.filter(person => person.sex === 'm')
+    : people.filter(person => (person.sex === 'm')
+    && (century === lifetime(person.died)));
+
+  const menAges = men.map(person => person.died - person.born);
+
+  const sum = menAges.reduce((accumulator, current) => accumulator + current, 0,
+  );
+
+  return (sum / menAges.length);
 }
 
 /**
@@ -37,7 +53,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = (!withChildren)
+    ? people.filter(person => person.sex === 'f')
+    : people.filter(person => (person.sex === 'f')
+    && (people.some(child => child.mother === person.name)));
+
+  const womenAges = women.map(person => person.died - person.born);
+
+  const sum = womenAges.reduce(
+    (accumulator, current) => accumulator + current, 0,
+  );
+
+  return (sum / womenAges.length);
 }
 
 /**
@@ -55,7 +82,43 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const genderCheck = (!onlyWithSon) ? 0 : 1;
+  let diff = [];
+
+  switch (genderCheck) {
+    case 0:
+      diff = people.map(person => {
+        if (person.mother !== null) {
+          const motherName = person.mother;
+          const mother = people.find(woman => woman.name === motherName);
+
+          if (mother !== undefined) {
+            return person.born - mother.born;
+          }
+        }
+      });
+      break;
+
+    case 1:
+      diff = people.map(person => {
+        if ((person.mother !== null) && (person.sex === 'm')) {
+          const motherName = person.mother;
+          const mother = people.find(woman => woman.name === motherName);
+
+          if (mother !== undefined) {
+            return person.born - mother.born;
+          }
+        }
+      });
+      break;
+  }
+
+  const ages = diff.filter(el => el !== undefined);
+  const sum = ages.reduce(
+    (accumulator, current) => accumulator + current, 0,
+  );
+
+  return sum / ages.length;
 }
 
 module.exports = {
