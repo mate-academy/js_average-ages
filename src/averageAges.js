@@ -14,23 +14,30 @@
  *
  * @return {number}
  */
+
+function callBack(arr, len) {
+  const averageAge = arr.reduce((a, b) => a + b, 0) / len;
+
+  return +averageAge.toFixed(2);
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const men = people.filter(
-    (person) =>
-      person.sex === 'm'
-      && (century === Math.ceil(person.died / 100) || !century)
-  );
+  const men = people
+    .filter(
+      (person) =>
+        person.sex === 'm'
+        && (century === Math.ceil(person.died / 100) || !century)
+    )
+    .map((man) => man.died - man.born);
 
-  const averageAge
-    = men.map((man) => man.died - man.born).reduce((a, b) => a + b, 0)
-    / men.length;
+  const result = callBack(men, men.length);
 
-  return +averageAge.toFixed(2);
+  return result;
 }
 
 /**
@@ -49,19 +56,19 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const women = people.filter(
-    (person) =>
-      person.sex === 'f'
-      && (withChildren
-        ? people.find((child) => child.mother === person.name)
-        : !withChildren)
-  );
+  const women = people
+    .filter(
+      (person) =>
+        person.sex === 'f'
+        && (withChildren
+          ? people.find((child) => child.mother === person.name)
+          : !withChildren)
+    )
+    .map((woman) => woman.died - woman.born);
 
-  const averageAge
-    = women.map((woman) => woman.died - woman.born).reduce((a, b) => a + b, 0)
-    / women.length;
+  const result = callBack(women, women.length);
 
-  return +averageAge.toFixed(2);
+  return result;
 }
 
 /**
@@ -92,10 +99,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return child.born - mom.born;
   });
 
-  const averageAge
-    = ageDifferences.reduce((a, b) => a + b, 0) / children.length;
+  const result = callBack(ageDifferences, children.length);
 
-  return +averageAge.toFixed(2);
+  return result;
 }
 
 module.exports = {
