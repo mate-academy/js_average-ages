@@ -15,13 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century = null) {
-  let men = people.filter(person => person.sex === 'm');
+  const men = people.filter(man => {
+    return man.sex === 'm'
+    && (century === null
+      ? true
+      : Math.ceil(man.died / 100) === century);
+  });
 
-  men = century === null
-    ? men
-    : men.filter(man => Math.ceil(man.died / 100) === century);
-
-  const ages = men.map(man => man.died - man.born);
+  const ages = men.map(getAge());
 
   return ages.reduce((x, y) => x + y, 0) / ages.length;
 }
@@ -41,15 +42,14 @@ function calculateMenAverageAge(people, century = null) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren = false) {
-  let women = people.filter(person => person.sex === 'f');
+  const women = people.filter(woman => {
+    return woman.sex === 'f'
+    && (withChildren === true
+      ? people.some(child => child.mother === woman.name)
+      : true);
+  });
 
-  women = withChildren === false
-    ? women
-    : women
-      .filter(person => people
-        .some(child => child.mother === person.name));
-
-  const ages = women.map(person => person.died - person.born);
+  const ages = women.map(getAge());
 
   return ages.reduce((x, y) => x + y, 0) / ages.length;
 }
@@ -69,19 +69,22 @@ function calculateWomenAverageAge(people, withChildren = false) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon = false) {
-  let children = people
-    .filter(child => people
-      .find(mother => child.mother === mother.name));
-
-  children = onlyWithSon === false
-    ? children
-    : children.filter(child => child.sex === 'm');
+  const children = people.filter(child => {
+    return people.some(mother => child.mother === mother.name)
+      && (onlyWithSon
+        ? child.sex === 'm'
+        : true);
+  });
 
   const ageDifferences = children
     .map(child => child.born - people
       .find(mother => mother.name === child.mother).born);
 
   return ageDifferences.reduce((x, y) => x + y, 0) / ageDifferences.length;
+}
+
+function getAge() {
+  return person => person.died - person.born;
 }
 
 module.exports = {
