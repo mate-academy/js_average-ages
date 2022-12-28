@@ -16,11 +16,16 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => person.sex === 'm'
-    && (century ? Math.ceil(person.died / 100) === century : !century));
-  const mensAge = men.map(person => person.died - person.born);
-  const menAverage = mensAge.reduce((a, b) => a + b);
+    && (
+      century
+        ? Math.ceil(person.died / 100) === century
+        : !century
+    ));
+  const menAge = men.map(person => person.died - person.born);
+  const menAverage = menAge.reduce((a, b) => a + b);
 
-  return menAverage / mensAge.length;
+  return result(menAverage, menAge);
+  // return menAverage / menAge.length;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -44,12 +49,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f'
-    && (withChildren ? people.find(child => child.mother === person.name)
-      : !withChildren));
+    && (
+      withChildren
+        ? people.find(child => child.mother === person.name)
+        : !withChildren
+    ));
   const womenAge = women.map(person => person.died - person.born);
   const womenAverage = womenAge.reduce((a, b) => a + b);
 
-  return womenAverage / womenAge.length;
+  return result(womenAverage, womenAge);
 }
 
 /**
@@ -72,12 +80,20 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   people.forEach(mom => {
     people.map(child => (child.mother === mom.name)
-    && (onlyWithSon ? child.sex === 'm' : !onlyWithSon)
-      ? (sum += child.born - mom.born) && (family++) : null);
+    && (
+      onlyWithSon
+        ? child.sex === 'm'
+        : !onlyWithSon
+    )
+      ? (sum += child.born - mom.born) && (family++)
+      : null
+    );
   });
 
-  return sum / family;
+  return result(sum, family);
 }
+
+const result = (a, b) => (b.length > 3) ? (a / b.length) : (a / b);
 
 module.exports = {
   calculateMenAverageAge,
