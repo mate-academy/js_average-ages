@@ -1,5 +1,12 @@
 'use strict';
 
+function calculateMedianAge(age) {
+  const medianAge = age
+    .reduce((prev, current) => prev + current, 0) / age.length;
+
+  return medianAge;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -24,10 +31,9 @@ function calculateMenAverageAge(people, century) {
   const menAge = men
     .map(age => age.died - age.born);
 
-  const medianAge = menAge
-    .reduce((prev, current) => prev + current, 0) / menAge.length;
+  const result = calculateMedianAge(menAge);
 
-  return medianAge;
+  return result;
 }
 
 /**
@@ -54,10 +60,9 @@ function calculateWomenAverageAge(people, withChildren) {
   const womenAge = women
     .map(age => age.died - age.born);
 
-  const medianAge = womenAge
-    .reduce((prev, current) => prev + current, 0) / womenAge.length;
+  const result = calculateMedianAge(womenAge);
 
-  return medianAge;
+  return result;
 }
 
 /**
@@ -88,10 +93,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .map((child, index) =>
       child.born - mothers[index].born);
 
-  const medianAge = ageDifference
-    .reduce((prev, current) => prev + current, 0) / ageDifference.length;
+  const result = calculateMedianAge(ageDifference);
 
-  return medianAge;
+  return result;
 }
 
 module.exports = {
