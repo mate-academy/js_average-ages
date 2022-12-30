@@ -76,10 +76,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     });
 
   return children.reduce((a, b) => {
-    // const motherBorn
-    // = (people.find(el => el.name === b.mother) === undefined)
-    //   ? b.born
-    //   : people.find(el => el.name === b.mother).born;
     return a + (b.born - people.find(el => el.name === b.mother).born);
   }, 0) / children.length;
 }
