@@ -16,16 +16,17 @@
  */
 function averageAge(people) {
   return people
-    .reduce((x, y) => x + (y.died - y.born), 0)
-    / people.length;
+    .reduce((prev, current) => prev + (current.died - current.born), 0)
+      / people.length;
 }
 
 function calculateMenAverageAge(people, century) {
   const filterPeople = century
     ? people
-      .filter(v => v.sex === 'm' && Math.ceil(v.died / 100) === century)
+      .filter(person => person.sex === 'm'
+        && Math.ceil(person.died / 100) === century)
     : people
-      .filter(v => v.sex === 'm');
+      .filter(person => person.sex === 'm');
 
   return averageAge(filterPeople);
 }
@@ -48,17 +49,17 @@ function calculateMenAverageAge(people, century) {
 function isChildren(people, parent, onlySon) {
   return onlySon
     ? people
-      .some(v => v.sex === 'm' && v.mother === parent)
+      .some(child => child.sex === 'm' && child.mother === parent)
     : people
-      .some(v => v.mother === parent);
+      .some(child => child.mother === parent);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
   const filterPeople = withChildren
     ? people
-      .filter(v => v.sex === 'f' && isChildren(people, v.name))
+      .filter(woman => woman.sex === 'f' && isChildren(people, woman.name))
     : people
-      .filter(v => v.sex === 'f');
+      .filter(woman => woman.sex === 'f');
 
   return averageAge(filterPeople);
 }
@@ -79,23 +80,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const isMother = (arr, name) => arr.some(v => v.name === name);
+  const isMother = (arr, MotherName) => arr
+    .some(mother => mother.name === MotherName);
 
   const children = onlyWithSon
     ? people
-      .filter(v => v.sex === 'm' && isMother(people, v.mother))
+      .filter(child => child.sex === 'm' && isMother(people, child.mother))
     : people
-      .filter(v => isMother(people, v.mother));
+      .filter(child => isMother(people, child.mother));
 
   const mothers = onlyWithSon
     ? people
-      .filter(v => isChildren(people, v.name, true))
+      .filter(mother => isChildren(people, mother.name, true))
     : people
-      .filter(v => isChildren(people, v.name));
+      .filter(mother => isChildren(people, mother.name));
 
   return children
-    .reduce((x, y) => x + (y.born - mothers
-      .find(v => v.name === y.mother).born), 0)
+    .reduce((prev, current) => prev + (current.born - mothers
+      .find(mother => mother.name === current.mother).born), 0)
         / children.length;
 }
 
