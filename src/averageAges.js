@@ -1,5 +1,13 @@
 'use strict';
 
+const countSumAges = (filteredPeople) => {
+  return filteredPeople.reduce((sum, person) => {
+    const personAge = person.died - person.born;
+
+    return sum + personAge;
+  }, 0);
+};
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -21,11 +29,7 @@ function calculateMenAverageAge(people, century) {
     return sex === 'm' && isCentury;
   });
 
-  const sumOfAges = filteredMen.reduce((sum, man) => {
-    const manAge = man.died - man.born;
-
-    return sum + manAge;
-  }, 0);
+  const sumOfAges = countSumAges(filteredMen);
 
   return sumOfAges / filteredMen.length;
 }
@@ -52,11 +56,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return sex === 'f' && hasChildren;
   });
 
-  const sumAgesWomen = onlyWomen.reduce((sum, woman) => {
-    const womanAge = woman.died - woman.born;
-
-    return sum + womanAge;
-  }, 0);
+  const sumAgesWomen = countSumAges(onlyWomen);
 
   return sumAgesWomen / onlyWomen.length;
 }
