@@ -1,20 +1,5 @@
 'use strict';
 
-/**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
-
 // Use it to find average value from array with numbers.
 // Output: number;
 function countAverage(numbers) {
@@ -36,22 +21,6 @@ function calculateMenAverageAge(people, century) {
   return countAverage(ages);
 }
 
-/**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withonlyChildren` is
- * specified then function calculates average
- * age only for women with onlyChildren
- *
- * Hint: To check if a woman has onlyChildren you should find
- *  someone who mention
- * her as mother.
- *
- * @param {object[]} people
- * @param {boolean} withonlyChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withonlyChildren) {
   const mothersList = people
     .map(person => person.mother)
@@ -65,20 +34,6 @@ function calculateWomenAverageAge(people, withonlyChildren) {
   return countAverage(ages);
 }
 
-/**
- * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for sons and their mothers.
- *
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const onlyChildren = people.filter((child) =>
     onlyWithSon
