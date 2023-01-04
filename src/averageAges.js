@@ -15,22 +15,23 @@
  * @return {number}
  */
 
+function countAverage(numbers) {
+  return numbers.reduce((a, b) => a + b, 0) / numbers.length;
+}
+
+function getAges(people) {
+  return people.map(person => person.died - person.born);
+}
+
 function calculateMenAverageAge(people, century) {
   const mans = people.filter(man => {
     return man.sex === 'm'
     && (century === undefined ? true : Math.ceil(man.died / 100) === century);
   });
 
-  mans.map(man => {
-    const age = man.died - man.born;
+  const agesMan = getAges(mans);
 
-    man.age = age;
-
-    return man;
-  });
-
-  return Math.round((mans
-    .reduce((prev, curr) => prev + curr.age, 0) / mans.length) * 100) / 100;
+  return countAverage(agesMan);
 }
 
 /**
@@ -55,16 +56,9 @@ function calculateWomenAverageAge(people, withChildren) {
       : people.some(person => person.mother === woman.name));
   });
 
-  women.map(woman => {
-    const age = woman.died - woman.born;
+  const agesWomen = getAges(women);
 
-    woman.age = age;
-
-    return woman;
-  });
-
-  return Math.round((women
-    .reduce((prev, curr) => prev + curr.age, 0) / women.length) * 100) / 100;
+  return countAverage(agesWomen);
 }
 
 /**
@@ -102,8 +96,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     familyDiff.push(diff);
   });
 
-  return Math.round((familyDiff
-    .reduce((prev, curr) => prev + curr, 0) / familyDiff.length) * 100) / 100;
+  return countAverage(familyDiff);
 }
 
 module.exports = {
