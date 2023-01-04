@@ -36,14 +36,6 @@ function calculateMenAverageAge(people, century) {
   avarageAge = totalAge / menToCount.length;
 
   return avarageAge;
-
-  // return averageAge;
-
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
 }
 
 /**
