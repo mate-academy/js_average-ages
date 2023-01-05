@@ -1,8 +1,8 @@
 'use strict';
 
 function calculateAverageAge(people) {
-  return people.reduce((sum, age) =>
-    sum + (age.died - age.born), 0) / people.length;
+  return people.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / people.length;
 }
 
 /**
