@@ -1,8 +1,9 @@
 'use strict';
 
 const calculateAverageAge = (people) => {
-  const averageAge = people.reduce((age, person) =>
-    age + person.died - person.born, 0) / people.length;
+  const averageAge = people.reduce((age, person) => (
+    age + person.died - person.born
+  ), 0) / people.length;
 
   return averageAge;
 };
