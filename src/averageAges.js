@@ -16,10 +16,10 @@
  */
 
 const getAverage = (filterPeople) => {
-  return filterPeople.reduce((a, b) => {
-    const peopleAge = b.died - b.born;
+  return filterPeople.reduce((sum, person) => {
+    const peopleAge = person.died - person.born;
 
-    return a + peopleAge;
+    return sum + peopleAge;
   }, 0);
 };
 
