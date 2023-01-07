@@ -94,11 +94,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   });
 
   const AverageAgeDiff = childrenWithMother.reduce((acc, child) => {
-    const matherBorn = people
+    const motherBorn = people
       .find(mother => mother.name === child.mother)
       .born;
 
-    const ageDifference = child.born - matherBorn;
+    const ageDifference = child.born - motherBorn;
 
     return acc + ageDifference;
   }, 0);
