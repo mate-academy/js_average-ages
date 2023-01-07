@@ -103,8 +103,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return acc + ageDifference;
   }, 0);
 
-  console.log(childrenWithMother.length);
-
   return AverageAgeDiff / childrenWithMother.length;
 }
 
