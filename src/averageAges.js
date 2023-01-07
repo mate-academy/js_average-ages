@@ -52,8 +52,8 @@ function calculateWomenAverageAge(people, withChildren) {
   const womenArray = people.filter(object => object.sex === 'f');
 
   const women = withChildren
-    ? womenArray.filter(mom => people.some(person => person
-      .mother === mom.name))
+    ? womenArray.filter(mom => people.some(person => (
+      person.mother === mom.name)))
     : womenArray;
 
   const totalAge = women.reduce((sum, item) => {
@@ -97,8 +97,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const totalPerson = differenceAge.length;
 
-  const averageDiffAge = differenceAge.reduce((sum, age) =>
-    (sum + age)) / totalPerson;
+  const averageDiffAge = differenceAge.reduce((sum, age) => (
+    sum + age
+  ), 0) / totalPerson;
 
   return averageDiffAge;
 }
