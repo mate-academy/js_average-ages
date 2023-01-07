@@ -1,5 +1,5 @@
 'use strict';
- /* eslint-disable */
+/* eslint-disable */
 /**
  * Implement calculateMenAverageAge function
  *
@@ -81,8 +81,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       people.some(mom => mom.name === person.mother));
 
       const childWithMomAge = children.map(child => {
-        const mom = people.filter(person => child.mother === person.name);
-        child.mom_born = mom[0].born;
+        const mom = people.find(person => child.mother === person.name);
+        child.mom_born = mom.born;
         return child;
       })
 
