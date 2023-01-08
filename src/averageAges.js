@@ -21,13 +21,14 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const male = century
-    ? people.filter(person =>
-      Math.ceil(person.died / 100) === century && person.sex === 'm')
+    ? people.filter(person => (
+      Math.ceil(person.died / 100) === century && person.sex === 'm'
+    ))
     : people.filter(person => person.sex === 'm');
 
-  return male.reduce((a, person) =>
-    a + (person.died - person.born), 0) / male.length;
-
+  return male.reduce((a, person) => (
+    a + (person.died - person.born)
+  ), 0) / male.length;
 }
 
 /**
@@ -47,12 +48,14 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const female = withChildren
-    ? people.filter(person =>
-      people.some(personchild => personchild.mother === person.name))
+    ? people.filter(person => (
+      people.some(personchild => personchild.mother === person.name)
+    ))
     : people.filter(person => person.sex === 'f');
 
-  return female.reduce((a, person) =>
-    a + (person.died - person.born), 0) / female.length;
+  return female.reduce((a, person) => (
+    a + (person.died - person.born)
+  ), 0) / female.length;
 
 }
 
@@ -75,20 +78,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const children = onlyWithSon
     ? people.filter(person =>
-      people.some(mom =>
-        mom.name === person.mother && person.sex === 'm'))
-    : people.filter(person =>
-      people.some(mom => mom.name === person.mother));
+      people.some(mom => (
+        mom.name === person.mother && person.sex === 'm')
+    ))
+    : people.filter(person => (
+      people.some(mom => mom.name === person.mother)
+    ));
 
-      const childWithMomAge = children.map(child => {
-        const mom = people.find(person => child.mother === person.name);
-        child.mom_born = mom.born;
-        return child;
-      })
-
-  return childWithMomAge.reduce((a, person) =>
-    a + (person.born - person.mom_born), 0) / childWithMomAge.length;
-
+  return children.reduce((a, person) => (
+    a + (person.born - people.find(mom => person.mother === mom.name).born)
+  ), 0) / children.length;
 }
 
 module.exports = {
