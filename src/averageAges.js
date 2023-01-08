@@ -14,19 +14,23 @@
  *
  * @return {number}
  */
+
+function sumAges(people) {
+  return people.reduce((sum, person) => sum + (person.died - person.born), 0);
+};
+
+function filterBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+};
+
 function calculateMenAverageAge(people, century) {
-  const menFilter = people.filter(person => person.sex === 'm');
-  let men;
+  let men = filterBySex(people, 'm');
 
-  century === undefined
-    ? men = menFilter
-    : men = menFilter.filter(person =>
-      Math.ceil(person.died / 100) === century);
+  men = century
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
 
-  const ages = men.map(person => person.died - person.born);
-  const sum = ages.reduce((a, b) => a + b, 0);
-
-  return +(sum / men.length).toFixed(2);
+  return +(sumAges(men) / men.length).toFixed(2);
 }
 
 /**
@@ -44,18 +48,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenFiltered = people.filter(person => person.sex === 'f');
-  let women;
+  let women = filterBySex(people, 'f');
 
-  withChildren === undefined
-    ? women = womenFiltered
-    : women = womenFiltered.filter(woman => people.some(person =>
-      woman.name === person.mother));
+  women = withChildren
+    ? women.filter(woman => people.some(person => woman.name === person.mother))
+    : women;
 
-  const ages = women.map(person => person.died - person.born);
-  const sum = ages.reduce((a, b) => a + b, 0);
-
-  return +(sum / women.length).toFixed(2);
+  return +(sumAges(women) / women.length).toFixed(2);
 }
 
 /**
