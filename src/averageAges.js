@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century
+    ? people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const menAge = men.map(calcAge);
+
+  return calcAverageAge(men, menAge);
 }
 
 /**
@@ -37,7 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(person => person.sex === 'f'
+      && people.find(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
+
+  const womenAge = women.map(calcAge);
+
+  return calcAverageAge(women, womenAge);
 }
 
 /**
@@ -55,8 +65,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(person =>
+    people.find(child => child.mother === person.name));
+
+  const children = onlyWithSon
+    ? people.filter(child => child.sex === 'm'
+      && mothers.find(mother => mother.name === child.mother))
+    : people.filter(child =>
+      mothers.find(mother => mother.name === child.mother));
+
+  const diffAge = children.map(child =>
+    child.born - mothers.find(mother => mother.name === child.mother).born);
+
+  return calcAverageAge(children, diffAge);
 }
+
+function calcAverageAge(individs, individsAge) {
+  const sumOfAge = individsAge.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAge / individs.length;
+
+  return +averageAge.toFixed(2);
+}
+
+const calcAge = person => person.died - person.born;
 
 module.exports = {
   calculateMenAverageAge,
