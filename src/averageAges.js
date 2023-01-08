@@ -85,8 +85,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       people.some(mom => mom.name === person.mother)
     ));
 
-  return children.reduce((a, person) => (
-    a + (person.born - people.find(mom => person.mother === mom.name).born)
+  return children.reduce((ageDiffSum, person) => (
+    ageDiffSum + (person.born - people.find(mom => person.mother === mom.name).born)
   ), 0) / children.length;
 }
 
