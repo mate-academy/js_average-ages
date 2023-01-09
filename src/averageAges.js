@@ -27,11 +27,7 @@ function calculateMenAverageAge(people, century) {
     return sum + age;
   }, 0);
 
-  const totalMen = men.length;
-
-  const averageAge = totalAge / totalMen;
-
-  return averageAge;
+  return totalAge / men.length;
 }
 
 /**
@@ -62,11 +58,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return sum + age;
   }, 0);
 
-  const totalWomen = women.length;
-
-  const averageAge = totalAge / totalWomen;
-
-  return averageAge;
+  return totalAge / women.length;
 }
 
 /**
