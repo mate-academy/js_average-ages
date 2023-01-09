@@ -24,8 +24,9 @@ function countPersonAverage(numbers) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const manFilter = people.filter(person => person.sex === 'm'
-  && (century === undefined ? true : Math.ceil(person.died / 100) === century));
+  const manFilter = people
+    .filter(person => person.sex === 'm')
+    .filter(person => !century || century === Math.ceil(person.died / 100));
 
   const totalAge = getPersonAge(manFilter);
 
@@ -48,14 +49,15 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const womanFilter = people.filter(person => {
-    const peopleWithMotherName = people.some(man => man.mother === person.name);
+  const womanFilter = people
+    .map(person => person.mother)
+    .filter(name => name !== null);
 
-    return person.sex === 'f'
-    && (withChildren === undefined ? true : peopleWithMotherName);
-  });
+  const onlyWomen = people
+    .filter((person) => person.sex === 'f')
+    .filter((person) => !withChildren || womanFilter.includes(person.name));
 
-  const totalAge = getPersonAge(womanFilter);
+  const totalAge = getPersonAge(onlyWomen);
 
   return countPersonAverage(totalAge);
 }
@@ -75,17 +77,13 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothersList = people.filter(person => {
-    const manMotherName = people.some(man => man.mother === person.name);
-
-    return (person.sex === 'f') && manMotherName;
-  });
-
-  const childrenList = people.filter(person => {
-    const momName = mothersList.some(mother => person.mother === mother.name);
-
-    return momName && (onlyWithSon === undefined ? true : person.sex === 'm');
-  });
+  const childrenList = people.filter((person) =>
+    onlyWithSon
+      ? people.find(
+        (son) => person.mother === son.name && person.sex === 'm'
+      )
+      : people.find((son) => person.mother === son.name)
+  );
 
   const difference = childrenList.map((child) =>
     child.born - people.find((mother) => mother.name === child.mother).born);
