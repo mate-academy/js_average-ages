@@ -14,19 +14,21 @@
  *
  * @return {number}
  */
+
+function averageAge(persons) {
+  return persons.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / persons.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  const menArr = !century
+  const men = !century
     ? people
       .filter(person => person.sex === 'm')
     : people
       .filter(person => person.sex === 'm'
         && Math.ceil(person.died / 100) === century);
 
-  const menAverageAge = menArr
-    .map(person => person.died - person.born)
-    .reduce((sum, current) => sum + current, 0);
-
-  return menAverageAge / menArr.length;
+  return averageAge(men);
 }
 
 /**
@@ -44,17 +46,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenArr = !withChildren
+  const women = !withChildren
     ? people
       .filter(person => person.sex === 'f')
     : people
       .filter(person => people.some(child => person.name === child.mother));
 
-  const womenAverageAge = womenArr
-    .map(person => person.died - person.born)
-    .reduce((sum, current) => sum + current, 0);
-
-  return womenAverageAge / womenArr.length;
+  return averageAge(women);
 }
 
 /**
@@ -72,14 +70,14 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childsArr = !onlyWithSon
+  const children = !onlyWithSon
     ? people
       .filter(person => people.find(mother => mother.name === person.mother))
     : people
       .filter(person => people.find(mother =>
         mother.name === person.mother) && person.sex === 'm');
 
-  const averegeAgeDiff = childsArr
+  const averegeAgeDiff = children
     .map(child => {
       const mother = people.find(person => person.name === child.mother);
 
@@ -87,7 +85,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     })
     .reduce((sum, current) => sum + current, 0);
 
-  return averegeAgeDiff / childsArr.length;
+  return averegeAgeDiff / children.length;
 }
 
 module.exports = {
