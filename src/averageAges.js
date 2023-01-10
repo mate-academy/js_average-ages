@@ -1,5 +1,15 @@
 'use strict';
 
+function getAverage(arr) {
+  const adding = arr.reduce((acc, person) => {
+    const sum = person.died - person.born;
+
+    return sum + acc;
+  }, 0);
+
+  return +(adding / arr.length).toFixed(2);
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,23 +25,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let average = 0;
+  const menList = people.filter(person => {
+    const inCentury = !century || Math.ceil(person.died / 100) === century;
 
-  let menList = people.filter(person => person.sex === 'm');
+    return person.sex === 'm' && inCentury;
+  });
 
-  if (arguments.length === 2) {
-    menList = people.filter(person => (
-      person.sex === 'm' && century === Math.ceil(person.died / 100)
-    ));
-  }
-
-  const yearsOfLife = menList.map(person => person.died - person.born);
-
-  const sumOfYears = yearsOfLife.reduce((acc, number) => acc + number, 0);
-
-  average = sumOfYears / yearsOfLife.length;
-
-  return +average.toFixed(2);
+  return getAverage(menList);
 }
 
 /**
@@ -49,7 +49,6 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChilden) {
-  let average = 0;
   const womenList = people.filter(({ name, sex }) => {
     const hasChildren = !withChilden
     || people.some(person => person.mother === name);
@@ -57,12 +56,7 @@ function calculateWomenAverageAge(people, withChilden) {
     return sex === 'f' && hasChildren;
   });
 
-  const yearsOfLife = womenList.map(person => person.died - person.born);
-  const sumOfYears = yearsOfLife.reduce((acc, number) => acc + number, 0);
-
-  average = sumOfYears / yearsOfLife.length;
-
-  return +average.toFixed(2);
+  return getAverage(womenList);
 }
 
 /**
@@ -87,9 +81,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return hasMother && isSon;
   });
   const ageDifference = childenWithMother.reduce((acc, child) => {
-    const motherBorn = people.find(mother => mother.name === child.mother).born;
+    const motherBorn = people.find(mother => mother.name === child.mother);
 
-    const difference = child.born - motherBorn;
+    const difference = child.born - motherBorn.born;
 
     return acc + difference;
   }, 0);
