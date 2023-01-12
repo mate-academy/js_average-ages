@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Implement calculateMenAverageAge function
@@ -23,17 +23,18 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   return people
-    .filter((person) => {
-      return century
-        ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-        : person.sex === 'm';
-    })
-    .reduce((ageAccum, currentPerson, index, filteredPeople) => {
-      return (
-        ageAccum
-        + (currentPerson.died - currentPerson.born) / filteredPeople.length
-      );
-    }, 0);
+    .filter((person) =>
+      century
+        ? person.sex === "m" && Math.ceil(person.died / 100) === century
+        : person.sex === "m"
+    )
+    .reduce(
+      (ageAccum, currentPerson, index, filteredPeople) =>
+        ageAccum +
+        (currentPerson.died - currentPerson.born) / filteredPeople.length,
+
+      0
+    );
 }
 
 /**
@@ -53,18 +54,19 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
   return people
-    .filter((person) => {
-      return withChildren
-        ? person.sex === 'f'
-            && people.some((child) => child.mother === person.name)
-        : person.sex === 'f';
-    })
-    .reduce((ageAccum, currentPerson, index, filteredPeople) => {
-      return (
-        ageAccum
-        + (currentPerson.died - currentPerson.born) / filteredPeople.length
-      );
-    }, 0);
+    .filter((person) =>
+      withChildren
+        ? person.sex === "f" &&
+          people.some((child) => child.mother === person.name)
+        : person.sex === "f"
+    )
+    .reduce(
+      (ageAccum, currentPerson, index, filteredPeople) =>
+        ageAccum +
+        (currentPerson.died - currentPerson.born) / filteredPeople.length,
+
+      0
+    );
 }
 
 /**
@@ -85,20 +87,21 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
 
   return people
-    .filter((person) => {
-      return onlyWithSon
-        ? people.some((mother) => person.mother === mother.name)
-            && person.sex === 'm'
-        : people.some((mother) => person.mother === mother.name);
-    })
-    .reduce((ageAccum, person, index, filteredPeople) => {
-      return (
-        ageAccum
-        + (person.born
-          - people.find((mother) => mother.name === person.mother).born)
-          / filteredPeople.length
-      );
-    }, 0);
+    .filter((person) =>
+      onlyWithSon
+        ? people.some((mother) => person.mother === mother.name) &&
+          person.sex === "m"
+        : people.some((mother) => person.mother === mother.name)
+    )
+    .reduce(
+      (ageAccum, person, index, filteredPeople) =>
+        ageAccum +
+        (person.born -
+          people.find((mother) => mother.name === person.mother).born) /
+          filteredPeople.length,
+
+      0
+    );
 }
 
 module.exports = {
