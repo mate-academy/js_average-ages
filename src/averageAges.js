@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArr = people.filter(person =>
+    century
+      ? person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
+      : person.sex === 'm');
+
+  const ages = manArr.map(person => person.died - person.born);
+  const total = ages.reduce((sum, age) => sum + age);
+
+  return total / ages.length;
 }
 
 /**
@@ -37,7 +42,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womanArr = people.filter(person =>
+    withChildren
+      ? person.sex === 'f'
+      && people.find(child =>
+        child.mother === person.name)
+      : person.sex === 'f');
+
+  const ages = womanArr.map(person => person.died - person.born);
+  const total = ages.reduce((sum, age) => sum + age);
+
+  return total / ages.length;
 }
 
 /**
@@ -55,7 +70,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(child =>
+    onlyWithSon
+      ? child.sex === 'm'
+      && people.some(person =>
+        person.name === child.mother)
+      : people.some(person =>
+        person.name === child.mother)
+  );
+
+  const ages = children.reduce((sum, child) => {
+    const motherBorn = people.find(person => (
+      person.name === child.mother
+    )).born;
+
+    const diff = child.born - motherBorn;
+
+    return sum + diff;
+  }, 0);
+
+  return ages / children.length;
 }
 
 module.exports = {
@@ -63,3 +97,5 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+// learn how to use array methods like .filter .map .some .every .find .reduce
