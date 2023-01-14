@@ -15,10 +15,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = century
-    ? people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
+  const men = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
 
   const menAge = men.map(calcAge);
 
@@ -40,10 +41,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = withChildren
-    ? people.filter(person => person.sex === 'f'
-      && people.find(child => child.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+  const women = getWomen(people, withChildren);
 
   const womenAge = women.map(calcAge);
 
@@ -65,20 +63,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(person =>
-    people.find(child => child.mother === person.name));
+  const mothers = getWomen(people, true);
 
-  const children = onlyWithSon
-    ? people.filter(child => child.sex === 'm'
-      && mothers.find(mother => mother.name === child.mother))
-    : people.filter(child =>
-      mothers.find(mother => mother.name === child.mother));
+  const children = people.filter(child =>
+    onlyWithSon
+      ? child.sex === 'm'
+      && mothers.find(mother => mother.name === child.mother)
+      : mothers.find(mother => mother.name === child.mother)
+  );
 
   const diffAge = children.map(child =>
     child.born - mothers.find(mother => mother.name === child.mother).born);
 
   return calcAverageAge(children, diffAge);
 }
+
+const calcAge = person => person.died - person.born;
 
 function calcAverageAge(individs, individsAge) {
   const sumOfAge = individsAge.reduce((sum, age) => sum + age, 0);
@@ -87,7 +87,14 @@ function calcAverageAge(individs, individsAge) {
   return +averageAge.toFixed(2);
 }
 
-const calcAge = person => person.died - person.born;
+function getWomen(people, withChildren) {
+  return people.filter(person =>
+    withChildren
+      ? person.sex === 'f'
+      && people.find(child => child.mother === person.name)
+      : person.sex === 'f'
+  );
+};
 
 module.exports = {
   calculateMenAverageAge,
