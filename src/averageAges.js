@@ -15,15 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const manArr = people.filter(person =>
+  const arr = people.filter(person =>
     century
       ? person.sex === 'm'
       && Math.ceil(person.died / 100) === century
       : person.sex === 'm');
 
-  const ages = manArr.map(person => person.died - person.born);
+  const ages = arr.map(person => person.died - person.born);
 
-  return ages.reduce((sum, age) => sum + age) / ages.length;
+  function getAvarageAge() {
+    return ages.reduce((sum, age) => sum + age) / ages.length;
+  }
+
+  return getAvarageAge(ages);
 }
 
 /**
@@ -41,16 +45,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womanArr = people.filter(person =>
+  const arr = people.filter(person =>
     withChildren
       ? person.sex === 'f'
       && people.find(child =>
         child.mother === person.name)
       : person.sex === 'f');
 
-  const ages = womanArr.map(person => person.died - person.born);
+  const ages = arr.map(person => person.died - person.born);
 
-  return ages.reduce((sum, age) => sum + age) / ages.length;
+  function getAvarageAge() {
+    return ages.reduce((sum, age) => sum + age) / ages.length;
+  }
+
+  return getAvarageAge(ages);
 }
 
 /**
@@ -95,5 +103,3 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
-
-// learn how to use array methods like .filter .map .some .every .find .reduce
