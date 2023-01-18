@@ -2,6 +2,6 @@
 
 **Read the guideline before start**
 
-[Guideline](https://github.com/mate-academy/js_task-guideline/blob/master/README.md)
+[Guideline](npm run lint)
 
 Find data example in `src/people.js`
