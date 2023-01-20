@@ -15,18 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let mens = [];
+  const mens = century
+    ? people.filter((person) => person.sex === 'm'
+        && Math.ceil(person.died / 100) === century)
+    : people.filter((person) => person.sex === 'm');
 
-  century === undefined
-    ? mens = people.filter((person) => person.sex === 'm')
-    : mens = people.filter((person) => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century);
-
-  const livesTime = mens.map((person) => (person.died - person.born));
-  const averageAge = livesTime.reduce((a, b) => (a + b)) / livesTime.length;
-
-  return Math.round(averageAge * 100) / 100;
+  return averageAge(mens);
 }
+
+const averageAge = function(arr) {
+  const livesTime = arr.map((person) => (person.died - person.born));
+  const age = livesTime.reduce((a, b) => (a + b)) / livesTime.length;
+
+  return Math.round(age * 100) / 100;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -48,19 +50,12 @@ function calculateWomenAverageAge(people, withChildren = false) {
   const womenIsMother = women.filter((woman) => {
     return mothers.includes(woman.name, 0);
   });
-  let womenForAverage = [];
 
-  withChildren === false
-    ? womenForAverage = women
-    : womenForAverage = womenIsMother;
+  const womenForAverage = withChildren
+    ? womenIsMother
+    : women;
 
-  const livesTime = womenForAverage.map((person) => {
-    return (person.died - person.born);
-  });
-
-  const averageAge = livesTime.reduce((a, b) => (a + b)) / livesTime.length;
-
-  return Math.round(averageAge * 100) / 100;
+  return averageAge(womenForAverage);
 }
 
 /**
@@ -82,11 +77,10 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
     .map((w) => w.name);
   const kidHaveMother = people.filter((p) => women.includes(p.mother));
   const onlySons = kidHaveMother.filter((p) => p.sex === 'm');
-  let typeArrForAverage = [];
 
-  onlyWithSon === false
-    ? typeArrForAverage = kidHaveMother
-    : typeArrForAverage = onlySons;
+  const typeArrForAverage = onlyWithSon
+    ? onlySons
+    : kidHaveMother;
 
   const differense = typeArrForAverage.map((kid) => {
     const mother = people.find((w) => w.name === kid.mother);
