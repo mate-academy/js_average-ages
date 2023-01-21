@@ -1,50 +1,40 @@
 'use strict';
 
 function calculateMenAverageAge(people, century) {
-  const onlyMen = people.filter(man => man.sex === 'm');
+  const onlyMen = people.filter(person =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
 
-  if (!century) {
-    return +(onlyMen.reduce((sum, obj) =>
-      (sum + (obj.died - obj.born)), 0)
-    / onlyMen.length).toFixed(2);
-  }
+  const avgOfAge = onlyMen.reduce((sum, obj) =>
+    (sum + (obj.died - obj.born)), 0);
 
-  if (century) {
-    const menAgeOfCentury = onlyMen.filter(man =>
-      Math.ceil(man.died / 100) === century);
-
-    return +(menAgeOfCentury.reduce((sum, obj) =>
-      (sum + (obj.died - obj.born)), 0)
-    / menAgeOfCentury.length).toFixed(2);
-  }
+  return +(avgOfAge / onlyMen.length).toFixed(2);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const onlyWomen = people.filter(woman => woman.sex === 'f');
+  const onlyWomen = people.filter(person =>
+    withChildren
+      ? people.some(({ mother }) => person.name === mother)
+      : person.sex === 'f'
+  );
 
-  if (!withChildren) {
-    return +(onlyWomen.reduce((sum, obj) =>
-      (sum + (obj.died - obj.born)), 0)
-    / onlyWomen.length).toFixed(2);
-  }
+  const avgOfAge = onlyWomen.reduce((sum, obj) =>
+    (sum + (obj.died - obj.born)), 0);
 
-  if (withChildren) {
-    const womenWithChildren = onlyWomen.filter(woman =>
-      people.some(({ mother }) => woman.name === mother));
-
-    return +(womenWithChildren.reduce((sum, obj) =>
-      (sum + (obj.died - obj.born)), 0)
-      / womenWithChildren.length).toFixed(2);
-  }
+  return +(avgOfAge / onlyWomen.length).toFixed(2);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person => (
-    onlyWithSon
-      ? people.find(mother => mother.name === person.mother)
-        && person.sex === 'm'
-      : people.find(mother => mother.name === person.mother)
-  ));
+  const children = people.filter(person => {
+    const childWithMother = people.find(mother =>
+      mother.name === person.mother);
+
+    return onlyWithSon
+      ? childWithMother && person.sex === 'm'
+      : childWithMother;
+  });
 
   const calculateAge = children.map(person =>
     (person.born - people.find(mother => mother.name === person.mother).born));
