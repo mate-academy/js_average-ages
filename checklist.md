@@ -2,11 +2,10 @@
 
 BAD EXAMPLE:
 ```
-function averageAges() {} 
-
+function averageAges() {}
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 function calculateAverageAge() {}
 ```
@@ -21,7 +20,6 @@ const humans = people.map((a, b) =>
 const babies = people.map(person => children 
  ? a
  : b
- 
 ```
 
 GOOD EXAMPLE: 
@@ -40,10 +38,16 @@ if ((a && b === c && d === 'm')
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const hasMetCondition = a && (b === c)
 ```
 
 4. [CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
-(`forEach` is exception). These methods return a new array, so you should use it. 
+(`forEach` is exception). These methods return a new array, so you should use it.
+
+// write code here
+// learn how to use array methods like .filter .map .some .every .find .reduce
+// avoid using loop and forEach
+// replace `if ()` statement with &&, || or ?:
+// without nesting
