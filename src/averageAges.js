@@ -16,14 +16,13 @@
  */
 function calculateMenAverageAge(people, century = 0) {
   return people
-    .filter(el => {
-      return century
-        ? el.sex === 'm' && Math.ceil(el.died / 100) === century
-        : el.sex === 'm';
-    })
-    .reduce((sum, el, i, receivedArray) => {
-      return sum + (el.died - el.born) / receivedArray.length;
-    }, 0);
+    .filter(el => century
+      ? el.sex === 'm' && Math.ceil(el.died / 100) === century
+      : el.sex === 'm'
+    )
+    .reduce((sum, el, i, receivedArray) =>
+      sum + (el.died - el.born) / receivedArray.length,
+      0);
 }
 
 /**
@@ -42,14 +41,12 @@ function calculateMenAverageAge(people, century = 0) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   return people
-    .filter(el => {
-      return withChildren
-        ? el.sex === 'f' && people.some(child => child.mother === el.name)
-        : el.sex === 'f';
-    })
-    .reduce((sum, el, i, receivedArray) => {
-      return sum + (el.died - el.born) / receivedArray.length;
-    }, 0);
+    .filter(el => withChildren
+      ? el.sex === 'f' && people.some(child => child.mother === el.name)
+      : el.sex === 'f'
+    )
+    .reduce((sum, el, i, receivedArray) =>
+      sum + (el.died - el.born) / receivedArray.length, 0);
 }
 
 /**
@@ -68,15 +65,13 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   return people
-    .filter(el => {
-      return onlyWithSon
-        ? el.sex === 'm' && people.some(mother => el.mother === mother.name)
-        : people.some((mother) => el.mother === mother.name);
-    })
-    .reduce((sum, el, i, receivedArray) => {
-      return sum + (el.born - people.find(mother =>
-        mother.name === el.mother).born) / receivedArray.length;
-    }, 0);
+    .filter(el => onlyWithSon
+      ? el.sex === 'm' && people.some(mother => el.mother === mother.name)
+      : people.some((mother) => el.mother === mother.name)
+    )
+    .reduce((sum, el, i, receivedArray) =>
+      sum + (el.born - people.find(mother =>
+        mother.name === el.mother).born) / receivedArray.length, 0);
 }
 
 module.exports = {
