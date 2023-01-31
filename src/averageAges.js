@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const men = people.filter(person => {
+    return (century)
+      ? ((person.sex === 'm')
+        && (Math.ceil(person.died / 100) === century))
+      : (person.sex === 'm');
+  });
+
+  const ageOfMen = men.map(person => person.died - person.born);
+
+  const averageAge = ageOfMen.reduce((sum, person) =>
+    sum + person, 0) / ageOfMen.length;
+
+  return averageAge;
 }
 
 /**
@@ -36,8 +50,21 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => {
+    return (withChildren)
+      ? ((person.sex === 'f')
+        && people.find(somePerson => somePerson.mother === person.name))
+      : (person.sex === 'f');
+  });
+
+  const ageOfWomen = women.map(person => person.died - person.born);
+
+  const averageAge = ageOfWomen.reduce((sum, person) =>
+    sum + person, 0) / ageOfWomen.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +82,34 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(person => {
+    return (onlyWithSon)
+      ? ((person.sex === 'f')
+        && people.find(somePerson =>
+          somePerson.mother === person.name
+        && somePerson.sex === 'm'))
+      : ((person.sex === 'f')
+        && people.find(somePerson => somePerson.mother === person.name));
+  });
+
+  const children = people.filter(person => {
+    return (onlyWithSon)
+      ? (person.sex === 'm'
+        && mothers.find(woman => person.mother === woman.name))
+      : (mothers.find(woman => person.mother === woman.name));
+  });
+
+  const ageDifferences = children.map(child => {
+    const motherIndex = people.findIndex(somePerson =>
+      somePerson.name === child.mother);
+
+    return child.born - people[motherIndex].born;
+  });
+
+  const averageDifference = ageDifferences.reduce((sum, value) =>
+    sum + value, 0) / ageDifferences.length;
+
+  return averageDifference;
 }
 
 module.exports = {
