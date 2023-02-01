@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1675276044873" clover="3.2.0">
+  <project timestamp="1675276044873" name="All files">
+    <metrics statements="22" coveredstatements="22" conditionals="12" coveredconditionals="12" methods="16" coveredmethods="16" elements="50" coveredelements="50" complexity="0" loc="22" ncloc="22" packages="1" files="1" classes="1"/>
+    <file name="averageAges.js" path="/Users/evgen/Desktop/projects/js_average-ages/src/averageAges.js">
+      <metrics statements="22" coveredstatements="22" conditionals="12" coveredconditionals="12" methods="16" coveredmethods="16"/>
+      <line num="18" count="2" type="stmt"/>
+      <line num="19" count="78" type="cond" truecount="2" falsecount="0"/>
+      <line num="24" count="31" type="stmt"/>
+      <line num="25" count="31" type="stmt"/>
+      <line num="27" count="2" type="stmt"/>
+      <line num="45" count="2" type="stmt"/>
+      <line num="46" count="78" type="cond" truecount="2" falsecount="0"/>
+      <line num="47" count="429" type="cond" truecount="2" falsecount="0"/>
+      <line num="51" count="31" type="stmt"/>
+      <line num="52" count="31" type="stmt"/>
+      <line num="54" count="2" type="stmt"/>
+      <line num="72" count="2" type="stmt"/>
+      <line num="73" count="78" type="cond" truecount="2" falsecount="0"/>
+      <line num="74" count="1195" type="cond" truecount="2" falsecount="0"/>
+      <line num="75" count="1195" type="stmt"/>
+      <line num="78" count="2" type="stmt"/>
+      <line num="79" count="31" type="stmt"/>
+      <line num="80" count="694" type="stmt"/>
+      <line num="83" count="31" type="stmt"/>
+      <line num="84" count="2" type="stmt"/>
+      <line num="86" count="2" type="stmt"/>
+      <line num="89" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
