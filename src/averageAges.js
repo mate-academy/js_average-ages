@@ -22,7 +22,7 @@ function calculateMenAverageAge(people, century) {
     men = men.filter(({ died }) => Math.ceil(died / 100) === century)
   );
 
-  return men.reduce((acc, { born, died }) => acc + died - born, 0) / men.length;
+  return calculateAverageAge(men);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -52,10 +52,14 @@ function calculateWomenAverageAge(people, withChildren) {
     women = women.filter(({ name }) => motherNames.includes(name))
   );
 
-  return women.reduce((acc, { born, died }) => (
-    acc + died - born
-  ), 0) / women.length;
+  return calculateAverageAge(women);
 }
+
+const calculateAverageAge = (arr) => {
+  return arr.reduce((acc, { born, died }) => (
+    acc + died - born
+  ), 0) / arr.length;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
