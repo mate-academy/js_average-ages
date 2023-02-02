@@ -10,7 +10,7 @@
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
  * @param {object[]} people
- * @param {number} century - optional
+ * @param {number} century - optiona
  *
  * @return {number}
  */
