@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+
+const ageAverege = (sum, amount) => Number((sum / amount).toFixed(2));
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const diedPeople = people.filter(person => {
+    const deathCentury = Math.ceil(person.died / 100);
+
+    if (century === deathCentury || century === undefined) {
+      return person.sex === 'm';
+    }
+  });
+
+  const ageSum = diedPeople.reduce((acc, person) => {
+    return acc + (person.died - person.born);
+  }, 0);
+
+  return ageAverege(ageSum, diedPeople.length);
 }
 
 /**
@@ -37,7 +48,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothersList = people.map(person => {
+    return person.mother;
+  });
+
+  const women = people.filter(person => {
+    return withChildren
+      ? mothersList.includes(person.name)
+      : person.sex === 'f';
+  });
+
+  const ageSum = women.reduce((acc, item) => {
+    return acc + (item.died - item.born);
+  }, 0);
+
+  return ageAverege(ageSum, women.length);
 }
 
 /**
@@ -55,7 +80,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let amountFamilies = 0;
+
+  const sumDiffs = people.reduce((acc, child) => {
+    let indexMother = 0;
+    let ageDiff = 0;
+
+    indexMother = onlyWithSon
+      ? people.findIndex(mother =>
+        mother.name === child.mother && child.sex === 'm')
+      : people.findIndex(mother => mother.name === child.mother);
+
+    if (indexMother !== -1) {
+      amountFamilies++;
+      ageDiff += child.born - people[indexMother].born;
+    };
+
+    return acc + ageDiff;
+  }, 0);
+
+  return ageAverege(sumDiffs, amountFamilies);
 }
 
 module.exports = {
