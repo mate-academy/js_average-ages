@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const { filteredMenCount, menSumAge } = people.reduce((acc, person) => {
+    const { sex, born, died } = person;
+    const isPerson = century
+      ? sex === 'm' && Math.ceil(died / 100) === century
+      : sex === 'm';
+
+    return isPerson ? {
+      menSumAge: acc.menSumAge + died - born,
+      filteredMenCount: acc.filteredMenCount + 1,
+    } : acc;
+  }, {
+    menSumAge: 0, filteredMenCount: 0,
+  });
+
+  return menSumAge / filteredMenCount;
 }
 
 /**
@@ -37,7 +48,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.reduce((acc, person) => {
+    acc[person.mother] = person.name;
+
+    return acc;
+  }, {});
+
+  const { womenSumAge, womenCount } = people.reduce((acc, person) => {
+    const { name, sex, died, born } = person;
+
+    const isPerson = withChildren ? mothers[name] : sex === 'f';
+
+    return isPerson ? {
+      womenSumAge: acc.womenSumAge + died - born,
+      womenCount: acc.womenCount + 1,
+    } : acc;
+  }, {
+    womenSumAge: 0, womenCount: 0,
+  });
+
+  return womenSumAge / womenCount;
 }
 
 /**
@@ -55,7 +85,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.reduce((acc, person) => {
+    acc[person.name] = person;
+
+    return acc;
+  }, {});
+
+  const { sum, childrenCount } = people.reduce((acc, person) => {
+    const { sex, mother, born } = person;
+
+    const isPerson = onlyWithSon
+      ? sex === 'm' && mothers[mother]
+      : mothers[mother];
+
+    return isPerson ? {
+      sum: acc.sum + born - mothers[mother].born,
+      childrenCount: acc.childrenCount + 1,
+    } : acc;
+  }, {
+    sum: 0, childrenCount: 0,
+  });
+
+  return sum / childrenCount;
 }
 
 module.exports = {
