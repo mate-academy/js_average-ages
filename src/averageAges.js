@@ -15,18 +15,22 @@
  * @return {number}
  */
 
+function calculate(array) {
+  return array.reduce((a, b) => a + b) / array.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const manAges = people.filter((person) => {
-    return (century !== undefined
+    return (century
       ? person.sex === 'm' && (Math.ceil(person.died / 100)) === century
       : person.sex === 'm');
   });
 
-  const sumOfManAges = manAges.reduce((person1, person2) => {
-    return person1 + (person2.died - person2.born);
+  const manSumedAges = manAges.map((person1) => {
+    return person1.died - person1.born;
   }, 0);
 
-  return sumOfManAges / manAges.length;
+  return calculate(manSumedAges);
 }
 
 /**
@@ -45,18 +49,18 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const motherAges = people.filter((person) => {
-    return (withChildren !== undefined
+    return (withChildren
       ? person.sex === 'f' && people.find(
         (child) => child.mother === person.name)
       : person.sex === 'f');
   });
 
   const sumOfMotherAges
-  = motherAges.reduce((person1, person2) => {
-    return person1 + (person2.died - person2.born);
+  = motherAges.map((person1) => {
+    return person1.died - person1.born;
   }, 0);
 
-  return (sumOfMotherAges / motherAges.length);
+  return calculate(sumOfMotherAges);
 }
 
 /**
@@ -76,7 +80,7 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const motherAndSon = people.map((child) => {
     return [child, people.find(
-      (mother) => onlyWithSon !== undefined
+      (mother) => onlyWithSon
         ? mother.name === child.mother && child.sex === 'm'
         : mother.name === child.mother)];
   });
@@ -89,8 +93,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return person[0].born - person[1].born;
   });
 
-  return agesOfMotherAndSon.reduce((a, b) => a + b, 0)
-  / agesOfMotherAndSon.length;
+  return calculate(agesOfMotherAndSon);
 }
 
 module.exports = {
