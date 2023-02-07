@@ -15,8 +15,9 @@
  * @return {number}
  */
 
-const average = (x) =>
-  x.reduce((sum, a) => sum + (a.died - a.born), 0) / x.length;
+const average = (people) =>
+  people.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / people.length;
 
 function calculateMenAverageAge(people, century) {
   const manArr = people.filter(person => century
@@ -42,7 +43,7 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenArr = people.filter(person => withChildren
-    ? person.sex === 'f' && people.some(human => person.name === human.mother)
+    ? people.some(human => person.name === human.mother)
     : person.sex === 'f');
 
   return average(womenArr);
