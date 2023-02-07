@@ -23,10 +23,14 @@ function calculateMenAverageAge(people, century) {
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
 
-  const menAges = menList.map(person => person.died - person.born);
+  const menAges = menList.map(person => {
+    const { died, born } = person;
+
+    return died - born;
+  });
 
   const menAverageAge = menAges.reduce((sum, currentAge) =>
-    sum + currentAge) / menAges.length;
+    (sum + currentAge)) / menAges.length;
 
   return menAverageAge;
 }
@@ -47,10 +51,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenList = people.filter(person => withChildren
-    ? people.find(child => person.name === child.mother)
+    ? people.some(child => person.name === child.mother)
     : person.sex === 'f');
 
-  const womenAges = womenList.map(person => person.died - person.born);
+  const womenAges = womenList.map(person => {
+    const { died, born } = person;
+
+    return died - born;
+  });
   const womenAverageAge = womenAges.reduce((sum, currentAge) =>
     sum + currentAge) / womenAges.length;
 
@@ -73,14 +81,18 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(child => onlyWithSon
-    ? people.find(mother => mother.name === child.mother) && child.sex === 'm'
-    : people.find(mother => mother.name === child.mother));
+    ? people.some(mother => mother.name === child.mother) && child.sex === 'm'
+    : people.some(mother => mother.name === child.mother));
 
-  const diffs = children.map(person =>
-    person.born - people.find(mother => mother.name === person.mother).born);
+  const diffs = children.map(child => {
+    const motherBorn = people.find(mother =>
+      mother.name === child.mother);
+
+    return child.born - motherBorn.born;
+  });
 
   const AverageDiff = diffs.reduce((sum, currentDiff) =>
-    sum + currentDiff) / diffs.length;
+    (sum + currentDiff)) / diffs.length;
 
   return AverageDiff;
 }
