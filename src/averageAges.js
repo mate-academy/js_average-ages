@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const checkCondition = function(person) {
+    const checkSex = person.sex === 'm';
+    const checkCentury = Math.ceil(person.died / 100) === century;
+
+    return century ? checkSex && checkCentury : checkSex;
+  };
+
+  const menCount = people.filter(person => checkCondition(person));
+
+  const calculateAge = menCount
+    .map(person => person.died - person.born)
+    .reduce((a, b) => a + b, 0) / menCount.length;
+
+  return calculateAge;
 }
 
 /**
@@ -38,6 +52,26 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const filteredWomen = people.filter((person) => person.sex === 'f');
+  const filteredMothers = [];
+
+  for (const key of filteredWomen) {
+    const checkCondition = people.some(women => key.name === women.mother);
+
+    if (checkCondition) {
+      filteredMothers.push(key);
+    }
+  };
+
+  function checkWhoToCompare(compare) {
+    return compare
+      .map(age => age.died - age.born)
+      .reduce((a, b) => a + b, 0) / compare.length;
+  }
+
+  return withChildren
+    ? checkWhoToCompare(filteredMothers)
+    : checkWhoToCompare(filteredWomen);
 }
 
 /**
@@ -56,6 +90,33 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const filterWomen = people.filter((person) => person.sex === 'f');
+
+  const mothers = [];
+  const ageDiffChildMother = [];
+  const ageDiffSonMother = [];
+
+  for (const key of filterWomen) {
+    people.some(child => {
+      if (key.name === child.mother) {
+        mothers.push(key);
+
+        if (onlyWithSon && child.sex === 'm') {
+          ageDiffSonMother.push(child.born - key.born);
+        }
+
+        ageDiffChildMother.push(child.born - key.born);
+      }
+    });
+  };
+
+  function checkWhoToCompare(compare) {
+    return compare.reduce((a, b) => a + b, 0) / compare.length;
+  }
+
+  return onlyWithSon
+    ? checkWhoToCompare(ageDiffSonMother)
+    : checkWhoToCompare(ageDiffChildMother);
 }
 
 module.exports = {
