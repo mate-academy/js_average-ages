@@ -50,8 +50,7 @@ function calculateWomenAverageAge(people, withChildren) {
   return findAverage(
     people.filter(person =>
       withChildren
-        ? person.sex === 'f'
-          && people.some(individual => individual.mother === person.name)
+        ? people.some(child => child.mother === person.name)
         : person.sex === 'f'
     )
   );
