@@ -15,12 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  const arrMan = century 
+    ? people.filter(e => {
+      return Math.ceil(e.died / 100) === century && e.sex === 'm';
+    }) 
+    : people.filter(e => e.sex === 'm');
+
+  const sumAgePeople = arrMan.reduce((acc, curr) => {
+    const age = curr.died - curr.born;
+
+    return acc + age;
+  }, 0);
+
+  const numPeople = arrMan.length;
+
+  return sumAgePeople / numPeople;
+  }
 
 /**
  * Implement calculateWomenAverageAge function
@@ -37,7 +47,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrWoman = people.filter(e => e.sex === 'f');
+  const arrNameMother = people.map(e => e.mother);
+  const arrWomenMother = arrWoman.filter(e => {
+    return arrNameMother.includes(e.name);
+  })
+
+  const arrWomanForAge = withChildren ? arrWomenMother : arrWoman;
+  const sumAgeWoman = arrWomanForAge.reduce((acc, curr) => {
+    const age = curr.died - curr.born;
+
+    return acc + age;
+  }, 0);
+  const numWoman = arrWomanForAge.length;
+
+  return sumAgeWoman / numWoman;
 }
 
 /**
@@ -55,7 +79,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(({ mother, sex }) => {
+    return onlyWithSon
+    ? sex === 'm' && people.find((person) => person.name === mother)
+    : people.find((person) => person.name === mother)
+  });
+
+  const ages = mothers.reduce((acc, { mother, born: ageChild }) => {
+    const { born: ageMom } = people.find(({ name }) => {
+      return name === mother;
+    });
+    const diff = ageChild - ageMom;
+    
+    return acc + diff;
+  }, 0);
+
+  return ages / mothers.length;
 }
 
 module.exports = {
