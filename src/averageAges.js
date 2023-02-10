@@ -14,27 +14,32 @@
  *
  * @return {number}
  */
+// function getAverageAge(array) {
+//   const ages = array.map(element => element.died - element.born);
+
+//   return ages.reduce((a, b) => a + b, 0) / ages.length;
+// }
+function averageAge(array) {
+  return array.reduce(
+    (sum, elem) => sum + (elem.died - elem.born), 0) / array.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter(man => man.sex === 'm');
   const menCentury = century ? men.filter(
     man => Math.ceil(man.died / 100) === century) : men;
 
-  const averageAge = menCentury.reduce(
-    (sum, man) => sum + (man.died - man.born), 0) / menCentury.length;
-
-  return averageAge;
+  return averageAge(menCentury);
 }
 
 /**
-* Реализовать функцию расчета womenaverageage
+ * Implement calculateWomenAverageAge function
  *
- * Функция возвращает средний возраст женщин в массиве.Если `witchildren
- * Указано, затем функционирование вычисляет средний возраст
- * только для женщин с детьми
+ * Function returns average age of women in array. If `withChildren` is
+ * specified then function calculates average age only for women with children
  *
- * Подсказка: чтобы проверить, есть ли у женщины дети,
- * вы должны найти кого -то, кто упоминает
- * ее как мать.
+ * Hint: To check if a woman has children you should find someone who mention
+ * her as mother.
  *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
@@ -47,20 +52,17 @@ function calculateWomenAverageAge(people, withChildren) {
     people.some(person => person.mother === woman.name));
   const womenAge = withChildren ? womenMothers : women;
 
-  const averageAge = womenAge.reduce(
-    (sum, woman) => sum + (woman.died - woman.born), 0) / womenAge.length;
-
-  return averageAge;
+  return averageAge(womenAge);
 }
 
 /**
-* Реализовать функцию CalculateAverageadiff.
+ * Implement calculateAverageAgeDiff function.
  *
- * Функция возвращает среднюю разницу в возрасте между ребенком и его или ей
- * Мать в массиве.(Возраст матери при рождении ребенка)
+ * The function returns an average age difference between a child and his or her
+ * mother in the array. (A mother's age at child birth)
  *
- * Если указан только `только
- * Для сыновей и их матерей.
+ * If `onlyWithSon` is specified then function calculates age difference only
+ * for sons and their mothers.
  *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
@@ -68,19 +70,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = onlyWithSon ? people.filter(
-    child => people.some(
-      mother => child.sex === 'm' && mother.name === child.mother))
-    : people.filter(child => people.some(
-      mother => mother.name === child.mother));
+  // const children = onlyWithSon
+  //   ? people.filter(child => people.some(mother =>
+  //     child.sex === 'm' && mother.name === child.mother))
+  //   : people.filter(child => people.some(mother =>
+  //     mother.name === child.mother));
 
-  const averageAge = children.reduce((sum, child) => {
+  const children = people.filter(child => people.some(mother => {
+    return onlyWithSon
+      ? child.sex === 'm' && mother.name === child.mother
+      : mother.name === child.mother;
+  }));
+
+  const averageAges = children.reduce((sum, child) => {
     const mothers = people.find(mother => child.mother === mother.name);
 
     return sum + (child.born - mothers.born);
   }, 0) / children.length;
 
-  return averageAge;
+  return averageAges;
 }
 
 module.exports = {
