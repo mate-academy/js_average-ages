@@ -20,18 +20,22 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const checkCondition = function(person) {
-    const checkSex = person.sex === 'm';
-    const checkCentury = Math.ceil(person.died / 100) === century;
+  const filterMenCallback = function(person) {
+    const isMan = person.sex === 'm';
+    const isSameCentury = Math.ceil(person.died / 100) === century;
 
-    return century ? checkSex && checkCentury : checkSex;
+    return century ? isMan && isSameCentury : isMan;
   };
 
-  const menCount = people.filter(person => checkCondition(person));
+  function getAverageAge(peoples) {
+    return peoples
+      .map(person => person.died - person.born)
+      .reduce((prevAge, nextAge) => prevAge + nextAge, 0) / peoples.length;
+  }
 
-  const calculateAge = menCount
-    .map(person => person.died - person.born)
-    .reduce((a, b) => a + b, 0) / menCount.length;
+  const filteredMen = people.filter(person => filterMenCallback(person));
+
+  const calculateAge = getAverageAge(filteredMen);
 
   return calculateAge;
 }
@@ -55,23 +59,23 @@ function calculateWomenAverageAge(people, withChildren) {
   const filteredWomen = people.filter((person) => person.sex === 'f');
   const filteredMothers = [];
 
-  for (const key of filteredWomen) {
-    const checkCondition = people.some(women => key.name === women.mother);
+  for (const woman of filteredWomen) {
+    const isMother = people.some(peoples => woman.name === peoples.mother);
 
-    if (checkCondition) {
-      filteredMothers.push(key);
+    if (isMother) {
+      filteredMothers.push(woman);
     }
   };
 
-  function checkWhoToCompare(compare) {
-    return compare
-      .map(age => age.died - age.born)
-      .reduce((a, b) => a + b, 0) / compare.length;
+  function getAverageAge(peoples) {
+    return peoples
+      .map(person => person.died - person.born)
+      .reduce((prevAge, nextAge) => prevAge + nextAge, 0) / peoples.length;
   }
 
   return withChildren
-    ? checkWhoToCompare(filteredMothers)
-    : checkWhoToCompare(filteredWomen);
+    ? getAverageAge(filteredMothers)
+    : getAverageAge(filteredWomen);
 }
 
 /**
@@ -97,7 +101,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const ageDiffSonMother = [];
 
   for (const key of filterWomen) {
-    people.some(child => {
+    people.forEach(child => {
       if (key.name === child.mother) {
         mothers.push(key);
 
@@ -110,13 +114,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     });
   };
 
-  function checkWhoToCompare(compare) {
-    return compare.reduce((a, b) => a + b, 0) / compare.length;
+  function getAverageValue(numbers) {
+    return numbers.reduce((prevNumber, nextNumber) => {
+      return prevNumber + nextNumber;
+    }, 0) / numbers.length;
   }
 
   return onlyWithSon
-    ? checkWhoToCompare(ageDiffSonMother)
-    : checkWhoToCompare(ageDiffChildMother);
+    ? getAverageValue(ageDiffSonMother)
+    : getAverageValue(ageDiffChildMother);
 }
 
 module.exports = {
