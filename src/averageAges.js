@@ -14,6 +14,17 @@
  *
  * @return {number}
  */
+
+function getAverageValue(numbers) {
+  return numbers.reduce((prevNumber, nextNumber) => {
+    return prevNumber + nextNumber;
+  }, 0) / numbers.length;
+}
+
+function getAverageAge(peoples) {
+  return getAverageValue(peoples.map(person => person.died - person.born));
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -27,14 +38,7 @@ function calculateMenAverageAge(people, century) {
     return century ? isMan && isSameCentury : isMan;
   };
 
-  function getAverageAge(peoples) {
-    return peoples
-      .map(person => person.died - person.born)
-      .reduce((prevAge, nextAge) => prevAge + nextAge, 0) / peoples.length;
-  }
-
   const filteredMen = people.filter(person => filterMenCallback(person));
-
   const calculateAge = getAverageAge(filteredMen);
 
   return calculateAge;
@@ -66,12 +70,6 @@ function calculateWomenAverageAge(people, withChildren) {
       filteredMothers.push(woman);
     }
   };
-
-  function getAverageAge(peoples) {
-    return peoples
-      .map(person => person.died - person.born)
-      .reduce((prevAge, nextAge) => prevAge + nextAge, 0) / peoples.length;
-  }
 
   return withChildren
     ? getAverageAge(filteredMothers)
@@ -113,12 +111,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       }
     });
   };
-
-  function getAverageValue(numbers) {
-    return numbers.reduce((prevNumber, nextNumber) => {
-      return prevNumber + nextNumber;
-    }, 0) / numbers.length;
-  }
 
   return onlyWithSon
     ? getAverageValue(ageDiffSonMother)
