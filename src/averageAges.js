@@ -15,6 +15,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+
   const men = people.filter(person => person.sex === 'm'
     && (!century || Math.ceil(person.died / 100) === century));
   const menSpans = men
@@ -38,6 +39,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+
   const women = people.filter(person => person.sex === 'f'
     && (!withChildren || people.find(child => child.mother === person.name)));
   const womenSpans = women
@@ -61,18 +63,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrenWithMothersListed = people
+  const childMothers = people
     .filter(child => people.some(mother => mother.name === child.mother)
-      && (!onlyWithSon || child.sex === 'm'))
-    .map(child => ({
-      ...child,
-      motherBorn: people.find(mother => child.mother === mother.name).born,
-    }));
+      && (!onlyWithSon || child.sex === 'm'));
+  const childMotherBirthsObj = childMothers.map(child => ({
+    ...child,
+    motherBorn: people.find(mother => child.mother === mother.name).born,
+  }));
 
-  const motherChildSpanDiffs = childrenWithMothersListed
+  const motherChildSpanDiffs = childMotherBirthsObj
     .reduce((sum, child) => sum + child.born - child.motherBorn, 0);
 
-  return motherChildSpanDiffs / childrenWithMothersListed.length;
+  return motherChildSpanDiffs / childMotherBirthsObj.length;
 }
 
 module.exports = {
