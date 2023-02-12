@@ -14,21 +14,23 @@
  *
  * @return {number}
  */
+
+/* Global function */
+const calcAverage = function(someArray) {
+  const BornYear = someArray
+    .reduce((bornSum, person) => bornSum + person.born, 0);
+  const DiedYear = someArray
+    .reduce((diedSum, person) => diedSum + person.died, 0);
+
+  return ((DiedYear - BornYear) / someArray.length);
+};
+
 function calculateMenAverageAge(people, century) {
-  const menByCentury = people
-    .filter(el => el.sex === 'm' && Math.ceil(el.died / 100) === century);
-
   const men = people
-    .filter(el => el.sex === 'm');
+    .filter(({ sex, died }) => sex === 'm'
+    && (!century || Math.ceil(died / 100) === century));
 
-  const calcAverage = function(someArray) {
-    const BornYear = someArray.reduce((born, obj) => born + obj.born, 0);
-    const DiedYear = someArray.reduce((died, obj) => died + obj.died, 0);
-
-    return ((DiedYear - BornYear) / someArray.length);
-  };
-
-  return (century ? calcAverage(menByCentury) : calcAverage(men));
+  return calcAverage(men);
 
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -54,20 +56,16 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(el => el.sex === 'f');
 
-  const findMom = function(momName, array) {
-    return array.some(el => el.mother === momName);
+  /* This function is looking if the .name of the element
+  has been mentioned as a mother in other elements. */
+
+  const isMother = function(momName, array) {
+    return array.find(el => el.mother === momName);
   };
 
-  const beingMother = people.filter(el => findMom(el.name, people));
+  const mothers = people.filter(el => isMother(el.name, people));
 
-  const calcAverage = function(someArray) {
-    const BornYear = someArray.reduce((born, obj) => born + obj.born, 0);
-    const DiedYear = someArray.reduce((died, obj) => died + obj.died, 0);
-
-    return ((DiedYear - BornYear) / someArray.length);
-  };
-
-  return (withChildren ? calcAverage(beingMother) : calcAverage(women));
+  return (withChildren ? calcAverage(mothers) : calcAverage(women));
 }
 
 /**
@@ -89,6 +87,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return array.find(el => el.name === momName);
   };
 
+  /* This function is looking for known .mothers in elements
+  and if they exists as a names in other elements */
+
   const findRelatives = people.reduce((acc, el) => {
     const mother = findRelative(el.mother, people);
 
@@ -103,17 +104,19 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const findRelativesSon = findRelatives.filter(el => el.sex === 'm');
 
-  const calcAverage = function(array) {
-    const children = array.reduce((born, obj) => born + obj.born, 0);
-    const moms = array.reduce((born, obj) => born + obj.motherBirth, 0);
+  const calcAverageAge = function(peopleArray) {
+    const children = peopleArray
+      .reduce((bornSum, person) => bornSum + person.born, 0);
+    const moms = peopleArray
+      .reduce((bornSum, person) => bornSum + person.motherBirth, 0);
 
-    const result = (children - moms) / array.length;
+    const result = (children - moms) / peopleArray.length;
 
     return result;
   };
 
   return (onlyWithSon
-    ? calcAverage(findRelativesSon) : calcAverage(findRelatives));
+    ? calcAverageAge(findRelativesSon) : calcAverageAge(findRelatives));
 }
 
 module.exports = {
