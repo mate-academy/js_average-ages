@@ -16,13 +16,13 @@
  */
 
 /* Global function */
-const calcAverage = function(someArray) {
-  const BornYear = someArray
+const calcAverage = function(peopleData) {
+  const BornYear = peopleData
     .reduce((bornSum, person) => bornSum + person.born, 0);
-  const DiedYear = someArray
+  const DiedYear = peopleData
     .reduce((diedSum, person) => diedSum + person.died, 0);
 
-  return ((DiedYear - BornYear) / someArray.length);
+  return ((DiedYear - BornYear) / peopleData.length);
 };
 
 function calculateMenAverageAge(people, century) {
