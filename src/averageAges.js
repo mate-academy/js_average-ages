@@ -16,6 +16,17 @@
  */
 function calculateMenAverageAge(people, century) {
   // write code here
+  const men = people.filter(person => person.sex === 'm');
+  let menDiedCentury;
+
+  century ? menDiedCentury = men.filter(
+    person => Math.ceil(person.died / 100) === century
+  ) : menDiedCentury = men;
+
+  const ages = menDiedCentury.map(person => (person.died - person.born));
+  const sumAge = ages.reduce((sum, age) => sum + age, 0);
+
+  return sumAge / ages.length;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -38,6 +49,26 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const women = people.filter(person => person.sex === 'f');
+  let womenWithChildren;
+
+  if (withChildren) {
+    womenWithChildren = [];
+
+    women.forEach(woman => {
+      if (people.findIndex(
+        person => person.mother === woman.name) >= 0) {
+        womenWithChildren.push(woman);
+      }
+    });
+  } else {
+    womenWithChildren = women;
+  }
+
+  const ages = womenWithChildren.map(person => (person.died - person.born));
+  const sumAge = ages.reduce((sum, age) => sum + age, 0);
+
+  return sumAge / ages.length;
 }
 
 /**
@@ -56,6 +87,52 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const women = people.filter(person => person.sex === 'f');
+  const womenWithChildren = [];
+
+  women.forEach(woman => {
+    if (people.findIndex(
+      person => person.mother === woman.name) >= 0) {
+      womenWithChildren.push(woman);
+    }
+  });
+
+  const womenWithSon = [];
+  let ages = [];
+
+  if (onlyWithSon) {
+    womenWithChildren.forEach(woman => {
+      if (people.findIndex(
+        person => person.mother === woman.name && person.sex === 'm') >= 0) {
+        womenWithSon.push(woman);
+      }
+    });
+
+    womenWithSon.forEach(woman => {
+      const son1 = people.filter(
+        son => woman.name === son.mother && son.sex === 'm');
+
+      const sonBorn = [];
+
+      son1.forEach(child => sonBorn.push(child.born));
+
+      ages = ages.concat(sonBorn.map(age => age - woman.born));
+    });
+  } else {
+    womenWithChildren.forEach(woman => {
+      const son1 = people.filter(son => woman.name === son.mother);
+
+      const sonBorn = [];
+
+      son1.forEach(child => sonBorn.push(child.born));
+
+      ages = ages.concat(sonBorn.map(age => age - woman.born));
+    });
+  }
+
+  const sumAge = ages.reduce((sum, age) => sum + age, 0);
+
+  return sumAge / ages.length;
 }
 
 module.exports = {
