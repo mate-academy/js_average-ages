@@ -18,9 +18,9 @@
 /* Global function */
 const calcAverage = function(peopleData) {
   const BornYear = peopleData
-    .reduce((bornSum, person) => bornSum + person.born, 0);
+    .reduce((bornSum, { born }) => bornSum + born, 0);
   const DiedYear = peopleData
-    .reduce((diedSum, person) => diedSum + person.died, 0);
+    .reduce((diedSum, { died }) => diedSum + died, 0);
 
   return ((DiedYear - BornYear) / peopleData.length);
 };
@@ -106,9 +106,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const calcAverageAge = function(peopleArray) {
     const children = peopleArray
-      .reduce((bornSum, person) => bornSum + person.born, 0);
+      .reduce((bornSum, { born }) => bornSum + born, 0);
     const moms = peopleArray
-      .reduce((bornSum, person) => bornSum + person.motherBirth, 0);
+      .reduce((bornSum, { motherBirth }) => bornSum + motherBirth, 0);
 
     const result = (children - moms) / peopleArray.length;
 
