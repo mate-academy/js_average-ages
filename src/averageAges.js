@@ -76,7 +76,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return person.born - motherInfo.born + sum;
   }, 0);
 
-  return +(sumAge / children.length).toFixed(2);
+  return sumAge / children.length;
 }
 
 function calculateAverageAge(people) {
