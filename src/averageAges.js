@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 'use strict';
 
 /**
@@ -15,11 +16,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filterCallBack = person =>
+    century > 0
+      ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+      : person.sex === 'm';
+
+  const men = people.filter(filterCallBack);
+
+  const reduceCallBack = (sum, person) =>
+    sum + (person.died - person.born);
+
+  const ageSum = men.reduce(reduceCallBack, 0);
+
+  return ageSum / men.length;
 }
 
 /**
@@ -37,16 +46,30 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filterCallBack = mommy =>
+    withChildren === true
+      ? mommy.sex === 'f' && people.find(person => person.mother === mommy.name)
+      : mommy.sex === 'f';
+
+  const women = people.filter(filterCallBack);
+
+  const reduceCallBack = (sum, person) =>
+    sum + (person.died - person.born);
+
+  const ageSum = women.reduce(reduceCallBack, 0);
+
+  return ageSum / women.length;
 }
 
 /**
  * Implement calculateAverageAgeDiff function.
  *
- * The function returns an average age difference between a child and his or her
+ * The function returns an average age difference between a child
+ * and his or her
  * mother in the array. (A mother's age at child birth)
  *
- * If `onlyWithSon` is specified then function calculates age difference only
+ * If `onlyWithSon` is specified then function calculates age
+ * difference only
  * for sons and their mothers.
  *
  * @param {object[]} people
@@ -55,7 +78,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filterCallBack = child =>
+    onlyWithSon === true
+      ? child.sex === 'm' && people.find(person => child.mother === person.name)
+      : people.find(person => person.name === child.mother);
+
+  const children = people.filter(filterCallBack);
+
+  const reduceCallBack = (sum, child) =>
+    sum + (child.born
+      - people.find(person => child.mother === person.name).born);
+
+  const ageSum = children.reduce(reduceCallBack, 0);
+
+  return ageSum / children.length;
 }
 
 module.exports = {
