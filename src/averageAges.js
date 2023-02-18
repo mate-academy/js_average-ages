@@ -14,8 +14,23 @@
  *
  * @return {number}
  */
+
+/* Global function */
+const calcAverage = function(peopleData) {
+  const averageAge = peopleData
+    .reduce((ageSum, { born, died }) =>
+      ageSum + (died - born), 0) / peopleData.length;
+
+  return averageAge;
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people
+    .filter(({ sex, died }) => sex === 'm'
+    && (!century || Math.ceil(died / 100) === century));
+
+  return calcAverage(men);
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -36,8 +51,19 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  /* This function is looking if the .name of the element
+  has been mentioned as a mother in other elements. */
+
+  const isMother = function(momName, array) {
+    return array.find(({ mother }) => mother === momName);
+  };
+
+  const women = people.filter(({ sex, name }) =>
+    sex === 'f' && (!withChildren || isMother(name, people)));
+
+  return calcAverage(women);
 }
 
 /**
@@ -55,7 +81,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const relatives = people.reduce((acc, person) => {
+    const mother = people.find(({ name }) => name === person.mother);
+
+    if (mother && (onlyWithSon ? person.sex === 'm' : true)) {
+      return [...acc, {
+        ...person, motherBirth: mother.born,
+      }];
+    }
+
+    return acc;
+  }, []);
+
+  const averageDifference = relatives
+    .reduce((ageDifference, { motherBirth, born }) =>
+      ageDifference + (born - motherBirth), 0) / relatives.length;
+
+  return averageDifference;
 }
 
 module.exports = {
