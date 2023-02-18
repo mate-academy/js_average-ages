@@ -17,12 +17,11 @@
 
 /* Global function */
 const calcAverage = function(peopleData) {
-  const BornYear = peopleData
-    .reduce((bornSum, { born }) => bornSum + born, 0);
-  const DiedYear = peopleData
-    .reduce((diedSum, { died }) => diedSum + died, 0);
+  const averageAge = peopleData
+    .reduce((ageSum, { born, died }) =>
+      ageSum + (died - born), 0) / peopleData.length;
 
-  return ((DiedYear - BornYear) / peopleData.length);
+  return (averageAge);
 };
 
 function calculateMenAverageAge(people, century) {
@@ -54,18 +53,17 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(el => el.sex === 'f');
-
   /* This function is looking if the .name of the element
   has been mentioned as a mother in other elements. */
 
   const isMother = function(momName, array) {
-    return array.find(el => el.mother === momName);
+    return array.find(({ mother }) => mother === momName);
   };
 
-  const mothers = people.filter(el => isMother(el.name, people));
+  const women = people.filter(({ sex, name }) =>
+    sex === 'f' && (!withChildren || isMother(name, people)));
 
-  return (withChildren ? calcAverage(mothers) : calcAverage(women));
+  return calcAverage(women);
 }
 
 /**
@@ -84,39 +82,33 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const findRelative = function(momName, array) {
-    return array.find(el => el.name === momName);
+    return array.find(({ name }) => name === momName);
   };
 
   /* This function is looking for known .mothers in elements
   and if they exists as a names in other elements */
 
-  const findRelatives = people.reduce((acc, el) => {
-    const mother = findRelative(el.mother, people);
+  const findRelatives = people.reduce((acc, person) => {
+    const mother = findRelative(person.mother, people);
 
-    if (mother) {
+    if (mother && ((onlyWithSon) ? person.sex === 'm' : [])) {
       return [...acc, {
-        ...el, motherBirth: mother.born,
+        ...person, motherBirth: mother.born,
       }];
     }
 
     return acc;
   }, []);
 
-  const findRelativesSon = findRelatives.filter(el => el.sex === 'm');
-
   const calcAverageAge = function(peopleArray) {
-    const children = peopleArray
-      .reduce((bornSum, { born }) => bornSum + born, 0);
-    const moms = peopleArray
-      .reduce((bornSum, { motherBirth }) => bornSum + motherBirth, 0);
+    const averageDifference = peopleArray
+      .reduce((ageDifference, { motherBirth, born }) =>
+        ageDifference + (born - motherBirth), 0) / peopleArray.length;
 
-    const result = (children - moms) / peopleArray.length;
-
-    return result;
+    return averageDifference;
   };
 
-  return (onlyWithSon
-    ? calcAverageAge(findRelativesSon) : calcAverageAge(findRelatives));
+  return calcAverageAge(findRelatives);
 }
 
 module.exports = {
