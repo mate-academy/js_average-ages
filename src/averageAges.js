@@ -21,7 +21,7 @@ const calcAverage = function(peopleData) {
     .reduce((ageSum, { born, died }) =>
       ageSum + (died - born), 0) / peopleData.length;
 
-  return (averageAge);
+  return averageAge;
 };
 
 function calculateMenAverageAge(people, century) {
@@ -81,17 +81,10 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const findRelative = function(momName, array) {
-    return array.find(({ name }) => name === momName);
-  };
+  const relatives = people.reduce((acc, person) => {
+    const mother = people.find(({ name }) => name === person.mother);
 
-  /* This function is looking for known .mothers in elements
-  and if they exists as a names in other elements */
-
-  const findRelatives = people.reduce((acc, person) => {
-    const mother = findRelative(person.mother, people);
-
-    if (mother && ((onlyWithSon) ? person.sex === 'm' : [])) {
+    if (mother && (onlyWithSon ? person.sex === 'm' : true)) {
       return [...acc, {
         ...person, motherBirth: mother.born,
       }];
@@ -100,15 +93,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return acc;
   }, []);
 
-  const calcAverageAge = function(peopleArray) {
-    const averageDifference = peopleArray
-      .reduce((ageDifference, { motherBirth, born }) =>
-        ageDifference + (born - motherBirth), 0) / peopleArray.length;
+  const averageDifference = relatives
+    .reduce((ageDifference, { motherBirth, born }) =>
+      ageDifference + (born - motherBirth), 0) / relatives.length;
 
-    return averageDifference;
-  };
-
-  return calcAverageAge(findRelatives);
+  return averageDifference;
 }
 
 module.exports = {
