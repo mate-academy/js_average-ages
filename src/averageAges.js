@@ -14,25 +14,27 @@
  *
  * @return {number}
  */
+function calculateAverageAge(people) {
+  const totalAge = people.reduce((total, obj) => {
+    return total + (obj.died - obj.born);
+  }, 0);
+
+  return totalAge / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let men = people.filter(obj => {
-    return obj['sex'] === 'm';
-  });
+  const men = people.filter(obj =>
+    century
+      ? obj['sex'] === 'm' && Math.ceil(obj.died / 100) === century
+      : obj['sex'] === 'm'
+  );
 
-  if (century) {
-    men = men.filter(obj => Math.ceil(obj.died / 100) === century);
-  };
-
-  const totalAge = men.reduce((total, obj) => {
-    return total + (obj.died - obj.born);
-  }, 0);
-
-  return totalAge / men.length;
+  return calculateAverageAge(men);
 };
 /**
  * Implement calculateWomenAverageAge function
@@ -51,21 +53,13 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  let women = people.filter(obj => {
-    return obj['sex'] === 'f';
-  });
+  const women = people.filter(obj =>
+    withChildren
+      ? people.some(child => obj.name === child.mother)
+      : obj['sex'] === 'f'
+  );
 
-  if (withChildren) {
-    women = women.filter(mother => {
-      return people.some(child => mother.name === child.mother);
-    });
-  };
-
-  const totalAge = women.reduce((total, obj) => {
-    return total + (obj.died - obj.born);
-  }, 0);
-
-  return totalAge / women.length;
+  return calculateAverageAge(women);
 };
 
 /**
@@ -90,11 +84,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const momGaveBirthAgeSum = children.reduce((sum, child) => {
     const motherObj = people.find(mother => child.mother === mother.name);
 
-    if (motherObj) {
-      return sum + (child.born - motherObj.born);
-    } else {
-      return sum;
-    }
+    return sum + (motherObj
+      ? (child.born - motherObj.born)
+      : 0);
   }, 0);
 
   return momGaveBirthAgeSum / children.length;
