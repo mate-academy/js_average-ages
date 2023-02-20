@@ -15,11 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(({ sex, died }) =>
-    century
-      ? sex === 'm' && century === Math.ceil(died / 100)
-      : sex === 'm'
-  );
+  const men = century
+    ? filterPeopleBySex(people, 'm')
+      .filter(person => century === Math.ceil(person.died / 100))
+    : filterPeopleBySex(people, 'm');
 
   const menAges = men.map(({ born, died }) => died - born);
 
@@ -41,11 +40,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(({ sex, name }) =>
-    withChildren
-      ? sex === 'f' && people.some(({ mother }) => mother === name)
-      : sex === 'f'
-  );
+  const women = withChildren
+    ? filterPeopleBySex(people, 'f')
+      .filter((person) => people
+        .some(({ mother }) => mother === person.name))
+    : filterPeopleBySex(people, 'f');
 
   const womenAges = women.map(({ born, died }) => died - born);
 
@@ -82,10 +81,32 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return calculateAverage(ageDifferences);
 }
 
+/**
+ * Function to calculate average of numbers array
+ * Returns the average rounded to 2 decimal digits
+ *
+ * @param {number[]} numbers
+ *
+ * @return {number}
+ */
+
 function calculateAverage(numbers) {
   const sumOfNumbers = numbers.reduce((sum, age) => sum + age, 0);
 
   return Math.round((sumOfNumbers / numbers.length) * 100) / 100;
+}
+
+/**
+ * Function to filter array of people objects by sex
+ * and return filtered array
+ *
+ * @param {object[]} people
+ * @param {string} sex - 'f' for female, 'm' for male
+ *
+ * @return {number}
+ */
+function filterPeopleBySex(people, sex) {
+  return people.filter((person) => person.sex === sex);
 }
 
 module.exports = {
