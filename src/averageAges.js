@@ -42,7 +42,7 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
       .filter(person => person.mother === mother.name
         && (!onlyWithSon || person.sex === 'm'));
 
-    if (children.length > 0) {
+    if (children.length) {
       acc.push({
         mother, children,
       });
