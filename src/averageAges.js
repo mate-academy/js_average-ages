@@ -14,7 +14,7 @@ function filterPeopleByCentury(people, century) {
 
 function calcAverageAge(arr) {
   const averageAge = arr
-    .reduce((accumulator, age) => accumulator + age) / arrAge.length;
+    .reduce((accumulator, age) => accumulator + age) / arr.length;
     
   return averageAge;
 }
