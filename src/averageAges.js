@@ -15,10 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = century
-    ? filterPeopleBySex(people, 'm')
-      .filter(person => century === Math.ceil(person.died / 100))
-    : filterPeopleBySex(people, 'm');
+  const men = people.filter(({ sex, died }) => (sex === 'm' && (
+    century
+      ? century === Math.ceil(died / 100)
+      : true
+  )));
+
+  // sex === ‘f’ && withChildren
+  //   ? people.some(() => {})
+  //   : true;
 
   const menAges = men.map(({ born, died }) => died - born);
 
@@ -40,11 +45,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = withChildren
-    ? filterPeopleBySex(people, 'f')
-      .filter((person) => people
-        .some(({ mother }) => mother === person.name))
-    : filterPeopleBySex(people, 'f');
+  const women = people.filter(({ sex, name }) => (sex === 'f' && (
+    withChildren
+      ? people.some(({ mother }) => mother === name)
+      : true
+  )));
 
   const womenAges = women.map(({ born, died }) => died - born);
 
@@ -67,9 +72,8 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const peopleWithMother = people.filter(person => people.some(mother => (
-    onlyWithSon
-      ? person.sex === 'm' && mother.name === person.mother
-      : mother.name === person.mother
+    mother.name === person.mother
+    && (onlyWithSon ? person.sex === 'm' : true)
   )));
 
   const ageDifferences = peopleWithMother.map((person) => {
@@ -89,24 +93,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
  *
  * @return {number}
  */
-
 function calculateAverage(numbers) {
   const sumOfNumbers = numbers.reduce((sum, age) => sum + age, 0);
 
   return Math.round((sumOfNumbers / numbers.length) * 100) / 100;
-}
-
-/**
- * Function to filter array of people objects by sex
- * and return filtered array
- *
- * @param {object[]} people
- * @param {string} sex - 'f' for female, 'm' for male
- *
- * @return {number}
- */
-function filterPeopleBySex(people, sex) {
-  return people.filter((person) => person.sex === sex);
 }
 
 module.exports = {
