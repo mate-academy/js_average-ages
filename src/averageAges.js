@@ -21,10 +21,6 @@ function calculateMenAverageAge(people, century) {
       : true
   )));
 
-  // sex === ‘f’ && withChildren
-  //   ? people.some(() => {})
-  //   : true;
-
   const menAges = men.map(({ born, died }) => died - born);
 
   return calculateAverage(menAges);
