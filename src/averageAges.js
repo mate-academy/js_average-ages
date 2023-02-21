@@ -22,10 +22,7 @@ function calculateMenAverageAge(people, century) {
         : true
     )));
 
-  const sumOfMenAges = men
-    .reduce((sum, { born, died }) => sum + (died - born), 0);
-
-  return divideAndRound(sumOfMenAges, men.length);
+  return divideAndRound(calculateSumOfAges(men), men.length);
 }
 
 /**
@@ -50,10 +47,7 @@ function calculateWomenAverageAge(people, withChildren) {
         : true
     )));
 
-  const sumOfWomenAges = women
-    .reduce((sum, { born, died }) => sum + (died - born), 0);
-
-  return divideAndRound(sumOfWomenAges, women.length);
+  return divideAndRound(calculateSumOfAges(women), women.length);
 }
 
 /**
@@ -81,18 +75,28 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ))
   );
 
-  const ageDifferences = peopleWithMother.map((person) => {
-    const personMother = people
-      .find(mother => mother.name === person.mother);
+  const sumOfDifferences = peopleWithMother
+    .map((person) => {
+      const motherOfThePerson = people
+        .find(mother => mother.name === person.mother);
 
-    return person.born - personMother.born;
-  });
-
-  const sumOfDifferences = ageDifferences
+      return person.born - motherOfThePerson.born;
+    })
     .reduce((sum, age) => sum + age, 0);
 
-  return divideAndRound(sumOfDifferences, ageDifferences.length);
+  return divideAndRound(sumOfDifferences, peopleWithMother.length);
 }
+
+/**
+ * Function to add all ages of all people in array
+ * Returns the sum of ages
+ *
+ * @param {number[]} people
+ *
+ * @return {number}
+ */
+const calculateSumOfAges = (people) => people
+  .reduce((sum, { born, died }) => sum + (died - born), 0);
 
 /**
  * Function to divide two values (a / b)
