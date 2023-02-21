@@ -15,18 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => century
-    ? person.sex === 'm'
-      && Math.ceil(person.died / 100) === century
-    : person.sex === 'm'
+  const men = people.filter(person =>
+    person.sex === 'm' && (
+      century
+        ? Math.ceil(person.died / 100) === century
+        : true
+    )
   );
 
-  const menAge = men.reduce((sum, man) =>
-    sum + (man.died - man.born), 0);
-
-  const averageAge = menAge / men.length;
-
-  return averageAge;
+  return getAvagareAge(men);
 }
 
 /**
@@ -49,13 +46,14 @@ function calculateWomenAverageAge(people, withChildren) {
     : person.sex === 'f'
   );
 
-  return women.reduce((sum, woman) =>
-    sum + (woman.died - woman.born), 0) / women.length;
+  return getAvagareAge(women);
 }
 
 function isMother(people, woman) {
   return people.some(
-    child => child.mother === woman.name
+    child =>
+      child.mother === woman.name
+      && woman.sex === 'f'
   );
 }
 
@@ -74,21 +72,27 @@ function isMother(people, woman) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person => onlyWithSon
-    ? person.sex === 'm' && hasMother(people, person.mother)
-    : hasMother(people, person.mother)
+  const children = people.filter(person =>
+    hasMother(people, person.mother) && (
+      onlyWithSon
+        ? person.sex === 'm'
+        : true
+    )
   );
 
-  const mothersAge = children.map(child =>
-    child.born - motherBorn(people, child.mother)
-  );
-
-  const totalAge = mothersAge.reduce((result, child) =>
-    result + child, 0);
+  const totalAge = children.reduce((result, child) =>
+    result + (
+      child.born - motherBorn(people, child.mother)
+    ), 0);
 
   const averageAge = totalAge / children.length;
 
   return averageAge;
+}
+
+function getAvagareAge(people) {
+  return people.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / people.length;
 }
 
 function hasMother(people, motherName) {
