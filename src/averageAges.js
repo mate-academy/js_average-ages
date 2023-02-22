@@ -50,11 +50,8 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function isMother(people, woman) {
-  return people.some(
-    child =>
-      child.mother === woman.name
-      && woman.sex === 'f'
-  );
+  return woman.sex === 'f' && people.some(
+    child => child.mother === woman.name);
 }
 
 /**
