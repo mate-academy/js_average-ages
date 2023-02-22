@@ -76,11 +76,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   );
 
   const sumOfDifferences = peopleWithMother
-    .reduce((sum, { born: personBorn, mother: motherName }) => (
-      sum + personBorn - people
+    .reduce((sum, { born: personBorn, mother: motherName }) => {
+      const motherBorn = people
         .find((person) => person.name === motherName)
-        .born
-    ), 0);
+        .born;
+
+      return sum + personBorn - motherBorn;
+    }, 0);
 
   return divideAndRound(sumOfDifferences, peopleWithMother.length);
 }
