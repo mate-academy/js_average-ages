@@ -14,12 +14,18 @@
  *
  * @return {number}
  */
+// learn how to use array methods like .filter .map .some .every .find .reduce
+// avoid using loop and forEach
+// replace `if ()` statement with &&, || or ?:
+// without nesting
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrayOfMen = people.filter(man => man.sex === 'm');
+  const arrayOfMenByCenturies = arrayOfMen.filter(man => century
+    ? Math.ceil(man.died / 100) === century : man);
+  const ageOfMen = arrayOfMenByCenturies.map(man => man.died - man.born);
+  const averageOfMenAge = ageOfMen.reduce((prev, next) => prev + next, 0);
+
+  return averageOfMenAge / ageOfMen.length;
 }
 
 /**
@@ -37,7 +43,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrayOfWomen = people.filter(woman => woman.sex === 'f');
+  const womenWithChildren = arrayOfWomen.filter(woman => withChildren
+    ? people.some(person => person.mother === woman.name) : woman);
+  const ageOfWomen = womenWithChildren.map(woman => woman.died - woman.born);
+  const averageOfWomenAge = ageOfWomen.reduce((prev, next) => prev + next, 0);
+
+  return averageOfWomenAge / ageOfWomen.length;
 }
 
 /**
@@ -55,7 +67,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const peopleWithMother = people.filter(person => people.some(mother => (
+    mother.name === person.mother && (onlyWithSon ? person.sex === 'm' : person)
+  )));
+
+  const sumOfDifferences = peopleWithMother
+    .reduce((acc, { born: personBornDate, mother: motherName }) => {
+      const motherBornDate = people.find((person) => person.name === motherName)
+        .born;
+
+      return acc + personBornDate - motherBornDate;
+    }, 0);
+
+  return Math.round(((sumOfDifferences / peopleWithMother.length) * 100)) / 100;
 }
 
 module.exports = {
