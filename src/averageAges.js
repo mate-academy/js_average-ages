@@ -16,15 +16,11 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
-    ? (person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : person.sex === 'm'
+    ? (isMan(person) && isFromCentury(person, century))
+    : isMan(person)
   );
 
-  const menAges = men.map(man => (man.died - man.born));
-
-  const sumAges = menAges.reduce((sum, age) => sum + age, 0);
-
-  return sumAges / menAges.length;
+  return getAverageAge(men);
 }
 
 /**
@@ -43,15 +39,11 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => withChildren
-    ? people.some(child => child.mother === person.name)
-    : person.sex === 'f'
+    ? hasChildren(people, person)
+    : isWoman(person)
   );
 
-  const womenAges = women.map(woman => (woman.died - woman.born));
-
-  const sumAges = womenAges.reduce((sum, age) => sum + age, 0);
-
-  return sumAges / womenAges.length;
+  return getAverageAge(women);
 }
 
 /**
@@ -70,17 +62,44 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(person => onlyWithSon
-    ? person.sex === 'm' && people.some(woman => woman.name === person.mother)
-    : people.some(woman => woman.name === person.mother)
+    ? isMan(person) && hasSon(people, person)
+    : hasSon(people, person)
   );
 
-  const motherAge = children.map(child =>
-    child.born - (people.find(person => person.name === child.mother).born)
-  );
+  const total = children.reduce((sum, child) => {
+    const mother = people.find(person => person.name === child.mother);
 
-  const total = motherAge.reduce((sum, age) => sum + age, 0);
+    return mother
+      ? sum + (child.born - mother.born)
+      : sum;
+  }, 0);
 
   return total / children.length;
+}
+
+function getAverageAge(people) {
+  return people.reduce((sum, person) =>
+    sum + (person.died - person.born), 0) / people.length;
+}
+
+function isMan(person) {
+  return person.sex === 'm';
+}
+
+function isFromCentury(person, century) {
+  return Math.ceil(person.died / 100) === century;
+}
+
+function isWoman(person) {
+  return person.sex === 'f';
+}
+
+function hasChildren(people, person) {
+  return people.some(child => child.mother === person.name);
+}
+
+function hasSon(people, person) {
+  return people.some(woman => woman.name === person.mother);
 }
 
 module.exports = {
