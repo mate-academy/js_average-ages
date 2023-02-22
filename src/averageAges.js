@@ -21,13 +21,14 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  let onlyMen = people.filter(({ sex }) => sex === 'm');
+  const onlyMen = people.filter(({ died, sex }) => {
+    const isMan = sex === 'm';
+    const centuryOfDeath = Math.ceil(died / 100);
 
-  if (typeof century === 'number') {
-    onlyMen = onlyMen.filter(({ died }) => {
-      return Math.ceil(died / 100) === century;
-    });
-  }
+    return typeof century === 'number'
+      ? isMan && centuryOfDeath === century
+      : isMan;
+  });
 
   const ageSum = onlyMen.reduce((acc, { born, died }) => {
     return acc + died - born;
