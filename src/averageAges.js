@@ -17,19 +17,24 @@
 function calculateMenAverageAge(people, century) {
   const filteredMen = people
     .filter((person) => {
-      return century !== undefined
+      const isMan = person.sex === 'm';
+      const isFromCentury = century
         ? Math.ceil(person.died / 100) === century
-          && person.sex === 'm'
-        : person.sex === 'm';
+        : true;
+
+      return isMan && isFromCentury;
     });
 
-  const sumOfMenAges = filteredMen.reduce((prevRetun, person) => {
-    return prevRetun + (person.died - person.born);
-  }, 0);
-
-  return sumOfMenAges / filteredMen.length;
+  return getAverageAge(filteredMen);
 }
 
+function getAverageAge(peoples) {
+  const sumOfAge = peoples.reduce((accumulator, person) => {
+    return accumulator + (person.died - person.born);
+  }, 0);
+
+  return sumOfAge / peoples.length;
+}
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -44,20 +49,19 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   const filteredWomen = people
     .filter((person) => {
-      return withChildren
-        ? people.some((el) => el.mother === person.name)
-          && person.sex === 'f'
-        : person.sex === 'f';
+      const isWoman = person.sex === 'f';
+      const haveChildren = withChildren
+        ? people.some((child) => child.mother === person.name)
+        : true;
+
+      return isWoman && haveChildren;
     });
 
-  const sumOfWomenAges = filteredWomen.reduce((prevRetun, person) => {
-    return prevRetun + (person.died - person.born);
-  }, 0);
-
-  return sumOfWomenAges / filteredWomen.length;
+  return getAverageAge(filteredWomen);
 }
 
 /**
@@ -84,10 +88,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       )
     )));
 
-  const averageDiff = children.reduce((prevRetun, person) => {
+  const averageDiff = children.reduce((accumulator, person) => {
     const mother = people.find(woman => woman.name === person.mother);
 
-    return prevRetun + (person.born - mother.born);
+    return accumulator + (person.born - mother.born);
   }, 0);
 
   return averageDiff / children.length;
