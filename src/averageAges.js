@@ -69,9 +69,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       : child
   ));
 
-  return +((childrens.reduce((sum, child) => sum + child.born - (
+  return (childrens.reduce((sum, child) => sum + child.born - (
     findMums(people, child.mother).born
-  ), 0)) / childrens.length).toFixed(2);
+  ), 0)) / childrens.length;
 }
 
 function whatTheSex(peoples, letter) {
@@ -79,9 +79,9 @@ function whatTheSex(peoples, letter) {
 }
 
 function calculateAverageAge(peoples) {
-  return +(peoples.reduce((sum, person) => (
+  return peoples.reduce((sum, person) => (
     sum + (person.died - person.born)
-  ), 0) / peoples.length).toFixed(2);
+  ), 0) / peoples.length;
 }
 
 function findMums(peoples, childMother) {
