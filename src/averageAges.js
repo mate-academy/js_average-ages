@@ -1,5 +1,13 @@
 'use strict';
 
+const MAN = 'm';
+const WOMAN = 'f';
+const COUNT = 0;
+
+const lifeTime = (born, died) => {
+  return (died - born);
+};
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +23,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const listOfMen = people.filter(({ sex, died }) => {
+    return (sex === MAN) && (
+      century
+        ? Math.ceil(died / 100) === century
+        : true
+    );
+  });
+  const averageAge = listOfMen.reduce(
+    (acc, { born: manBorn, died: manDied }) => {
+      return acc + lifeTime(manBorn, manDied);
+    }, COUNT);
+
+  return averageAge / listOfMen.length;
 }
 
 /**
@@ -36,8 +52,21 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const listOfWomen = people.filter(({ name, sex }) => {
+    return (sex === WOMAN) && (
+      withChildren
+        ? (people.some(({ mother }) => mother === name))
+        : true
+    );
+  });
+  const averageAge = listOfWomen.reduce(
+    (acc, { born: womanBorn, died: womanDied }) => {
+      return acc + lifeTime(womanBorn, womanDied);
+    }, COUNT);
+
+  return averageAge / listOfWomen.length;
 }
 
 /**
@@ -55,7 +84,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(({ mother, sex }) => (
+    people.some(({ name }) => name === mother) && (
+      onlyWithSon
+        ? sex === MAN
+        : true
+    )
+  ));
+
+  const differenceOfAge = children.reduce(
+    (acc, { mother, born: childBorn }) => {
+      const { born: motherBorn } = people.find(({ name }) => mother === name);
+
+      return acc + (childBorn - motherBorn);
+    }, COUNT);
+
+  return differenceOfAge / children.length;
 }
 
 module.exports = {
