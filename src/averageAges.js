@@ -24,11 +24,7 @@ function calculateMenAverageAge(people, century) {
     return isMan && isFromCentury;
   });
 
-  const ageSum = onlyMen.reduce((acc, { born, died }) => {
-    return acc + died - born;
-  }, 0);
-
-  return ageSum / onlyMen.length;
+  return calculateAverageAge(onlyMen);
 }
 
 /**
@@ -52,9 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : sex === 'f';
   });
 
-  const averageAge = calculateAverageAge(onlyWomen);
-
-  return averageAge;
+  return calculateAverageAge(onlyWomen);
 }
 
 function calculateAverageAge(people) {
