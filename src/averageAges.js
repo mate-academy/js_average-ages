@@ -7,22 +7,10 @@ const getByKeyValue = (key, value) => people => {
 const getMen = getByKeyValue('sex', 'm');
 const getWomen = getByKeyValue('sex', 'f');
 
-const getValuesArr = (key) => people => {
-  const resultArr = [];
-
-  people.filter(person => person[key] !== null
-    ? resultArr.push(person[key]) : null);
-
-  return resultArr;
-};
-
-const getMotherNames = getValuesArr('mother');
-
-const getMothers = (people, group = people) => {
+const getMothers = (people) => {
   const women = getWomen(people);
-  const motherNames = getMotherNames(group);
 
-  return women.filter(woman => motherNames.includes(woman['name']));
+  return women.filter(woman => people.some(person => person.mother === woman.name));
 };
 
 const getCentury = died => Math.ceil(died / 100);
@@ -94,12 +82,11 @@ function calculateWomenAverageAge(people, withChildren = false) {
 
 function calculateAverageAgeDiff(people, onlyWithSon = false) {
   const children = onlyWithSon ? getMen(people) : people;
-  const mothers = getMothers(people, children);
-  const ageDiffs = children.map(child => {
-    const motherName = child['mother'];
-    const mother = mothers.filter(mom => mom['name'] === motherName);
+  const mothers = getMothers(people);
+  const ageDiffs = children.map(({ mother: motherName, born: childBorn }) => {
+    const mother = mothers.filter(({ name }) => name === motherName);
 
-    return mother.length !== 0 ? child['born'] - mother[0]['born'] : null;
+    return mother.length !== 0 ? childBorn - mother[0]['born'] : null;
   });
   const filteredDiffs = ageDiffs.filter(age => age);
 
