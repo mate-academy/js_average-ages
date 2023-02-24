@@ -16,10 +16,10 @@
  */
 function calculateMenAverageAge(people, century) {
   const menSelector = people.filter(person => century
-    ? personGender(person, 'm') && centurySelector(person, century)
-    : personGender(person, 'm'));
+    ? choosePersonGender(person, 'm') && chooseCentury(person, century)
+    : choosePersonGender(person, 'm'));
 
-  return avarageAge(menSelector);
+  return countAvarageAge(menSelector);
 }
 
 /**
@@ -38,10 +38,10 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenSelector = people.filter(person => withChildren
-    ? personGender(person, 'f') && hasChildren(people, person)
-    : personGender(person, 'f'));
+    ? choosePersonGender(person, 'f') && checkHasChildren(people, person)
+    : choosePersonGender(person, 'f'));
 
-  return avarageAge(womenSelector);
+  return countAvarageAge(womenSelector);
 }
 
 /**
@@ -61,7 +61,7 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(person => onlyWithSon
     ? people.some(woman => woman.name === person.mother)
-      && personGender(person, 'm')
+      && choosePersonGender(person, 'm')
     : people.some(woman => woman.name === person.mother));
 
   const difference = children.map(child => {
@@ -73,20 +73,20 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return difference.reduce((total, age) => total + age, 0) / difference.length;
 }
 
-function avarageAge(people) {
+function countAvarageAge(people) {
   return people.reduce((total, person) =>
     total + (person.died - person.born), 0) / people.length;
 }
 
-function personGender(person, gender) {
+function choosePersonGender(person, gender) {
   return person.sex === gender;
 }
 
-function centurySelector(person, century) {
+function chooseCentury(person, century) {
   return Math.ceil(person.died / 100) === century;
 }
 
-function hasChildren(people, person) {
+function checkHasChildren(people, person) {
   return people.some(child => child.mother === person.name);
 }
 
