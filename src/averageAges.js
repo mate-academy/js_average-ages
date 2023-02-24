@@ -14,23 +14,31 @@
  *
  * @return {number}
  */
+const totalYears = person => person.died - person.born;
+
+const averageAge = (ages) => {
+  const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
+
+  return sumOfAges / ages.length;
+};
+
 function calculateMenAverageAge(people, century) {
-  const mans = [...people]
-    .filter(person => person.sex === 'm');
+  const mans = people.filter(person => person.sex === 'm');
 
-  const diedMensCentury = mans
-    .filter(person => Math.ceil(person.died / 100) === century)
-    .map(person => (person.died - person.born));
+  const manAverage = century ? mans.reduce((diedCetury, person) => {
+    if (Math.ceil(person.died / 100) === century) {
+      diedCetury.push(totalYears(person));
+    }
 
-  const averageDiedAge = diedMensCentury
-    .reduce((sum, age) => sum + age, 0) / diedMensCentury.length;
+    return diedCetury;
+  }, [])
+    : mans.reduce((died, person) => {
+      died.push(totalYears(person));
 
-  const allMensAges = mans.map(person => (person.died - person.born));
+      return died;
+    }, []);
 
-  const averagePersonsAges = allMensAges
-    .reduce((sum, age) => sum + age, 0) / allMensAges.length;
-
-  return century ? averageDiedAge : averagePersonsAges;
+  return averageAge(manAverage);
 }
 
 /**
@@ -53,11 +61,8 @@ function calculateWomenAverageAge(people, withChildren) {
     : person.sex === 'f'
   );
 
-  const womenAges = women
-    .map(woman => (woman.died - woman.born));
-
-  const sumAges = womenAges
-    .reduce((sum, age) => sum + age, 0)
+  const sumAges = women
+    .reduce((sum, age) => sum + totalYears(age), 0)
     / women.length;
 
   return sumAges;
@@ -77,12 +82,6 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-
-const averageAge = (ages) => {
-  const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
-
-  return Math.round((sumOfAges / ages.length) * 100) / 100;
-};
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const peopleWithMother = people.filter(person => people.some(mother => (
