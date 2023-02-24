@@ -10,7 +10,8 @@ const getWomen = getByKeyValue('sex', 'f');
 const getMothers = (people) => {
   const women = getWomen(people);
 
-  return women.filter(woman => people.some(person => person.mother === woman.name));
+  return women
+    .filter(woman => people.some(person => person.mother === woman.name));
 };
 
 const getCentury = died => Math.ceil(died / 100);
