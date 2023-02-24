@@ -16,12 +16,7 @@ function calculateMenAverageAge(people, century) {
     ? person.filter(boy => Math.ceil(boy.died / 100) === century)
     : person;
 
-  const ageSum = getAverage(person);
-
-  return ageSum;
-  // const averageSum = getAverage(person);
-
-  // return averageSum;
+  return getAverage(person);
 }
 
 /**
@@ -45,9 +40,7 @@ function calculateWomenAverageAge(people, withChildren) {
     )
     : people.filter(person => person.sex === 'f');
 
-  const ageSum = getAverage(woman);
-
-  return ageSum;
+  return getAverage(woman);
 }
 
 /**
