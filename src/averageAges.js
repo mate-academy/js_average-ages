@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(
+    person => century
+      ? getPersonGender(person, 'm')
+      && getDateOfDied(person, century)
+      : getPersonGender(person, 'm'));
+
+  return getAverageAge(men);
 }
 
 /**
@@ -37,7 +39,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(
+    person => withChildren
+      ? getChildren(people, person)
+      : getPersonGender(person, 'f'));
+
+  return getAverageAge(women);
 }
 
 /**
@@ -55,7 +62,44 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter(
+    child => onlyWithSon
+      ? getPersonGender(child, 'm')
+      && getMother(people, child)
+      : getMother(people, child));
+
+  return diffChildAndMother(children, people);
+}
+
+function getPersonGender(person, sex) {
+  return person.sex === sex;
+}
+
+function getDateOfDied(person, century) {
+  return Math.ceil(person.died / 100) === century;
+}
+
+function getAverageAge(people) {
+  return people.reduce(
+    (acc, person) => acc + (person.died - person.born), 0) / people.length;
+}
+
+function getChildren(people, person) {
+  return people.some(children => children.mother === person.name);
+}
+
+function getMother(people, person) {
+  return people.some(woman => woman.name === person.mother);
+}
+
+function diffChildAndMother(children, people) {
+  const total = children.reduce((acc, child) => {
+    const mother = people.find(mom => mom.name === child.mother);
+
+    return (acc + (child.born - mother.born));
+  }, 0);
+
+  return total / children.length;
 }
 
 module.exports = {
