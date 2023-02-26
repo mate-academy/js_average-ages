@@ -15,16 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
   const mens = people.filter(({ sex, died }) => sex === 'm'
-    && (century ? century === Math.ceil(died / 100) : true));
+    && (
+      century
+        ? century === Math.ceil(died / 100)
+        : true
+    ));
 
-  return Math.round(((mens.reduce((sum, { born, died }) =>
-    sum + (died - born), 0) / mens.length) * 100)) / 100;
+  return divideAndRound(calculateSumOfAges(mens), mens.length);
 }
 
 /**
@@ -42,19 +40,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  if (withChildren) {
-    const memsWidthSon = people.filter(({ name, sex }) =>
-      sex === 'f' && people
-        .some(({ mother }) => mother === name));
+  const women = people.filter(({ sex, name }) => (
+    sex === 'f' && (
+      withChildren
+        ? people.some(({ mother }) => mother === name)
+        : true
+    )));
 
-    return Math.round(((memsWidthSon.reduce((sum, { born, died }) =>
-      sum + (died - born), 0) / memsWidthSon.length) * 100)) / 100;
-  }
+  return divideAndRound(calculateSumOfAges(women), women.length);
 
-  const mems = people.filter(({ sex }) => sex === 'f');
-
-  return Math.round(((mems.reduce((sum, { born, died }) =>
-    sum + (died - born), 0) / mems.length) * 100)) / 100;
+  // return getAverageNumber(sumOfWomen, women.length);
 }
 
 /**
@@ -91,8 +86,29 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       return sum + personBorn - motherBorn;
     }, 0);
 
-  return Math.round(((sumOfDifferences / peopleWithMother.length) * 100)) / 100;
+  return divideAndRound(sumOfDifferences, peopleWithMother.length);
 }
+
+/**
+ * Function to add all ages of all people in array
+ * Returns the sum of ages
+ *
+ * @param {number[]} people
+ *
+ * @return {number}
+ */
+const calculateSumOfAges = (people) => people
+  .reduce((sum, { born, died }) => sum + (died - born), 0);
+/**
+ * Function to divide two values (a / b)
+ * Returns the result rounded to 2 decimal digits
+ *
+ * @param {number} a
+ * @param {number} b
+ *
+ * @return {number}
+ */
+const divideAndRound = (a, b) => Math.round((a / b) * 100) / 100;
 
 module.exports = {
   calculateMenAverageAge,
