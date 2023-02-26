@@ -16,14 +16,17 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people.filter(({ sex, died }) => {
+    const menDied = Math.ceil(died / 100) === century;
+    const isMen = sex === 'm';
+
     return century
-      ? Math.ceil(died / 100) === century && sex === 'm'
-      : sex === 'm';
+      ? menDied && isMen
+      : isMen;
   });
 
-  const calcAge = men.map(({ died, born }) => died - born);
+  const calculatedAge = men.map(({ died, born }) => died - born);
 
-  return calcAverageAge(calcAge);
+  return calculateAverageAge(calculatedAge);
 }
 
 /**
@@ -42,14 +45,17 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(({ name, sex }) => {
+    const womenWithChildren = people.some(({ mother }) => mother === name);
+    const isWomen = sex === 'f';
+
     return withChildren
-      ? people.some(({ mother }) => mother === name) && sex === 'f'
-      : sex === 'f';
+      ? womenWithChildren && isWomen
+      : isWomen;
   });
 
-  const calcAge = women.map(({ died, born }) => died - born);
+  const calculatedAge = women.map(({ died, born }) => died - born);
 
-  return calcAverageAge(calcAge);
+  return calculateAverageAge(calculatedAge);
 }
 
 /**
@@ -68,21 +74,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(({ mother, sex }) => {
+    const personIsMother = people.some(({ name }) => name === mother);
+    const childIsMale = sex === 'm';
+
     return onlyWithSon
-      ? people.some(({ name }) => name === mother) && sex === 'm'
-      : people.some(({ name }) => name === mother);
+      ? personIsMother && childIsMale
+      : personIsMother;
   });
 
-  const calcAge = children.map(({ mother, born }) => {
+  const calculatedAge = children.map(({ mother, born }) => {
     const mom = people.find(({ name }) => name === mother);
 
     return born - mom.born;
   });
 
-  return calcAverageAge(calcAge);
+  return calculateAverageAge(calculatedAge);
 }
 
-function calcAverageAge(arr) {
+function calculateAverageAge(arr) {
   return arr.reduce((sum, age) => sum + age, 0) / arr.length;
 }
 
