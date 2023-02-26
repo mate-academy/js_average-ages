@@ -14,23 +14,28 @@
  *
  * @return {number}
  */
+function personAvgAge(male) {
+  const totalAges = male.reduce((sum, human) =>
+    sum + (human.died - human.born), 0);
+  const avgAge = totalAges / male.length;
+
+  return avgAge;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  const men = people.filter((human) => human.sex === 'm');
-  const menDiedThisCentury = men.filter((human) =>
-    Math.ceil(human.died / 100) === century);
-  const totalAges = men.reduce((sum, human) =>
-    sum + (human.died - human.born), 0);
-  const totalAgesThisCentury = menDiedThisCentury.reduce((sum, human) =>
-    sum + (human.died - human.born), 0);
+  let men = people.filter((human) => human.sex === 'm');
 
-  return (arguments.length === 1)
-    ? totalAges / men.length
-    : totalAgesThisCentury / menDiedThisCentury.length;
+  if (century) {
+    men = men.filter((human) =>
+      Math.ceil(human.died / 100) === century);
+  }
+
+  return personAvgAge(men);
 }
 
 /**
@@ -48,7 +53,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter((human) => human.sex === 'f');
+
+  if (withChildren) {
+    women = women.filter((woman) => {
+      return people.some((human) =>
+        human.mother === woman.name);
+    });
+  }
+
+  return personAvgAge(women);
 }
 
 /**
@@ -66,7 +80,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter((human) => {
+    const mother = people.some((woman) =>
+      woman.name === human.mother);
+
+    if (onlyWithSon) {
+      return mother && human.sex === 'm';
+    }
+
+    return mother;
+  });
+
+  const difference = children.map((child) => {
+    const motherObj = people.find((mom) => mom.name === child.mother);
+
+    return child.born - motherObj.born;
+  });
+
+  const totalDiff = difference.reduce((diff, diffNext) => diff + diffNext, 0);
+
+  return totalDiff / difference.length;
 }
 
 module.exports = {
