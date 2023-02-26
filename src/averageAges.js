@@ -15,13 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(person => {
+  const men = people.filter(({ sex, died }) => {
     return century
-      ? Math.ceil(person.died / 100) === century && person.sex === 'm'
-      : person.sex === 'm';
+      ? Math.ceil(died / 100) === century && sex === 'm'
+      : sex === 'm';
   });
 
-  const calcAge = men.map(man => man.died - man.born);
+  const calcAge = men.map(({ died, born }) => died - born);
 
   return calcAverageAge(calcAge);
 }
@@ -41,13 +41,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => {
+  const women = people.filter(({ name, sex }) => {
     return withChildren
-      ? people.some(child => child.mother === person.name) && person.sex === 'f'
-      : person.sex === 'f';
+      ? people.some(({ mother }) => mother === name) && sex === 'f'
+      : sex === 'f';
   });
 
-  const calcAge = women.map(woman => woman.died - woman.born);
+  const calcAge = women.map(({ died, born }) => died - born);
 
   return calcAverageAge(calcAge);
 }
@@ -67,16 +67,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(child => {
+  const children = people.filter(({ mother, sex }) => {
     return onlyWithSon
-      ? people.some(mother => mother.name === child.mother) && child.sex === 'm'
-      : people.some(mother => mother.name === child.mother);
+      ? people.some(({ name }) => name === mother) && sex === 'm'
+      : people.some(({ name }) => name === mother);
   });
 
-  const calcAge = children.map(child => {
-    const mother = people.find(mom => mom.name === child.mother);
+  const calcAge = children.map(({ mother, born }) => {
+    const mom = people.find(({ name }) => name === mother);
 
-    return child.born - mother.born;
+    return born - mom.born;
   });
 
   return calcAverageAge(calcAge);
