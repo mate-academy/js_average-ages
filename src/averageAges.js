@@ -18,16 +18,13 @@ const lifeDuration = ({ died, born }) => died - born;
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men;
-
-  century
-    ? men = people.filter(person =>
+  const men = century
+    ? people.filter(person =>
       person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : men = people.filter(person => person.sex === 'm');
+    : people.filter(person => person.sex === 'm');
 
   const life = men.map(lifeDuration);
-  const sum = life.reduce(getAvarge);
-  const result = sum / life.length;
+  const result = life.reduce(getAvarge) / life.length;
 
   return result;
 
@@ -53,16 +50,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women;
-
-  withChildren
-    ? women = people.filter(person =>
-      person.sex === 'f' && people.find(child => child.mother === person.name))
-    : women = people.filter(person => person.sex === 'f');
+  const women = withChildren
+    ? people.filter(person =>
+      person.sex === 'f' && people.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
 
   const life = women.map(lifeDuration);
-  const sum = life.reduce(getAvarge);
-  const result = sum / life.length;
+  const result = life.reduce(getAvarge) / life.length;
 
   return result;
 }
@@ -85,12 +79,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let children;
 
   onlyWithSon
-    ? children = people.filter(child => {
-      return people.some(mom => mom.name === child.mother && child.sex === 'm');
-    })
-    : children = people.filter(child => {
-      return people.some(mom => mom.name === child.mother);
-    });
+    ? children = people.filter(child =>
+      people.some(mom => mom.name === child.mother && child.sex === 'm'))
+    : children = people.filter(child =>
+      people.some(mom => mom.name === child.mother));
 
   const ages = children.map(child => {
     const moms = people.find(mom => mom.name === child.mother);
