@@ -24,8 +24,7 @@ function calculateMenAverageAge(people, century) {
       .reduce(calculateAverage, 0)
 
     : people
-      .filter(filterMan)
-      .filter(el => calculateCentury(el.died) === century)
+      .filter(el => calculateCentury(el.died) === century && filterMan(el))
       .map(findAge)
       .reduce(calculateAverage, 0);
 }
@@ -66,6 +65,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const changeForDiff
   = el => el.born - people.find(elem => elem.name === el.mother).born;
 
+  const FinMotherAndManFilter = el => findMotherFilter(el) && filterMan(el);
+
   return arguments.length < 2
     ? people
       .filter(findMotherFilter)
@@ -73,8 +74,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .reduce(calculateAverage, 0)
 
     : people
-      .filter(filterMan)
-      .filter(findMotherFilter)
+      .filter(FinMotherAndManFilter)
       .map(changeForDiff)
       .reduce(calculateAverage, 0);
 }
