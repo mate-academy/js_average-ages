@@ -8,10 +8,11 @@
  */
 
 const calculateAverage = (prev, obj, index, array) => prev + obj / array.length;
+const calculateAverageAge = (prev, obj, index, array) =>
+  prev + (obj.died - obj.born) / array.length;
 
 const calculateCentury = obj => Math.ceil(obj / 100);
 const filterMan = obj => obj.sex === 'm';
-const findAge = el => el.died - el.born;
 
 const filterWoman = obj => obj.sex === 'f';
 const findMotherNames = obj => obj.map(el => el.mother);
@@ -20,13 +21,11 @@ function calculateMenAverageAge(people, century) {
   return arguments.length < 2
     ? people
       .filter(filterMan)
-      .map(findAge)
-      .reduce(calculateAverage, 0)
+      .reduce(calculateAverageAge, 0)
 
     : people
       .filter(el => calculateCentury(el.died) === century && filterMan(el))
-      .map(findAge)
-      .reduce(calculateAverage, 0);
+      .reduce(calculateAverageAge, 0);
 }
 
 // without nesting
@@ -43,13 +42,11 @@ function calculateWomenAverageAge(people, withChildren) {
   return arguments.length < 2
     ? people
       .filter(filterWoman)
-      .map(findAge)
-      .reduce(calculateAverage, 0)
+      .reduce(calculateAverageAge, 0)
 
     : people
       .filter(checkMotherInArray)
-      .map(findAge)
-      .reduce(calculateAverage, 0);
+      .reduce(calculateAverageAge, 0);
 }
 
 /**
