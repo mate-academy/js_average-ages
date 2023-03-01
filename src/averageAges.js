@@ -14,6 +14,7 @@
  *
  * @return {number}
  */
+
 function personAvgAge(male) {
   const totalAges = male.reduce((sum, human) =>
     sum + (human.died - human.born), 0);
@@ -23,7 +24,15 @@ function personAvgAge(male) {
 }
 
 function filteredPeople(object, sex) {
-  return object.filter((human) => human.sex === sex);
+  const person = object.filter((human) => human.sex === sex);
+
+  function peopleWithDopInfo(dopInfo, callback) {
+    return person.filter((human) => (dopInfo)
+      ? callback(human)
+      : person);
+  }
+
+  return peopleWithDopInfo;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -33,13 +42,12 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
   const men = filteredPeople(people, 'm');
-  const filteredMen = men.filter((human) => (century)
-    ? Math.ceil(human.died / 100) === century
-    : men);
+  const menCallback = (human) => Math.ceil(human.died / 100) === century;
+
+  const filteredMen = men(century, menCallback);
 
   return personAvgAge(filteredMen);
 }
-
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -54,12 +62,14 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   const women = filteredPeople(people, 'f');
-  const filteredWomen = women.filter((human) => (withChildren)
-    ? people.some((woman) =>
-      woman.mother === human.name)
-    : women);
+  const womenCallback = (human) =>
+    people.some((woman) =>
+      woman.mother === human.name);
+
+  const filteredWomen = women(withChildren, womenCallback);
 
   return personAvgAge(filteredWomen);
 }
