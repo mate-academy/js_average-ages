@@ -20,6 +20,21 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let ages = people
+    .filter((person) => person.sex === 'm'
+    && century === Math.ceil(person.died / 100))
+    .map((person) => person.died - person.born);
+
+  if (!century) {
+    ages = people
+      .filter((person) => person.sex === 'm')
+      .map((person) => person.died - person.born);
+  }
+
+  const sumOfAges = ages.reduce((sum, age) => age + sum, 0);
+  const averageAge = sumOfAges / ages.length;
+
+  return averageAge || 0;
 }
 
 /**
@@ -38,6 +53,25 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const mothers = people
+    .filter(person => person.mother)
+    .map(person => person.mother);
+
+  let ages = people
+    .filter(person => person.sex === 'f' && mothers.includes(person.name))
+    .map(person => person.died - person.born);
+
+  if (!withChildren) {
+    ages = people
+      .filter(person => person.sex === 'f')
+      .map(person => person.died - person.born);
+  }
+
+  const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
+
+  const averageAge = sumOfAges / ages.length;
+
+  return averageAge || 0;
 }
 
 /**
@@ -56,6 +90,36 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const mothersName = people
+    .filter(person => person.mother)
+    .map(person => person.mother);
+
+  const mothersBirthDate = people
+    .filter(person => mothersName.includes(person.name))
+    .reduce((prev, person) => {
+      return {
+        ...prev,
+        [person.name]: person.born,
+      };
+    }, {});
+
+  let children = people
+    .filter(person => person.mother && person.sex === 'm'
+    && Object.keys(mothersBirthDate).includes(person.mother));
+
+  if (!onlyWithSon) {
+    children = people
+      .filter(person => person.mother
+        && Object.keys(mothersBirthDate).includes(person.mother));
+  }
+
+  const ageDifferences = children
+    .map(person => person.born - mothersBirthDate[person.mother]);
+
+  const sumOfdifferences
+  = ageDifferences.reduce((sum, value) => sum + value, 0);
+
+  return (sumOfdifferences / ageDifferences.length) || 0;
 }
 
 module.exports = {
