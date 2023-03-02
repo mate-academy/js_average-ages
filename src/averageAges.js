@@ -13,28 +13,33 @@
  * @param {number} century - optional
  *
  * @return {number}
+ *
  */
+const averageAge = function(array) {
+  const length = array.length;
+
+  return array.reduce((sum, age) => sum + age, 0) / length;
+};
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let ages = people
-    .filter((person) => person.sex === 'm'
-    && century === Math.ceil(person.died / 100))
-    .map((person) => person.died - person.born);
-
-  if (!century) {
-    ages = people
+  const ages = century
+    ? people
+      .filter((person) => person.sex === 'm'
+      && century === Math.ceil(person.died / 100))
+      .map((person) => person.died - person.born)
+    : people
       .filter((person) => person.sex === 'm')
       .map((person) => person.died - person.born);
-  }
 
-  const sumOfAges = ages.reduce((sum, age) => age + sum, 0);
-  const averageAge = sumOfAges / ages.length;
+  // const sumOfAges = ages.reduce((sum, age) => age + sum, 0);
+  // const averageAge = sumOfAges / ages.length;
 
-  return averageAge || 0;
+  return averageAge(ages) || 0;
 }
 
 /**
@@ -57,21 +62,19 @@ function calculateWomenAverageAge(people, withChildren) {
     .filter(person => person.mother)
     .map(person => person.mother);
 
-  let ages = people
-    .filter(person => person.sex === 'f' && mothers.includes(person.name))
-    .map(person => person.died - person.born);
-
-  if (!withChildren) {
-    ages = people
+  const ages = withChildren
+    ? people
+      .filter(person => person.sex === 'f' && mothers.includes(person.name))
+      .map(person => person.died - person.born)
+    : people
       .filter(person => person.sex === 'f')
       .map(person => person.died - person.born);
-  }
 
-  const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
+  // const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
 
-  const averageAge = sumOfAges / ages.length;
+  // const averageAge = sumOfAges / ages.length;
 
-  return averageAge || 0;
+  return averageAge(ages) || 0;
 }
 
 /**
