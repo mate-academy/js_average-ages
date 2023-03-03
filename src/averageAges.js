@@ -2,6 +2,7 @@
 
 const getAvarge = (all, a) => all + a;
 const lifeDuration = ({ died, born }) => died - born;
+const devide = (a, b) => a / b;
 
 /**
  * Implement calculateMenAverageAge function
@@ -24,7 +25,7 @@ function calculateMenAverageAge(people, century) {
     : people.filter(person => person.sex === 'm');
 
   const life = men.map(lifeDuration);
-  const result = life.reduce(getAvarge) / life.length;
+  const result = devide(life.reduce(getAvarge), life.length);
 
   return result;
 
@@ -56,7 +57,7 @@ function calculateWomenAverageAge(people, withChildren) {
     : people.filter(person => person.sex === 'f');
 
   const life = women.map(lifeDuration);
-  const result = life.reduce(getAvarge) / life.length;
+  const result = devide(life.reduce(getAvarge), life.length);
 
   return result;
 }
@@ -90,7 +91,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return child.born - moms.born;
   });
 
-  const result = ages.reduce(getAvarge) / ages.length;
+  const result = devide(ages.reduce(getAvarge), ages.length);
 
   return result;
 }
