@@ -82,39 +82,28 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let mothers = {};
   let childsCount = 0;
   let sumDifferences = 0;
+  let childs;
 
-  const child = (person) => people.find(
-    children => children.mother === person.name);
-
-  const childs = (person) => people.filter(
-    children => children.mother === person.name);
+  mothers = people.filter(
+    person => person.sex === 'f'
+      && people.some(
+        children => children.mother === person.name));
 
   if (onlyWithSon) {
-    mothers = people.filter(
-      person => person.sex === 'f' && child(person)
-        && child(person).sex === 'm');
-
-    for (const mother of mothers) {
-      mother.childs = childs(mother);
-
-      for (const children of mother.childs) {
-        if (children.sex === 'm') {
-          sumDifferences += children.born - mother.born;
-          childsCount++;
-        }
-      }
-    }
+    childs = (person) => people.filter(
+      children => children.mother === person.name
+        && children.sex === 'm');
   } else {
-    mothers = people.filter(
-      person => person.sex === 'f' && child(person));
+    childs = (person) => people.filter(
+      children => children.mother === person.name);
+  }
 
-    for (const mother of mothers) {
-      mother.childs = childs(mother);
+  for (const mother of mothers) {
+    mother.childs = childs(mother);
 
-      for (const children of mother.childs) {
-        sumDifferences += children.born - mother.born;
-        childsCount++;
-      }
+    for (const children of mother.childs) {
+      sumDifferences += children.born - mother.born;
+      childsCount++;
     }
   }
 
