@@ -15,8 +15,11 @@
  * @return {number}
  */
 
-function getCentury(year) {
-  return Math.ceil(year / 100);
+function personGender(gender, century) {
+  const getCentury = year => Math.ceil(year / 100);
+
+  return gender.filter(century ? person => person.sex === 'm'
+  && getCentury(person.died) === century : person => person.sex === 'm');
 }
 
 function getAverage(ages) {
@@ -26,8 +29,7 @@ function getAverage(ages) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(century ? person => person.sex === 'm'
-  && getCentury(person.died) === century : person => person.sex === 'm');
+  const men = personGender(people, century);
 
   return getAverage(men);
 }
@@ -51,9 +53,13 @@ function getIsMother(people, woman) {
   return people.some(names => names.mother === woman.name);
 }
 
+function getWomen(gender, children) {
+  return gender.filter(children ? person => person.sex === 'f'
+  && getIsMother(gender, person) : person => person.sex === 'f');
+}
+
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(withChildren ? person => person.sex === 'f'
-  && getIsMother(people, person) : person => person.sex === 'f');
+  const women = getWomen(people, withChildren);
 
   return getAverage(women);
 }
@@ -72,19 +78,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
+function findChildren(person, child) {
+  return person.some(women => women.name === child.mother);
+}
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(child => onlyWithSon
-    ? people.some(women => women.name === child.mother) && child.sex === 'm'
-    : people.some(women => women.name === child.mother)
+    ? findChildren(people, child) && child.sex === 'm'
+    : findChildren(people, child)
   );
 
-  const aver = children.reduce((acc, child) => {
+  const avg = children.reduce((acc, child) => {
     const mother = people.find(mom => mom.name === child.mother);
 
     return acc + child.born - mother.born;
   }, 0);
 
-  return aver / children.length;
+  return avg / children.length;
 }
 
 module.exports = {
