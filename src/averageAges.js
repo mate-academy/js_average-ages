@@ -20,21 +20,16 @@ function getCentury(year) {
 }
 
 function getAverage(ages) {
-  return ages.reduce((acc, elem) => acc + elem) / ages.length;
+  const age = ages.map(year => year.died - year.born);
+
+  return age.reduce((acc, elem) => acc + elem) / ages.length;
 }
 
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
   const men = people.filter(century ? person => person.sex === 'm'
   && getCentury(person.died) === century : person => person.sex === 'm');
 
-  const ages = men.map(year => year.died - year.born);
-
-  return getAverage(ages);
+  return getAverage(men);
 }
 
 /**
@@ -60,9 +55,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(withChildren ? person => person.sex === 'f'
   && getIsMother(people, person) : person => person.sex === 'f');
 
-  const ages = women.map(year => year.died - year.born);
-
-  return getAverage(ages);
+  return getAverage(women);
 }
 
 /**
