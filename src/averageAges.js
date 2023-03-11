@@ -14,29 +14,34 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const men = people.filter(a => a.sex === 'm');
+function calculateAverageAge(people, filterFunction) {
+  const filteredPeople
+    = filterFunction ? people.filter(filterFunction) : people;
 
-  const ages = men.map(({ born, died }) => (
+  const ages = filteredPeople.map(({ born, died }) => (
     {
       age: died - born,
-      centuryDied: Math.ceil(died / 100),
     }
   ));
-
-  if (century) {
-    const filteredAges = ages.filter(x => x.centuryDied === century);
-    const totalC = filteredAges.reduce((sum, { age }) => sum + age, 0);
-    const resultC = totalC / filteredAges.length;
-
-    return resultC;
-  }
 
   const total = ages.reduce((sum, { age }) => sum + age, 0);
   const result = total / ages.length;
 
   return result;
 }
+
+function calculateMenAverageAge(people, century) {
+  const filterFunction = (a) => a.sex === 'm';
+
+  if (century) {
+    const filteredFunction = (x) => Math.ceil(x.died / 100) === century;
+
+    return calculateAverageAge(people, (a) =>
+      filterFunction(a) && filteredFunction(a));
+  }
+
+  return calculateAverageAge(people, filterFunction);
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -53,36 +58,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(a => a.sex === 'f');
-
-  const agesW = women.map(({ born, died }) => (
-    {
-      age: died - born,
-    }
-  ));
+  const filterFunction = (a) => a.sex === 'f';
 
   if (withChildren) {
-    const motherStatus = people.filter(
-      (person) =>
-        person.sex === 'f' && people.some(
-          (p) => p.mother === person.name
-        )
-    );
-    const agesMoms = motherStatus.map(({ born, died }) => (
-      {
-        age: died - born,
-      }
-    ));
-    const totalMoms = agesMoms.reduce((sum, { age }) => sum + age, 0);
-    const resultMoms = totalMoms / agesMoms.length;
+    const filteredFunction = (a) => people.some((p) => p.mother === a.name);
 
-    return resultMoms;
+    return calculateAverageAge(people, (a) =>
+      filterFunction(a) && filteredFunction(a));
   }
 
-  const total = agesW.reduce((sum, { age }) => sum + age, 0);
-  const result = total / agesW.length;
-
-  return result;
+  return calculateAverageAge(people, filterFunction);
 }
 
 /**
