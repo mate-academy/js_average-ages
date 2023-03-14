@@ -18,9 +18,8 @@
 function getAverageAge(male) {
   const totalAges = male.reduce((sum, human) =>
     sum + (human.died - human.born), 0);
-  const avgAge = totalAges / male.length;
 
-  return avgAge;
+  return male.length > 0 ? totalAges / male.length : 0;
 }
 
 function createPeopleFilter(people, sex) {
