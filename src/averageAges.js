@@ -1,9 +1,26 @@
 'use strict';
 
 function getAvarageAge(array) {
-  const avaragaAge = array.reduce((sum, index) => sum + index) / array.length;
+  return array.reduce((sum, index) => sum + index) / array.length;
+}
 
-  return avaragaAge;
+function getAge(array) {
+  return array.map(person => person.died - person.born);
+}
+
+function getChildren(people) {
+  return people.filter(child => (
+    people.some(person => child.mother === person.name))
+  );
+}
+
+function getBoys(children) {
+  return children.filter(child => child.sex === 'm');
+}
+
+function calculateAgeDifference(childrenArray, people) {
+  return childrenArray.map(child => child.born - people.find(mother =>
+    child.mother === mother.name).born);
 }
 
 function calculateMenAverageAge(people, century) {
@@ -14,8 +31,8 @@ function calculateMenAverageAge(people, century) {
   );
 
   const menAge = (!century)
-    ? men.map(person => person.died - person.born)
-    : menDiedCentury.map(person => person.died - person.born);
+    ? getAge(men)
+    : getAge(menDiedCentury);
 
   const avarageMenAge = getAvarageAge(menAge);
 
@@ -30,8 +47,8 @@ function calculateWomenAverageAge(people, withChildren) {
   );
 
   const womenAge = (!withChildren)
-    ? women.map(person => person.died - person.born)
-    : womenWithChildren.map(person => person.died - person.born);
+    ? getAge(women)
+    : getAge(womenWithChildren);
 
   const avarageWomenAge = getAvarageAge(womenAge);
 
@@ -39,17 +56,13 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(child => (
-    people.some(person => child.mother === person.name))
-  );
+  const children = getChildren(people);
 
-  const boys = children.filter(person => person.sex === 'm');
+  const boys = getBoys(children);
 
   const ageDifference = (!onlyWithSon)
-    ? children.map(child => child.born - people.find(mother =>
-      child.mother === mother.name).born)
-    : boys.map(child => child.born - people.find(mother =>
-      child.mother === mother.name).born);
+    ? calculateAgeDifference(children, people)
+    : calculateAgeDifference(boys, people);
 
   const avarageAgeDifference = getAvarageAge(ageDifference);
 
