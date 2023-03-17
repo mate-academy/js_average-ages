@@ -77,7 +77,7 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
 
   const averageAge = difference.reduce((sum, num) => sum + num);
 
-  return (averageAge / difference.length).toFixed(2);
+  return +(averageAge / difference.length).toFixed(2);
 }
 
 module.exports = {
