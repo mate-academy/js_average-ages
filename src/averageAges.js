@@ -44,7 +44,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.filter(mother =>
     withChildren
       ? mother.sex === 'f'
-      && people.filter(child => child.mother === mother.name).length > 0
+      && people.some(child => child.mother === mother.name)
       : mother.sex === 'f');
 
   return +(mothers.map(({ born, died }) => died - born)
