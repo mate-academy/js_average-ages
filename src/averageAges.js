@@ -22,11 +22,11 @@ const findAverage = arr => {
 };
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(man =>
-    century
-      ? man.sex === 'm'
+  const men = people.filter(man => century
+    ? man.sex === 'm'
       && Math.ceil(man.died / 100) === century
-      : man.sex === 'm');
+    : man.sex === 'm'
+  );
 
   return findAverage(men);
 }
