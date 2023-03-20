@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -15,11 +16,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const data = century
+    ? people.filter(el => century === Math.ceil(el.died / 100) && el.sex === 'm')
+    : people.filter(el => el.sex === 'm');
+
+  const allAges = data.map(el => el.died - el.born);
+  const average = (allAges.reduce((acc, el) => acc + el) / allAges.length).toFixed(2);
+
+  return +average;
 }
 
 /**
@@ -37,8 +41,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+  const data = withChildren
+    ? people.filter(el => el.mother !== null).map(el => el.mother)
+    : people.filter(el => el.sex === 'f');
+
+  const mothers = people.filter(el => data.includes(el.name));
+  const avg = mothers.map(el => el.died - el.born);
+
+  const allAges = data.map(el => el.died - el.born);
+  const average = withChildren
+    ? (avg.reduce((acc, el) => acc + el, 0) / avg.length).toFixed(2)
+    : (allAges.reduce((acc, el) => acc + el, 0) / allAges.length).toFixed(2);
+
+  return +average;
+};
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -55,7 +71,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const data = onlyWithSon
+    ? people.filter(el => people.some(mom => mom.name === el.mother) && el.sex === 'm')
+    : people.filter(el => people.some(mom => mom.name === el.mother));
+
+  const average = data.reduce((acc, el) => {
+    const mother = people.find(mom => mom.name === el.mother);
+    const diference = el.born - mother.born;
+
+    return acc + diference;
+  }, 0);
+
+  return +(average / data.length).toFixed(2);
 }
 
 module.exports = {
