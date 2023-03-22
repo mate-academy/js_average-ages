@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredPeople = century ? people.filter(person =>
+    century === Math.ceil(person.died / 100) && person.sex === 'm')
+    : people.filter(person => person.sex === 'm');
+
+  const ages = filteredPeople.map(person => person.died - person.born);
+  const avgAges = ages.reduce((acc, value) => acc + value, 0);
+
+  return avgAges / ages.length;
 }
 
 /**
@@ -37,7 +40,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people
+      .filter(person => person.mother !== null)
+      .map(person => person.mother)
+    : people.filter(person => person.sex === 'f');
+
+  const mothers = people.filter(el => women.includes(el.name));
+  const averageMothers = mothers.map(el => el.died - el.born);
+
+  const ages = women.map(el => el.died - el.born);
+  const averageWomen = withChildren
+    ? (averageMothers.reduce((acc, el) => acc + el, 0) / averageMothers.length)
+    : (ages.reduce((acc, el) => acc + el, 0) / ages.length);
+
+  return averageWomen;
 }
 
 /**
@@ -55,7 +72,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findMom = onlyWithSon
+    ? people
+      .filter(person => people.some(mother => mother.name === person.mother)
+       && person.sex === 'm')
+    : people
+      .filter(person => people.some(mother => mother.name === person.mother));
+
+  const sum = (findMom.reduce((acc, woman) => {
+    const mother = people.find(mom => mom.name === woman.mother);
+    const difference = woman.born - mother.born;
+
+    return acc + difference;
+  }, 0) / findMom.length);
+
+  return sum;
 }
 
 module.exports = {
