@@ -16,7 +16,7 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter(eachMan => eachMan.sex === 'm');
+  const men = people.filter(man => man.sex === 'm');
   const centuryMen = men.filter(man => Math.ceil(man.died / 100) === century);
 
   return century
@@ -43,10 +43,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(eachWomen => eachWomen.sex === 'f');
+  const women = people.filter(woman => woman.sex === 'f');
 
-  const mothers = women.filter(eachWomen =>
-    people.some(eachPeople => eachPeople.mother === eachWomen.name));
+  const mothers = women.filter(woman =>
+    people.some(human => human.mother === woman.name));
 
   return withChildren
     ? mothers.reduce((acc, human) => (
@@ -72,24 +72,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(eachWomen =>
-    people.some(eachPeople => eachPeople.mother === eachWomen.name));
+  const mothers = people.filter(woman =>
+    people.some(person => person.mother === woman.name));
 
   const peopleWithMothers = people.filter(man =>
     mothers.some(mom => mom.name === man.mother));
   const sonsWithMothers = peopleWithMothers.filter(man => man.sex === 'm');
 
   return onlyWithSon
-    ? sonsWithMothers.reduce((acc, child) => (
-      acc + child.born - mothers.find(mom => (
-        mom.name === child.mother)
-      ).born
-    ), 0) / sonsWithMothers.length
-    : peopleWithMothers.reduce((acc, child) => (
-      acc + child.born - mothers.find(mom => (
-        mom.name === child.mother)
-      ).born
-    ), 0) / peopleWithMothers.length;
+    ? sonsWithMothers.reduce((acc, child) => {
+      const mother = mothers.find(mom => (mom.name === child.mother));
+      const ageDifference = child.born - mother.born;
+
+      return acc + ageDifference;
+    }, 0) / sonsWithMothers.length
+    : peopleWithMothers.reduce((acc, child) => {
+      const mother = mothers.find(mom => (mom.name === child.mother));
+      const ageDifference = child.born - mother.born;
+
+      return acc + ageDifference;
+    }, 0) / peopleWithMothers.length;
 }
 
 module.exports = {
