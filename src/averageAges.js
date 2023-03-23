@@ -15,15 +15,9 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let resultPeople = people.filter(person => {
-    return person.sex === 'm';
-  });
-
-  if (century) {
-    resultPeople = resultPeople.filter(person => {
-      return Math.ceil(person.died / 100) === century;
-    });
-  }
+  const resultPeople = people.filter(person =>
+    person.sex === 'm' && (!century
+      || Math.ceil(person.died / 100) === century));
 
   const arrayOfAges = resultPeople.map(person => {
     return person.died - person.born;
@@ -47,27 +41,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  let resultPeople = people.filter(person => {
-    return person.sex === 'f';
-  });
+  const resultPeople = people.filter(person =>
+    person.sex === 'f' && (withChildren ? people.some(human =>
+      human.mother === person.name) : true));
 
-  if (withChildren) {
-    resultPeople = resultPeople.filter(mother => {
-      const child = people.find(human => {
-        return human.mother === mother.name;
-      });
+  const arrayOfAges = resultPeople.map(person => person.died - person.born);
 
-      return !!child;
-    });
-  }
-
-  const arrayOfAges = resultPeople.map(person => {
-    return person.died - person.born;
-  });
-
-  return arrayOfAges.reduce((acc, el) =>
-    acc + el, 0) / arrayOfAges.length;
+  return arrayOfAges.reduce((acc, el) => acc + el, 0) / arrayOfAges.length;
 }
 
 /**
@@ -86,15 +68,9 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const resultPeople = people.filter((person) => {
-    const hasMother = people.some(
-      (mother) => mother.name === person.mother
-    );
+    const hasMother = people.some((mother) => mother.name === person.mother);
 
-    if (onlyWithSon) {
-      return hasMother && person.sex === 'm';
-    }
-
-    return hasMother;
+    return onlyWithSon ? hasMother && person.sex === 'm' : hasMother;
   });
 
   const arrayOfDiffAges = resultPeople.map(child => {
