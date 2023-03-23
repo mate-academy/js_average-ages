@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * Implement calculateMenAverageAge function
@@ -22,7 +22,7 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   const menArray = century
     ? [...people].filter(person => person.sex === 'm'
-    && Math.ceil(person.died / 100) === century)
+          && Math.ceil(person.died / 100) === century)
     : [...people].filter(person => person.sex === 'm');
 
   const averageAge = calculateAverageAge(menArray);
@@ -46,9 +46,10 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const womenWithChildren = [];
-  const womenArr = withChildren ? Array.from(new Set(people
-    .filter(person => person.mother !== null)
-    .map(person => person.mother)))
+  const womenArr = withChildren
+    ? Array.from(new Set(people
+      .filter(person => person.mother !== null)
+      .map(person => person.mother)))
     : [...people].filter(person => person.sex === 'f');
 
   people.forEach(woman => {
@@ -57,7 +58,8 @@ function calculateWomenAverageAge(people, withChildren) {
     };
   });
 
-  const averageAge = withChildren ? calculateAverageAge(womenWithChildren)
+  const averageAge = withChildren
+    ? calculateAverageAge(womenWithChildren)
     : calculateAverageAge(womenArr);
 
   return averageAge;
@@ -65,7 +67,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
 function calculateAverageAge(array) {
   const allAge = array.reduce((acc, curr) => acc + (curr.died - curr.born), 0);
-  const averageAge = +(allAge / array.length).toFixed(2);
+  const averageAge = Number((allAge / array.length).toFixed(2));
 
   return averageAge;
 }
@@ -91,14 +93,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   people.forEach(person => {
     mothersAndChild
       .push([(onlyWithSon && person.sex === 'f')
-      || people.find(el => el.name === person.mother), person.born]);
+      || people.find(mother => mother.name === person.mother), person.born]);
 
     typeof mothersAndChild[mothersAndChild.length - 1][0] === 'object'
       || mothersAndChild.pop();
   });
 
   ageDiff = mothersAndChild
-    .reduce((acc, curr) => acc + curr[1] - curr[0].born, 0);
+    .reduce((total, ages) => total + ages[1] - ages[0].born, 0);
 
   return +(ageDiff / mothersAndChild.length).toFixed(2);
 }
