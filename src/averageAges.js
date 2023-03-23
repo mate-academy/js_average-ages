@@ -16,15 +16,17 @@
  */
 function calculateMenAverageAge(people, century) {
   const resultPeople = people.filter(person =>
-    person.sex === 'm' && (!century
-      || Math.ceil(person.died / 100) === century));
+    person.sex === 'm'
+    && (!century || Math.ceil(
+      person.died / 100) === century)
+  );
 
   const arrayOfAges = resultPeople.map(person => {
     return person.died - person.born;
   });
 
-  return arrayOfAges.reduce((acc, el) =>
-    acc + el, 0) / arrayOfAges.length;
+  return arrayOfAges.reduce((acc, item) =>
+    acc + item, 0) / arrayOfAges.length;
 }
 
 /**
@@ -44,12 +46,17 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const resultPeople = people.filter(person =>
-    person.sex === 'f' && (withChildren ? people.some(human =>
-      human.mother === person.name) : true));
+    person.sex === 'f' && (
+      withChildren
+        ? people.some(human => human.mother === person.name)
+        : true)
+  );
 
-  const arrayOfAges = resultPeople.map(person => person.died - person.born);
+  const arrayOfAges = resultPeople.map(person =>
+    person.died - person.born);
 
-  return arrayOfAges.reduce((acc, el) => acc + el, 0) / arrayOfAges.length;
+  return arrayOfAges.reduce((acc, el) =>
+    acc + el, 0) / arrayOfAges.length;
 }
 
 /**
@@ -68,13 +75,19 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const resultPeople = people.filter((person) => {
-    const hasMother = people.some((mother) => mother.name === person.mother);
+    const hasMother = people.some((mother) =>
+      mother.name === person.mother
+    );
 
-    return onlyWithSon ? hasMother && person.sex === 'm' : hasMother;
+    return onlyWithSon
+      ? hasMother && person.sex === 'm'
+      : hasMother;
   });
 
   const arrayOfDiffAges = resultPeople.map(child => {
-    const mother = people.find(person => person.name === child.mother);
+    const mother = people.find(person =>
+      person.name === child.mother
+    );
 
     return child.born - mother.born;
   });
