@@ -15,13 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-}
+  let male = people.filter(person => person.sex === 'm');
 
+  male = century
+    ? male.filter(person => Math.ceil(person.died / 100) === century)
+    : male;
+
+  const sumAvgAges = male.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+  const avgAges = sumAvgAges / male.length;
+
+  return avgAges;
+}
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -36,8 +41,23 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let female = withChildren
+    ? people
+      .filter(person => person.mother !== null)
+      .map(person => person.mother)
+    : people.filter(person => person.sex === 'f');
+
+  female = withChildren
+    ? people.filter(item => female.includes(item.name))
+    : female;
+
+  const sumAvgAges = female.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+  const avgAges = sumAvgAges / female.length;
+
+  return avgAges;
 }
 
 /**
@@ -55,7 +75,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findMom = onlyWithSon
+    ? people
+      .filter(person => people.some(mother => mother.name === person.mother)
+       && person.sex === 'm')
+    : people
+      .filter(person => people.some(mother => mother.name === person.mother));
+
+  const sumAvgAges = (findMom.reduce((sum, woman) => {
+    const mother = people.find(mom => mom.name === woman.mother);
+    const difference = woman.born - mother.born;
+
+    return sum + difference;
+  }, 0));
+
+  const avgAges = sumAvgAges / findMom.length;
+
+  return avgAges;
 }
 
 module.exports = {
