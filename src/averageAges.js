@@ -15,14 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const countMale = people.filter(el => el.sex === 'm');
+  const countMale = people.filter(isMan => isMan.sex === 'm');
 
-  const result = century ? (
-    countMale
-      .filter(cent => Math.ceil(cent.died / 100) === century)
-  ) : countMale;
+  const result = century
+    ? countMale.filter(cent => Math.ceil(cent.died / 100) === century)
+    : countMale;
 
-  const sumAge = result.reduce((accum, el) => accum + (el.died - el.born), 0);
+  const sumAge = result.reduce((accum, maleAge) => (
+    accum + (maleAge.died - maleAge.born)
+  ), 0);
 
   return sumAge / result.length;
 }
@@ -42,15 +43,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const countFemale = people.filter(el => el.sex === 'f');
+  const countFemale = people.filter(isWoman => isWoman.sex === 'f');
 
   const isMom = withChildren ? (
     countFemale
-      .filter(name => people.some(el => el.mother === name.name))
+      .filter(name => people.some(isMother => isMother.mother === name.name))
   ) : countFemale;
 
-  const sumFemale = isMom
-    .reduce((accum, age) => accum + (age.died - age.born), 0);
+  const sumFemale = isMom.reduce(
+    (accum, age) => (
+      accum + (age.died - age.born)
+    ), 0);
 
   return sumFemale / isMom.length;
 }
@@ -72,18 +75,20 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // All I want is to drown in my tears...
   const countChild = people
-    .filter(el => el.mother && people
-      .some(key => key.name === el.mother));
+    .filter(isMom => isMom.mother && people
+      .some(person => person.name === isMom.mother));
 
-  const isSonExist = onlyWithSon ? (
-    countChild.filter(el => el.sex === 'm')
-  ) : countChild;
+  const isSonExist = onlyWithSon
+    ? countChild.filter(el => el.sex === 'm')
+    : countChild;
 
   const ageKids = isSonExist
     .map(person => person.born - people
       .find(mother => mother.name === person.mother).born);
 
-  const ageDiff = ageKids.reduce((accumaltor, age) => accumaltor + age, 0);
+  const ageDiff = ageKids.reduce((accumaltor, age) => (
+    accumaltor + age
+  ), 0);
 
   return ageDiff / ageKids.length;
 }
