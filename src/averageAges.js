@@ -13,8 +13,35 @@
  * @param {number} century - optional
  *
  * @return {number}
+ *
  */
+
+function calculateAverage(arr) {
+  const result = arr.reduce((a, b) => a + b) / arr.length;
+
+  return Math.round(result * 100) / 100;
+}
+
+function motherObj(arr) {
+  const mapMother = arr.map((mother) => mother['mother']);
+  const filterMother = arr.filter(mother => mapMother.includes(mother['name']));
+
+  return filterMother;
+}
+
+function howOld(arr) {
+  return arr.map((years) => years['died'] - years['born']);
+}
+
 function calculateMenAverageAge(people, century) {
+  const man = people.filter((sex) => sex['sex'] === 'm');
+  const filterManCentury = man.filter(years =>
+    Math.ceil(years['died'] / 100) === century
+  );
+
+  return !century
+    ? calculateAverage(howOld(man))
+    : calculateAverage(howOld(filterManCentury));
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +64,11 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(sex => sex['sex'] === 'f');
+  const mother = motherObj(people);
+
+  return !withChildren ? calculateAverage(howOld(women))
+    : calculateAverage(howOld(mother));
 }
 
 /**
@@ -55,7 +86,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mother = motherObj(people);
+
+  const motherСhildren
+  = people.filter((child) => mother.map((name) => name['name'])
+    .includes(child['mother']));
+
+  const motherMan
+    = motherСhildren.filter((sex) => sex['sex'] === 'm');
+
+  const differenceChilMom
+    = motherСhildren.map(obj => obj['born']
+    - mother.find(mom => mom['name'] === obj['mother'])['born']);
+
+  const differenceSonMom = motherMan.map(obj => obj['born']
+    - mother.find(mom => mom['name'] === obj['mother'])['born']);
+
+  return !onlyWithSon
+    ? calculateAverage(differenceChilMom)
+    : calculateAverage(differenceSonMom);
 }
 
 module.exports = {
