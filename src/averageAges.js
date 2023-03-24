@@ -16,11 +16,15 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = century
-    ? people.filter(p => century === Math.ceil(p.died / 100) && p.sex === 'm')
+    ? people.filter(person =>
+      century === Math.ceil(person.died / 100) && person.sex === 'm'
+    )
     : people.filter(person => person.sex === 'm');
 
   const menAge = men.map(man => man.died - man.born);
-  const sum = (menAge.reduce((acc, el) => acc + el) / menAge.length).toFixed(2);
+  const sum = (menAge.reduce((acc, age) =>
+    acc + age
+  ) / menAge.length).toFixed(2);
 
   return +sum;
 }
@@ -41,8 +45,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = withChildren
-  // eslint-disable-next-line max-len
-    ? people.filter(person => person.mother !== null).map(person => person.mother)
+    ? people.filter(person =>
+      person.mother !== null).map(person => person.mother
+    )
     : people.filter(person => person.sex === 'f');
 
   const mothers = people.filter(person => women.includes(person.name));
@@ -50,8 +55,8 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const allAge = women.map(woman => woman.died - woman.born);
   const sum = withChildren
-  // eslint-disable-next-line max-len
-    ? (motherAge.reduce((prev, next) => prev + next) / motherAge.length).toFixed(2)
+    ? (motherAge.reduce((prev, next) =>
+      prev + next) / motherAge.length).toFixed(2)
     : (allAge.reduce((prev, next) => prev + next) / allAge.length).toFixed(2);
 
   return +sum;
@@ -78,14 +83,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // eslint-disable-next-line max-len
     : people.filter(person => people.some(mother => mother.name === person.mother));
 
-  const sum = (mothers.reduce((acc, woman) => {
+  const average = (mothers.reduce((acc, woman) => {
     const moter = people.find(m => m.name === woman.mother);
     const dif = woman.born - moter.born;
 
     return acc + dif;
   }, 0) / mothers.length).toFixed(2);
 
-  return +sum;
+  return +average;
 }
 
 module.exports = {
