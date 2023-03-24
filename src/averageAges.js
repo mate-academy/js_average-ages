@@ -15,18 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century = 0) {
-  const filteredBySex = people.filter(elem =>
-    elem['sex'] === 'm');
+  const filteredBySex = people.filter(person =>
+    person['sex'] === 'm');
 
-  const filteredByCentury = filteredBySex.filter(elem =>
-    (Math.ceil(elem['died'] / 100) === century));
+  const filteredByCentury = filteredBySex.filter(person =>
+    (Math.ceil(person['died'] / 100) === century));
 
-  const sumOfMenAgesWithCent = filteredByCentury.reduce((acc, b) =>
-    acc + (b['died'] - b['born']
+  const sumOfMenAgesWithCent = filteredByCentury.reduce((acc, person) =>
+    acc + (person['died'] - person['born']
     ), 0);
 
-  const sumOfMenAges = filteredBySex.reduce((acc, b) =>
-    acc + (b['died'] - b['born']
+  const sumOfMenAges = filteredBySex.reduce((acc, person) =>
+    acc + (person['died'] - person['born']
     ), 0);
 
   return century
@@ -49,9 +49,9 @@ function calculateMenAverageAge(people, century = 0) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredBySex = people.filter(elem => elem['sex'] === 'f');
+  const filteredBySex = people.filter(person => person['sex'] === 'f');
   const filteredByChildren = filteredBySex.filter(hasChild => {
-    return people.some(elem => hasChild.name === elem.mother);
+    return people.some(person => hasChild.name === person.mother);
   });
   const sumOfWomanAgesWithChilds = filteredByChildren.reduce((acc, person) =>
     acc + (person['died'] - person['born']), 0);
@@ -80,18 +80,19 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const child = !onlyWithSon
-    ? people.filter(item => {
-      return people.find(elem => elem.name === item.mother);
+    ? people.filter(person => {
+      return people.find(mother => mother.name === person.mother);
     })
 
-    : people.filter(item => {
-      return people.find(elem => elem.name === item.mother && item.sex === 'm');
+    : people.filter(person => {
+      return people.find(mother =>
+        mother.name === person.mother && person.sex === 'm');
     });
 
   // eslint-disable-next-line max-len
-  const ageDif = child.map(elem =>
-    elem.born - people.find(item =>
-      item.name === elem.mother).born);
+  const ageDif = child.map(person =>
+    person.born - people.find(mother =>
+      mother.name === person.mother).born);
 
   const result = ageDif.reduce((acc, age) =>
     acc + age
