@@ -15,15 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let man = people.filter(person => person.sex === 'm');
+  const man = people.filter(person => (century
+    ? person.sex === 'm'
+      && Math.ceil(person.died / 100) === century
+    : person.sex === 'm'));
 
-  man = century
-    ? man.filter(person => Math.ceil(person.died / 100) === century)
-    : man;
-
-  const sumAges = man.reduce(
-    (sum, person) => sum + (person.died - person.born), 0);
-  const avgAges = sumAges / man.length;
+  const sumAges = getSumOfAvgAge(man);
+  const avgAges = getAvgAges(sumAges, man.length);
 
   return avgAges;
 }
@@ -53,9 +51,8 @@ function calculateWomenAverageAge(people, withChildren) {
     ? people.filter(item => woman.includes(item.name))
     : woman;
 
-  const sumAges = woman.reduce(
-    (sum, person) => sum + (person.died - person.born), 0);
-  const avgAges = sumAges / woman.length;
+  const sumAges = getSumOfAvgAge(woman);
+  const avgAges = getAvgAges(sumAges, woman.length);
 
   return avgAges;
 }
@@ -76,11 +73,9 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const findMom = onlyWithSon
-    ? people
-      .filter(person => people.some(mother => mother.name === person.mother)
-       && person.sex === 'm')
-    : people
-      .filter(person => people.some(mother => mother.name === person.mother));
+    ? people.filter(person => hasMother(people, person.mother)
+      && person.sex === 'm')
+    : people.filter(person => hasMother(people, person.mother));
 
   const sumAges = (findMom.reduce((sum, woman) => {
     const mother = people.find(mom => mom.name === woman.mother);
@@ -89,9 +84,22 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return sum + difference;
   }, 0));
 
-  const avgAges = sumAges / findMom.length;
+  const avgAges = getAvgAges(sumAges, findMom.length);
 
   return avgAges;
+}
+
+function getSumOfAvgAge(sex) {
+  return sex.reduce(
+    (sum, person) => sum + (person.died - person.born), 0);
+}
+
+function getAvgAges(sumAges, count) {
+  return sumAges / count;
+}
+
+function hasMother(people, mothername) {
+  return people.some(person => person.name === mothername);
 }
 
 module.exports = {
