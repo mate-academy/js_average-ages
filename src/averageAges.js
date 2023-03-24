@@ -15,9 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = century ? people.filter(
-    man => man.sex === 'm' && Math.ceil(man.died / 100) === century)
-    : people.filter(man => man.sex === 'm');
+  const men = people
+    .filter(({ sex, died }) => century
+      ? sex === 'm' && Math.ceil(died / 100) === century
+      : sex === 'm');
 
   return men.reduce(
     (sumOfAges, man) => sumOfAges + (man.died - man.born), 0) / men.length;
@@ -38,16 +39,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
+  const women = people
+    .filter(({ sex, name }) => withChildren
+      ? sex === 'f' && people.some(({ mother }) => name === mother)
+      : sex === 'f');
 
-  const mothers = people.map(
-    person => person.mother).filter(mother => mother !== null);
-
-  const isWithChildren = withChildren ? people.filter(
-    person => mothers.includes(person.name)) : women;
-
-  return isWithChildren.reduce((sumOfAges, mother) => sumOfAges + (
-    mother.died - mother.born), 0) / isWithChildren.length;
+  return women.reduce((sumOfAges, mother) => sumOfAges + (
+    mother.died - mother.born), 0) / women.length;
 }
 
 /**
@@ -66,13 +64,14 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(
-    person => person.mother && people.some(
-      subject => subject.name === person.mother));
+    child => child.mother && people.some(
+      person => person.name === child.mother));
 
-  const isOnlyWithSon = onlyWithSon ? children.filter(
-    child => child.sex === 'm') : children;
+  const kids = onlyWithSon
+    ? children.filter(son => son.sex === 'm')
+    : children;
 
-  const differenceAge = isOnlyWithSon.map(
+  const differenceAge = kids.map(
     son => son.born - people.find(
       person => person.name === son.mother).born);
 
