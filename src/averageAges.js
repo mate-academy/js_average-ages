@@ -15,22 +15,22 @@
  * @return {number}
  */
 
+function averageAge(filteredPeople) {
+  return filteredPeople.reduce((accum, curr) => accum + (curr.died - curr.born), 0) / filteredPeople.length; // eslint-disable-line
+}
+
 function calculateMenAverageAge(people, century) {
-  let filteredPeople = JSON.parse(JSON.stringify(people));
+  let filteredPeople = [...people];
 
   if (century) {
-    const centuryToLowYear = (century * 100) - 100;
-    const centuryToHighYear = century * 100;
-
     filteredPeople = filteredPeople.filter(person =>
-      person.sex === 'm' && person.died > centuryToLowYear
-      && person.died < centuryToHighYear
+      person.sex === 'm' && Math.ceil(person.died / 100) === century
     );
   }
 
   filteredPeople = filteredPeople.filter(person => person.sex === 'm');
 
-  return filteredPeople.reduce((accum, curr) => accum + (curr.died - curr.born), 0) / filteredPeople.length; // eslint-disable-line
+  return averageAge(filteredPeople);
 }
 
 /**
@@ -49,7 +49,7 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let filteredPeople = JSON.parse(JSON.stringify(people));
+  let filteredPeople = [...people];
 
   if (withChildren) {
     filteredPeople = filteredPeople.filter(person =>
@@ -61,7 +61,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   filteredPeople = filteredPeople.filter(person => person.sex === 'f');
 
-  return filteredPeople.reduce((accum, curr) => accum + (curr.died - curr.born), 0) / filteredPeople.length; // eslint-disable-line
+  return averageAge(filteredPeople);
 }
 
 /**
@@ -80,7 +80,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let filteredPeople = JSON.parse(JSON.stringify(people));
+  let filteredPeople = [...people];
 
   if (onlyWithSon) {
     filteredPeople = filteredPeople.filter(child =>
