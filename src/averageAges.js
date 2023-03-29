@@ -1,8 +1,9 @@
 'use strict';
 
 function calculateAverageAge(people, filterFunction) {
-  const filteredPeople
-    = filterFunction ? people.filter(filterFunction) : people;
+  const filteredPeople = filterFunction
+    ? people.filter(filterFunction)
+    : people;
 
   const total = filteredPeople.reduce((sum, { born, died }) => {
     return sum + (died - born);
@@ -17,10 +18,11 @@ function calculateMenAverageAge(people, century) {
   const filterFunction = (person) => person.sex === 'm';
 
   if (century) {
-    const filteredFunction = (year) => Math.ceil(year.died / 100) === century;
+    const centuryFilterFunction = (year) =>
+      Math.ceil(year.died / 100) === century;
 
     return calculateAverageAge(people, (a) =>
-      filterFunction(a) && filteredFunction(a));
+      filterFunction(a) && centuryFilterFunction(a));
   }
 
   return calculateAverageAge(people, filterFunction);
@@ -30,11 +32,11 @@ function calculateWomenAverageAge(people, withChildren) {
   const filterFunction = (person) => person.sex === 'f';
 
   if (withChildren) {
-    const filteredFunction = (human) =>
+    const childrenFilterFunction = (human) =>
       people.some((motherPerson) => motherPerson.mother === human.name);
 
     return calculateAverageAge(people, (a) =>
-      filterFunction(a) && filteredFunction(a));
+      filterFunction(a) && childrenFilterFunction(a));
   }
 
   return calculateAverageAge(people, filterFunction);
