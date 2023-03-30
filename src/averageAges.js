@@ -26,7 +26,7 @@ function calculateMenAverageAge(people, century) {
     ? people.filter(person => person.sex === 'm' && Math.ceil(person.died / 100) === century)
     : people.filter(person => person.sex === 'm');
 
-  return mens.map(men => men.died - men.born).reduce((sum, year) => sum + year, 0) / mens.length;
+  return mens.reduce((sum, person) => sum + person.died - person.born, 0) / mens.length;
 }
 
 /**
@@ -48,11 +48,9 @@ function calculateWomenAverageAge(people, withChildren) {
   const motherNames = new Set(people.map(person => person.mother));
   const mothers = people.filter(person => motherNames.has(person.name));
 
-  const yearsAlive = withChildren
-    ? mothers.map(mother => mother.died - mother.born)
-    : women.map(woman => woman.died - woman.born);
-
-  return yearsAlive.reduce((sum, year) => sum + year, 0) / yearsAlive.length;
+  return withChildren
+    ? mothers.reduce((sum, person) => sum + person.died - person.born, 0) / mothers.length
+    : women.reduce((sum, person) => sum + person.died - person.born, 0) / women.length;
 }
 
 /**
@@ -70,13 +68,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const motherNames = new Set(people.map(person => person.name));
+
   const children = onlyWithSon
-    ? people.filter(child => child.sex === 'm' && people.some(mother => mother.name === child.mother))
-    : people.filter(child => people.some(mother => mother.name === child.mother));
+    ? people.filter(child => child.sex === 'm' && motherNames.has(child.mother))
+    : people.filter(child => motherNames.has(child.mother));
 
-  const difference = children.map(child => child.born - people.find(mother => mother.name === child.mother).born);
+  const ageDifference = children.map(child => child.born - people.find(mother => mother.name === child.mother).born);
 
-  return difference.reduce((sum, diff) => sum + diff) / difference.length;
+  return ageDifference.reduce((sum, diff) => sum + diff) / ageDifference.length;
 }
 
 module.exports = {
