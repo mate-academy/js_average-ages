@@ -19,12 +19,12 @@ function calculateMenAverageAge(people, century) {
   const diedMen = men.filter(person =>
     Math.ceil(person.died / 100) === century);
 
-  const averageAllMenAge = men.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / men.length;
-  const averageDiedMenAge = diedMen.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / diedMen.length;
+  function average(human) {
+    return human.reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / human.length;
+  };
 
-  return century ? averageDiedMenAge : averageAllMenAge;
+  return century ? average(diedMen) : average(men);
 }
 
 /**
@@ -46,12 +46,12 @@ function calculateWomenAverageAge(people, withChildren) {
   const mothers = people.filter(person =>
     people.some(mom => (person.name === mom.mother && person.sex === 'f')));
 
-  const averageWomenAge = women.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / women.length;
-  const averageMothersAge = mothers.reduce((sum, person) =>
-    sum + (person.died - person.born), 0) / mothers.length;
+  function average(human) {
+    return human.reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / human.length;
+  };
 
-  return withChildren ? averageMothersAge : averageWomenAge;
+  return withChildren ? average(mothers) : average(women);
 }
 
 /**
@@ -75,17 +75,18 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     mothers.some(mom => (person.mother === mom.name)));
   const onlySon = children.filter(son => son.sex === 'm');
 
-  const allAge = children.map(child =>
-    child.born - mothers.find(mom => child.mother === mom.name).born);
-  const sonsAge = onlySon.map(child =>
-    child.born - mothers.find(mom => child.mother === mom.name).born);
+  function getAllAge(humans) {
+    return humans.map(child =>
+      child.born - mothers.find(mom => child.mother === mom.name).born);
+  };
 
-  const averageAllAge = allAge.reduce((sum, age) => sum + age, 0)
-    / allAge.length;
-  const averageSonsAge = sonsAge.reduce((sum, age) => sum + age, 0)
-    / sonsAge.length;
+  function averageAge(human) {
+    return human.reduce((sum, age) => sum + age, 0)
+      / human.length;
+  };
 
-  return onlyWithSon ? averageSonsAge : averageAllAge;
+  return onlyWithSon ? averageAge(getAllAge(onlySon))
+    : averageAge(getAllAge(children));
 }
 
 module.exports = {
