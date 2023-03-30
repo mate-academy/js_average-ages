@@ -4,11 +4,10 @@ function calculateMenAverageAge(people, century) {
   const filterByMenAndCent = century === undefined
     ? people.filter(e => e.sex === 'm')
     : people
-      .filter(e => Math.ceil(e.died / 100) === century)
-      .filter(e => e.sex === 'm');
+      .filter(e => Math.ceil(e.died / 100) === century && e.sex === 'm');
   const averageAges = filterByMenAndCent
-    .map(person => person.died - person.born)
-    .reduce((accum, current) => accum + current) / filterByMenAndCent.length;
+    .reduce((accum, person) => accum + (person.died - person.born), 0)
+      / filterByMenAndCent.length;
 
   return averageAges;
 }
@@ -16,16 +15,16 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let filterByWomenAndHasChild = people.filter(person => person.sex === 'f');
 
-  filterByWomenAndHasChild = withChildren === true
+  filterByWomenAndHasChild = withChildren
     ? filterByWomenAndHasChild
       .filter(
-        pers => people.find(person => person.mother === pers.name) !== undefined
+        pers => people.some(person => person.mother === pers.name)
       )
     : filterByWomenAndHasChild;
 
   let averageAges = filterByWomenAndHasChild
-    .map(person => person.died - person.born)
-    .reduce((a, b) => a + b) / filterByWomenAndHasChild.length;
+    .reduce((accum, person) => accum + (person.died - person.born), 0)
+      / filterByWomenAndHasChild.length;
 
   averageAges = +averageAges.toFixed(2);
 
@@ -35,9 +34,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon
     ? people.filter(person => person.sex === 'm'
-      && people.find(mother => mother.name === person.mother))
+      && people.some(mother => mother.name === person.mother))
     : people.filter(person =>
-      people.find(mother => mother.name === person.mother));
+      people.some(mother => mother.name === person.mother));
 
   const diffAge = children.map(child =>
     child.born - (people.find(mother => mother.name === child.mother)).born);
