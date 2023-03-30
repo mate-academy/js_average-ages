@@ -19,7 +19,7 @@ function calculateMenAverageAge(people, century) {
     .filter(person => person.sex.toLowerCase() === 'm'
       && (!century || Math.ceil(person.died / 100) === century));
 
-  return avarageAge(male);
+  return getAvarageAge(male);
 }
 
 /**
@@ -42,14 +42,7 @@ function calculateWomenAverageAge(people, withChildren) {
       && (!withChildren
         || people.some(child => child.mother === person.name)));
 
-  return avarageAge(female);
-}
-
-function avarageAge(person) {
-  return person.reduce(
-    (acc, currentPerson) => {
-      return acc + currentPerson.died - currentPerson.born;
-    }, 0) / person.length;
+  return getAvarageAge(female);
 }
 
 /**
@@ -67,12 +60,9 @@ function avarageAge(person) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const child = !onlyWithSon
-    ? people
-      .filter(person => people.some(mother => mother.name === person.mother))
-    : people
-      .filter(person => person.sex.toLowerCase() === 'm'
-      && people.some(mother => mother.name === person.mother));
+  const child = people
+    .filter(person => (!onlyWithSon || person.sex.toLowerCase() === 'm')
+      && (people.some(mother => mother.name === person.mother)));
 
   return child.reduce(
     (acc, currentPerson) => {
@@ -81,6 +71,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
       return acc + currentPerson.born - mother.born;
     }, 0) / child.length;
+}
+
+function getAvarageAge(people) {
+  return people.reduce(
+    (acc, currentPerson) => {
+      return acc + currentPerson.died - currentPerson.born;
+    }, 0) / people.length;
 }
 
 module.exports = {
