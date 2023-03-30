@@ -15,11 +15,28 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let peopleNew = [];
+  let count = 0;
+
+  function callback(arr) {
+    return (Math.ceil(arr.died / 100) === century);
+  };
+
+  if (century !== undefined) {
+    peopleNew = people.filter(callback);
+  } else {
+    peopleNew = people;
+  }
+
+  peopleNew = peopleNew.filter((arr) => (arr.sex === 'm'));
+
+  function callbackSum(summa, n) {
+    return (summa + n.died - n.born);
+  }
+
+  count = peopleNew.reduce(callbackSum, 0);
+
+  return Number((count / peopleNew.length).toFixed(2));
 }
 
 /**
@@ -37,7 +54,36 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let peopleNew = [];
+  let count = 0;
+  let mother = '';
+
+  if (withChildren === true) {
+    for (const i of people) {
+      mother = i.mother;
+
+      if (people.find(callback)) {
+        if (peopleNew.find((arr) => (arr.name === mother))) {
+        } else {
+          peopleNew.push({ ...people.find(callback) });
+        }
+      }
+    }
+  } else {
+    peopleNew = people.filter((arr) => (arr.sex === 'f'));
+  }
+
+  function callback(arr) {
+    return (arr.name === mother);
+  };
+
+  function callbackSum(summa, n) {
+    return (summa + n.died - n.born);
+  }
+
+  count = peopleNew.reduce(callbackSum, 0);
+
+  return Number((count / peopleNew.length).toFixed(2));
 }
 
 /**
@@ -55,7 +101,49 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const peopleNew = [];
+  let count = 0;
+  let mother = '';
+  let bornChildren = 0;
+  let peopleNew2 = {};
+
+  if (onlyWithSon === true) {
+    for (const i of people) {
+      mother = i.mother;
+      bornChildren = i.born;
+
+      if (i.sex === 'm') {
+        if (people.find(callback)) {
+          peopleNew2 = people.find(callback);
+          peopleNew2.bornChildren = bornChildren;
+          peopleNew.push({ ...peopleNew2 });
+        }
+      }
+    }
+  } else {
+    for (const i of people) {
+      mother = i.mother;
+      bornChildren = i.born;
+
+      if (people.find(callback)) {
+        peopleNew2 = people.find(callback);
+        peopleNew2.bornChildren = bornChildren;
+        peopleNew.push({ ...peopleNew2 });
+      }
+    }
+  }
+
+  function callback(arr) {
+    return (arr.name === mother);
+  };
+
+  function callbackSum(summa, n) {
+    return (summa + n.bornChildren - n.born);
+  }
+
+  count = peopleNew.reduce(callbackSum, 0);
+
+  return Number((count / peopleNew.length).toFixed(2));
 }
 
 module.exports = {
