@@ -22,8 +22,8 @@ function calculateMenAverageAge(people, century = 0) {
   const men = century ? peopleOfCentury : male;
 
   const age = men.map(date => date.died - date.born);
-  const averageAge = Math.round(age.reduce((sumAge, personAge) =>
-    sumAge + personAge, 0) * 100 / age.length) / 100;
+  const averageAge = roundUpToTwo(age.reduce((sumAge, personAge) =>
+    sumAge + personAge, 0) / age.length);
 
   return averageAge;
 }
@@ -50,8 +50,8 @@ function calculateWomenAverageAge(people, withChildren = false) {
   const women = withChildren ? mothers : female;
 
   const ageWomen = women.map(date => date.died - date.born);
-  const averageAgeWomen = Math.round(ageWomen.reduce((sumAge, womanAge) =>
-    sumAge + womanAge, 0) * 100 / women.length) / 100;
+  const averageAgeWomen = roundUpToTwo(ageWomen.reduce((sumAge, womanAge) =>
+    sumAge + womanAge, 0) / women.length);
 
   return averageAgeWomen;
 }
@@ -80,10 +80,14 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
   const diffAge = personWithMother.map(child =>
     child.born - (people.find(mother => mother.name === child.mother)).born);
 
-  const averageDiffAge = Math.round(diffAge.reduce((sumAge, ageNewMothers) =>
-    sumAge + ageNewMothers, 0) * 100 / diffAge.length) / 100;
+  const averageDiffAge = roundUpToTwo(diffAge.reduce((sumAge, ageNewMothers) =>
+    sumAge + ageNewMothers, 0) / diffAge.length);
 
   return averageDiffAge;
+}
+
+function roundUpToTwo(number) {
+  return Math.round(100 * number) / 100;
 }
 
 module.exports = {
