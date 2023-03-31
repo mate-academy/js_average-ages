@@ -15,13 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const arrayOfMen = people.filter(person => person.sex === 'm');
-  const arrayOfAges = (!century)
-    ? getAge(arrayOfMen)
-    : getAge(arrayOfMen.filter(
+  const menList = people.filter(person => person.sex === 'm');
+  const ageList = !century
+    ? getAge(menList)
+    : getAge(menList.filter(
       person => Math.ceil(person.died / 100) === century));
 
-  return getAverageAge(arrayOfAges);
+  return getAverageAge(ageList);
 }
 
 function getAge(array) {
@@ -48,14 +48,15 @@ function getAverageAge(array) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const arrayOfWomen = (!withChildren)
+  const womenList = !withChildren
     ? people.filter(person => person.sex === 'f')
     : people
       .filter(person => person.sex === 'f'
       && people.some(pers => pers.mother === person.name));
-  const arrayOfAges = arrayOfWomen.map(person => person.died - person.born);
 
-  return getAverageAge(arrayOfAges);
+  const ageList = womenList.map(person => person.died - person.born);
+
+  return getAverageAge(ageList);
 }
 
 /**
@@ -73,12 +74,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const arrayOfKids = (!onlyWithSon)
+  const kidsList = !onlyWithSon
     ? people.filter(person => people.some(pers => pers.name === person.mother))
     : people.filter(person => people.some(pers => pers.name === person.mother)
         && person.sex === 'm');
 
-  const ageDifference = arrayOfKids.map(person => {
+  const ageDifference = kidsList.map(person => {
     const mother = people.find(p => p.name === person.mother);
     const difference = person.born - mother.born;
 
