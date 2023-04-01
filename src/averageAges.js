@@ -1,5 +1,6 @@
 'use strict';
 
+/* eslint-disable no-console */
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,7 +16,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people.filter(person => person.sex === 'm');
+  const filteredMen = century ? men.filter(person =>
+    Math.ceil(person.died / 100) === century) : men;
+  const totalAge = filteredMen.reduce((acc, person) =>
+    acc + (person.died - person.born), 0);
+
+  return filteredMen.length > 0 ? totalAge / filteredMen.length : 0;
+
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +45,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const targetPeople = people
+    .filter(person => person.sex === 'f')
+    .filter(targetPerson =>
+      !withChildren
+      || people.some(person => targetPerson.name === person.mother)
+    );
+
+  const totalAge = targetPeople.reduce(
+    (total, person) => total + (person.died - person.born),
+    0
+  );
+
+  return targetPeople.length
+    ? totalAge / targetPeople.length
+    : 0;
 }
 
 /**
@@ -55,7 +77,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const targetPeople = people
+    .filter(person => person.mother)
+    .filter(targetPerson =>
+      !onlyWithSon || targetPerson.sex === 'm'
+    );
+  let targetPeopleCount = targetPeople.length;
+
+  const totalAgeDifference = targetPeople.reduce(
+    (total, targetPerson) => {
+      const mother = people.find(person => person.name === targetPerson.mother);
+
+      if (!mother) {
+        targetPeopleCount--;
+      }
+
+      return mother
+        ? total + (targetPerson.born - mother.born)
+        : total;
+    },
+    0
+  );
+
+  return targetPeopleCount
+    ? totalAgeDifference / targetPeopleCount
+    : 0;
 }
 
 module.exports = {
