@@ -27,7 +27,7 @@ function calculateMenAverageAge(people, century) {
   };
 
   finalPeopleArrayObjects
-    = (century !== undefined) ? people.filter(isPersonFromCentury) : people;
+    = (century) ? people.filter(isPersonFromCentury) : people;
 
   finalPeopleArrayObjects
     = finalPeopleArrayObjects.filter((arr) => (arr.sex === 'm'));
