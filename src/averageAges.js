@@ -94,12 +94,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     bornChildren = title.born;
 
     if (people.find(isMotherWithName) && (title.sex === 'm')
-      && (onlyWithSon === true)) {
+      && (onlyWithSon)) {
       temporaryPeople = people.find(isMotherWithName);
       temporaryPeople.bornChildren = bornChildren;
       finalPeopleArrayObjects.push({ ...temporaryPeople });
     } else {
-      if (people.find(isMotherWithName) && (onlyWithSon !== true)) {
+      if (people.find(isMotherWithName) && (!onlyWithSon)) {
         temporaryPeople = people.find(isMotherWithName);
         temporaryPeople.bornChildren = bornChildren;
         finalPeopleArrayObjects.push({ ...temporaryPeople });
