@@ -14,6 +14,12 @@
  *
  * @return {number}
  */
+
+function getAverageAge(peopleArray) {
+  return peopleArray.reduce((prevPers, nextPers) =>
+    prevPers + nextPers) / peopleArray.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = century
     ? people.filter(person =>
@@ -22,11 +28,9 @@ function calculateMenAverageAge(people, century) {
     : people.filter(person => person.sex === 'm');
 
   const menAge = men.map(man => man.died - man.born);
-  const sum = (menAge.reduce((acc, age) =>
-    acc + age
-  ) / menAge.length).toFixed(2);
+  const averageAge = getAverageAge(menAge);
 
-  return +sum;
+  return +averageAge;
 }
 
 /**
@@ -54,13 +58,13 @@ function calculateWomenAverageAge(people, withChildren) {
   const motherAge = mothers.map(person => person.died - person.born);
 
   const allAge = women.map(woman => woman.died - woman.born);
-  const sum = withChildren
-    ? (motherAge.reduce((prev, next) =>
-      prev + next) / motherAge.length).toFixed(2)
-    : (allAge.reduce((prev, next) => prev + next) / allAge.length).toFixed(2);
+  const averageAge = withChildren
+    ? getAverageAge(motherAge)
+    : getAverageAge(allAge);
 
-  return +sum;
+  return +averageAge;
 }
+
 /**
  * Implement calculateAverageAgeDiff function.
  *
@@ -78,10 +82,12 @@ function calculateWomenAverageAge(people, withChildren) {
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = onlyWithSon
-  // eslint-disable-next-line max-len
-    ? people.filter(person => people.some(mother => mother.name === person.mother) && person.sex === 'm')
-  // eslint-disable-next-line max-len
-    : people.filter(person => people.some(mother => mother.name === person.mother));
+    ? people.filter(person =>
+      people.some(mother =>
+        mother.name === person.mother) && person.sex === 'm')
+
+    : people.filter(person =>
+      people.some(mother => mother.name === person.mother));
 
   const average = (mothers.reduce((acc, woman) => {
     const moter = people.find(m => m.name === woman.mother);
