@@ -20,9 +20,7 @@ function calculateMenAverageAge(people, century) {
         || Math.ceil(person.died / 100) === century)
   );
 
-  const sumOfAge = filteredMan.reduce((sumAge, person) => {
-    return sumAge + (person.died - person.born);
-  }, 0);
+  const sumOfAge = colculateSumOfAge(filteredMan);
 
   return sumOfAge / filteredMan.length;
 }
@@ -42,13 +40,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people.filter(person => withChildren
-    ? people.find(child => child.mother === person.name)
-    : person.sex === 'f');
+  const filteredWomen = people.filter(person =>
+    withChildren
+      ? people.find(child => child.mother === person.name)
+      : person.sex === 'f'
+  );
 
-  const sumOfAge = filteredWomen.reduce((sumAge, person) => {
-    return sumAge + (person.died - person.born);
-  }, 0);
+  const sumOfAge = colculateSumOfAge(filteredWomen);
 
   return sumOfAge / filteredWomen.length;
 }
@@ -68,12 +66,15 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const peopleFilter = people.filter(person => onlyWithSon
-    ? person.sex === 'm' && people.find(mother => mother.name === person.mother)
-    : people.find(mother => mother.name === person.mother)
+  const peopleFilter = people.filter(person =>
+    people.find(mother => mother.name === person.mother)
   );
 
-  const sumOfAge = peopleFilter.reduce((sum, person) => {
+  const kids = onlyWithSon
+    ? peopleFilter.filter(person => person.sex === 'm')
+    : peopleFilter;
+
+  const sumOfAge = kids.reduce((sum, person) => {
     const mother = people.find(Currentmother =>
       person.mother === Currentmother.name
     );
@@ -81,7 +82,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return sum + (person.born - mother.born);
   }, 0);
 
-  return sumOfAge / peopleFilter.length;
+  return sumOfAge / kids.length;
 }
 
 module.exports = {
@@ -89,3 +90,9 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function colculateSumOfAge(array) {
+  return array.reduce((sumAge, person) => {
+    return sumAge + (person.died - person.born);
+  }, 0);
+}
