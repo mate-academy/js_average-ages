@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+
+function getAverageAge(peopleArray) {
+  return peopleArray.reduce((prevPers, nextPers) =>
+    prevPers + nextPers) / peopleArray.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century
+    ? people.filter(person =>
+      century === Math.ceil(person.died / 100) && person.sex === 'm'
+    )
+    : people.filter(person => person.sex === 'm');
+
+  const menAge = men.map(man => man.died - man.born);
+  const averageAge = getAverageAge(menAge);
+
+  return +averageAge;
 }
 
 /**
@@ -37,7 +48,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(person =>
+      person.mother !== null).map(person => person.mother
+    )
+    : people.filter(person => person.sex === 'f');
+
+  const mothers = people.filter(person => women.includes(person.name));
+  const motherAge = mothers.map(person => person.died - person.born);
+
+  const allAge = women.map(woman => woman.died - woman.born);
+  const averageAge = withChildren
+    ? getAverageAge(motherAge)
+    : getAverageAge(allAge);
+
+  return +averageAge;
 }
 
 /**
@@ -54,8 +79,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = onlyWithSon
+    ? people.filter(person =>
+      people.some(mother =>
+        mother.name === person.mother) && person.sex === 'm')
+
+    : people.filter(person =>
+      people.some(mother => mother.name === person.mother));
+
+  const average = (mothers.reduce((acc, woman) => {
+    const moter = people.find(m => m.name === woman.mother);
+    const dif = woman.born - moter.born;
+
+    return acc + dif;
+  }, 0) / mothers.length).toFixed(2);
+
+  return +average;
 }
 
 module.exports = {
