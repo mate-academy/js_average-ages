@@ -14,18 +14,18 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century = 0) {
-  const male = people.filter(person => person.sex === 'm');
-  const peopleOfCentury = male.filter(person =>
+function calculateMenAverageAge(people, century) {
+  const onlyMen = people.filter(person => person.sex === 'm');
+
+  const menOfCentury = onlyMen.filter(person =>
     Math.ceil(person.died / 100) === century);
 
-  const men = century ? peopleOfCentury : male;
+  const men = century ? menOfCentury : onlyMen;
 
   const age = men.map(date => date.died - date.born);
-  const averageAge = roundUpToTwo(age.reduce((sumAge, personAge) =>
-    sumAge + personAge, 0) / age.length);
+  const averageAgeMen = getAverage(age);
 
-  return averageAge;
+  return averageAgeMen;
 }
 
 /**
@@ -43,15 +43,14 @@ function calculateMenAverageAge(people, century = 0) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren = false) {
-  const female = people.filter(person => person.sex === 'f');
-  const mothers = female.filter(woman =>
+  const Onlywomen = people.filter(person => person.sex === 'f');
+  const mothers = Onlywomen.filter(woman =>
     people.some(person => person.mother === woman.name));
 
-  const women = withChildren ? mothers : female;
+  const women = withChildren ? mothers : Onlywomen;
 
   const ageWomen = women.map(date => date.died - date.born);
-  const averageAgeWomen = roundUpToTwo(ageWomen.reduce((sumAge, womanAge) =>
-    sumAge + womanAge, 0) / women.length);
+  const averageAgeWomen = getAverage(ageWomen);
 
   return averageAgeWomen;
 }
@@ -80,14 +79,14 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
   const diffAge = personWithMother.map(child =>
     child.born - (people.find(mother => mother.name === child.mother)).born);
 
-  const averageDiffAge = roundUpToTwo(diffAge.reduce((sumAge, ageNewMothers) =>
-    sumAge + ageNewMothers, 0) / diffAge.length);
+  const averageDiffAge = getAverage(diffAge);
 
   return averageDiffAge;
 }
 
-function roundUpToTwo(number) {
-  return Math.round(100 * number) / 100;
+function getAverage(agePeople) {
+  return Math.round(agePeople.reduce((sumAge, agePerson) =>
+    sumAge + agePerson, 0) * 100 / agePeople.length) / 100;
 }
 
 module.exports = {
