@@ -8,9 +8,21 @@
  * @return {number}
  */
 
+function getAge(person) {
+  const age = person.died - person.born;
+
+  return age;
+}
+
+function calculateAverageAge(people) {
+  const sumOfAllAges = people.reduce((prev, person) =>
+    prev + getAge(person), 0);
+
+  return sumOfAllAges / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter(filterMen);
-  const result = men.reduce(averageAge, 0);
 
   function filterMen(person) {
     return century
@@ -18,40 +30,23 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm';
   }
 
-  function averageAge(prev, person) {
-    const age = person.died - person.born;
-
-    return prev + age;
-  }
-
-  return result / men.length;
+  return calculateAverageAge(men);
 }
 
 /*
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
+
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter(person => person.sex === 'f');
-  const motherNames = people.map(person => person.mother);
+  const women = people.filter(({ sex, name }) => {
+    return sex === 'f'
+    && (!withChildren || people.some(person => person.mother === name));
+  });
 
-  const selectedWomen = women.filter(person =>
-    motherNames.includes(person.name));
-
-  const sumOfAges = (withChildren === true)
-    ? selectedWomen.map(person => person.died - person.born)
-    : women.map(person => person.died - person.born);
-
-  return sumOfAges.reduce((a, b) => (a + b), 0) / sumOfAges.length;
+  return calculateAverageAge(women);
 }
 
 /**
