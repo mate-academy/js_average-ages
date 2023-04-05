@@ -56,7 +56,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const momSumAge = mothers.reduce((sum, mom) => sum + mom.died - mom.born, 0);
 
-  return Number((momSumAge / mothers.length).toFixed(2));
+  return (momSumAge / mothers.length);
 }
 
 /**
@@ -67,10 +67,6 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * If `onlyWithSon` is specified then function calculates age difference only
  * for sons and their mothers.
-  Функція повертає середню різницю у віці між дитиною та її матір’ю в масиві.
-  (Вік матері на момент народження дитини)
-  Якщо вказано `onlyWithSon`, функція обчислює різницю у віці лише
-  для синів та їхніх матерів.
  *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
@@ -88,7 +84,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return sum + kid.born - mother.born;
   }, 0);
 
-  return ((diffAges / kids.length));
+  return (diffAges / kids.length);
 }
 
 module.exports = {
