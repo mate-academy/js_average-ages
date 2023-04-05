@@ -19,10 +19,15 @@ function calculateMenAverageAge(people, century) {
     person.sex === 'm'
     && (century ? Math.ceil(person.died / 100) === century : true)
   );
-  const sumOfAges = men.reduce((sum, person) =>
+
+  return calculateAverageAge(men);
+}
+
+function calculateAverageAge(people) {
+  const sumOfAges = people.reduce((sum, person) =>
     sum + (person.died - person.born), 0);
 
-  return sumOfAges / men.length;
+  return sumOfAges / people.length;
 }
 
 /**
