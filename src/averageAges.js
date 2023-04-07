@@ -87,18 +87,18 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         && person.sex === 'm')
       : womansChildren = people.filter(person => person.mother === woman.name);
 
-    const childrenYears = womansChildren.map(children => children.born);
+    const childrenBornYears = womansChildren.map(children => children.born);
 
     return {
       womanYear: woman.born,
-      childrenYears,
+      childrenBornYears,
     };
   });
 
   const flatAges = [];
 
-  ages.forEach(age => age.childrenYears.forEach(c => (
-    flatAges.push(c - age.womanYear))));
+  ages.forEach(age => age.childrenBornYears.forEach(childrenBornYear => (
+    flatAges.push(childrenBornYear - age.womanYear))));
 
   return flatAges.reduce((total, age) => total + age, 0) / flatAges.length;
 }
