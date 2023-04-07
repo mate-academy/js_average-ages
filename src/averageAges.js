@@ -22,9 +22,7 @@ function calculateAverageAge(people) {
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => person.sex === 'm'
   && (!century || Math.ceil(person.died / 100) === century));
-  const sumAge = men.reduce((total, person) => total
-  + person.died - person.born, 0);
-  const averageAge = men.length ? sumAge / men.length : 0;
+  const averageAge = calculateAverageAge(men);
 
   return averageAge;
 }
@@ -67,17 +65,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.filter(({ sex, name }) => sex === 'f'
-    && people.some(({ mother }) => mother === name));
+  const mothersSet
+  = new Set(people.filter(({ sex }) => sex === 'f').map(({ name }) => name));
 
-  const filteredChildren = people.filter(({ mother, sex }) => {
-    const hasMother = people.some(({ name }) => name === mother);
-
-    return hasMother && (!onlyWithSon || sex === 'm');
-  });
+  const filteredChildren = people.filter(({ mother, sex }) =>
+    mothersSet.has(mother) && (!onlyWithSon || sex === 'm')
+  );
 
   const averageMothersAge = filteredChildren.map(child => {
-    const foundMother = mothers.find(mother => mother.name === child.mother);
+    const foundMother
+    = people.find(({ name }) => name === child.mother && mothersSet.has(name));
 
     return child.born - foundMother.born;
   });
