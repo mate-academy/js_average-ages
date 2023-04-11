@@ -1,5 +1,19 @@
 'use strict';
 
+function calculateAverageAge(people) {
+  let average = 0;
+
+  const func = function(person) {
+    average += (person.died - person.born);
+
+    return true;
+  };
+
+  people.every(func);
+
+  return (average / people.length);
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -17,9 +31,19 @@
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
+  // avoid using loop and forEach <= Hi, the checklist contradicts this
+  // replace `if ()` statement with &&, || or ?: <= I quite honestly think I'm
+  //                                                too stupid for this, I do
+  //                                                not understand
   // without nesting
+
+  let men = people.filter((person) => person.sex === 'm');
+
+  if (century !== undefined) {
+    men = men.filter((person) => Math.ceil(person.died / 100) === century);
+  }
+
+  return calculateAverageAge(men);
 }
 
 /**
@@ -38,6 +62,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let women = people.filter((person) => person.sex === 'f');
+
+  if (withChildren === true) {
+    women = women.filter((person) =>
+      people.find((el) =>
+        el.mother === person.name));
+  }
+
+  return calculateAverageAge(women);
 }
 
 /**
@@ -56,6 +89,46 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const mothers = [];
+  let kids = [];
+
+  const func = function(person) {
+    if (people.find((el) => person.mother === el.name)) {
+      mothers.push(people.find((el) => person.mother === el.name));
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const alternateFunc = function(person) {
+    if (person.sex === 'f') {
+      return false;
+    }
+
+    if (people.find((el) => person.mother === el.name)) {
+      mothers.push(people.find((el) => person.mother === el.name));
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const getAverage = function(total, person) {
+    const mom = mothers.find((el) => person.mother === el.name);
+
+    return total + (person.born - mom.born);
+  };
+
+  if (onlyWithSon === true) {
+    kids = people.filter(alternateFunc);
+  } else {
+    kids = people.filter(func);
+  }
+
+  return kids.reduce(getAverage, 0) / kids.length;
 }
 
 module.exports = {
