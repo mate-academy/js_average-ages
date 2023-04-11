@@ -14,12 +14,22 @@
  *
  * @return {number}
  */
+function calculateAverageAge(people) {
+  return people.reduce(
+    (sum, { died, born }) => sum + died - born, 0) / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const findMen = people.filter(({ sex, died }) => sex === 'm' && (
+    century
+      ? Math.ceil(died / 100) === century
+      : true
+  )
+  );
+
+  const averageAge = calculateAverageAge(findMen);
+
+  return averageAge;
 }
 
 /**
@@ -30,14 +40,21 @@ function calculateMenAverageAge(people, century) {
  *
  * Hint: To check if a woman has children you should find someone who mention
  * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const findWomen = people.filter(
+    person => person.sex === 'f' && (
+      withChildren
+        ? people.some(p => p.mother === person.name)
+        : true
+    ));
+  const averageAge = calculateAverageAge(findWomen);
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +72,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(person => person.sex === 'f' && (
+    ({ name }) => people.some(({ mother }) => mother === name)));
+
+  const children = people.filter(
+    ({ mother, sex }) => {
+      return mothers.some(
+        ({ name }) => mother === name) && (!onlyWithSon || sex === 'm');
+    });
+
+  const find = children.map(child => {
+    const foundMom = mothers.find(mom => mom.name === child.mother);
+
+    return foundMom ? child.born - foundMom.born : null;
+  }).filter(value => value);
+
+  const difference = find.reduce(
+    (sum, dif) => sum + dif) / find.length;
+
+  return difference;
 }
 
 module.exports = {
