@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+const callBackReduce = (sum, person) => sum + (person.died - person.born);
+// callback for reduce for every function;
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(item => item.sex === 'm');
+  // filter only men;
+  const diedThisCentury = century
+    ? men.filter(person => Math.ceil(person.died / 100) === century)
+    : men;
+  // for diedThisCentury assign our condition - if century is specified or not;
+
+  const agesSum = diedThisCentury.reduce(callBackReduce, 0)
+    / diedThisCentury.length;
+  //  calculate average by dividing the sum of every male person
+  //  by number of male persons;
+
+  return agesSum;
 }
 
 /**
@@ -37,7 +48,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const callBackFilter = (person) =>
+    withChildren === true
+      ? person.sex === 'f' && people.some(child => child.mother === person.name)
+      : person.sex === 'f';
+    // callback to filter women;
+
+  const women = people.filter(callBackFilter);
+  const result = women.reduce(callBackReduce, 0) / women.length;
+
+  return result;
 }
 
 /**
@@ -55,7 +75,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const callBackSon = (sum, child) =>
+    sum + (child.born
+      - people.find(mother => mother.name === child.mother).born);
+
+  const callBackFilter = (child) =>
+    onlyWithSon === true
+      ? people.some(mother => child.mother === mother.name
+          && child.sex === 'm')
+      : people.some(mother => child.mother === mother.name);
+
+  const children = people.filter(callBackFilter);
+  const result = children.reduce(callBackSon, 0) / children.length;
+
+  return result;
 }
 
 module.exports = {
