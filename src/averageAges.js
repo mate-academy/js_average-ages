@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(({ sex, died }) => (
+    sex === 'm' && (
+      century
+        ? century === Math.ceil(died / 100)
+        : true
+    )));
+
+  return divideAndRound(calculateSumOfAges(men), men.length);
 }
 
 /**
@@ -37,7 +40,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(({ sex, name }) => (
+    sex === 'f' && (
+      withChildren
+        ? people.some(({ mother }) => mother === name)
+        : true
+    )));
+
+  return divideAndRound(calculateSumOfAges(women), women.length);
 }
 
 /**
@@ -55,8 +65,49 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const peopleWithMother = people.filter(person => people
+    .some(mother => (
+      mother.name === person.mother && (
+        onlyWithSon
+          ? person.sex === 'm'
+          : true
+      )
+    ))
+  );
+
+  const sumOfDifferences = peopleWithMother
+    .reduce((sum, { born: personBorn, mother: motherName }) => {
+      const motherBorn = people
+        .find((person) => person.name === motherName)
+        .born;
+
+      return sum + personBorn - motherBorn;
+    }, 0);
+
+  return divideAndRound(sumOfDifferences, peopleWithMother.length);
 }
+
+/**
+ * Function to add all ages of all people in array
+ * Returns the sum of ages
+ *
+ * @param {number[]} people
+ *
+ * @return {number}
+ */
+const calculateSumOfAges = (people) => people
+  .reduce((sum, { born, died }) => sum + (died - born), 0);
+
+/**
+ * Function to divide two values (a / b)
+ * Returns the result rounded to 2 decimal digits
+ *
+ * @param {number} a
+ * @param {number} b
+ *
+ * @return {number}
+ */
+const divideAndRound = (a, b) => Math.round((a / b) * 100) / 100;
 
 module.exports = {
   calculateMenAverageAge,
