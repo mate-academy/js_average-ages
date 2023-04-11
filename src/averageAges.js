@@ -15,22 +15,18 @@
  * @return {number}
  */
 const callBackReduce = (sum, person) => sum + (person.died - person.born);
-// callback for reduce for every function;
+
+function average(array) {
+  return array.reduce(callBackReduce, 0) / array.length;
+};
 
 function calculateMenAverageAge(people, century) {
   const men = people.filter(item => item.sex === 'm');
-  // filter only men;
   const diedThisCentury = century
     ? men.filter(person => Math.ceil(person.died / 100) === century)
     : men;
-  // for diedThisCentury assign our condition - if century is specified or not;
 
-  const agesSum = diedThisCentury.reduce(callBackReduce, 0)
-    / diedThisCentury.length;
-  //  calculate average by dividing the sum of every male person
-  //  by number of male persons;
-
-  return agesSum;
+  return average(diedThisCentury);
 }
 
 /**
@@ -52,12 +48,10 @@ function calculateWomenAverageAge(people, withChildren) {
     withChildren === true
       ? person.sex === 'f' && people.some(child => child.mother === person.name)
       : person.sex === 'f';
-    // callback to filter women;
 
   const women = people.filter(callBackFilter);
-  const result = women.reduce(callBackReduce, 0) / women.length;
 
-  return result;
+  return average(women);
 }
 
 /**
