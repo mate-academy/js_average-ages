@@ -14,17 +14,18 @@
  *
  * @return {number}
  */
+function calculateAverageAge(men) {
+  return men.reduce(
+    (sum, person) => sum + person.died - person.born, 0) / men.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter(
     person => person.sex === 'm'
       && (!century || Math.ceil(person.died / 100) === century)
   );
-  const sumAge = men.reduce(
-    (sum, person) => sum + (person.died - person.born), 0
-  );
 
-  return sumAge / men.length;
-
+  return calculateAverageAge(men);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
