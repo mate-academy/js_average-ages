@@ -45,5 +45,23 @@ GOOD EXAMPLE:
 const hasMetCondition = a && (b === c)
 ```
 
-4. [CODE KNOWLEDGE] - Don't use iteration methods to modify an already existing array/object.
-(`forEach` is exception). These methods return a new array, so you should use it. 
+4. [CODE KNOWLEDGE] - Don't use iteration methods like `map`, `filter` for side effects. Use `forEach` instead. 
+
+BAD EXAMPLE:
+```
+const personNames = {};
+
+people.map(person => {
+  duplicates[person.name] = true;
+});
+
+```
+
+GOOD EXAMPLE: 
+```
+const duplicates = {};
+
+people.forEach(person => {
+  duplicates[person.name] = true;
+});
+```
