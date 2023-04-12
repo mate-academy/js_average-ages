@@ -14,12 +14,26 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
+
+function calculateMenAverageAge(people, century = 1) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let peopleArr = [];
+  let sumOfAges = 0;
+
+  century > 1
+    ? peopleArr = people.filter((person) =>
+      Math.ceil(person.died / 100) === century && person.sex === 'm')
+    : peopleArr = people.filter((person) => person.sex === 'm');
+
+  peopleArr.forEach((person) => {
+    sumOfAges += (person.died - person.born);
+  });
+
+  return sumOfAges / peopleArr.length;
 }
 
 /**
@@ -36,8 +50,20 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  let peopleArr = people.filter((person) => person.sex === 'f');
+  let sumOfAges = 0;
+
+  if (withChildren) {
+    peopleArr = peopleArr.filter((person) =>
+      people.find((item) => item.mother === person.name));
+  }
+
+  peopleArr.forEach((person) => {
+    sumOfAges += (person.died - person.born);
+  });
+
+  return sumOfAges / peopleArr.length;
 }
 
 /**
@@ -54,8 +80,25 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let totalAgeDiff = 0;
+  let motherCount = 0;
+
+  people.forEach((person) => {
+    people.forEach((mother) => {
+      if (onlyWithSon && person.sex === 'm' && person.mother === mother.name) {
+        totalAgeDiff += person.born - mother.born;
+        motherCount++;
+      }
+
+      if (!onlyWithSon && person.mother === mother.name) {
+        totalAgeDiff += person.born - mother.born;
+        motherCount++;
+      }
+    });
+  });
+
+  return totalAgeDiff / motherCount;
 }
 
 module.exports = {
