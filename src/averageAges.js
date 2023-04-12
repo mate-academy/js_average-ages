@@ -20,6 +20,24 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  // const men = people.filter((a) => a.sex === 'm');
+  const men = century
+    ? people.filter((man) => {
+      const centuryDied = Math.ceil(man.died / 100);
+
+      return man.sex === 'm' && centuryDied === century;
+    })
+    : people.filter((person) => {
+      return person.sex === 'm';
+    });
+
+  const sumOfAges = men.reduce((count, man) => {
+    const year = man.died - man.born;
+
+    return count + year;
+  }, 0);
+
+  return sumOfAges / men.length;
 }
 
 /**
@@ -37,7 +55,24 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter((woman) => {
+      const haveChildren = people.some(person => person.mother === woman.name);
+
+      return woman.sex === 'f' && haveChildren;
+    })
+
+    : people.filter((person) => {
+      return person.sex === 'f';
+    });
+
+  const sumOfAges = women.reduce((count, man) => {
+    const year = man.died - man.born;
+
+    return count + year;
+  }, 0);
+
+  return sumOfAges / women.length;
 }
 
 /**
@@ -55,7 +90,28 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = onlyWithSon
+    ? people.filter(person => {
+      const haveMother = people.some((mother) => mother.name === person.mother);
+      const isSon = person.sex === 'm';
+
+      return haveMother && isSon;
+    })
+    : people.filter(person => {
+      const haveMother = people.some((mother) => mother.name === person.mother);
+
+      return haveMother;
+    });
+
+  const sumOfDifference = children.reduce((sum, child) => {
+    const mother = people.find((person) => person.name === child.mother);
+
+    const difference = child.born - mother.born;
+
+    return sum + difference;
+  }, 0);
+
+  return sumOfDifference / children.length;
 }
 
 module.exports = {
