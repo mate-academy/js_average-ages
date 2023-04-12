@@ -27,7 +27,7 @@ function calculateMenAverageAge(people, century) {
     : people.filter(person => person.sex === 'm');
 
   return males
-    .reduce((sum, person) => sum + person.died - person.born, 0) / males.length;
+    .reduce((sum, male) => sum + male.died - male.born, 0) / males.length;
 }
 
 /**
@@ -89,7 +89,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       .filter(child => mothers
         .find(mother => mother.name === child.mother));
 
-  const ageGap = children.map(child => child.born - people
+  const ageGap = children.map(child => child.born - mothers
     .find(mother => mother.name === child.mother).born);
 
   return ageGap.reduce((sum, difference) => sum + difference) / ageGap.length;
