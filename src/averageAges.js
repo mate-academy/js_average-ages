@@ -1,25 +1,22 @@
 'use strict';
 
-/**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
+const getAverage = (arr) => {
+  return arr.reduce((sum, el) => (el.died - el.born) + sum, 0) / arr.length;
+};
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let person = people.filter(man => man.sex === 'm');
+
+  person = century
+    ? person.filter(boy => Math.ceil(boy.died / 100) === century)
+    : person;
+
+  return getAverage(person);
 }
 
 /**
@@ -37,7 +34,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const woman = withChildren
+    ? people.filter(
+      mayBeMom => people.some(person => person.mother === mayBeMom.name)
+    )
+    : people.filter(person => person.sex === 'f');
+
+  return getAverage(woman);
 }
 
 /**
@@ -55,7 +58,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filteredPeople = onlyWithSon
+    ? people.filter(child => child.sex === 'm')
+    : people;
+
+  const children = filteredPeople.reduce((acc, child) => {
+    const mother = people.find(mom => mom.name === child.mother);
+
+    return mother ? [...acc, [child, mother]] : acc;
+  }, []);
+
+  const ageDifference = children.reduce(
+    (sum, [child, mother]) => sum + child.born - mother.born, 0
+  );
+
+  return ageDifference / children.length;
 }
 
 module.exports = {
