@@ -15,30 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const onlyMen = people.filter(man => man.sex === 'm');
+  function filterMenByCentury() {
+    return century ? onlyMen.filter(man => Math.ceil(
+      man.died / 100) === century) : onlyMen;
+  }
 
-  const menFiltered = century
-    ? onlyMen.filter(man => Math.ceil(man.died / 100) === century)
-    : onlyMen;
+  const onlyMen = people.filter(man => man.sex === 'm');
+  const menFiltered = filterMenByCentury(onlyMen, century);
 
   return +(menFiltered.reduce((sum, obj) => sum + (obj.died - obj.born), 0)
-    / menFiltered.length).toFixed(2);
+  / menFiltered.length).toFixed(2);
 }
 
-// learn how to use array methods like .filter .map .some .every .find .reduce
-// avoid using loop and forEach
-// replace `if ()` statement with &&, || or ?:
-// without nesting
-
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
@@ -69,17 +58,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const sons = onlyWithSon ? people.filter(person =>
+  const filteredPeople = onlyWithSon ? people.filter(person =>
     person.sex === 'm') : people;
 
-  const children = sons.filter(child => people.some(mother =>
+  const children = filteredPeople.filter(child => people.some(mother =>
     mother.name === child.mother));
 
   const womenWithChildren = children.map(child =>
     [child, people.find(mother => mother.name === child.mother)]);
 
-  const sum = womenWithChildren.reduce((diff, x) =>
-    diff + x[0].born - x[1].born, 0);
+  const sum = womenWithChildren.reduce((acc, [child, mother]) =>
+    acc + child.born - mother.born, 0);
 
   return sum / womenWithChildren.length;
 };
