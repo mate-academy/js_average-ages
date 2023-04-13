@@ -21,13 +21,12 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  let malesAverageAge = people.filter((person) => person.sex === 'm');
-
-  malesAverageAge = century !== undefined
-    ? malesAverageAge.filter(
-      (person) => Math.ceil(person.died / 100) === century
-    )
-    : malesAverageAge;
+  const malesAverageAge = century
+    ? people.filter((person) => person.sex === 'm')
+      .filter(
+        (person) => Math.ceil(person.died / 100) === century
+      )
+    : people.filter((person) => person.sex === 'm');
 
   return malesAverageAge.reduce(
     (accumulator, currentPerson) =>
@@ -45,19 +44,17 @@ function calculateMenAverageAge(people, century) {
  * her as mother.
  *
  * @param {object[]} people
- * @param {boolean} withkids - optional
+ * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withkids) {
+function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  let femalesAverageAge = people.filter((person) => person.sex === 'f');
-  const notMotherless = people.filter((person) => person.mother !== null);
-
-  femalesAverageAge = withkids === true
-    ? femalesAverageAge.filter(
-      (person) => notMotherless.some((son) => son.mother === person.name))
-    : femalesAverageAge;
+  const femalesAverageAge = withChildren
+    ? people.filter((person) => person.sex === 'f').filter(
+      (person) => people.filter((mum) => mum.mother !== null)
+        .some((son) => son.mother === person.name))
+    : people.filter((person) => person.sex === 'f');
 
   return femalesAverageAge.reduce(
     (accumulator, currentPerson) =>
@@ -84,13 +81,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const mothers = new Set(people.map(person => person.name));
 
   const kids = onlyWithSon
-    ? people.filter(child => child.sex === 'm'
-    && mothers.has(child.mother))
-    : people.filter(child => mothers.has(child.mother));
+    ? people.filter(kid => kid.sex === 'm'
+    && mothers.has(kid.mother))
+    : people.filter(kid => mothers.has(kid.mother));
 
   const difference = kids.map(
-    child => child.born - people.find(
-      mother => mother.name === child.mother).born
+    kid => kid.born - people.find(
+      mother => mother.name === kid.mother).born
   );
 
   return difference.reduce(
