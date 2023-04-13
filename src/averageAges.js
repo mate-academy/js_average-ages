@@ -16,6 +16,10 @@
  */
 const callBackReduce = (sum, person) => sum + (person.died - person.born);
 
+function hasMother(person, kid) {
+  return person.some(mother => kid.mother === mother.name);
+}
+
 function average(array) {
   return array.reduce(callBackReduce, 0) / array.length;
 };
@@ -44,10 +48,9 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const callBackFilter = (person) =>
-    withChildren === true
-      ? person.sex === 'f' && people.some(child => child.mother === person.name)
-      : person.sex === 'f';
+  const callBackFilter = (person) => withChildren
+    ? person.sex === 'f' && people.some(child => child.mother === person.name)
+    : person.sex === 'f';
 
   const women = people.filter(callBackFilter);
 
@@ -72,11 +75,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const callBackSon = (sum, child) => sum + (
     child.born - people.find(mother => mother.name === child.mother).born);
 
-  const callBackFilter = (child) =>
-    onlyWithSon === true
-      ? people.some(mother => child.mother === mother.name
-          && child.sex === 'm')
-      : people.some(mother => child.mother === mother.name);
+  const callBackFilter = (child) => onlyWithSon
+    ? hasMother(people, child) && child.sex === 'm'
+    : hasMother(people, child);
 
   const children = people.filter(callBackFilter);
   const result = children.reduce(callBackSon, 0) / children.length;
