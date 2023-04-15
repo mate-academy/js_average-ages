@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Implement calculateMenAverageAge function
@@ -22,13 +22,13 @@ function calculateMenAverageAge(people, century) {
   // without nesting
   const menByCentury = people.filter((person) =>
     century
-      ? Math.ceil(person.died / 100) === century && person.sex === 'm'
-      : person.sex === 'm'
+      ? Math.ceil(person.died / 100) === century && person.sex === "m"
+      : person.sex === "m"
   );
 
   return (
-    menByCentury.reduce((sum, man) => sum + man.died - man.born, 0)
-    / menByCentury.length
+    menByCentury.reduce((sum, man) => sum + man.died - man.born, 0) /
+    menByCentury.length
   );
 }
 
@@ -47,17 +47,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenWithChildren = people.filter((person) =>
+  const filteredWomen = people.filter((person) =>
     withChildren
-      ? people.find((child) => child.mother === person.name) !== undefined
-      : person.sex === 'f'
+      ? people.find((child) => child.mother === person.name)
+      : person.sex === "f"
   );
 
   return (
-    womenWithChildren.reduce(
-      (sum, women) => sum + (women.died - women.born),
-      0
-    ) / womenWithChildren.length
+    filteredWomen.reduce((sum, women) => sum + (women.died - women.born), 0) /
+    filteredWomen.length
   );
 }
 
@@ -76,22 +74,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const womenWithChildren = people.filter((child) =>
+  const filteredWomen = people.filter((child) =>
     onlyWithSon
-      ? people.find(
-        (women) => child.mother === women.name && child.sex === 'm'
-      ) !== undefined
-      : people.find((women) => child.mother === women.name) !== undefined
+      ? people.find((women) => child.mother === women.name && child.sex === "m")
+      : people.find((women) => child.mother === women.name)
   );
 
   return (
-    womenWithChildren.reduce(
+    filteredWomen.reduce(
       (sum, child) =>
-        sum
-        + child.born
-        - people.find((women) => child.mother === women.name).born,
+        sum +
+        child.born -
+        people.find((women) => child.mother === women.name).born,
       0
-    ) / womenWithChildren.length
+    ) / filteredWomen.length
   );
 }
 
