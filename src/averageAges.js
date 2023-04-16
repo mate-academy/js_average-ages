@@ -14,15 +14,19 @@
  *
  * @return {number}
  */
+
+// helper fn
+function isMan(person) {
+  return person.sex === 'm';
+}
+
 function calculateMenAverageAge(people, century) {
-  const filteredTab = people.filter(filterMan).filter(filterCentury);
+  const filteredTab = people
+    .filter(isMan)
+    .filter(haveDiedInCentury);
 
-  function filterMan(person) {
-    return person.sex === 'm';
-  }
-
-  function filterCentury(person) {
-    return (century) ? (Math.ceil(person.died / 100)) === century : people;
+  function haveDiedInCentury(person) {
+    return (century) ? (Math.ceil(person.died / 100)) === century : true;
   }
 
   function sumAllAges(prev, next) {
@@ -46,16 +50,17 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  const filteredTab = (withChildren)
-    ? people.filter(filterMothers)
-    : people.filter(filterWoman);
 
-  function filterWoman(person) {
+function calculateWomenAverageAge(people, withChildren) {
+  const filteredTab = withChildren
+    ? people.filter(isMother)
+    : people.filter(isWoman);
+
+  function isWoman(person) {
     return person.sex === 'f';
   };
 
-  function filterMothers(person) {
+  function isMother(person) {
     return people.some(el => el.mother === person.name);
   };
 
@@ -82,19 +87,16 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const filteredTab = (onlyWithSon)
-    ? people.filter(filterMan).filter(filterChilds)
-    : people.filter(filterChilds);
+    ? people.filter(isMan).filter(isChild)
+    : people.filter(isChild);
 
-  function filterMan(person) {
-    return person.sex === 'm';
-  }
-
-  function filterChilds(person) {
-    return people.some(el => el.name === person.mother);
+  function isChild(person) {
+    return people.some(child => child.name === person.mother);
   };
 
   return filteredTab.reduce((prev, next) => {
-    return prev + (next.born - people.find(el => el.name === next.mother).born);
+    return prev + (next.born - people
+      .find(person => person.name === next.mother).born);
   }, 0) / filteredTab.length;
 }
 
