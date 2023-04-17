@@ -1,5 +1,15 @@
 'use strict';
 
+function calculateAverageAge(people) {
+  let average = 0;
+
+  people.forEach((person) => {
+    average += (person.died - person.born);
+  });
+
+  return average / people.length;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -17,9 +27,17 @@
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
+  // avoid using loop and forEach <= Hi, the checklist contradicts this
+  // replace `if ()` statement with &&, || or ?
   // without nesting
+
+  let men = people.filter((person) => person.sex === 'm');
+
+  if (century) {
+    men = men.filter((person) => Math.ceil(person.died / 100) === century);
+  }
+
+  return calculateAverageAge(men);
 }
 
 /**
@@ -38,6 +56,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  let women = people.filter((person) => person.sex === 'f');
+
+  if (withChildren) {
+    women = women.filter((person) =>
+      people.find((el) =>
+        el.mother === person.name));
+  }
+
+  return calculateAverageAge(women);
 }
 
 /**
@@ -56,6 +83,40 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const mothers = [];
+  let kids = [];
+
+  if (onlyWithSon) {
+    kids = people.filter((person) => {
+      if (person.sex === 'f') {
+        return false;
+      }
+
+      if (people.find((el) => person.mother === el.name)) {
+        mothers.push(people.find((el) => person.mother === el.name));
+
+        return true;
+      }
+
+      return false;
+    });
+  } else {
+    kids = people.filter((person) => {
+      if (people.find((el) => person.mother === el.name)) {
+        mothers.push(people.find((el) => person.mother === el.name));
+
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  return kids.reduce((total, person) => {
+    const mom = mothers.find((el) => person.mother === el.name);
+
+    return total + (person.born - mom.born);
+  }, 0) / kids.length;
 }
 
 module.exports = {
