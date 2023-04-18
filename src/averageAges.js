@@ -20,20 +20,31 @@ function isMan(person) {
   return person.sex === 'm';
 }
 
+function sumAllAges(prev, next) {
+  return prev + (next.died - next.born);
+}
+
+function isWoman(person) {
+  return person.sex === 'f';
+};
+
+function isMother(person, index, arr) {
+  return arr.some(child => child.mother === person.name);
+};
+
+function haveDiedInCentury(person, century) {
+  return (century) ? (Math.ceil(person.died / 100)) === century : true;
+}
+
+function isChild(person, index, arr) {
+  return arr.some(child => child.name === person.mother);
+};
+
 function calculateMenAverageAge(people, century) {
-  const filteredTab = people
-    .filter(isMan)
-    .filter(haveDiedInCentury);
+  const men = people
+    .filter(person => isMan(person) && haveDiedInCentury(person, century));
 
-  function haveDiedInCentury(person) {
-    return (century) ? (Math.ceil(person.died / 100)) === century : true;
-  }
-
-  function sumAllAges(prev, next) {
-    return prev + (next.died - next.born);
-  }
-
-  return (filteredTab.reduce(sumAllAges, 0) / filteredTab.length);
+  return (men.reduce(sumAllAges, 0) / men.length);
 }
 
 /**
@@ -53,20 +64,8 @@ function calculateMenAverageAge(people, century) {
 
 function calculateWomenAverageAge(people, withChildren) {
   const filteredTab = withChildren
-    ? people.filter(isMother)
+    ? people.filter((person, index, arr) => isMother(person, index, arr))
     : people.filter(isWoman);
-
-  function isWoman(person) {
-    return person.sex === 'f';
-  };
-
-  function isMother(person) {
-    return people.some(el => el.mother === person.name);
-  };
-
-  function sumAllAges(prev, next) {
-    return prev + (next.died - next.born);
-  };
 
   return (filteredTab.reduce(sumAllAges, 0) / filteredTab.length);
 }
@@ -86,18 +85,16 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filteredTab = (onlyWithSon)
-    ? people.filter(isMan).filter(isChild)
-    : people.filter(isChild);
+  const children = (onlyWithSon)
+    ? people.filter(
+      (person, index, arr) => isMan(person) && isChild(person, index, arr)
+    )
+    : people.filter((person, index, arr) => isChild(person, index, arr));
 
-  function isChild(person) {
-    return people.some(child => child.name === person.mother);
-  };
-
-  return filteredTab.reduce((prev, next) => {
-    return prev + (next.born - people
-      .find(person => person.name === next.mother).born);
-  }, 0) / filteredTab.length;
+  return children.reduce((total, child) => {
+    return total + (child.born - people
+      .find(person => person.name === child.mother).born);
+  }, 0) / children.length;
 }
 
 module.exports = {
