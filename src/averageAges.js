@@ -16,13 +16,12 @@
  */
 function calculateMenAverageAge(people, century) {
   const filterMan = people
-    .filter(man => man.sex === 'm')
-    .filter(man => century ? Math.ceil(man.died / 100) === century : true);
+    .filter(man => man.sex === 'm' && century
+      ? Math.ceil(man.died / 100) === century : true && man.sex === 'm');
 
-  const ageMan = filterMan.filter(man => man.sex === 'm')
-    .map((age) => differenceAge(age));
+  const personMan = filterMan.map((person) => differenceAge(person));
 
-  return calculatePeoplesAge(ageMan);
+  return calculateAverageAge(personMan);
 }
 
 /**
@@ -41,19 +40,19 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const filterWom = people.filter(wom => withChildren
-    ? findMomByName(people, wom) : wom.sex === 'f');
+    ? isMother(people, wom) : wom.sex === 'f');
 
-  const ageWom = filterWom.map((age) => differenceAge(age));
+  const personWom = filterWom.map((person) => differenceAge(person));
 
-  return calculatePeoplesAge(ageWom);
+  return calculateAverageAge(personWom);
 }
 
-function findMomByName(people, wom) {
+function isMother(people, wom) {
   return people.some(nameMother => wom.name === nameMother.mother);
 }
 
-function differenceAge(age) {
-  return age.died - age.born;
+function differenceAge(person) {
+  return person.died - person.born;
 }
 
 /**
@@ -71,12 +70,12 @@ function differenceAge(age) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filterWom = people.filter(wom => findMomByName(people, wom));
+  const filterWom = people.filter(wom => isMother(people, wom));
 
   const kids = people.filter(kid =>
     onlyWithSon
       ? kid.sex === 'm'
-         && filterKidsByMom(people, kid) : filterKidsByMom(people, kid));
+         && hasMotherInPeople(people, kid) : hasMotherInPeople(people, kid));
 
   const ageDifference = kids.reduce((sum, kid) => {
     const mother = filterWom.find(mom => mom.name === kid.mother);
@@ -88,12 +87,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return ageDifference / kids.length;
 }
 
-function filterKidsByMom(people, kid) {
+function hasMotherInPeople(people, kid) {
   return people.some(mother => mother.name === kid.mother);
 }
 
-function calculatePeoplesAge(ageMan) {
-  return ageMan.reduce((sum, age) => (sum + age), 0) / ageMan.length;
+function calculateAverageAge(personMan) {
+  return personMan.reduce((sum, age) => (sum + age), 0) / personMan.length;
 }
 
 module.exports = {
