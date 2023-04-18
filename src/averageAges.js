@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filterMan = people
+    .filter(man => man.sex === 'm' && century
+      ? Math.ceil(man.died / 100) === century : true && man.sex === 'm');
+
+  const personMan = filterMan.map((person) => differenceAge(person));
+
+  return calculateAverageAge(personMan);
 }
 
 /**
@@ -37,7 +39,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filterWom = people.filter(wom => withChildren
+    ? isMother(people, wom) : wom.sex === 'f');
+
+  const personWom = filterWom.map((person) => differenceAge(person));
+
+  return calculateAverageAge(personWom);
+}
+
+function isMother(people, wom) {
+  return people.some(nameMother => wom.name === nameMother.mother);
+}
+
+function differenceAge(person) {
+  return person.died - person.born;
 }
 
 /**
@@ -55,7 +70,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filterWom = people.filter(wom => isMother(people, wom));
+
+  const kids = people.filter(kid =>
+    onlyWithSon
+      ? kid.sex === 'm'
+         && hasMotherInPeople(people, kid) : hasMotherInPeople(people, kid));
+
+  const ageDifference = kids.reduce((sum, kid) => {
+    const mother = filterWom.find(mom => mom.name === kid.mother);
+    const difference = kid.born - mother.born;
+
+    return sum + difference;
+  }, 0);
+
+  return ageDifference / kids.length;
+}
+
+function hasMotherInPeople(people, kid) {
+  return people.some(mother => mother.name === kid.mother);
+}
+
+function calculateAverageAge(personMan) {
+  return personMan.reduce((sum, age) => (sum + age), 0) / personMan.length;
 }
 
 module.exports = {
