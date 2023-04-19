@@ -15,7 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const filteredMen = people
+    .filter(p => p.sex === 'm'
+      && (century ? Math.ceil(p.died / 100) === century : true));
+
+  const yearsOfLife = filteredMen.map(man => man.died - man.born);
+
+  const sumOfAge = yearsOfLife.reduce((a, b) => a + b);
+  const averageAge = ((sumOfAge / yearsOfLife.length) * 100) / 100;
+
+  return averageAge;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const namesMentionedAsMother = people.map(p => p.mother);
+  const filteredWomen = people
+    .filter(p => p.sex === 'f'
+      && (withChildren ? namesMentionedAsMother.includes(p.name) : true));
+
+  const yearsOfLife = filteredWomen.map(woman => woman.died - woman.born);
+
+  const sumOfAge = yearsOfLife.reduce((a, b) => a + b);
+  const averageAge = ((sumOfAge / yearsOfLife.length) * 100) / 100;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +74,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const mothers = people.filter(p => p.sex === 'f'
+    && (people.some(m => m.mother === p.name)));
+
+  const children = people
+    .filter(child => mothers.some(mother => child.mother === mother.name));
+
+  const withSon = onlyWithSon
+    ? children.filter(child => child.sex === 'm')
+    : children;
+
+  const ageDifferences = withSon.map(child => {
+    const foundMom = mothers.find(mom => mom.name === child.mother);
+
+    return foundMom ? child.born - foundMom.born : null;
+  });
+
+  const averageDiff = ageDifferences
+    .reduce((sum, char) => sum + char) / ageDifferences.length;
+
+  return averageDiff;
 }
 
 module.exports = {
