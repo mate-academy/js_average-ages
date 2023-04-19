@@ -20,8 +20,12 @@ function isMan(person) {
   return person.sex === 'm';
 }
 
-function sumAllAges(prev, next) {
-  return prev + (next.died - next.born);
+// function sumAllAges(prev, next) {
+//   return prev + (next.died - next.born);
+// }
+
+function sumAllAges(people) {
+  return people.reduce((sum, person) => sum + (person.died - person.born), 0);
 }
 
 function isWoman(person) {
@@ -44,7 +48,8 @@ function calculateMenAverageAge(people, century) {
   const men = people
     .filter(person => isMan(person) && haveDiedInCentury(person, century));
 
-  return (men.reduce(sumAllAges, 0) / men.length);
+  // return (men.reduce(sumAllAges, 0) / men.length);
+  return sumAllAges(men) / men.length;
 }
 
 /**
@@ -63,11 +68,12 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredTab = withChildren
+  const woman = withChildren
     ? people.filter((person, index, arr) => isMother(person, index, arr))
     : people.filter(isWoman);
 
-  return (filteredTab.reduce(sumAllAges, 0) / filteredTab.length);
+  // return (woman.reduce(sumAllAges, 0) / woman.length);
+  return sumAllAges(woman) / woman.length;
 }
 
 /**
