@@ -15,24 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = century !== undefined
-    ? people.filter(man => {
-      const isMan = man.sex === 'm';
-      const diedInThisCentury = century === Math.ceil(man.died / 100);
+  const menArray = century
+    ? [...people].filter(person => person.sex === 'm'
+          && Math.ceil(person.died / 100) === century)
+    : [...people].filter(person => person.sex === 'm');
 
-      return isMan && diedInThisCentury;
-    })
+  const averageAge = calculateAverageAge(menArray);
 
-    : people.filter(man => {
-      const isMan = man.sex === 'm';
-
-      return isMan;
-    });
-
-  const averageAges = men.reduce(
-    (acc, man) => (acc + (man.died - man.born)), 0) / men.length;
-
-  return averageAges;
+  return averageAge;
 }
 
 /**
@@ -50,24 +40,31 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = withChildren
-    ? people.filter(woman => {
-      const womanWithChild = people
-        .some((child) => child.mother === woman.name);
+  const womenWithChildren = [];
+  const womenArr = withChildren
+    ? Array.from(new Set(people
+      .filter(person => person.mother !== null)
+      .map(person => person.mother)))
+    : [...people].filter(person => person.sex === 'f');
 
-      return womanWithChild;
-    })
+  people.forEach(woman => {
+    if (womenArr.includes(woman.name)) {
+      womenWithChildren.push(woman);
+    };
+  });
 
-    : people.filter(woman => {
-      const isWoman = woman.sex === 'f';
+  const averageAge = withChildren
+    ? calculateAverageAge(womenWithChildren)
+    : calculateAverageAge(womenArr);
 
-      return isWoman;
-    });
+  return averageAge;
+}
 
-  const averageAges = women.reduce(
-    (acc, woman) => (acc + (woman.died - woman.born)), 0) / women.length;
+function calculateAverageAge(array) {
+  const allAge = array.reduce((acc, curr) => acc + (curr.died - curr.born), 0);
+  const averageAge = Number((allAge / array.length).toFixed(2));
 
-  return averageAges;
+  return averageAge;
 }
 
 /**
