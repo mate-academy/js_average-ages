@@ -15,11 +15,6 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
   const men = people.filter(({ sex, died }) => {
     return century
       ? sex === 'm' && Math.ceil(died / 100) === century
@@ -50,11 +45,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
   const women = people.filter((woman) => {
     return withChildren
       ? woman.sex === 'f'
-        && people.find((person) => person.mother === woman.name)
+        && people.some((person) => person.mother === woman.name)
       : woman.sex === 'f';
   });
 
@@ -82,25 +76,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // Всі жінки у яких є діти
   const women = people.filter((woman) => {
     return woman.sex === 'f'
-      && people.find((person) => person.mother === woman.name);
+      && people.some((person) => person.mother === woman.name);
   });
 
   const diffs = women.map((woman) => {
-    // Всі діти конкретної жінки, або тільки сини
     const children = people.filter((person) => {
       return !onlyWithSon
         ? person.mother === woman.name
         : person.mother === woman.name && person.sex === 'm';
     });
 
-    // Повертаємо вік народження дитини
     return children.map((child) => child.born - woman.born);
   }).flat();
 
-  // Знаходимо середній вік в массиві
   return +(diffs.reduce((acc, curr) => acc + curr, 0) / diffs.length)
     .toFixed(2);
 }
