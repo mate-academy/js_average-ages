@@ -22,9 +22,7 @@ const calculateLiveLength = (people) => (
 
 function calculateMenAverageAge(people, century) {
   const diedCentury = (person) => (
-    century
-      ? Math.ceil(person.died / 100) === century
-      : true
+    !century || Math.ceil(person.died / 100) === century
   );
 
   const men = people.filter((person) => (
@@ -50,9 +48,7 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const wasMother = (woman) => (
-    withChildren
-      ? people.some(child => child.mother === woman.name)
-      : true
+    !withChildren || people.some(child => child.mother === woman.name)
   );
 
   const women = people.filter((woman) => (
@@ -81,13 +77,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     child.mother && (!onlyWithSon || child.sex === 'm')
   ));
 
-  const ageDif = children.reduce((ages, child) => {
+  const ageDifference = children.reduce((ages, child) => {
     const mother = people.find(person => person.name === child.mother);
 
     return mother ? ages.concat(child.born - mother.born) : ages;
   }, []);
 
-  return calculateAverage(ageDif);
+  return calculateAverage(ageDifference);
 }
 
 module.exports = {
