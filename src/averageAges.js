@@ -15,7 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people.filter((person) => person.sex === 'm');
+  let sorted;
+
+  if (century === undefined) {
+    sorted = men;
+  } else {
+    sorted = men.filter((person) => (century === Math.ceil(person.died / 100)));
+  }
+
+  const sumOfYears = sorted.reduce((acc, person) => {
+    const yearsLived = person.died - person.born;
+
+    return acc + yearsLived;
+  }, 0);
+
+  return sumOfYears / sorted.length;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +52,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((person) => person.sex === 'f');
+  let sorted = women;
+
+  if (withChildren === true) {
+    sorted = women.filter((person) => {
+      return people.some(p => p.mother === person.name);
+    });
+  }
+
+  const sumOfYears = sorted.reduce((acc, person) => {
+    const yearsLived = person.died - person.born;
+
+    return acc + yearsLived;
+  }, 0);
+
+  return sumOfYears / sorted.length;
 }
 
 /**
@@ -54,8 +84,28 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const mothers = people.filter((person) => person.sex === 'f');
+  let children;
+
+  if (onlyWithSon) {
+    children = people.filter((person) => person.sex === 'm');
+  } else {
+    children = people.filter((person) => person.mother !== undefined);
+  }
+
+  const diffs = children.map((child) => {
+    const mother = mothers.find((person) => person.name === child.mother);
+
+    if (mother !== undefined) {
+      return child.born - mother.born;
+    }
+  }).filter((diff) => diff !== undefined);
+
+  const sumOfDiffs = diffs.reduce((acc, diff) => acc + diff, 0);
+  const avgDiff = sumOfDiffs / diffs.length;
+
+  return avgDiff;
 }
 
 module.exports = {
