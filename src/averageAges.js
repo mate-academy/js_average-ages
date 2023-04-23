@@ -15,17 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const males = century
+  const men = century
     ? people.filter(
       (male) => male.sex === 'm' && century === Math.ceil(male.died / 100)
     )
     : people.filter((male) => male.sex === 'm');
 
-  const totalAge = males.reduce(
+  const totalAge = men.reduce(
     (sumAge, maleItem) => sumAge + (maleItem.died - maleItem.born), 0
   );
 
-  return totalAge / males.length;
+  return totalAge / men.length;
 }
 
 /**
@@ -43,18 +43,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const females = withChildren
+  const women = withChildren
     ? people.filter(
       (female) => female.sex === 'f'
       && people.some((child) => child.mother === female.name)
     )
     : people.filter((female) => female.sex === 'f');
 
-  const totalAge = females.reduce(
+  const totalAge = women.reduce(
     (sumAge, femaleItem) => sumAge + (femaleItem.died - femaleItem.born), 0
   );
 
-  return totalAge / females.length;
+  return totalAge / women.length;
 }
 
 /**
@@ -74,11 +74,9 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenArray = onlyWithSon
     ? people.filter(person => (
-      person.sex === 'm' && people.some(mother => mother.name === person.mother)
+      person.sex === 'm' && hasMother(people, person.mother)
     ))
-    : people.filter(person => (
-      people.some(mother => mother.name === person.mother)
-    ));
+    : people.filter(person => hasMother(people, person.mother));
 
   const totalAgeDiff = childrenArray.reduce((sumAge, child) => {
     const motherItem = people.find(person => person.name === child.mother);
@@ -88,6 +86,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   }, 0);
 
   return totalAgeDiff / childrenArray.length;
+}
+
+function hasMother(people, mother) {
+  return people.some(person => person.name === mother);
 }
 
 module.exports = {
