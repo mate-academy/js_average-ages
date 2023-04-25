@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter((person) => person.sex === 'm');
+
+  // eslint-disable-next-line max-len
+  const sorted = men.filter((person) => century === undefined ? true : century === Math.ceil(person.died / 100));
+
+  const sumOfYears = sorted.reduce((acc, person) => {
+    const yearsLived = person.died - person.born;
+
+    return acc + yearsLived;
+  }, 0);
+
+  return avg(sumOfYears, sorted.length);
 }
 
 /**
@@ -37,7 +44,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((person) => person.sex === 'f');
+  // eslint-disable-next-line max-len
+  const sorted = withChildren ? women.filter((person) => people.some(p => p.mother === person.name)) : women;
+
+  const sumOfYears = sorted.reduce((acc, person) => {
+    const yearsLived = person.died - person.born;
+
+    return acc + yearsLived;
+  }, 0);
+
+  return avg(sumOfYears, sorted.length);
 }
 
 /**
@@ -54,8 +71,30 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let children;
+
+  if (onlyWithSon) {
+    children = people.filter((person) => person.sex === 'm');
+  } else {
+    children = people.filter((person) => person.mother !== undefined);
+  }
+
+  const diffs = children.map((child) => {
+    const mother = people.find((person) => person.name === child.mother);
+
+    if (mother !== undefined) {
+      return child.born - mother.born;
+    }
+  }).filter((diff) => diff !== undefined);
+
+  const sumOfDiffs = diffs.reduce((acc, diff) => acc + diff, 0);
+
+  return avg(sumOfDiffs, diffs.length);
+}
+
+function avg(a, b) {
+  return a / b;
 }
 
 module.exports = {
