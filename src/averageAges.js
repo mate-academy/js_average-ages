@@ -21,17 +21,12 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const menDiedInThisCentury = people.filter(person => {
-    return century
-      ? Math.ceil(person.died / 100) === century && person.sex === 'm'
-      : person.sex === 'm';
-  });
+  const menDiedInThisCentury = people.filter(person => century
+    ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+    : person.sex === 'm');
 
-  const sumMenAges = menDiedInThisCentury
-    .map(manAge => manAge.died - manAge.born)
-    .reduce((sumOfAges, currentAge) => sumOfAges + currentAge, 0);
-
-  return +(sumMenAges / menDiedInThisCentury.length).toFixed(2);
+  return +(sumOfAges(menDiedInThisCentury)
+    / menDiedInThisCentury.length).toFixed(2);
 }
 /**
  * Implement calculateWomenAverageAge function
@@ -49,17 +44,18 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren = false) {
-  const women = people.filter(person => {
-    return withChildren
-      ? people.find(child => person.name === child.mother && person.sex === 'f')
-      : person.sex === 'f';
-  });
+  const women = people.filter(person => withChildren
+    ? people.find(child => person.name === child.mother && person.sex === 'f')
+    : person.sex === 'f');
 
-  const sumOfAges = women
-    .map(woman => woman.died - woman.born)
-    .reduce((sumAges, currentAge) => sumAges + currentAge, 0);
+  return +(sumOfAges(women)
+    / women.length).toFixed(2);
+}
 
-  return +(sumOfAges / women.length).toFixed(2);
+function sumOfAges(people) {
+  return people
+    .reduce((sumAges, currentAge) =>
+      sumAges + (currentAge.died - currentAge.born), 0);
 }
 
 /**
@@ -76,6 +72,7 @@ function calculateWomenAverageAge(people, withChildren = false) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(person => {
     const hasMother = people
