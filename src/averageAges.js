@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -15,11 +16,7 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(person => person.sex === 'm');
-
-  if (century) {
-    men = men.filter(person => Math.ceil(person.died / 100) === century);
-  }
+  const men = people.filter(person => person.sex === 'm' && (!century || Math.ceil(person.died / 100) === century));
 
   const ages = men.map(person => person.died - person.born);
   const totalAge = ages.reduce((sum, age) => sum + age, 0);
@@ -42,13 +39,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
-
-  if (withChildren) {
-    women
-    // eslint-disable-next-line max-len
-    = women.filter(woman => people.some(person => person.mother === woman.name));
-  }
+  const women = people.filter(person => person.sex === 'f' && (!withChildren || people.some(child => child.mother === person.name)));
 
   const ages = women.map(woman => woman.died - woman.born);
   const totalAge = ages.reduce((sum, age) => sum + age, 0);
@@ -72,9 +63,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon
-    // eslint-disable-next-line max-len
     ? people.filter(person => person.sex === 'm' && people.some(mother => mother.name === person.mother))
-    // eslint-disable-next-line max-len
     : people.filter(person => people.some(mother => mother.name === person.mother));
   const ageDiffs = children.map(child => {
     const mother = people.find(person => person.name === child.mother);
