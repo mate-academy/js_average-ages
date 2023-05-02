@@ -18,7 +18,7 @@ function calculateMenAverageAge(people, century) {
   const men = people.filter(person => person.sex === 'm');
   let menFromCentury;
 
-  century !== undefined
+  century
     ? menFromCentury = (men.filter(person => Math.ceil(person.died / 100)
     === century))
     : menFromCentury = men;
@@ -47,7 +47,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
   let womenWithChildren;
 
-  typeof withChildren !== 'undefined'
+  withChildren
     ? womenWithChildren = (women.filter(person =>
       people.find(child => child.mother === person.name)))
     : womenWithChildren = women;
@@ -84,7 +84,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let chosenChildren;
 
-  typeof onlyWithSon !== 'undefined'
+  onlyWithSon
     ? chosenChildren = (children.filter(child =>
       child.sex === 'm'))
     : chosenChildren = children;
