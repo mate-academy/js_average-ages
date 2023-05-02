@@ -15,9 +15,9 @@
  * @return {number}
  */
 
-const reduceCalc = (arr, arrLength) => {
+const reduceCalc = (arr) => {
   return arr.reduce(
-    (start, age) => start + (age.died - age.born), 0) / arrLength.length;
+    (start, age) => start + (age.died - age.born), 0) / arr.length;
 };
 
 function calculateMenAverageAge(people, century) {
@@ -27,7 +27,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm'
   );
 
-  return reduceCalc(manArr, manArr);
+  return reduceCalc(manArr);
 }
 
 /**
@@ -51,7 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f'
   );
 
-  return reduceCalc(women, women);
+  return reduceCalc(women);
 }
 
 /**
