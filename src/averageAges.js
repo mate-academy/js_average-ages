@@ -14,13 +14,11 @@
  *
  * @return {number}
  */
+// learn how to use array methods like .filter .map .some .every .find .reduce
+// avoid using loop and forEach
+// replace `if ()` statement with &&, || or ?:
+// without nesting
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-
   const men = people.filter(person => person.sex === 'm');
 
   const diedInCentury = men.filter(man =>
@@ -56,12 +54,12 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
 
-  const womenWithChildren = women.filter(woman =>
+  const mother = women.filter(woman =>
     people.some(person => person.mother === woman.name)
   );
 
   const womenAges = withChildren
-    ? womenWithChildren.map(woman =>
+    ? mother.map(woman =>
       woman.died - woman.born)
 
     : women.map(woman => woman.died - woman.born);
