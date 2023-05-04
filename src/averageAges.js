@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const findMen = (man) => {
+    return (century === undefined) ? (man['sex'] === 'm') : (
+      (man['sex'] === 'm') && (Math.ceil(man['died'] / 100) === century));
+  };
+  const onlyCorrectMen = people.filter(findMen);
+  const totalYear = (sum, person) => {
+    return sum + (person['died'] - person['born']);
+  };
+  const menAverage = onlyCorrectMen.reduce(totalYear, 0);
+
+  return (menAverage / onlyCorrectMen.length);
 }
 
 /**
@@ -37,7 +43,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const findWomen = (woman) => {
+    return (withChildren === undefined) ? (woman['sex'] === 'f') : (
+      (woman['sex'] === 'f')
+      && people.some((mother) => mother['mother'] === woman['name']));
+  };
+  const onlyCorrectWomen = people.filter(findWomen);
+  const totalYear = (sum, person) => {
+    return sum + (person['died'] - person['born']);
+  };
+  const womenAverage = onlyCorrectWomen.reduce(totalYear, 0);
+
+  return (womenAverage / onlyCorrectWomen.length);
 }
 
 /**
@@ -55,7 +72,23 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findChild = (baby) => {
+    return (onlyWithSon === undefined) ? (
+      people.some((mother) =>
+        (mother['name'] === baby['mother']))) : (people.some((mother) =>
+      ((mother['name'] === baby['mother']) && (baby['sex'] === 'm'))));
+  };
+  const onlyCorrectMother = people.filter(findChild);
+
+  const totalYear = (sum, child) => {
+    const findMother = people.find((mother) =>
+      (child['mother'] === mother['name']));
+
+    return sum + (child['born'] - findMother['born']);
+  };
+  const coupleAverage = onlyCorrectMother.reduce(totalYear, 0);
+
+  return (coupleAverage / onlyCorrectMother.length);
 }
 
 module.exports = {
