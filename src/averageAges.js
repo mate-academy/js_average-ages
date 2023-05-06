@@ -19,18 +19,20 @@ function calcAverage(totalCount, counts) {
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menArray
+  const menArray = people.filter(man => man.sex === 'm');
+  const requiredMen
     = century
-      ? people.filter(man => man.sex === 'm'
-        && century === Math.ceil(man.died / 100))
-      : people.filter(man => man.sex === 'm');
+      ? menArray.filter(man => century === Math.ceil(man.died / 100))
+      : menArray;
 
-  const menDataAges = menArray.reduce((total, man) => {
-    total.totalAge = (total.totalAge || 0) + man.died - man.born;
-    total.counter = (total.counter || 0) + 1;
+  const menDataAges = requiredMen.reduce((total, man) => {
+    total.totalAge += (man.died - man.born);
+    total.counter += 1;
 
     return total;
-  }, {});
+  }, {
+    totalAge: 0, counter: 0,
+  });
 
   const average
     = calcAverage(menDataAges.totalAge, menDataAges.counter);
@@ -67,11 +69,13 @@ function calculateWomenAverageAge(people, withChildren) {
       : people.filter(person => person.sex === 'f');
 
   const womenDataAll = womenWithChildren.reduce((total, person) => {
-    total.totalAge = (total.totalAge || 0) + person.died - person.born;
-    total.counter = (total.counter || 0) + 1;
+    total.totalAge += (person.died - person.born);
+    total.counter += 1;
 
     return total;
-  }, {});
+  }, {
+    totalAge: 0, counter: 0,
+  });
 
   const average = calcAverage(womenDataAll.totalAge, womenDataAll.counter);
 
@@ -102,11 +106,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const ageDiff = parent ? child.born - parent.born : 0;
     const counter = parent ? 1 : 0;
 
-    total.totalAge = (total.totalAge || 0) + ageDiff;
-    total.counter = (total.counter || 0) + counter;
+    total.totalAge += ageDiff;
+    total.counter += counter;
 
     return total;
-  }, {});
+  }, {
+    totalAge: 0, counter: 0,
+  });
 
   const average
     = calcAverage(childrenDataAges.totalAge, childrenDataAges.counter);
