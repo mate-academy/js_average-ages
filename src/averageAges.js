@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(
+    century
+      ? person => {
+        const validateCentury = Math.ceil(person.died / 100) === century;
+
+        return validateCentury && person.sex === 'm';
+      }
+      : person => person.sex === 'm');
+
+  return calculateValidAvarageAge(men);
 }
 
 /**
@@ -37,7 +42,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(
+    withChildren
+      ? person => {
+        const findChildren = people.find(potentialChild =>
+          potentialChild.mother === person.name);
+
+        return findChildren && person.sex === 'f';
+      }
+      : person => person.sex === 'f');
+
+  return calculateValidAvarageAge(women);
 }
 
 /**
@@ -55,7 +70,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  function hasMother(child) {
+    const motherInBase = Boolean(people.find(mother =>
+      child.mother === mother.name));
+
+    return onlyWithSon
+      ? motherInBase && child.sex === 'm'
+      : motherInBase;
+  }
+
+  const childrenWithMother = people.filter(hasMother);
+  const sumAge = childrenWithMother.reduce((sum, child) => {
+    const difference = child.born - people.find(mother =>
+      child.mother === mother.name).born;
+
+    return sum + difference;
+  }, 0);
+
+  return +(sumAge / childrenWithMother.length).toFixed(2);
 }
 
 module.exports = {
@@ -63,3 +95,13 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function calculateValidAvarageAge(filteredPeople) {
+  const averageAge = filteredPeople.reduce((sum, person) => {
+    const personAge = person.died - person.born;
+
+    return sum + personAge;
+  }, 0);
+
+  return +(averageAge / filteredPeople.length).toFixed(2);
+}
