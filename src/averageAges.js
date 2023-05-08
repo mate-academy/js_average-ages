@@ -14,7 +14,28 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
+function calculateMenAverageAge(people, century = 0) {
+  let handledItemsCounter = 0;
+
+  function check(elem, period) {
+    if (century === 0) {
+      return true;
+    }
+
+    return Math.ceil(elem.died / 100) === period;
+  };
+
+  const menAge = people.reduce((sum, el) => {
+    if (el.sex === 'm' && check(el, century)) {
+      handledItemsCounter++;
+
+      return sum + (el.died - el.born);
+    };
+
+    return sum;
+  }, 0);
+
+  return menAge / handledItemsCounter;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -36,8 +57,35 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  let handledItemsCounter = 0;
+  let womenAge = 0;
+
+  function check(elem, arg) {
+    const haveKids = people.find(({ mother }) => mother === elem.name);
+
+    if (!arg && elem.sex === 'f') {
+      return true;
+    }
+
+    if (arg && elem.sex === 'f' && haveKids) {
+      return true;
+    }
+
+    return false;
+  };
+
+  womenAge = people.reduce((sum, el) => {
+    if (check(el, withChildren)) {
+      handledItemsCounter++;
+
+      return sum + (el.died - el.born);
+    };
+
+    return sum;
+  }, 0);
+
+  return womenAge / handledItemsCounter;
 }
 
 /**
@@ -54,9 +102,34 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  let handledItemsCounter = 0;
+  let diff = 0;
+
+  function count(parent, item) {
+    handledItemsCounter++;
+    diff += item.born - parent.born;
+  };
+
+  people.forEach(person => {
+    if (onlyWithSon && person.sex === 'f') {
+      people.forEach(el => {
+        if (el.mother === person.name && el.sex === 'm') {
+          count(person, el);
+        }
+      });
+    } else if (person.sex === 'f') {
+      people.forEach(el => {
+        if (el.mother === person.name) {
+          count(person, el);
+        }
+      });
+    };
+  });
+
+  return diff / handledItemsCounter;
+};
 
 module.exports = {
   calculateMenAverageAge,
