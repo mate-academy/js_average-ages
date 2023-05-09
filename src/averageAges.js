@@ -7,18 +7,23 @@
  * @return {number}
  */
 
-function calculateMenAverageAge(people, century) {
-  const peopleArr = people.filter((person) => {
-    return century
-      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-      : person.sex === 'm';
-  });
-
+function calculateAverage(peopleArr, vulue1, value2) {
   const sumOfAges = peopleArr.reduce((sum, age) => {
-    return sum + (age.died - age.born);
+    return sum + (age[vulue1] - age[value2]);
   }, 0);
 
   return sumOfAges / peopleArr.length;
+}
+
+function calculateMenAverageAge(people, century) {
+  const peopleArr = people.filter((person) => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm'
+  );
+
+  const averageAge = calculateAverage(peopleArr, 'died', 'born');
+
+  return averageAge;
 }
 
 /**
@@ -30,15 +35,13 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren = false) {
   const peopleArr = people.filter((person) =>
     withChildren
-      ? people.find((child) => child.mother === person.name) !== undefined
+      ? people.find((child) => child.mother === person.name)
       : person.sex === 'f'
   );
 
-  const sumOfAges = peopleArr.reduce((sum, age) => {
-    return sum + (age.died - age.born);
-  }, 0);
+  const averageAge = calculateAverage(peopleArr, 'died', 'born');
 
-  return sumOfAges / peopleArr.length;
+  return averageAge;
 }
 
 /**
@@ -53,7 +56,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       ? person.sex === 'm'
         && people.some((mother) => {
           if (person.mother === mother.name) {
-            person['motherBorn'] = mother.born;
+            person.motherBorn = mother.born;
 
             return true;
           }
@@ -67,11 +70,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       })
   );
 
-  const sumOfAges = peopleArr.reduce((sum, age) => {
-    return sum + (age.born - age.motherBorn);
-  }, 0);
+  const averageAge = calculateAverage(peopleArr, 'born', 'motherBorn');
 
-  return sumOfAges / peopleArr.length;
+  return averageAge;
 }
 
 module.exports = {
