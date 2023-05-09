@@ -15,7 +15,7 @@
  * @return {number}
  */
 
-function ReducedAverageAge(people) {
+function reducedAverageAge(people) {
   return people.reduce((sum, person) => sum + (person.died - person.born), 0);
 }
 
@@ -25,7 +25,7 @@ function calculateMenAverageAge(people, century) {
     : person.sex === 'm'
   );
 
-  const sumAge = ReducedAverageAge(men);
+  const sumAge = reducedAverageAge(men);
 
   return sumAge / men.length;
 
@@ -55,9 +55,9 @@ function calculateWomenAverageAge(people, withChildren) {
     ? person.sex === 'f' && people.find(child => child.mother === person.name)
     : person.sex === 'f');
 
-  const sumMowanAge = ReducedAverageAge(women);
+  const sumWowenAge = reducedAverageAge(women);
 
-  return sumMowanAge / women.length;
+  return sumWowenAge / women.length;
 }
 
 /**
