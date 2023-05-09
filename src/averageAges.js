@@ -19,11 +19,10 @@ function averageYears(array) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const filteredMen = !century
-    ? people.filter(user => user.sex === 'm')
-    : people
-      .filter(user => user.sex === 'm')
-      .filter(user => Math.ceil(user.died / 100) === century);
+  const filteredMen = people.filter(user =>  century
+    ? user.sex === 'm' && Math.ceil(user.died / 100) === century
+    : user.sex === 'm' 
+  )
 
   const ages = filteredMen.map(user => user.died - user.born);
 
