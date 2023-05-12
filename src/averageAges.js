@@ -85,10 +85,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return averageAges(diffAges);
 }
 
-function averageAges(arrayAges) {
-  const sumAges = arrayAges.reduce((sum, age) => sum + age, 0);
+function averageAges(ages) {
+  const sumAges = ages.reduce((sum, age) => sum + age, 0);
 
-  return sumAges / arrayAges.length || 0;
+  return sumAges / ages.length || 0;
 }
 
 module.exports = {
