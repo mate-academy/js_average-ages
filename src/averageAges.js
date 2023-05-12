@@ -15,11 +15,22 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menLeng = (people
+    .filter((i) => arguments.length < 2
+      ? i.sex === 'm'
+      : i.sex === 'm' && Math.ceil(i.died / 100) === century))
+    .length;
+
+  const age = +(people
+    .filter((i) => arguments.length < 2
+      ? i.sex === 'm'
+      : i.sex === 'm' && Math.ceil(i.died / 100) === century)
+    .map((index) => index.died - index.born)
+    .reduce((sum, i) => sum + i, 0)
+    / menLeng)
+    .toFixed(2);
+
+  return age;
 }
 
 /**
@@ -37,7 +48,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let totalAge = 0;
+  let numWomen = 0;
+
+  for (const person of people) {
+    if (person.sex === 'f') {
+      if (!withChildren || people.some(p => p.mother === person.name)) {
+        totalAge += person.died - person.born;
+        numWomen++;
+      }
+    }
+  }
+
+  return totalAge / numWomen;
 }
 
 /**
@@ -54,8 +77,24 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const filteredPeople = onlyWithSon
+    ? people
+      .filter(person => person.sex === 'm' && people
+        .find(mother => mother.name === person.mother))
+    : people
+      .filter(person => people
+        .find(mother => mother.name === person.mother));
+
+  const diffArr = filteredPeople.map(person =>
+    person.born - people
+      .find(mother => mother.name === person.mother).born);
+
+  function getAverageAge(input) {
+    return input.reduce((sum, age) => sum + age, 0) / input.length;
+  }
+
+  return getAverageAge(diffArr);
 }
 
 module.exports = {
