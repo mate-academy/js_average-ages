@@ -15,21 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
   const men = people.filter(person => person.sex === 'm');
-  const menLifespans = century
-    ? men.filter(person => Math.ceil(person.died / 100) === century)
-      .map(person => person.died - person.born)
-    : men.map(person => person.died - person.born);
-  const totalMenLifespan = menLifespans.reduce(
-    (sum, lifespan) => sum + lifespan, 0);
-  const averageMenLifespan = totalMenLifespan / menLifespans.length;
+  const menLifespans = men
+    .filter(person => !century || Math.ceil(person.died / 100) === century)
+    .map(person => person.died - person.born);
+  const averageMenLifespan = calculateAverageLifespan(menLifespans);
 
   return averageMenLifespan;
+}
+
+function calculateAverageLifespan(lifespans) {
+  const totalLifespan = lifespans.reduce((sum, lifespan) => sum + lifespan, 0);
+  const averageLifespan = totalLifespan / lifespans.length;
+
+  return averageLifespan;
 }
 
 /**
@@ -48,18 +47,14 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter(person => person.sex === 'f');
-  const womenLifespans = [];
 
-  women.forEach(woman => {
-    if (withChildren ? people.some(
-      person => person.mother === woman.name) : true) {
-      womenLifespans.push(woman.died - woman.born);
-    }
-  });
+  const womenLifespans = women.reduce((totalWomenLifespan, woman) =>
+    (withChildren ? people.some(person => person.mother === woman.name) : true)
+      ? (totalWomenLifespan.push(woman.died - woman.born), totalWomenLifespan)
+      : totalWomenLifespan,
+  []);
 
-  const totalWomenLifespan = womenLifespans.reduce(
-    (sum, lifespan) => sum + lifespan, 0);
-  const averageWomenLifespan = totalWomenLifespan / womenLifespans.length;
+  const averageWomenLifespan = calculateAverageLifespan(womenLifespans);
 
   return averageWomenLifespan;
 }
@@ -79,7 +74,6 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
   const childrenWithMother = [];
 
   people.filter(person => person.mother && (!onlyWithSon
