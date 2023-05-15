@@ -15,11 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+  const menLifespans = men
+    .filter(person => !century || Math.ceil(person.died / 100) === century)
+    .map(person => person.died - person.born);
+  const averageMenLifespan = calculateAverageLifespan(menLifespans);
+
+  return averageMenLifespan;
+}
+
+function calculateAverageLifespan(lifespans) {
+  const totalLifespan = lifespans.reduce((sum, lifespan) => sum + lifespan, 0);
+  const averageLifespan = totalLifespan / lifespans.length;
+
+  return averageLifespan;
 }
 
 /**
@@ -37,7 +46,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+
+  const womenLifespans = women.reduce((totalWomenLifespan, woman) =>
+    withChildren && !people.some(person => person.mother === woman.name)
+      ? totalWomenLifespan
+      : [...totalWomenLifespan, woman.died - woman.born],
+  []);
+
+  const averageWomenLifespan = calculateAverageLifespan(womenLifespans);
+
+  return averageWomenLifespan;
 }
 
 /**
@@ -55,7 +74,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const ageDifferences = people
+    .filter(person => person.mother
+      && (!onlyWithSon || (onlyWithSon && person.sex === 'm')))
+    .map(person => {
+      const mother = people.find(
+        m => m.name === person.mother && m.sex === 'f');
+
+      return mother ? person.born - mother.born : null;
+    })
+    .filter(diff => diff !== null);
+
+  return ageDifferences.length > 0
+    ? ageDifferences.reduce(
+      (sum, diff) => sum + diff, 0) / ageDifferences.length
+    : 0;
 }
 
 module.exports = {
