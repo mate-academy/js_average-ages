@@ -30,9 +30,9 @@ function calculateMenAverageAge(people, century) {
         : personSex === 'm';
     });
 
-  const averageMenAge = Math.round(
-    mens.reduce((prev, { born, died }) => prev + (died - born), 0) / mens.length
-  );
+  const averageMenAge = mens
+    .reduce((prev, { born, died }) => prev + (died - born), 0) / mens.length
+    .toFixed(2);
 
   return averageMenAge;
 }
@@ -46,14 +46,14 @@ function calculateMenAverageAge(people, century) {
  * Hint: To check if a woman has children you should find someone who mention
  * her as mother.
  *
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
-}
+//  * @param {object[]} people
+//  * @param {boolean} withChildren - optional
+//  *
+//  * @return {number}
+//  */
+// function calculateWomenAverageAge(people, withChildren) {
+//   // write code here
+// }
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -64,17 +64,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * If `onlyWithSon` is specified then function calculates age difference only
  * for sons and their mothers.
  *
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
-}
+//  * @param {object[]} people
+//  * @param {boolean} onlyWithSon - optional
+//  *
+//  * @return {number}
+//  */
+// function calculateAverageAgeDiff(people, onlyWithSon) {
+//   // write code here
+// }
 
 module.exports = {
   calculateMenAverageAge,
-  calculateWomenAverageAge,
-  calculateAverageAgeDiff,
+  // calculateWomenAverageAge,
+  // calculateAverageAgeDiff,
 };
