@@ -14,14 +14,18 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const men = century
-    ? people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
-  const sum = men.reduce((prev, man) => (man.died - man.born) + prev, 0);
+function calculateAverage(people) {
+  const sum = people.reduce((prev, person) =>
+    (person.died - person.born) + prev, 0);
 
-  return sum / men.length;
+  return sum / people.length;
+}
+
+function calculateMenAverageAge(people, century) {
+  const men = people.filter(person => person.sex === 'm'
+  && (century ? Math.ceil(person.died / 100) === century : true));
+
+  return calculateAverage(men);
 }
 
 /**
@@ -44,10 +48,7 @@ function calculateWomenAverageAge(people, withChildren) {
     ? women.filter(person => people.some(p => p.mother === person.name))
     : women;
 
-  const sum = selectedWomen.reduce((prev, woman) =>
-    (woman.died - woman.born) + prev, 0);
-
-  return sum / selectedWomen.length;
+  return calculateAverage(selectedWomen);
 }
 
 /**
