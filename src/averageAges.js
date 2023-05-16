@@ -14,7 +14,7 @@
  *
  * @return {number}
  */
-const averageOfPeople = (people) =>
+const calculateAverageAge = (people) =>
   people.reduce((acc, item) => acc + item.died - item.born, 0) / people.length;
 
 function calculateMenAverageAge(people, century) {
@@ -24,7 +24,7 @@ function calculateMenAverageAge(people, century) {
       : person.sex === 'm';
   });
 
-  return averageOfPeople(arrayOfMen);
+  return calculateAverageAge(arrayOfMen);
 }
 /**
  * Implement calculateWomenAverageAge function
@@ -51,7 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f';
   });
 
-  return averageOfPeople(arrayOfWoman);
+  return calculateAverageAge(arrayOfWoman);
 }
 
 /**
