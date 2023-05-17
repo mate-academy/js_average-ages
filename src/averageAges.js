@@ -20,6 +20,20 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let menOnly = people.filter(person => person.sex === 'm');
+
+  menOnly = century
+    ? menOnly.filter(person => Math.ceil(person.died / 100) === century)
+    : menOnly;
+
+  menOnly.map(function(person) {
+    person.age = person.died - person.born;
+  });
+
+  const menAverageAge = menOnly
+    .map(a => a.age).reduce((a, b) => a + b) / menOnly.length;
+
+  return menAverageAge;
 }
 
 /**
@@ -37,7 +51,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let womenOnly = people.filter(person => person.sex === 'f');
+
+  womenOnly.map(function(person) {
+    person.age = person.died - person.born;
+  });
+
+  const mothers = people.map(person => person.mother);
+
+  womenOnly = withChildren
+    ? womenOnly.filter(person => mothers.includes(person.name))
+    : womenOnly;
+
+  const womenAverageAge = womenOnly
+    .map(a => a.age).reduce((a, b) => a + b) / womenOnly.length;
+
+  return womenAverageAge;
 }
 
 /**
@@ -55,7 +84,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const allMothersNames = people.map(person => person.mother);
+  const listedMothers = people.filter(person =>
+    allMothersNames.includes(person.name));
+  const listedMothersNames = listedMothers.map(person => person.name);
+  let children = people.filter(person =>
+    listedMothersNames.includes(person.mother));
+
+  children.map(child => {
+    const mother = listedMothers.find(person => person.name === child.mother);
+
+    if (mother.name === child.mother) {
+      child.motherBorn = mother.born;
+    }
+
+    return child;
+  });
+
+  children = onlyWithSon
+    ? children.filter(child => child.sex === 'm')
+    : children;
+
+  const diff = children.map(child => child.born - child.motherBorn);
+
+  return diff.reduce((a, b) => a + b) / diff.length;
 }
 
 module.exports = {
