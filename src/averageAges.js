@@ -15,11 +15,28 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const validAgeRange = [];
+  const filterFunction = (personGender, personDeathDate) => {
+    const genderFilter = (gender) => gender === 'm';
+    const centuryFilter = (death) => Math.ceil(death / 100) === century;
+
+    return century
+      ? genderFilter(personGender) && centuryFilter(personDeathDate)
+      : genderFilter(personGender);
+  };
+  const validPeople = people.filter((person) => {
+    return filterFunction(person.sex, person.died);
+  });
+
+  validPeople.forEach((person) => {
+    validAgeRange.push(person.died - person.born);
+  });
+
+  const averageAge = validAgeRange.reduce((acc, curr) => {
+    return acc + curr;
+  }, 0) / validAgeRange.length;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +54,28 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const validAgeRange = [];
+  const filterFunction = (personGender, personName) => {
+    const genderFilter = (gender) => gender === 'f';
+    const isMother = (name) => people.some((person) => person.mother === name);
+
+    return withChildren
+      ? genderFilter(personGender) && isMother(personName)
+      : genderFilter(personGender);
+  };
+  const validPeople = people.filter((person) => {
+    return filterFunction(person.sex, person.name);
+  });
+
+  validPeople.forEach((person) => {
+    validAgeRange.push(person.died - person.born);
+  });
+
+  const averageAge = validAgeRange.reduce((acc, curr) => {
+    return acc + curr;
+  }, 0) / validAgeRange.length;
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +93,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const validAgeRange = [];
+  const findPerson = (name) => people.find((somebody) => {
+    return somebody.name === name;
+  });
+  const filterFunction = (personMother, personGender) => {
+    const hasMother = (mother) => !!mother && findPerson(mother);
+    const isSon = (gender) => gender === 'm';
+
+    return onlyWithSon
+      ? hasMother(personMother) && isSon(personGender)
+      : hasMother(personMother);
+  };
+  const validPeople = people.filter((person) => {
+    return filterFunction(person.mother, person.sex);
+  });
+
+  validPeople.forEach((person) => {
+    const mother = findPerson(person.mother);
+
+    validAgeRange.push(person.born - mother.born);
+  });
+
+  const averageAge = validAgeRange.reduce((acc, curr) => {
+    return acc + curr;
+  }, 0) / validAgeRange.length;
+
+  return averageAge;
 }
 
 module.exports = {
