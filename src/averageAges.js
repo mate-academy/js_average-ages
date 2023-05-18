@@ -14,12 +14,19 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => person.sex === 'm');
+
+  const menOfCentury = century
+    ? men.filter(man => Math.ceil(man.died / 100) === century)
+    : men;
+
+  const agesOfMen = menOfCentury.map(man => man.died - man.born);
+
+  const sumOfAges = agesOfMen.reduce((a, b) => (a + b), 0);
+
+  return sumOfAges / menOfCentury.length;
 }
 
 /**
@@ -36,8 +43,23 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter(person => person.sex === 'f');
+
+  const mothers = people.map(person => person.mother);
+
+  const womenWithChildren = allWomen.filter(
+    woman => mothers.includes(woman.name)
+  );
+
+  const women = withChildren ? womenWithChildren : allWomen;
+
+  const agesOfWomen = women.map(woman => woman.died - woman.born);
+
+  const sumOfAges = agesOfWomen.reduce((a, b) => (a + b), 0);
+
+  return sumOfAges / women.length;
 }
 
 /**
@@ -54,8 +76,25 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const allChildren = people
+    .filter(person => people
+      .some(woman => woman.name === person.mother));
+
+  const sons = allChildren.filter(child => child.sex === 'm');
+
+  const children = onlyWithSon ? sons : allChildren;
+
+  const ageDifferences = children
+    .map(child => child.born - people
+      .find(mother => mother.name === child.mother).born);
+
+  const sumOfageDifferences = ageDifferences.reduce((a, b) => (a + b), 0);
+
+  const avgAgeDifference = sumOfageDifferences / ageDifferences.length;
+
+  return avgAgeDifference;
 }
 
 module.exports = {
