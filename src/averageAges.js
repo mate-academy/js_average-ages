@@ -15,11 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredPeople = people
+    .filter(({ sex, died }) =>
+      sex === 'm'
+      && (!century || Math.ceil(died / 100) === century)
+    );
+
+  return calculateAverage(filteredPeople, 'died', 'born');
 }
 
 /**
@@ -37,7 +39,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeople = people
+    .filter(({ sex, name }) =>
+      sex === 'f'
+      && (!withChildren || people.some(({ mother }) => mother === name))
+    );
+
+  return calculateAverage(filteredPeople, 'died', 'born');
 }
 
 /**
@@ -55,7 +63,39 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filteredPeople = people
+    .filter(({ sex, mother }) =>
+      people.some(({ name }) => name === mother)
+      && (!onlyWithSon || sex === 'm')
+    );
+  const peopleWithMotherBornYear = filteredPeople
+    .map(person => {
+      person.motherBorn = people
+        .find(({ name }) => name === person.mother)
+        .born;
+
+      return person;
+    });
+
+  return calculateAverage(peopleWithMotherBornYear, 'born', 'motherBorn');
+}
+
+/**
+ * The function returns average diff for array of people.
+ * Takes keys from person's object to work with.
+ *
+ * @param {object[]} people
+ * @param {string} keyA
+ * @param {string} keyB
+ *
+ * @return {number}
+ */
+function calculateAverage(people, keyA, keyB) {
+  const sumYears = people
+    .reduce((sum, { [keyA]: yearA, [keyB]: yearB }) =>
+      sum + (yearA - yearB), 0);
+
+  return people.length && sumYears / people.length;
 }
 
 module.exports = {
