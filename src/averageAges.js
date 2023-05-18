@@ -20,6 +20,28 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  people.forEach(function(person) {
+    person.age = person.died - person.born;
+  });
+
+  let men = [];
+
+  people.forEach(function(person) {
+    if (person.sex === 'm') {
+      men.push(person);
+    };
+  });
+
+  if (arguments.length === 2) {
+    men = men.filter(person => (
+      Math.ceil(person.died / 100) === century));
+  }
+
+  const ageSum = men.reduce((sum, current) => (
+    sum + current.age
+  ), 0);
+
+  return ageSum / men.length;
 }
 
 /**
@@ -37,7 +59,40 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  people.forEach(function(person) {
+    person.age = person.died - person.born;
+  });
+
+  let women = [];
+
+  people.forEach(function(person) {
+    if (person.sex === 'f') {
+      women.push(person);
+    };
+  });
+
+  if (withChildren) {
+    const someoneMothers = [];
+
+    people.forEach(function(person) {
+      someoneMothers.push(person.mother);
+    });
+
+    const mothersInArr = [];
+
+    people.forEach(function(person) {
+      if (someoneMothers.includes(person.name)) {
+        mothersInArr.push(person);
+      }
+    });
+    women = mothersInArr;
+  }
+
+  const ageSum = women.reduce((sum, current) => {
+    return sum + current.age;
+  }, 0);
+
+  return ageSum / women.length;
 }
 
 /**
@@ -55,7 +110,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  people.forEach(function(person) {
+    person.age = person.died - person.born;
+  });
+
+  people.forEach(function(person) {
+    const parentName = person.name;
+
+    person.child = people.filter(child => child.mother === parentName);
+  });
+
+  const ageDiff = [];
+
+  people.forEach(function(person) {
+    let children = [...person.child];
+
+    if (onlyWithSon) {
+      children = children.filter(child => child.sex !== 'f');
+    }
+
+    const parentBornYear = person.born;
+
+    children.forEach(function(child) {
+      ageDiff.push(child.born - parentBornYear);
+    });
+  });
+
+  const ageSum = ageDiff.reduce((sum, current) => {
+    return sum + current;
+  }, 0);
+
+  return ageSum / ageDiff.length;
 }
 
 module.exports = {
