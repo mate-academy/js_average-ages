@@ -14,12 +14,19 @@
  *
  * @return {number}
  */
+function averageAge(ages) {
+  return ages.reduce((ageA, ageB) => ageA + ageB) / ages.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menOnly = century
+    ? people.filter(person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const menAge = menOnly.map(man => man.died - man.born);
+
+  return averageAge(menAge);
 }
 
 /**
@@ -37,7 +44,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.map(person => person.mother);
+  const womenOnly = withChildren
+    ? people.filter(person => person.sex === 'f'
+    && mothers.includes(person.name))
+    : people.filter(person => person.sex === 'f');
+  const womenAge = womenOnly.map(person => person.died - person.born);
+
+  return averageAge(womenAge);
 }
 
 /**
@@ -55,7 +69,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const allMothersNames = people.map(person => person.mother);
+  const listedMothers = people.filter(person =>
+    allMothersNames.includes(person.name));
+  const listedMothersNames = listedMothers.map(person => person.name);
+  const children = onlyWithSon
+    ? people.filter(person => listedMothersNames.includes(person.mother)
+    && person.sex === 'm')
+    : people.filter(person => listedMothersNames.includes(person.mother));
+
+  const motherChildAgeDiff = children.map(child => {
+    const mother = listedMothers.find(person => person.name === child.mother);
+
+    return child.born - mother.born;
+  });
+
+  return averageAge(motherChildAgeDiff);
 }
 
 module.exports = {
