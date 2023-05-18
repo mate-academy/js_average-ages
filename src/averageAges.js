@@ -15,18 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-
   const agesOfMen = people
-    .filter(({ sex, died }) => sex === 'm' && isDiedInCentury(died, century))
-    .map(person => person.died - person.born);
-  const totalAges = agesOfMen.reduce((a, b) => a + b, 0);
+    .filter(({ sex, died }) => {
+      const hasDiedInCentury = century
+        ? isDiedInCentury(died, century)
+        : true;
 
-  return (totalAges / agesOfMen.length) || 0;
+      return sex === 'm' && hasDiedInCentury;
+    })
+    .map(person => person.died - person.born);
+
+  return calculateAverage(agesOfMen);
 }
 
 /**
@@ -46,14 +45,15 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const agesOfWomen = people
     .filter(person => {
-      const isMother = !withChildren || isHasChildren(people, person.name);
+      const isMother = withChildren
+        ? isHasChildren(people, person.name)
+        : true;
 
       return person.sex === 'f' && isMother;
     })
     .map(person => person.died - person.born);
-  const totalAges = agesOfWomen.reduce((a, b) => a + b, 0);
 
-  return (totalAges / agesOfWomen.length) || 0;
+  return calculateAverage(agesOfWomen);
 }
 
 /**
@@ -84,9 +84,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return child.born - mother.born;
   });
-  const totalDifferenceAges = differenceAges.reduce((a, b) => a + b, 0);
 
-  return (totalDifferenceAges / differenceAges.length) || 0;
+  return calculateAverage(differenceAges);
 }
 
 function isDiedInCentury(died, initialCentury) {
@@ -98,6 +97,12 @@ function isDiedInCentury(died, initialCentury) {
 
 function isHasChildren(people, motherName) {
   return people.some(person => person.mother === motherName);
+}
+
+function calculateAverage(array) {
+  const total = array.reduce((a, b) => a + b, 0);
+
+  return (total / array.length) || 0;
 }
 
 module.exports = {
