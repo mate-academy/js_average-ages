@@ -1,5 +1,9 @@
 'use strict';
 
+const getAvgValue = (array) => (
+  array.reduce((accum, current) => accum + current) / array.length
+);
+
 /**
  * @param {object[]} people
  * @param {number} century - optional
@@ -21,11 +25,9 @@ function calculateMenAverageAge(people, century) {
     })
     .map(({ born, died }) => died - born);
 
-  const averageMenAge = mensAges
-    .reduce((sum, current) => sum + current, 0) / mensAges.length
-    .toFixed(2);
+  const averageMenAge = getAvgValue(mensAges).toFixed(2);
 
-  return averageMenAge;
+  return +averageMenAge;
 }
 
 /**
@@ -45,11 +47,9 @@ function calculateWomenAverageAge(people, withChildren) {
     ))
     .map(({ born, died }) => died - born);
 
-  const averageAge = womanAges
-    .reduce((sum, current) => sum + current, 0)
-      / womanAges.length;
+  const averageAge = getAvgValue(womanAges).toFixed(2);
 
-  return +averageAge.toFixed(2);
+  return +averageAge;
 }
 
 /**
@@ -73,11 +73,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ageDifferences.push(...personChildren);
   });
 
-  const avgDifference = ageDifferences
-    .reduce((sum, current) => sum + current, 0)
-    / ageDifferences.length;
+  const avgDifference = getAvgValue(ageDifferences).toFixed(2);
 
-  return +avgDifference.toFixed(2);
+  return +avgDifference;
 }
 
 module.exports = {
