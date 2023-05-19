@@ -21,15 +21,15 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const menAverageAge = century
+  const menToCalculate = century
     ? people.filter(person =>
       person.sex === 'm'
       && Math.ceil(person.died / 100) === century
     )
     : people.filter(person => person.sex === 'm');
 
-  return menAverageAge.reduce((accumulator, person) =>
-    accumulator + (person.died - person.born), 0) / menAverageAge.length;
+  return menToCalculate.reduce((accumulator, person) =>
+    accumulator + (person.died - person.born), 0) / menToCalculate.length;
 }
 
 /**
@@ -47,15 +47,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenAverageAge = withChildren
+  const womenToCalculate = withChildren
     ? people.filter(person =>
       person.sex === 'f'
       && people.some(child => person.name === child.mother)
     )
     : people.filter(person => person.sex === 'f');
 
-  return womenAverageAge.reduce((accumulator, person) =>
-    accumulator + (person.died - person.born), 0) / womenAverageAge.length;
+  return womenToCalculate.reduce((accumulator, person) =>
+    accumulator + (person.died - person.born), 0) / womenToCalculate.length;
 }
 
 /**
