@@ -14,18 +14,15 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century = 0) {
+function calculateMenAverageAge(people, century) {
+  const men = people.filter(({ sex, died }) => century ? sex === 'm'
+    && Math.ceil(died / 100) === century : sex === 'm');
 
-  function brosFilter() {
-    return century > 0 ? people.filter(bro => bro.sex === 'm'
-      && Math.ceil(bro.died / 100)) : people.filter(bro => bro.sex === 'm');
-  }
+  const brosReducing = men.reduce((sum, man) => sum + man.died - man.born, 0)
+    / men.length;
 
-  function brosReducing() {
-    return brosFilter().reduce((sum, age) => sum + age.died - age.born);
-  }
-
-  return brosReducing();
+  return brosReducing;
+}
 
 /**
  * Implement calculateWomenAverageAge function
@@ -42,24 +39,34 @@ function calculateMenAverageAge(people, century = 0) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  function withoutChildrens() {
-    const foundation = people.filter(person => person.sex === 'f');
-    const finallyFunc = foundation.reduce((sum, person) =>
-      sum + person.died - person.born, 0);
+  const moms = people.filter(mom => {
+    const hasSon = people.some(person => person.mother === mom.name);
 
-    return finallyFunc / foundation.length;
-  }
+    return withChildren ? hasSon && mom.sex === 'f' : mom.sex === 'f';
+  });
 
-  function withChildrens() {
-    const foundation = people.filter(person => person.sex === 'f'
-    && people.some(mom => mom.mother === person.name));
-    const finallyFunc = foundation.reduce((sum, person) =>
-      sum + person.died - person.born, 0);
+  const diffs = moms.reduce((acc, mom) => acc + mom.died - mom.born, 0);
 
-    return finallyFunc / foundation.length;
-  }
+  return diffs / moms.length;
 
-  return withChildren === true ? withChildrens() : withoutChildrens();
+  // function withoutChildrens() {
+  //   const foundation = people.filter(person => person.sex === 'f');
+  //   const finallyFunc = foundation.reduce((sum, person) =>
+  //     sum + person.died - person.born, 0);
+
+  //   return finallyFunc / foundation.length;
+  // }
+
+  // function withChildrens() {
+  //   const foundation = people.filter(person => person.sex === 'f'
+  //   && people.some(mom => mom.mother === person.name));
+  //   const finallyFunc = foundation.reduce((sum, person) =>
+  //     sum + person.died - person.born, 0);
+
+  //   return finallyFunc / foundation.length;
+  // }
+
+  // return withChildren === true ? withChildrens() : withoutChildrens();
 }
 
 /**
