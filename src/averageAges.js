@@ -120,7 +120,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     person.child = people.filter(child => child.mother === parentName);
   });
 
-  const ageDiff = [];
+  const ageDifference = [];
 
   people.forEach(function(person) {
     let children = [...person.child];
@@ -132,15 +132,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const parentBornYear = person.born;
 
     children.forEach(function(child) {
-      ageDiff.push(child.born - parentBornYear);
+      ageDifference.push(child.born - parentBornYear);
     });
   });
 
-  const ageSum = ageDiff.reduce((sum, current) => {
+  const ageSum = ageDifference.reduce((sum, current) => {
     return sum + current;
   }, 0);
 
-  return ageSum / ageDiff.length;
+  return ageSum / ageDifference.length;
 }
 
 module.exports = {
