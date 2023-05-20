@@ -90,21 +90,15 @@ function calculateAverageAgeDiff(people, onlyWithSon = null) {
     });
   }
 
-  const arr = [];
-
-  women.forEach(woman => {
+  const ageDiffs = women.map(woman => {
     const findChildren = children.filter(child =>
       child.mother === woman.name);
 
-    findChildren.forEach(child => {
-      const ageDiff = child.born - woman.born;
+    return findChildren.map(child => child.born - woman.born);
+  }).reduce((acc, curr) => acc.concat(curr), []);
 
-      arr.push(ageDiff);
-    });
-  });
-
-  const sum = arr.reduce((total, ageDiff) => total + ageDiff, 0);
-  const average = sum / arr.length;
+  const sum = ageDiffs.reduce((total, ageDiff) => total + ageDiff, 0);
+  const average = sum / ageDiffs.length;
 
   return average;
 }
