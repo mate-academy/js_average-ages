@@ -16,13 +16,13 @@
  */
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter((person) => (person.sex === 'm' && century)
-    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-    : person.sex === 'm');
+  const men = people.filter((person) =>
+    (person.sex === 'm' && (century
+      ? Math.ceil(person.died / 100) === century
+      : true)))
+    .map(person => person.died - person.born);
 
-  return men.reduce(
-    (sumAvg, person) => avaregeAge(person.died, person.born, men.length, sumAvg)
-    , 0);
+  return getAvaregeAge(men);
 }
 
 /**
@@ -43,13 +43,10 @@ function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter((person) => {
     const hasChild = people.some((child) => child.mother === person.name);
 
-    return (person.sex === 'f' && withChildren)
-      ? person.sex === 'f' && hasChild
-      : person.sex === 'f';
-  });
+    return person.sex === 'f' && (withChildren ? hasChild : true);
+  }).map(person => person.died - person.born);
 
-  return women.reduce((sumAvg, person) =>
-    avaregeAge(person.died, person.born, women.length, sumAvg), 0);
+  return getAvaregeAge(women);
 }
 
 /**
@@ -71,20 +68,15 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     const motherInList = people.some((mother) => mother.name === person.mother);
 
     return onlyWithSon ? person.sex === 'm' && motherInList : motherInList;
-  });
+  })
+    .map(person =>
+      person.born - people.find(mother => mother.name === person.mother).born);
 
-  const avgAgeDiff = hasMotherData.reduce((sumAvg, person) => {
-    const motherBorn = people.find((mother) => mother.name === person.mother)
-      .born;
-
-    return avaregeAge(person.born, motherBorn, hasMotherData.length, sumAvg);
-  }, 0);
-
-  return avgAgeDiff;
+  return getAvaregeAge(hasMotherData);
 }
 
-function avaregeAge(minuendAge, subtrahendAge, persons, prev) {
-  return (minuendAge - subtrahendAge) / persons + prev;
+function getAvaregeAge(array) {
+  return array.reduce((sum, age) => age + sum) / array.length;
 }
 
 module.exports = {
