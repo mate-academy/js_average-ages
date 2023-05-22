@@ -15,20 +15,10 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century = 0) {
-  if (century === 0) {
-    const menArray = people.filter(men => men.sex === 'm');
-    const yearsSum = menArray.reduce((years, men) =>
-      years + (men.died - men.born), 0);
+  const menArray = people.filter(men => men.sex === 'm'
+    && (century ? Math.ceil(men.died / 100) === century : true));
 
-    return yearsSum / menArray.length;
-  } else {
-    const menFromCentury = people.filter(men =>
-      men.sex === 'm' && Math.ceil(men.died / 100) === century);
-    const yearsSum = menFromCentury.reduce((years, men) =>
-      years + (men.died - men.born), 0);
-
-    return yearsSum / menFromCentury.length;
-  }
+  return calculateAverageAge(menArray);
 }
 
 /**
@@ -45,23 +35,13 @@ function calculateMenAverageAge(people, century = 0) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren = false) {
-  if (withChildren === false) {
-    const womenArray = people.filter(woman => woman.sex === 'f');
-    const yearsSum = womenArray.reduce((years, woman) =>
-      years + (woman.died - woman.born), 0);
+  const womenArray = (withChildren === false)
+    ? people.filter(woman => woman.sex === 'f')
+    : people.filter(woman => people.map(w => w.mother).includes(woman.name));
 
-    return yearsSum / womenArray.length;
-  } else {
-    const mothersArray = people.map(woman => woman.mother);
-    const womenWithChildrenArray = people.filter(woman =>
-      mothersArray.includes(woman.name));
-
-    const yearsSum = womenWithChildrenArray.reduce((years, woman) =>
-      years + (woman.died - woman.born), 0);
-
-    return yearsSum / womenWithChildrenArray.length;
-  }
+  return calculateAverageAge(womenArray);
 }
 
 /**
@@ -94,6 +74,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     sum + years, 0);
 
   return yearsSum / ageDifference.length;
+}
+
+function calculateAverageAge(array) {
+  const yearsSum = array.reduce((years, man) =>
+    years + (man.died - man.born), 0);
+
+  return yearsSum / array.length;
 }
 
 module.exports = {
