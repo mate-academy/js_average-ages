@@ -8,22 +8,37 @@
  *
  * To calculate century:
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
+*
+* @param {object[]} people
+* @param {number} century - optional
+*
+* @return {number}
+*/
+function calculateAverageAges(peopleArray) {
+  const sumOfAges = peopleArray.reduce((acc, curVal) =>
+    acc + (curVal.died - curVal.born), 0
+  );
+
+  return (sumOfAges / peopleArray.length) || 0;
+};
+
+function calculateAgeDifference(differences) {
+  const sumOfAges = differences.reduce((acc, curVal) =>
+    acc + curVal, 0
+  );
+
+  return (sumOfAges / differences.length) || 0;
+}
+
 function calculateMenAverageAge(people, century) {
-  const menArr = people.filter(person =>
+  const men = people.filter(person =>
     century
       ? Math.ceil(person.died / 100) === century
         && person.sex === 'm'
       : person.sex === 'm',
   );
 
-  return menArr.reduce((acc, curVal) =>
-    acc + curVal.died - curVal.born, 0) / menArr.length;
+  return calculateAverageAges(men);
 };
 
 /**
@@ -48,8 +63,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : person.sex === 'f',
   );
 
-  return woman.reduce((acc, curVal) =>
-    acc + curVal.died - curVal.born, 0) / woman.length;
+  return calculateAverageAges(woman);
 };
 
 /**
@@ -67,12 +81,6 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 
-function calculateAvg(peopleArray) {
-  const sumOfAges = peopleArray.reduce((a, b) => a + b, 0);
-
-  return (sumOfAges / peopleArray.length) || 0;
-};
-
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const child = people.filter(person =>
     onlyWithSon
@@ -80,14 +88,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         && person.sex === 'm'
       : people.find(mother => mother.name === person.mother)
   );
-
   const ageDiff = child.map(children => {
     const childMother = people.find(mother => mother.name === children.mother);
 
     return children.born - childMother.born;
   });
 
-  return calculateAvg(ageDiff);
+  return calculateAgeDifference(ageDiff);
 };
 
 module.exports = {
