@@ -15,20 +15,26 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = (arguments.length > 1)
+  const men = (century)
     ? people.filter(obj =>
       ((Math.ceil(obj.died / 100) === century)) && (obj.sex === 'm'))
     : people.filter(obj => obj.sex === 'm');
-  const age = men.map(obj => obj.died - obj.born);
-  const sum = age.reduce((a, b) => a + b, 0);
 
-  return sum / men.length;
+  return averageHelper(men);
 
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+}
+
+function averageHelper(people) {
+  const result = people
+    .map(obj => obj.died - obj.born)
+    .reduce((a, b) => a + b, 0);
+
+  return result / people.length;
 }
 
 /**
@@ -47,18 +53,13 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  let women = people.filter(obj => obj.sex === 'f');
+  const women = (withChildren)
+    ? people.filter((obj) => {
+      return (people.some(elem => elem.mother === obj.name)
+        && (obj.sex === 'f'));
+    }) : people.filter(obj => obj.sex === 'f');
 
-  if (arguments.length > 1) {
-    women = women.filter((obj) => {
-      return people.some((elem) => elem.mother === obj.name);
-    });
-  };
-
-  const age = women.map(obj => obj.died - obj.born);
-  const sum = age.reduce((a, b) => a + b, 0);
-
-  return sum / women.length;
+  return averageHelper(women);
 }
 
 /**
@@ -78,29 +79,33 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
   const result = [];
+  let kids;
   let sum = 0;
 
-  if (arguments.length > 1) {
-    people.forEach((elem) => {
-      for (const elem2 of people) {
-        if ((elem.name === elem2.mother) && (elem2.sex === 'm')) {
-          result.push({
-            mother: elem,
-            kid: elem2,
-          });
-        }
-      }
+  if (onlyWithSon) {
+    people.map((elem) => {
+      kids = people.filter(obj => {
+        return (elem.name === obj.mother)
+        && (obj.sex === 'm');
+      });
+
+      kids.forEach(kid => {
+        result.push({
+          mother: elem,
+          kid: kid,
+        });
+      });
     });
   } else {
-    people.forEach((elem) => {
-      for (const elem2 of people) {
-        if (elem.name === elem2.mother) {
-          result.push({
-            mother: elem,
-            kid: elem2,
-          });
-        }
-      }
+    people.map((elem) => {
+      kids = people.filter(obj => obj.mother === elem.name);
+
+      kids.forEach(kid => {
+        result.push({
+          mother: elem,
+          kid: kid,
+        });
+      });
     });
   }
 
