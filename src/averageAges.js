@@ -104,9 +104,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     });
   }
 
-  for (let i = 0; i < result.length; i++) {
-    sum += result[i].kid.born - result[i].mother.born;
-  };
+  sum = result.reduce((a, b) => {
+    return (a + b.kid.born - b.mother.born);
+  }, 0);
 
   return sum / result.length;
 }
