@@ -15,24 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const filteredMen = people.filter(person => {
-    const { sex, died } = person;
+  const filteredMen = people
+    .filter(person => {
+      const { sex, died } = person;
 
-    return century
-      ? sex === 'm' && Math.ceil(died / 100) === century
-      : sex === 'm';
-  });
+      return sex === 'm'
+      && (century
+        ? Math.ceil(died / 100) === century
+        : true);
+    })
+    .map(person => person.died - person.born);
 
-  // * I'm checking if array have some data about people
-  // * (if we input in parameter `century` value which wasn't found)
-  // * I know, I should avoid if (), but that condition do my code more flexible
-  if (filteredMen.length === 0) {
-    return null;
-  }
-
-  const totalAgeOfMen = getTotalAge(filteredMen);
-
-  return totalAgeOfMen / filteredMen.length;
+  return getAverageAge(filteredMen, filteredMen.length);
 }
 
 /**
@@ -50,24 +44,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people.filter(person => {
-    const { sex, name } = person;
+  const filteredWomen = people
+    .filter(person => {
+      const { sex, name } = person;
 
-    if (withChildren === undefined) {
-      return sex === 'f';
-    }
+      if (withChildren === undefined) {
+        return sex === 'f';
+      }
 
-    // * I add it, if will need to get info about women who don't have children,
-    // * if input `false` in `withChildren` parameter.
-    // * we have more flexible code, who have children or don't, and all women
-    return withChildren
-      ? sex === 'f' && people.some(personChild => personChild.mother === name)
-      : sex === 'f' && people.every(personChild => personChild.mother !== name);
-  });
+      return sex === 'f'
+      && (withChildren
+        ? people.some(personChild => personChild.mother === name)
+        : true);
+    })
+    .map(person => person.died - person.born);
 
-  const totalAgeOfWomen = getTotalAge(filteredWomen);
-
-  return totalAgeOfWomen / filteredWomen.length;
+  return getAverageAge(filteredWomen, filteredWomen.length);
 }
 
 /**
@@ -86,34 +78,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrenList = people.filter(child => {
-    return onlyWithSon
-      ? people.some(mother => mother.name === child.mother && child.sex === 'm')
-      : people.some(mother => mother.name === child.mother);
+    return people.some(mother => mother.name === child.mother
+      && (onlyWithSon
+        ? child.sex === 'm'
+        : true)
+    );
   });
 
-  const ageDiffSum = childrenList.reduce((acc, child) => {
-    const foundMother = people.find(mother =>
-      mother.name === child.mother
-    );
+  const ageDifferences = childrenList.map(child => {
+    const foundMother = people.find(mother => mother.name === child.mother);
 
-    if (foundMother) {
-      const ageDiff = child.born - foundMother.born;
+    return child.born - foundMother.born;
+  });
 
-      return acc + ageDiff;
-    }
-
-    return acc;
-  }, 0);
-
-  return ageDiffSum / childrenList.length;
+  return getAverageAge(ageDifferences, childrenList.length);
 }
 
-function getTotalAge(arrayOfPeople) {
-  return arrayOfPeople.reduce((sumOfAge, person) => {
-    const { born, died } = person;
-
-    return sumOfAge + (died - born);
-  }, 0);
+function getAverageAge(ages, divider) {
+  return ages.reduce((sum, age) => (sum + age), 0) / divider || 0;
 }
 
 module.exports = {
