@@ -1,40 +1,52 @@
 'use strict';
 
+function filterBySex(people, sex) {
+  return people.filter(person => person.sex === sex);
+}
+
+function calculateAverage(people) {
+  return people.reduce(
+    (sum, x) => sum + x.died - x.born, 0) / people.length;
+}
+
+function filterHaveMother(people) {
+  return people.filter(person => people.some(x => x.name === person.mother));
+}
+
+function filterIsMother(people) {
+  return people.filter(person => people.some(x => x.mother === person.name));
+}
+
+function filterIsPersonsMother(people, x) {
+  return people.filter(person => person.mother === x.name);
+}
+
 function calculateMenAverageAge(people, century) {
   const menSorted = (century !== undefined)
-    ? people.filter(
-      person => person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
+    ? filterBySex(people, 'm').filter(
+      person => Math.ceil(person.died / 100) === century)
+    : filterBySex(people, 'm');
 
-  return menSorted.reduce(
-    (sum, x) => sum + x.died - x.born, 0) / menSorted.length;
+  return calculateAverage(menSorted);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
   const womenSorted = (withChildren !== undefined)
-    ? people.filter(
-      person => person.sex === 'f' && people.some(
-        x => x.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+    ? filterBySex(filterIsMother(people), 'f')
+    : filterBySex(people, 'f');
 
-  return womenSorted.reduce(
-    (sum, x) => sum + x.died - x.born, 0) / womenSorted.length;
+  return calculateAverage(womenSorted);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const withMotherSorted = (onlyWithSon !== undefined)
-    ? people.filter(
-      person => person.sex === 'm' && people.some(
-        x => x.name === person.mother))
-    : people.filter(person => people.some(
-      x => x.name === person.mother));
-  const mothersSorted = people.filter(
-    person => withMotherSorted.some(x => x.mother === person.name));
+    ? filterBySex(filterHaveMother(people), 'm')
+    : filterHaveMother(people);
+  const mothersSorted = filterIsMother(people);
   const ageDiff = mothersSorted.reduce(
-    (sum, x) => sum + withMotherSorted.filter(
-      person => person.mother === x.name).reduce(
-      (total, y) => total + y.born, 0) - x.born * withMotherSorted.filter(
-      person => person.mother === x.name).length, 0);
+    (sum, x) => sum + filterIsPersonsMother(withMotherSorted, x).reduce(
+      (total, y) => total + y.born, 0) - x.born
+      * filterIsPersonsMother(withMotherSorted, x).length, 0);
 
   return ageDiff / withMotherSorted.length;
 }
