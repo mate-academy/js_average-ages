@@ -16,21 +16,21 @@
  */
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
-    ? (genderIs(person, 'm') && fromCentury(person, century))
+    ? (genderIs(person, 'm') && getPersonCentury(person, century))
     : (genderIs(person, 'm')));
 
-  return avarageAge(men);
+  return getAvarageAge(men);
 }
 
 function genderIs(person, sex) {
   return person.sex === sex;
 }
 
-function fromCentury(person, century) {
+function getPersonCentury(person, century) {
   return Math.ceil(person.died / 100) === century;
 }
 
-function avarageAge(people) {
+function getAvarageAge(people) {
   return people.reduce((sum, person) =>
     sum + (person.died - person.born), 0) / people.length;
 }
@@ -54,7 +54,7 @@ function calculateWomenAverageAge(people, withChildren) {
     ? genderIs(person, 'f') && hasChildren(person, people)
     : genderIs(person, 'f'));
 
-  return avarageAge(women);
+  return getAvarageAge(women);
 }
 
 function hasChildren(person, people) {
