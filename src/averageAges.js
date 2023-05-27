@@ -15,8 +15,14 @@
  * @return {number}
  */
 
-const calculateAverageAge = (people) => people.reduce(
-  (sum, person) => sum + person.died - person.born, 0) / people.length;
+const calculateAverageAge = (people) => {
+  if (people.length !== 0) {
+    return people.reduce(
+      (sum, person) => sum + person.died - person.born, 0) / people.length;
+  } else {
+    throw new Error('Recieved array length: 0');
+  }
+};
 
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
