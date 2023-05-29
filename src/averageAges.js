@@ -23,6 +23,7 @@ function calculateMenAverageAge(people, century) {
         (item) => item.sex === "m" && Math.ceil(item.died / 100) === century
       )
     : people.filter((item) => item.sex === "m");
+
   const ages = manArr.map((item) => item.died - item.born);
   const sum = ages.reduce((acc, item) => acc + item, 0);
 
