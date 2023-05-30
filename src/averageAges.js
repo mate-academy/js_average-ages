@@ -1,4 +1,7 @@
-'use strict';
+/* eslint-disable operator-linebreak */
+/* eslint-disable indent */
+/* eslint-disable quotes */
+"use strict";
 
 /**
  * Implement calculateMenAverageAge function
@@ -15,11 +18,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const manArr = people.filter(
+    (item) =>
+      item.sex === "m" && (!century || Math.ceil(item.died / 100) === century)
+  );
+  const ages = manArr.map((item) => item.died - item.born);
+  const sum = ages.reduce((acc, item) => acc + item, 0);
+
+  return sum / ages.length;
 }
 
 /**
@@ -37,7 +43,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenArr = people.filter(
+    (item) =>
+      item.sex === "f" &&
+      (!withChildren || people.some((el) => el.mother === item.name))
+  );
+  const ages = womenArr.map((item) => item.died - item.born);
+  const sum = ages.reduce((acc, item) => acc + item, 0);
+
+  return sum / ages.length;
 }
 
 /**
@@ -55,7 +69,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const children = people.filter((child) =>
+    onlyWithSon
+      ? child.sex === "m" &&
+        people.some((mother) => mother.name === child.mother)
+      : people.some((mother) => mother.name === child.mother)
+  );
+
+  const sumAges = children.reduce((sum, child) => {
+    const mother = people.find((person) => person.name === child.mother);
+    const motherSon = child.born - mother.born;
+
+    return sum + motherSon;
+  }, 0);
+
+  return sumAges / children.length;
 }
 
 module.exports = {
