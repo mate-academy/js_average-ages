@@ -15,6 +15,18 @@
  * @return {number}
  */
 
+function getAverageFromArr(arr) {
+  return +(arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2);
+}
+
+const getYearsArr = (arr) => {
+  return arr.map(person => {
+    const { died, born } = person;
+
+    return +died - +born;
+  });
+};
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -26,14 +38,15 @@ function calculateMenAverageAge(people, century) {
   let yearsArr;
 
   if (century) {
-    yearsArr = manArr
-      .filter(person => Math.ceil(person.died / 100) === century)
-      .map(person => +person.died - +person.born);
+    const filteredArr = manArr
+      .filter(person => Math.ceil(person.died / 100) === century);
+
+    yearsArr = getYearsArr(filteredArr);
   } else {
-    yearsArr = manArr.map(person => +person.died - +person.born);
+    yearsArr = getYearsArr(manArr);
   };
 
-  return +(yearsArr.reduce((a, b) => a + b, 0) / yearsArr.length).toFixed(2);
+  return getAverageFromArr(yearsArr);
 }
 
 /**
@@ -59,14 +72,15 @@ function calculateWomenAverageAge(people, withChildren) {
   if (withChildren) {
     const mothersArr = people.map(person => person.mother);
 
-    yearsArr = womanArr
-      .filter(person => mothersArr.includes(person.name))
-      .map(person => +person.died - +person.born);
+    const filteredArr = womanArr
+      .filter(person => mothersArr.includes(person.name));
+
+    yearsArr = getYearsArr(filteredArr);
   } else {
-    yearsArr = womanArr.map(person => +person.died - +person.born);
+    yearsArr = getYearsArr(womanArr);
   };
 
-  return +(yearsArr.reduce((a, b) => a + b, 0) / yearsArr.length).toFixed(2);
+  return getAverageFromArr(yearsArr);
 }
 
 /**
