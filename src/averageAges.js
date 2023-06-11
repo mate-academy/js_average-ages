@@ -36,15 +36,6 @@ function calculateMenAverageAge(people, century) {
       : getYearsArr(manArr)
   );
 
-  // if (century) {
-  //   const filteredArr = manArr
-  //     .filter(person => Math.ceil(person.died / 100) === century);
-
-  //   yearsArr = getYearsArr(filteredArr);
-  // } else {
-  //   yearsArr = getYearsArr(manArr);
-  // };
-
   return getAverageFromArr(yearsArr);
 }
 
@@ -71,17 +62,6 @@ function calculateWomenAverageAge(people, withChildren) {
       .filter(person => mothersArr.includes(person.name)))
       : getYearsArr(womanArr)
   );
-
-  // if (withChildren) {
-  //   const mothersArr = people.map(person => person.mother);
-
-  //   const filteredArr = womanArr
-  //     .filter(person => mothersArr.includes(person.name));
-
-  //   yearsArr = getYearsArr(filteredArr);
-  // } else {
-  //   yearsArr = getYearsArr(womanArr);
-  // };
 
   return getAverageFromArr(yearsArr);
 }
@@ -112,26 +92,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return motherOfPerson && (born - motherOfPerson.born);
   });
-
-  // if (onlyWithSon) {
-  //   ageDiffArr = manArr.map(person => {
-  //     const motherArr = people.filter(el => el.name === person.mother);
-  //     const mother = motherArr[0];
-
-  //     if (mother) {
-  //       return (person.born - mother.born);
-  //     }
-  //   });
-  // } else {
-  //   ageDiffArr = people.map(person => {
-  //     const motherArr = people.filter(el => el.name === person.mother);
-  //     const mother = motherArr[0];
-
-  //     if (mother) {
-  //       return (person.born - mother.born);
-  //     }
-  //   });
-  // }
 
   ageDiffArr = ageDiffArr.filter(el => el && el);
 
