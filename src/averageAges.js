@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const males = people.filter(person => {
+    const isMale = person.sex === 'm';
+    const inThisCentury = Math.ceil(person.died / 100) === century && isMale;
+
+    return century ? inThisCentury : isMale;
+  });
+
+  const ages = males.map(person => {
+    return person.died - person.born;
+  });
+
+  return +(ages.reduce((acc, cur) => acc + cur, 0) / ages.length).toFixed(2);
 }
 
 /**
@@ -37,7 +44,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const isWithChildren = ({ name }) => {
+    return people.some((pers) => pers.mother === name);
+  };
+
+  const females = people.filter(person => {
+    const isFemale = person.sex === 'f';
+    const withChilds = isWithChildren(person) && isFemale;
+
+    return withChildren ? withChilds : isFemale;
+  });
+
+  const ages = females.map(person => {
+    return person.died - person.born;
+  });
+
+  return +(ages.reduce((acc, cur) => acc + cur, 0) / ages.length).toFixed(2);
 }
 
 /**
@@ -55,7 +77,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findMother = (name) => {
+    return people.find(person => person.name === name);
+  };
+
+  const poepleWithMother = people.filter(person => {
+    const withMother = findMother(person.mother);
+    const onlySons = person.sex === 'm' && withMother;
+
+    return onlyWithSon ? onlySons : withMother;
+  });
+
+  const diffAges = poepleWithMother.map(person => {
+    const mother = findMother(person.mother);
+    const motherAge = person.born - mother.born;
+
+    return motherAge;
+  });
+
+  const avgAge = diffAges.reduce((acc, cur) => acc + cur, 0) / diffAges.length;
+
+  return +avgAge.toFixed(2);
 }
 
 module.exports = {
