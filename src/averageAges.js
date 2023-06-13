@@ -21,11 +21,7 @@ function calculateMenAverageAge(people, century = null) {
       : person.sex === 'm';
   });
 
-  const avgAge = menList.reduce((sumAges, person) => {
-    const { born: bornYear, died: diedYear } = person;
-
-    return sumAges + diedYear - bornYear;
-  }, 0) / menList.length;
+  const avgAge = calculateAverageAge(menList);
 
   return avgAge;
 }
@@ -47,15 +43,11 @@ function calculateMenAverageAge(people, century = null) {
 function calculateWomenAverageAge(people, withChildren = false) {
   const womenList = people.filter(person => {
     return withChildren
-      ? person.sex === 'f' && people.some(child => child.mother === person.name)
+      ? people.some(child => child.mother === person.name)
       : person.sex === 'f';
   });
 
-  const avgAge = womenList.reduce((sumAges, person) => {
-    const { born: bornYear, died: diedYear } = person;
-
-    return sumAges + diedYear - bornYear;
-  }, 0) / womenList.length;
+  const avgAge = calculateAverageAge(womenList);
 
   return avgAge;
 }
@@ -87,28 +79,28 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
     });
   });
 
-  const childrenWithMothers = children.reduce((acc, child) => {
-    const mother = mothers.find(person => person.name === child.mother);
-
-    return [
-      ...acc,
-      {
-        ...child,
-        mother,
-      },
-    ];
-  }, []);
-
-  const avgAgeDiff = childrenWithMothers.reduce((sumAges, child) => {
-    const { mother, born: childBornYear } = child;
-    const { born: motherBornYear } = mother;
+  const avgAgeDiff = children.reduce((sumAges, child) => {
+    const { born: childBornYear } = child;
+    const { born: motherBornYear } = mothers.find(person => {
+      return person.name === child.mother;
+    });
 
     const ages = childBornYear - motherBornYear;
 
     return sumAges + ages;
-  }, 0) / childrenWithMothers.length;
+  }, 0) / children.length;
 
   return avgAgeDiff;
+}
+
+function calculateAverageAge(arr) {
+  const avgAge = arr.reduce((sumAges, person) => {
+    const { born: bornYear, died: diedYear } = person;
+
+    return sumAges + diedYear - bornYear;
+  }, 0) / arr.length;
+
+  return avgAge;
 }
 
 module.exports = {
