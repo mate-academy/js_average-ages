@@ -1,6 +1,33 @@
 'use strict';
 
 /**
+ * The function calculates average age from given people.
+ * If people are undefined, finction throws error.
+ * Returns 0 for no person in people.
+ *
+ * @param {object[]} people
+ *
+ * @return {number}
+ */
+function calculatePeopleAverageAge(people) {
+  if (people === undefined) {
+    throw new Error('People are undefined.');
+  }
+
+  const peopleCount = people.length;
+
+  if (peopleCount === 0) {
+    return 0;
+  }
+
+  const sumAges = people.reduce(
+    (sum, person) => sum + (person.died - person.born), 0
+  );
+
+  return sumAges / peopleCount;
+}
+
+/**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
@@ -15,11 +42,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => {
+    const onlyMan = person.sex === 'm';
+
+    return century
+      ? onlyMan && Math.ceil(person.died / 100) === century
+      : onlyMan;
+  });
+
+  return calculatePeopleAverageAge(men);
 }
 
 /**
@@ -37,7 +68,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(mother => {
+    const onlyWoman = mother.sex === 'f';
+
+    return withChildren
+      ? onlyWoman && people.find(child => child.mother === mother.name)
+      : onlyWoman;
+  });
+
+  return calculatePeopleAverageAge(women);
 }
 
 /**
@@ -55,7 +94,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let sumAgesDifferences = 0;
+
+  const children = people.filter(child => {
+    const childMother = people.find(mother =>
+      child.mother === mother.name && (onlyWithSon ? child.sex === 'm' : true)
+    );
+
+    const childExists = childMother !== undefined;
+
+    if (childExists) {
+      sumAgesDifferences += (child.born - childMother.born);
+    }
+
+    return childExists;
+  });
+
+  const childrenCount = children.length;
+
+  if (childrenCount === 0) {
+    return 0;
+  }
+
+  return sumAgesDifferences / childrenCount;
 }
 
 module.exports = {
