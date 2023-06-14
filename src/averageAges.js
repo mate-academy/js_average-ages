@@ -59,11 +59,9 @@ function calculateMenAverageAge(people, century) {
   const sumManAge = sumAges(averageManAge);
   const sumManAgeInCentury = sumAges(averageManAgeInCentury);
 
-  let averageAge = 0;
-
-  century === undefined
-    ? averageAge = resultGiver(sumManAge, averageManAge)
-    : averageAge = resultGiver(sumManAgeInCentury, averageManAgeInCentury);
+  const averageAge = century === undefined
+    ? resultGiver(sumManAge, averageManAge)
+    : resultGiver(sumManAgeInCentury, averageManAgeInCentury);
 
   return averageAge;
 }
@@ -89,7 +87,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const womansWithChildren = womans.reduce((allWomansWithChildren, woman) => {
     const mothers = people.filter(person => person.mother === woman.name);
 
-    mothers.length > 0 && allWomansWithChildren.push(woman);
+    !!mothers.length && allWomansWithChildren.push(woman);
 
     return allWomansWithChildren;
   }, []);
@@ -101,12 +99,9 @@ function calculateWomenAverageAge(people, withChildren) {
   const sumWomanAge = sumAges(averageWomansAge);
   const sumWomanAgeWithChildren = sumAges(averageWomansAgeWithChildren);
 
-  let averageAge = 0;
-
-  withChildren === true
-    ? averageAge = resultGiver(sumWomanAgeWithChildren,
-      averageWomansAgeWithChildren)
-    : averageAge = resultGiver(sumWomanAge, averageWomansAge);
+  const averageAge = withChildren === true
+    ? resultGiver(sumWomanAgeWithChildren, averageWomansAgeWithChildren)
+    : resultGiver(sumWomanAge, averageWomansAge);
 
   return averageAge;
 }
@@ -150,14 +145,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return result;
   }, []);
 
-  let averageAge = 0;
-
   const averageAgeKidsMothers = sumAges(ageKidsMothers);
   const averageAgeSonsMothers = sumAges(ageSonsMothers);
 
-  onlyWithSon === true
-    ? averageAge = resultGiver(averageAgeSonsMothers, ageSonsMothers)
-    : averageAge = resultGiver(averageAgeKidsMothers, ageKidsMothers);
+  const averageAge = onlyWithSon === true
+    ? resultGiver(averageAgeSonsMothers, ageSonsMothers)
+    : resultGiver(averageAgeKidsMothers, ageKidsMothers);
 
   return averageAge;
 }
