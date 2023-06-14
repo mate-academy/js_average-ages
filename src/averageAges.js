@@ -17,16 +17,16 @@
 function calculateMenAverageAge(people, century) {
   const males = people.filter(person => {
     const isMale = person.sex === 'm';
-    const inThisCentury = Math.ceil(person.died / 100) === century && isMale;
+    const inThisCentury = Math.ceil(person.died / 100) === century;
 
-    return century ? inThisCentury : isMale;
+    return isMale && (century ? inThisCentury : true);
   });
 
   const ages = males.map(person => {
     return person.died - person.born;
   });
 
-  return +(ages.reduce((acc, cur) => acc + cur, 0) / ages.length).toFixed(2);
+  return countAverageAge(ages);
 }
 
 /**
@@ -44,22 +44,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const isWithChildren = ({ name }) => {
+  const hasChildren = ({ name }) => {
     return people.some((pers) => pers.mother === name);
   };
 
   const females = people.filter(person => {
     const isFemale = person.sex === 'f';
-    const withChilds = isWithChildren(person) && isFemale;
+    const withChilds = hasChildren(person);
 
-    return withChildren ? withChilds : isFemale;
+    return isFemale && (withChildren ? withChilds : true);
   });
 
   const ages = females.map(person => {
     return person.died - person.born;
   });
 
-  return +(ages.reduce((acc, cur) => acc + cur, 0) / ages.length).toFixed(2);
+  return countAverageAge(ages);
 }
 
 /**
@@ -83,9 +83,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const poepleWithMother = people.filter(person => {
     const withMother = findMother(person.mother);
-    const onlySons = person.sex === 'm' && withMother;
+    const onlySons = person.sex === 'm';
 
-    return onlyWithSon ? onlySons : withMother;
+    return withMother && (onlyWithSon ? onlySons : true);
   });
 
   const diffAges = poepleWithMother.map(person => {
@@ -95,10 +95,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return motherAge;
   });
 
-  const avgAge = diffAges.reduce((acc, cur) => acc + cur, 0) / diffAges.length;
-
-  return +avgAge.toFixed(2);
+  return countAverageAge(diffAges);
 }
+
+const countAverageAge = (array) => {
+  const average = array.reduce((acc, cur) => acc + cur, 0) / array.length;
+
+  return +average.toFixed(2);
+};
 
 module.exports = {
   calculateMenAverageAge,
