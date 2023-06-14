@@ -49,7 +49,7 @@ function calculateWomenAverageAge(people, withChildren) {
         name === mother
       )
       : sex === 'f'
-  )
+  );
 
   const resultWomenAverageAge = women.reduce((totalAge, { born, died }) =>
     totalAge + died - born, 0
@@ -73,52 +73,31 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let possibleChildren = people;
+  const mothers = people.filter(({ name }) =>
+    onlyWithSon
+      ? people.some(({ mother, sex }) =>
+        mother === name && sex === 'm'
+      )
+      : people.some(({ mother }) =>
+        mother === name
+      )
+  )
 
-  if (onlyWithSon === true) {
-    possibleChildren = possibleChildren.filter(
-      person => person['sex'] === 'm'
-    );
-  }
+  const children = people.filter(({ sex, mother }) =>
+    onlyWithSon
+      ? people.some(({ name }) =>
+        name === mother && sex === 'm'
+      )
+      : people.some(({ name }) =>
+        name === mother
+      )
+  )
 
-  const mothers = people.filter(
-    function(possibleMother) {
-      let isMother = false;
-
-      possibleChildren.forEach(
-        function(child) {
-          if (possibleMother.name === child.mother) {
-            isMother = true;
-          }
-        }
-      );
-
-      return isMother;
-    }
-  );
-
-  let children = 0;
-
-  const totalAgeDiff = mothers.reduce(
-    function(sumAge, mother) {
-      let diffForMother = 0;
-
-      possibleChildren.forEach(
-        function(child) {
-          if (child.mother === mother.name) {
-            children++;
-            diffForMother += child.born - mother.born;
-          }
-        }
-      );
-
-      const totalAge = sumAge + diffForMother;
-
-      return totalAge;
-    }, 0
-  );
-
-  const resultAverageAgeDiff = totalAgeDiff / children;
+  const resultAverageAgeDiff = children.reduce((totalDiff, { mother, born }) =>
+    totalDiff + born - mothers.find(({ name }) =>
+      name === mother
+    ).born, 0
+  ) / children.length;
 
   return resultAverageAgeDiff;
 }
