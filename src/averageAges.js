@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const males = people.filter(person => {
+    const isMale = person.sex === 'm';
+    const inThisCentury = Math.ceil(person.died / 100) === century;
+
+    return isMale && (century ? inThisCentury : true);
+  });
+
+  const ages = males.map(person => {
+    return person.died - person.born;
+  });
+
+  return countAverageAge(ages);
 }
 
 /**
@@ -37,7 +44,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const hasChildren = ({ name }) => {
+    return people.some((pers) => pers.mother === name);
+  };
+
+  const females = people.filter(person => {
+    const isFemale = person.sex === 'f';
+    const withChilds = hasChildren(person);
+
+    return isFemale && (withChildren ? withChilds : true);
+  });
+
+  const ages = females.map(person => {
+    return person.died - person.born;
+  });
+
+  return countAverageAge(ages);
 }
 
 /**
@@ -55,8 +77,32 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const findMother = (name) => {
+    return people.find(person => person.name === name);
+  };
+
+  const peopleWithMother = people.filter(person => {
+    const withMother = findMother(person.mother);
+    const onlySons = person.sex === 'm';
+
+    return withMother && (onlyWithSon ? onlySons : true);
+  });
+
+  const diffAges = peopleWithMother.map(person => {
+    const mother = findMother(person.mother);
+    const motherAge = person.born - mother.born;
+
+    return motherAge;
+  });
+
+  return countAverageAge(diffAges);
 }
+
+const countAverageAge = (array) => {
+  const average = array.reduce((acc, cur) => acc + cur, 0) / array.length;
+
+  return +average.toFixed(2);
+};
 
 module.exports = {
   calculateMenAverageAge,
