@@ -26,9 +26,6 @@ function calculateMenAverageAge(people, century) {
     .reduce((accumulator, curentValue) =>
       accumulator + curentValue, 0) / allMan.length;
 
-  // eslint-disable-next-line no-console
-  console.log(filterPeople, middleAge, century);
-
   return middleAge;
 }
 
@@ -47,7 +44,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filterPeople = withChildren === undefined
+    ? people.filter(woman => woman.sex === 'f')
+    : people.filter(woman => {
+      return people.some(person => person.mother === woman.name);
+    });
+
+  const allWoman = filterPeople.map(woman => woman.died - woman.born);
+
+  const middleAge = allWoman.reduce((accumulator, curentValue) =>
+    accumulator + curentValue, 0) / allWoman.length;
+
+  // eslint-disable-next-line no-console
+  console.log();
+
+  return middleAge;
 }
 
 /**
