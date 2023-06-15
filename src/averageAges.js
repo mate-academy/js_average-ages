@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const checkMen = person => person.sex === 'm';
+
+  const checkCentury = man => Math.ceil(man.died / 100) === century;
+
+  const filteredMen = !century
+    ? people.filter(checkMen)
+    : people.filter(checkMen).filter(checkCentury);
+
+  return calculateAverageAge(filteredMen);
 }
 
 /**
@@ -37,7 +41,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const checkWomen = person => person.sex === 'f';
+
+  const checkChildren = woman =>
+    people.some(child => child.mother === woman.name);
+
+  const filteredWomen = withChildren === true
+    ? people.filter(checkWomen).filter(checkChildren)
+    : people.filter(checkWomen);
+
+  return calculateAverageAge(filteredWomen);
 }
 
 /**
@@ -55,7 +68,34 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const checkMen = person => person.sex === 'm';
+
+  const checkMothers = child =>
+    people.some(mother => mother.name === child.mother);
+
+  const findMother = child =>
+    people.find(mother => mother.name === child.mother);
+
+  const children = onlyWithSon === true
+    ? people.filter(checkMen).filter(checkMothers)
+    : people.filter(checkMothers);
+
+  const mothers = children.map(findMother);
+
+  const calculateTotalAgeDiff = (sum, woman, i, women) =>
+    sum + children[i].born - women[i].born;
+
+  const averageAgeDiff = Math.round(mothers.reduce(calculateTotalAgeDiff, 0)
+      / mothers.length * 100) / 100;
+
+  return averageAgeDiff;
+}
+
+function calculateAverageAge(people) {
+  const averageAge = Math.round(people.reduce((sum, person) =>
+    sum + person.died - person.born, 0) / people.length * 100) / 100;
+
+  return averageAge;
 }
 
 module.exports = {
