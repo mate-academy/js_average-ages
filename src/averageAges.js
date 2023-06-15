@@ -15,12 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menAges = isMan(century, people).map(man => man.died - man.born);
+
+  const averageAge = menAges
+    .reduce((accumulator, curentValue) =>
+      accumulator + curentValue, 0) / menAges.length;
+
+  return averageAge;
 }
+
+function isMan(century, people) {
+  const mans = century === undefined
+    ? people.filter(man => man.sex === 'm')
+    : people.filter(man => man.sex === 'm'
+    && Math.ceil(man.died / 100) === century);
+
+  return mans;
+};
 
 /**
  * Implement calculateWomenAverageAge function
@@ -37,7 +48,22 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenAges = isWoman(withChildren, people)
+    .map(woman => woman.died - woman.born);
+
+  const averageAge = womenAges.reduce((accumulator, curentValue) =>
+    accumulator + curentValue, 0) / womenAges.length;
+
+  return averageAge;
+}
+
+function isWoman(withChildren, people) {
+  const filteredWoman = withChildren === undefined
+    ? people.filter(woman => woman.sex === 'f')
+    : people.filter(woman => people
+      .some(person => person.mother === woman.name));
+
+  return filteredWoman;
 }
 
 /**
@@ -55,7 +81,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const averageAgeDiff = isChildren(people, onlyWithSon)
+    .reduce((sum, child) => {
+      const mother = people.find(woman => woman.name === child.mother);
+
+      return sum + ((child.born - mother.born));
+    }, 0) / isChildren(people, onlyWithSon).length;
+
+  return Number(averageAgeDiff.toFixed(2));
+}
+
+function isChildren(people, onlyWithSon) {
+  const children = people.filter(child => onlyWithSon
+    ? child.sex === 'm' && people.some(mother => mother.name === child.mother)
+    : people.some(mother => mother.name === child.mother));
+
+  return children;
 }
 
 module.exports = {
