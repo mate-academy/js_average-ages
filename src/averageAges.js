@@ -115,34 +115,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     fitPairsCount += children.length;
   }
-  //   .filter(person => {
-  //     if (person.sex !== 'f') {
-  //       return false;
-  //     }
-
-  //     const children = people.find(child => {
-  //       if (onlyWithSon && child.sex !== 'm') {
-  //         return false;
-  //       }
-
-  //       return child.mother === person.name;
-  //     });
-
-  //     return children;
-  //   });
-
-  // const ageDiffsSum = womenWithChild.reduce((sum, woman) => {
-  //   const children = people.find(child => {
-  //     if (onlyWithSon && child.sex !== 'm') {
-  //       return false;
-  //     }
-
-  //     return child.mother === woman.name;
-  //   });
-
-  //   return sum + (children.born - woman.born);
-  // },
-  // 0);
 
   return +(ageDiffsSum / fitPairsCount).toFixed(2);
 }
