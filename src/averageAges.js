@@ -1,5 +1,16 @@
 'use strict';
 
+/*
+* function for calculate avarage age in array
+*/
+function calculateAverageAge(people) {
+  const ages = people.map(person => person.died - person.born);
+  const sumOfAges = ages.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAges / ages.length;
+
+  return averageAge;
+}
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,16 +26,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const menArray = century
-    ? people.filter(person => Math.ceil(person.died / 100) === century
-      && person.sex === 'm')
-    : people.filter(person => person.sex === 'm');
+  const menArray = people.filter(century
+    ? person => Math.ceil(person.died / 100) === century
+      && person.sex === 'm'
+    : person => person.sex === 'm');
 
-  const menAges = menArray.map(person => person.died - person.born);
-  const sumOfMenAges = menAges.reduce((sum, age) => sum + age, 0);
-  const avarageAgeMens = sumOfMenAges / menAges.length;
-
-  return avarageAgeMens;
+  return calculateAverageAge(menArray);
 }
 
 /**
@@ -42,16 +49,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womenArray = withChildren
-    ? people.filter(person => person.sex === 'f'
-      && people.some(child => child.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+  const womenArray = people.filter(withChildren
+    ? person => person.sex === 'f'
+      && people.some(child => child.mother === person.name)
+    : person => person.sex === 'f');
 
-  const womenAges = womenArray.map(person => person.died - person.born);
-  const sumOfMenAges = womenAges.reduce((sum, age) => sum + age, 0);
-  const averageAgeWomens = sumOfMenAges / womenAges.length;
-
-  return averageAgeWomens;
+  return calculateAverageAge(womenArray);
 }
 
 /**
