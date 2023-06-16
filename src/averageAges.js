@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const onlyMales = people.filter(({ sex, died }) => {
+    if (century) {
+      return sex === 'm' && Math.ceil(died / 100) === century;
+    }
+
+    return sex === 'm';
+  });
+
+  const averageAge = calculateAverageAge(onlyMales);
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +43,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const onlyFemales = people.filter(({ name, sex }) => {
+    if (withChildren) {
+      return people.some((child) => child.mother === name);
+    }
+
+    return sex === 'f';
+  });
+
+  const averageAge = calculateAverageAge(onlyFemales);
+
+  return averageAge;
 }
 
 /**
@@ -55,7 +71,43 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const onlyMothers = people.filter((person) => {
+    return people.some((child) => child.mother === person.name);
+  });
+
+  const onlyChildrens = people.filter(({ mother, sex }) => {
+    return people.some(({ name }) => {
+      if (onlyWithSon) {
+        return mother === name && sex === 'm';
+      }
+
+      return mother === name;
+    });
+  });
+
+  const averageAge
+    = onlyChildrens.reduce((acc, children) => {
+      const mother = onlyMothers.find((person) => {
+        return person.name === children.mother;
+      });
+
+      const diff = children.born - mother.born;
+
+      return acc + diff;
+    }, 0) / onlyChildrens.length;
+
+  return averageAge;
+}
+
+function calculateAverageAge(people) {
+  const summaryAge = people.reduce(
+    (acc, person) => acc + (person.died - person.born),
+    0
+  );
+
+  const averageAge = +(summaryAge / people.length).toFixed(2);
+
+  return averageAge;
 }
 
 module.exports = {
