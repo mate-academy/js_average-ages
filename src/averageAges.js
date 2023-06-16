@@ -15,11 +15,31 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let totalAge = 0;
+  let fitManCounter = 0;
+
+  for (const person of people) {
+    if (person.sex !== 'm') {
+      continue;
+    }
+
+    const currentAge = person.died - person.born;
+
+    if (!century) {
+      totalAge += currentAge;
+      fitManCounter++;
+      continue;
+    }
+
+    const dieCentury = Math.ceil(person.died / 100);
+
+    if (dieCentury === century) {
+      totalAge += currentAge;
+      fitManCounter++;
+    }
+  }
+
+  return +(totalAge / fitManCounter);
 }
 
 /**
@@ -37,7 +57,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let totalAge = 0;
+  let fitWomanCounter = 0;
+
+  for (const person of people) {
+    if (person.sex !== 'f') {
+      continue;
+    }
+
+    const children = people
+      .find(child => checkForRelativness(child, person));
+
+    if (!children && withChildren) {
+      continue;
+    }
+
+    totalAge += person.died - person.born;
+    fitWomanCounter++;
+  }
+
+  return +(totalAge / fitWomanCounter);
 }
 
 /**
@@ -55,7 +94,65 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let ageDiffsSum = 0;
+  let fitPairsCount = 0;
+
+  for (const person of people) {
+    if (person.sex !== 'f') {
+      continue;
+    }
+
+    const children = people
+      .filter(child => checkForRelativness(child, person, onlyWithSon));
+
+    if (!children) {
+      continue;
+    }
+
+    ageDiffsSum += children.reduce((sum, child) => {
+      return sum + (child.born - person.born);
+    }, 0);
+
+    fitPairsCount += children.length;
+  }
+  //   .filter(person => {
+  //     if (person.sex !== 'f') {
+  //       return false;
+  //     }
+
+  //     const children = people.find(child => {
+  //       if (onlyWithSon && child.sex !== 'm') {
+  //         return false;
+  //       }
+
+  //       return child.mother === person.name;
+  //     });
+
+  //     return children;
+  //   });
+
+  // const ageDiffsSum = womenWithChild.reduce((sum, woman) => {
+  //   const children = people.find(child => {
+  //     if (onlyWithSon && child.sex !== 'm') {
+  //       return false;
+  //     }
+
+  //     return child.mother === woman.name;
+  //   });
+
+  //   return sum + (children.born - woman.born);
+  // },
+  // 0);
+
+  return +(ageDiffsSum / fitPairsCount).toFixed(2);
+}
+
+function checkForRelativness(child, person, onlyWithSon = undefined) {
+  if (onlyWithSon && child.sex !== 'm') {
+    return false;
+  }
+
+  return child.mother === person.name;
 }
 
 module.exports = {
