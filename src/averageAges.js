@@ -18,9 +18,9 @@ function calculateMenAverageAge(people, century) {
   let totalAge = 0;
   let fitManCounter = 0;
 
-  for (const person of people) {
+  people.forEach(person => {
     if (person.sex !== 'm') {
-      continue;
+      return;
     }
 
     const currentAge = person.died - person.born;
@@ -28,7 +28,8 @@ function calculateMenAverageAge(people, century) {
     if (!century) {
       totalAge += currentAge;
       fitManCounter++;
-      continue;
+
+      return;
     }
 
     const dieCentury = Math.ceil(person.died / 100);
@@ -37,7 +38,7 @@ function calculateMenAverageAge(people, century) {
       totalAge += currentAge;
       fitManCounter++;
     }
-  }
+  });
 
   return +(totalAge / fitManCounter);
 }
@@ -60,21 +61,21 @@ function calculateWomenAverageAge(people, withChildren) {
   let totalAge = 0;
   let fitWomanCounter = 0;
 
-  for (const person of people) {
+  people.forEach(person => {
     if (person.sex !== 'f') {
-      continue;
+      return;
     }
 
     const children = people
       .find(child => checkForRelativness(child, person));
 
     if (!children && withChildren) {
-      continue;
+      return;
     }
 
     totalAge += person.died - person.born;
     fitWomanCounter++;
-  }
+  });
 
   return +(totalAge / fitWomanCounter);
 }
@@ -97,16 +98,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let ageDiffsSum = 0;
   let fitPairsCount = 0;
 
-  for (const person of people) {
+  people.forEach(person => {
     if (person.sex !== 'f') {
-      continue;
+      return;
     }
 
     const children = people
       .filter(child => checkForRelativness(child, person, onlyWithSon));
 
     if (!children) {
-      continue;
+      return;
     }
 
     ageDiffsSum += children.reduce((sum, child) => {
@@ -114,7 +115,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }, 0);
 
     fitPairsCount += children.length;
-  }
+  });
 
   return +(ageDiffsSum / fitPairsCount).toFixed(2);
 }
