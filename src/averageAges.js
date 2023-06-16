@@ -26,10 +26,6 @@ function calculateMenAverageAge(people, century) {
     return isMan;
   });
 
-  if (!men.length) {
-    return 0;
-  }
-
   return calculateAverageAge(men);
 }
 
@@ -59,19 +55,19 @@ function calculateWomenAverageAge(people, withChildren) {
     return isFemale;
   });
 
-  if (!women.length) {
-    return 0;
-  }
-
   return calculateAverageAge(women);
 }
 
-function calculateAverageAge(gender) {
-  const sum = gender.reduce((acc, person) => {
+function calculateAverageAge(people) {
+  if (!people.length) {
+    return 0;
+  }
+
+  const sum = people.reduce((acc, person) => {
     return acc + (person.died - person.born);
   }, 0);
 
-  return Math.round((sum / gender.length) * 100) / 100;
+  return Math.round((sum / people.length) * 100) / 100;
 }
 
 /**
