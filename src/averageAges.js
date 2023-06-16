@@ -15,11 +15,33 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let fitManCounter = 0;
+
+  const totalAge = people.reduce((total, person) => {
+    if (person.sex !== 'm') {
+      return total;
+    }
+
+    const currentAge = person.died - person.born;
+
+    if (!century) {
+      fitManCounter++;
+
+      return total + currentAge;
+    }
+
+    const dieCentury = Math.ceil(person.died / 100);
+
+    if (dieCentury === century) {
+      fitManCounter++;
+
+      return total + currentAge;
+    }
+
+    return total;
+  }, 0);
+
+  return +(totalAge / fitManCounter).toFixed(2);
 }
 
 /**
@@ -37,7 +59,26 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let fitWomanCounter = 0;
+
+  const totalAge = people.reduce((total, person) => {
+    if (person.sex !== 'f') {
+      return total;
+    }
+
+    const children = people
+      .find(child => checkForRelativness(child, person));
+
+    if (!children && withChildren) {
+      return total;
+    }
+
+    fitWomanCounter++;
+
+    return total + person.died - person.born;
+  }, 0);
+
+  return +(totalAge / fitWomanCounter).toFixed(2);
 }
 
 /**
@@ -55,7 +96,34 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let validPairsCount = 0;
+  const totalAgeDiffSum = people.reduce((sum, person) => {
+    if (person.sex !== 'f') {
+      return sum;
+    }
+
+    const familyDifference = people
+      .filter(child =>
+        checkForRelativness(child, person, onlyWithSon)
+      )
+      .reduce((familyDiff, child) => {
+        validPairsCount++;
+
+        return familyDiff + child.born - person.born;
+      }, 0);
+
+    return sum + familyDifference;
+  }, 0);
+
+  return +(totalAgeDiffSum / validPairsCount).toFixed(2);
+}
+
+function checkForRelativness(child, person, onlyWithSon = undefined) {
+  if (onlyWithSon && child.sex !== 'm') {
+    return false;
+  }
+
+  return child.mother === person.name;
 }
 
 module.exports = {
