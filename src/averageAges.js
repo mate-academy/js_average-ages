@@ -82,7 +82,9 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
     mothers.some(mother => mother.name === child.mother)
   ));
 
-  const CALCULATED_AVERAGE_AGE_DIFFERENCE = sumAgeDiff(children, mothers);
+  const CALCULATED_AVERAGE_AGE_DIFFERENCE = children.reduce((sum, child) => (
+    sum + child.born - mothers.find(mother => mother.name === child.mother).born
+  ), 0);
 
   return calculateAverageAge(CALCULATED_AVERAGE_AGE_DIFFERENCE, children);
 }
@@ -98,7 +100,7 @@ function sumAge(people) {
 }
 
 function calculateAverageAge(calculatedAge, people) {
-  return Math.round(calculatedAge / people.length * 100) / 100;
+  return calculatedAge / people.length;
 }
 
 function getMothersNames(people) {
@@ -107,14 +109,6 @@ function getMothersNames(people) {
 
 function filterMothersNames(mothers, mothersNames) {
   return mothers.filter(mother => mothersNames.includes(mother.name));
-}
-
-function sumAgeDiff(children, mothers) {
-  return children
-    .map(child => (
-      child.born - mothers.find(mother => mother.name === child.mother).born)
-    )
-    .reduce((sum, age) => sum + age, 0);
 }
 
 module.exports = {
