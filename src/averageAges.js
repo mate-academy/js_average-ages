@@ -1,5 +1,11 @@
 'use strict';
 
+const averageAge = function(array) {
+  return array
+    .map(person => person.died - person.born)
+    .reduce((a, b) => a + b) / array.length;
+};
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +21,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const sexCondition = (person) => person.sex === 'm';
+  const centuryCondition = (person) => Math.ceil(person.died / 100) === century;
+
+  const filteredArr = people
+    .filter(person =>
+      century
+        ? sexCondition(person) && centuryCondition(person)
+        : sexCondition(person));
+
+  return averageAge(filteredArr);
 }
 
 /**
@@ -37,7 +48,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const sexCondition = (person) => person.sex === 'f';
+  const childCondition = (child, mother) => child.mother === mother.name;
+
+  const filteredArr = people
+    .filter(person => withChildren
+      ? sexCondition(person) && people
+        .some(child => childCondition(child, person))
+      : sexCondition(person));
+
+  return averageAge(filteredArr);
 }
 
 /**
@@ -55,7 +75,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const sonCondition = (child) => child.sex === 'm';
+  const relativesCondition = (mothersArr, child) => mothersArr
+    .some(mother => mother.name === child.mother);
+
+  const mothers = people
+    .filter(person => people
+      .some(child => child.mother === person.name));
+  const children = people
+    .filter(child => onlyWithSon ? sonCondition(child)
+  && relativesCondition(mothers, child)
+      : relativesCondition(mothers, child));
+
+  const ages = children
+    .map(child => child.born - mothers
+      .find(mother => mother.name === child.mother).born);
+
+  return ages
+    .reduce((a, b) => a + b) / ages.length;
 }
 
 module.exports = {
