@@ -99,6 +99,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const AVARAGE = CHILDREN_AGE / CHILDREN.length.toFixed(2);
 
   return AVARAGE;
+  // 1. find a mother of each person (or only for men)
+  // 2. keep people who have mothers in the array
+  // 3. calculate the difference child.born - mother.born
+  // 4. return the average value
 }
 
 module.exports = {
