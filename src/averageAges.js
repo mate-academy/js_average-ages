@@ -15,11 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredMen = people.filter((person) => {
+    const theCentury = Math.ceil(person.died / 100) === century;
+    const aMen = person.sex === 'm';
+
+    return (!century || theCentury) && aMen;
+  });
+
+  return calculateAverageAge(filteredMen);
+}
+
+function calculateAverageAge(people) {
+  const averageAge = people.reduce((sum, person) => {
+    const age = person.died - person.born;
+
+    return sum + age;
+  }, 0);
+
+  return averageAge / people.length;
 }
 
 /**
@@ -37,7 +50,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let filteredWomen = people.filter((person) => {
+    return person.sex === 'f';
+  });
+
+  if (withChildren) {
+    filteredWomen = people.filter((person) => {
+      return people.some((child) => {
+        return child.mother === person.name;
+      });
+    });
+  }
+
+  return calculateAverageAge(filteredWomen);
 }
 
 /**
@@ -55,7 +80,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  const filterChildren = people.filter((person) => {
+    if (person.mother === null) {
+      return false;
+    }
+
+    const motherExist = people.some(mother => mother.name === person.mother);
+
+    if (onlyWithSon) {
+      return motherExist && person.sex === 'm';
+    }
+
+    return motherExist;
+  });
+
+  const ageDifference = filterChildren.map((child) => {
+    const mother = people.find((person) => {
+      return person.name === child.mother;
+    });
+
+    return child.born - mother.born;
+  });
+
+  return calculateAverageAgeDifference(ageDifference);
+}
+
+function calculateAverageAgeDifference(ageDiff) {
+  const average = ageDiff.reduce((prev, age) => {
+    return prev + age;
+  }, 0);
+
+  return average / ageDiff.length;
 }
 
 module.exports = {
