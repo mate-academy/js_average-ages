@@ -33,7 +33,7 @@ function calculateMenAverageAge(people, century) {
   const MEN_AGES = MEN
     .reduce((total, person) => total + person.died - person.born, 0);
 
-  const AVARAGE_AGE = getAvarage(MEN_AGES, MEN.length);
+  const AVARAGE_AGE = MEN_AGES / MEN.length.toFixed(2);
 
   return AVARAGE_AGE;
 }
@@ -63,7 +63,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const WEMEN_AGES = WEMEN
     .reduce((total, ages) => total + ages.died - ages.born, 0);
-  const AVARAGE_AGE = getAvarage(WEMEN_AGES, WEMEN.length);
+  const AVARAGE_AGE = WEMEN_AGES / WEMEN.length.toFixed(2);
 
   return AVARAGE_AGE;
 }
@@ -96,13 +96,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .reduce((total, child) => total + child.born
       - people[people.findIndex(item => item.name === child.mother)].born,
     0);
-  const AVARAGE = getAvarage(CHILDREN_AGE, CHILDREN.length);
+  const AVARAGE = CHILDREN_AGE / CHILDREN.length.toFixed(2);
 
   return AVARAGE;
-}
-
-function getAvarage(age, quantity) {
-  return age / quantity.toFixed(2);
 }
 
 module.exports = {
