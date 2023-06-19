@@ -55,7 +55,10 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  // 1. find a mother of each person (or only for men)
+  // 2. keep people who have mothers in the array
+  // 3. calculate the difference child.born - mother.born
+  // 4. return the average value
 }
 
 module.exports = {
