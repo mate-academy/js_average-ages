@@ -20,6 +20,22 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  // const MEN = people.filter(person => century
+  //   ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+  //   : person.sex === 'm'
+  // );
+
+  const MEN = century
+    ? people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const MEN_AGES = MEN
+    .reduce((total, person) => total + person.died - person.born, 0);
+
+  const AVARAGE_AGE = getAvarage(MEN_AGES, MEN.length);
+
+  return AVARAGE_AGE;
 }
 
 /**
@@ -38,6 +54,18 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const WEMEN = withChildren
+    ? people
+      .filter((person, i, persons) => person.sex === 'f'
+        && persons
+          .some(p => p.mother === person.name))
+    : people.filter(person => person.sex === 'f');
+
+  const WEMEN_AGES = WEMEN
+    .reduce((total, ages) => total + ages.died - ages.born, 0);
+  const AVARAGE_AGE = getAvarage(WEMEN_AGES, WEMEN.length);
+
+  return AVARAGE_AGE;
 }
 
 /**
@@ -56,6 +84,25 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
+  const CHILDREN = onlyWithSon
+    ? people
+      .filter((person, i, persons) => persons
+        .some(item => item.name === person.mother
+          && person.sex === 'm'))
+    : people
+      .filter((person, i, persons) => persons
+        .some(item => item.name === person.mother));
+  const CHILDREN_AGE = CHILDREN
+    .reduce((total, child) => total + child.born
+      - people[people.findIndex(item => item.name === child.mother)].born,
+    0);
+  const AVARAGE = getAvarage(CHILDREN_AGE, CHILDREN.length);
+
+  return AVARAGE;
+}
+
+function getAvarage(age, quantity) {
+  return age / quantity.toFixed(2);
 }
 
 module.exports = {
