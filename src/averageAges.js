@@ -15,7 +15,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people.filter(({ sex, died }) => sex === 'm'
+    && (century
+      ? Math.ceil(died / 100) === century
+      : true
+    ));
+
+  return calculateAvarageAge(men);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +43,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(({ sex, name }) => sex === 'f'
+  && (withChildren
+    ? people.some(person => person.mother === name)
+    : true
+  ));
+
+  return calculateAvarageAge(women);
 }
 
 /**
@@ -55,10 +67,42 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const mothers = people.filter((person) => {
+    return people.some((child) => child.mother === person.name);
+  });
+
+  const children = people.filter((child) => {
+    const onlySon = onlyWithSon
+      ? child.sex === 'm'
+      : true;
+
+    return onlySon && people.some((mother) => {
+      return child.mother === mother.name;
+    });
+  });
+
+  const ageDifference = children.map((child) => {
+    return child.born - mothers.find(
+      (person) => person.name === child.mother).born;
+  });
+
+  return countAverageAge(ageDifference);
+}
+
+function countAverageAge(ageArr) {
+  const averageAge = ageArr.reduce((totalAges, age) => {
+    return totalAges + age;
+  }, 0) / ageArr.length;
+
+  return averageAge;
+}
+
+function calculateAvarageAge(people) {
+  const calculateAllAges = people
+    .map((person) => person.died - person.born)
+    .reduce((prev, curr) => prev + curr);
+
+  return calculateAllAges / people.length;
 }
 
 module.exports = {
