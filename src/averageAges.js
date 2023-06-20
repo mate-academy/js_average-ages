@@ -62,6 +62,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const sumAgeDiff = validAgeDifferences
     .reduce((acc, ageDiff) => acc + ageDiff, 0);
+
   const averageAgeDiff = validAgeDifferences.length > 0
     ? sumAgeDiff / validAgeDifferences.length
     : 0;
