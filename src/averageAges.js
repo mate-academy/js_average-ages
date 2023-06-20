@@ -14,8 +14,23 @@
  *
  * @return {number}
  */
+
+const calculateAvarageAge = (people) => {
+  const calculateAllAges = people
+    .map((person) => person.died - person.born)
+    .reduce((prev, curr) => prev + curr);
+
+  return calculateAllAges / people.length;
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
+  const men = people.filter(({ sex, died }) => sex === 'm'
+    && (century
+      ? Math.ceil(died / 100) === century
+      : true
+    ));
+
+  return calculateAvarageAge(men);
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +52,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(({ sex, name }) => sex === 'f'
+    && (withChildren
+      ? people.some(person => person.mother === name)
+      : true));
+
+  return calculateAvarageAge(women);
 }
 
 /**
@@ -59,6 +79,32 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+
+  const isMother = (name) => {
+    return people.some(human => onlyWithSon
+      ? human.sex === 'm' && human.mother === name
+      : human.mother === name);
+  };
+
+  const isChild = (person) => {
+    return mothers.some(human => onlyWithSon
+      ? human.name === person.mother && person.sex === 'm'
+      : human.name === person.mother);
+  };
+
+  const findFamilyYearDiff = (mothersArr, motherName, childBorn) => {
+    return childBorn - mothersArr.find(mom => motherName === mom.name).born;
+  };
+
+  const mothers = people.filter(({ name }) => isMother(name));
+
+  const children = people.filter((person) => isChild(person));
+
+  const diffAverage = (children
+    .map(({ born, mother }) => findFamilyYearDiff(mothers, mother, born))
+    .reduce((prev, curr) => prev + curr)) / children.length;
+
+  return diffAverage;
 }
 
 module.exports = {
