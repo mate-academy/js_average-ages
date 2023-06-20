@@ -94,12 +94,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return 0;
   }).filter((ageDiffItem) => ageDiffItem !== 0);
 
-  const allDiff = ageDiff.reduce(
+  const sumOfDiff = ageDiff.reduce(
     (sum, ageDiffItem) =>
       (sum + ageDiffItem), 0
   );
 
-  return allDiff / ageDiff.length;
+  return sumOfDiff / ageDiff.length;
 }
 
 function calculateAverageAges(people) {
