@@ -88,8 +88,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       : relativesCondition(mothers, child));
 
   const ages = children
-    .map(child => child.born - mothers
-      .find(mother => mother.name === child.mother).born);
+    .reduce((a, b)=> a += b.born - mothers
+      .find(mother => mother.name === b.mother).born, 0);
 
   return ages
     .reduce((a, b) => a + b) / ages.length;
