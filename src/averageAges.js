@@ -76,6 +76,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const sonCondition = (child) => child.sex === 'm';
+  
   const relativesCondition = (mothersArr, child) => mothersArr
     .some(mother => mother.name === child.mother);
 
