@@ -70,30 +70,31 @@ function findWomenWithChildren(women, people) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(person => (
-    person.mother !== null
-    && (!onlyWithSon || person.sex === 'm')
-  ));
+  const mothers = people.filter((person) => {
+    return people.some((child) => child.mother === person.name);
+  });
 
-  let amountOfMothers = 0;
+  const children = people.filter(({ mother, sex }) => {
+    return people.some(({ name }) => {
+      if (onlyWithSon) {
+        return mother === name && sex === 'm';
+      }
 
-  const sumOfAges = children.reduce((sum, person) => {
-    const mother = people.find(personOfPeople => (
-      personOfPeople.name === person.mother
-    ));
+      return mother === name;
+    });
+  });
 
-    if (mother) {
-      const diff = person.born - mother.born;
+  const sumOfAges = children.reduce((sum, child) => {
+    const mother = mothers.find((person) => {
+      return person.name === child.mother;
+    });
 
-      amountOfMothers++;
+    const diff = child.born - mother.born;
 
-      return sum + diff;
-    } else {
-      return sum + 0;
-    }
-  }, 0);
+    return sum + diff;
+  }, 0) / children.length;
 
-  return sumOfAges / amountOfMothers;
+  return sumOfAges;
 }
 
 module.exports = {
