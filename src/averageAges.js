@@ -99,8 +99,7 @@ function countAverageAge(ageArr) {
 
 function calculateAvarageAge(people) {
   const calculateAllAges = people
-    .map((person) => person.died - person.born)
-    .reduce((prev, curr) => prev + curr);
+    .reduce((sum, person) => sum + person.died - person.born, 0);
 
   return calculateAllAges / people.length;
 }
