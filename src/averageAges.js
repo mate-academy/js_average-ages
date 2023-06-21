@@ -60,10 +60,6 @@ function calculateWomenAverageAge(people, withChildren) {
     return female;
   });
 
-  if (women.length === 0) {
-    return 0;
-  }
-
   return calculateAverageAge(women);
 }
 
