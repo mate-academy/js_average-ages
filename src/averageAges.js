@@ -1,5 +1,10 @@
 'use strict';
 
+function calculateAverageAge(arr) {
+  return Math.round((arr
+    .reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / arr.length) * 100) / 100;
+}
 /**
  * Implement calculateMenAverageAge function
  *
@@ -14,12 +19,17 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menAgeSum = people
+    .filter(person =>
+      century
+        ? Math.ceil(person.died / 100) === century
+        && person.sex === 'm'
+        : person.sex === 'm'
+    );
+
+  return calculateAverageAge(menAgeSum);
 }
 
 /**
@@ -37,7 +47,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womenAgeSum = people
+    .filter(person =>
+      withChildren
+        ? people.some(child => child.mother === person.name)
+        && person.sex === 'f'
+        : person.sex === 'f'
+    );
+
+  return calculateAverageAge(womenAgeSum);
 }
 
 /**
@@ -55,10 +73,29 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  let withMother = people
+    .filter(child => child.mother !== null)
+    .map(child => {
+      const isMother = people.find(person => person.name === child.mother);
+
+      if (isMother !== undefined) {
+        return {
+          ...child,
+          wasBornAt: (child.born - isMother.born),
+        };
+      }
+    })
+    .filter(person => person !== undefined);
+
+  if (onlyWithSon) {
+    withMother = withMother.filter(person => person.sex === 'm');
+  };
+
+  const childCount = withMother.length;
+
+  return Math.round((withMother
+    .reduce((sum, person) => sum + person.wasBornAt, 0)
+    / childCount) * 100) / 100;
 }
 
 module.exports = {
