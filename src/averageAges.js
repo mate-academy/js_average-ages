@@ -15,16 +15,21 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  const men = people
-    .filter((person) => person.sex === 'm')
-    .filter((person) => !century || Math.ceil(person.died / 100) === century);
+  const men = people.filter((person) => century
+    ? Math.ceil(person.died / 100) === century && person.sex === 'm'
+    : person.sex === 'm'
+  );
 
-  const countMen = men.length;
-  const totalMenAge = men.reduce((prev, person) => {
+  return calculateAverageAge(men);
+}
+
+function calculateAverageAge(people) {
+  const countPeople = people.length;
+  const totalAge = people.reduce((prev, person) => {
     return prev + (person.died - person.born);
   }, 0);
 
-  return totalMenAge / countMen;
+  return totalAge / countPeople;
 }
 
 /**
@@ -42,18 +47,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people
-    .filter((person) => person.sex === 'f')
-    .filter((person) => !withChildren
-      || people
-        .some((potentialMother) => potentialMother.mother === person.name));
+  const women = people.filter(person => person.sex === 'f'
+    && (!withChildren
+      ? true
+      : people.some(potentialMother => potentialMother.mother === person.name))
+  );
 
-  const countWomen = women.length;
-  const totalWomenAge = women.reduce((prev, person) => {
-    return prev + (person.died - person.born);
-  }, 0);
-
-  return totalWomenAge / countWomen;
+  return calculateAverageAge(women);
 }
 
 /**
@@ -71,11 +71,10 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people
-    .filter((child) => child.mother !== undefined)
-    .filter((child) => (!onlyWithSon || child.sex === 'm')
-      && people
-        .some((person) => person.name === child.mother));
+  const children = people.filter(child => child.mother !== undefined
+    && (!onlyWithSon || child.sex === 'm')
+      && people.some(person => person.name === child.mother)
+  );
 
   const countChildren = children.length;
 
