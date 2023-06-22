@@ -1,5 +1,4 @@
-/*eslint-disable */
-"use strict";
+'use strict';
 
 /**
  * Implement calculateMenAverageAge function
@@ -16,22 +15,24 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century = 0) {
-  const mens = people.filter((human) => human.sex === "m");
+  const mens = people.filter((human) => human.sex === 'm');
 
   const filtered = century
     ? mens
-        .filter((item) => {
-          return Math.ceil(item.died / 100) === century;
-        })
-        .map(({ died, born }) => {
-          return died - born;
-        })
-    : mens.map(({ died, born }) => {
+      .filter((item) => {
+        return Math.ceil(item.died / 100) === century;
+      })
+      .map(({ died, born }) => {
         return died - born;
-      });
+      })
+    : mens.map(({ died, born }) => {
+      return died - born;
+    });
 
   const sum = filtered.reduce((acc, curr) => {
-    return (acc += curr);
+    const newAcc = acc + curr;
+
+    return newAcc;
   }, 0);
 
   return sum / filtered.length;
@@ -54,7 +55,7 @@ function calculateMenAverageAge(people, century = 0) {
 function calculateWomenAverageAge(people, withChildren = 0) {
   const women = people
     .filter((human) => {
-      const female = human.sex === "f";
+      const female = human.sex === 'f';
       const isWithChild = people.some((item) => item.mother === human.name);
 
       if (withChildren) {
@@ -68,7 +69,9 @@ function calculateWomenAverageAge(people, withChildren = 0) {
     });
 
   const womenAverage = women.reduce((acc, cur) => {
-    return (acc += cur);
+    const newAcc = acc + cur;
+
+    return newAcc;
   }, 0);
 
   return womenAverage / women.length;
@@ -91,7 +94,7 @@ function calculateWomenAverageAge(people, withChildren = 0) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   if (onlyWithSon) {
     const filteredPeople = people.filter((person) => {
-      return person.sex === "m";
+      return person.sex === 'm';
     });
 
     const ageDifferences = filteredPeople.map((person) => {
