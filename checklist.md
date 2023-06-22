@@ -2,11 +2,11 @@
 
 BAD EXAMPLE:
 ```
-function averageAges() {} 
+function averageAges() {}
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 function calculateAverageAge() {}
 ```
@@ -18,13 +18,13 @@ BAD EXAMPLE:
 const humans = people.map((a, b) =>
     a + b);
 
-const babies = people.map(person => children 
+const babies = people.map(person => women
  ? a
  : b
- 
+
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const humans = people.reduce((a, b) => (
   a + b
@@ -40,12 +40,12 @@ if ((a && b === c && d === 'm')
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const hasMetCondition = a && (b === c)
 ```
 
-4. [CODE KNOWLEDGE] - Don't use iteration methods like `map`, `filter` for side effects. Use `forEach` instead. 
+4. [CODE KNOWLEDGE] - Don't use iteration methods like `map`, `filter` for side effects. Use `forEach` instead.
 
 BAD EXAMPLE:
 ```
@@ -57,7 +57,7 @@ people.map(person => {
 
 ```
 
-GOOD EXAMPLE: 
+GOOD EXAMPLE:
 ```
 const duplicates = {};
 
