@@ -83,27 +83,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return !onlyWithSon || person.sex === 'm';
   });
 
-  const ageDifferences = peopleArray.map((person) => {
-    const mother = people.find((mom) => {
-      return person.mother === mom.name;
+  const ageDifferences = peopleArray
+    .map((person) => {
+      const mother = people.find((mom) => {
+        return person.mother === mom.name;
+      });
+
+      if (mother) {
+        return person.born - mother.born;
+      }
+
+      return null;
+    })
+    .filter((ageDif) => {
+      return ageDif !== null;
     });
 
-    if (mother) {
-      return person.born - mother.born;
-    }
-
-    return null;
-  });
-
-  const filteredAgeDifs = ageDifferences.filter((ageDif) => {
-    return ageDif !== null;
-  });
-
-  const totalAgeDifferences = filteredAgeDifs.reduce((previous, current) => {
+  const totalAgeDifferences = ageDifferences.reduce((previous, current) => {
     return previous + current;
   }, 0);
 
-  return totalAgeDifferences / filteredAgeDifs.length;
+  return totalAgeDifferences / ageDifferences.length;
 }
 
 module.exports = {
