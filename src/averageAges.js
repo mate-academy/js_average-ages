@@ -21,18 +21,18 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const allMale = people.filter(item => {
+  const allMale = people.filter(person => {
     if (century === undefined) {
-      return item.sex === 'm';
+      return person.sex === 'm';
     } else {
-      return item.sex === 'm'
-        && (Math.floor(item.born / 100)
-        && Math.floor(item.died / 100)) === century - 1;
+      return person.sex === 'm'
+        && (Math.floor(person.born / 100)
+        && Math.floor(person.died / 100)) === century - 1;
     }
   });
 
-  const age = allMale.map(item => {
-    return item.died - item.born;
+  const age = allMale.map(person => {
+    return person.died - person.born;
   });
 
   const sumAge = age.reduce((item, value) => item + value, 0);
@@ -100,17 +100,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
 
-  let withMother = people.map((person) => {
+  let withMother = people.map((child) => {
+    const mother = people.find((person) => person.name === child.mother);
+    const motherBorn = mother ? mother.born : null;
+
     return {
-      ...person,
-      motherInfo:
-      people.filter((mother) => {
-        return mother.name === person.mother;
-      }).map((motherBorn) => {
-        return motherBorn.born;
-      }).find((dateOfBorn) => {
-        return dateOfBorn;
-      }),
+      ...child,
+      motherInfo: motherBorn,
     };
   });
 
