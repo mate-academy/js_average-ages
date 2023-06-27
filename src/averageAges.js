@@ -21,11 +21,7 @@ function calculateMenAverageAge(people, century) {
     )
     : people.filter(person => person.sex === 'm');
 
-  const ages = men.map(person => person.died - person.born);
-  const totalAge = ages.reduce((prev, age) => prev + age, 0);
-  const averageAge = totalAge / men.length;
-
-  return averageAge;
+  return calculateAverageAgeForFilteredArray(men);
 }
 
 /**
@@ -50,9 +46,13 @@ function calculateWomenAverageAge(people, withChildren) {
     )
     : people.filter(person => person.sex === 'f');
 
-  const ages = women.map(person => person.died - person.born);
+  return calculateAverageAgeForFilteredArray(women);
+}
+
+function calculateAverageAgeForFilteredArray(gender) {
+  const ages = gender.map(person => person.died - person.born);
   const totalAge = ages.reduce((prev, age) => prev + age, 0);
-  const averageAge = totalAge / women.length;
+  const averageAge = totalAge / gender.length;
 
   return averageAge;
 }
