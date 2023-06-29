@@ -14,12 +14,24 @@
  *
  * @return {number}
  */
+function calculateAverage(age) {
+  const sum = age.reduce((a, b) => {
+    return (a + b);
+  });
+  const average = sum / age.length;
+
+  return parseFloat(average.toFixed(2));
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const agesMans = people.map(person => (!century && person.sex === 'm')
+    || (person.sex === 'm' && Math.ceil(person.died / 100) === century)
+    ? person.died - person.born
+    : null).filter(age => age);
+
+  const mansAverage = calculateAverage(agesMans);
+
+  return mansAverage;
 }
 
 /**
@@ -36,8 +48,18 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(person => person.sex === 'f');
+  const agesWomen = women.map(person =>
+    people.some((element) => element.mother === person.name
+   || !withChildren)
+      ? person.died - person.born
+      : null).filter(age => age);
+
+  const womenAverage = calculateAverage(agesWomen);
+
+  return womenAverage;
 }
 
 /**
@@ -55,10 +77,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const women = people.filter(person => person.sex === 'f');
+
+  const agesMother = people.map(person =>
+    women.some(element => (element.name === person.mother
+    && person.sex === 'm') || ((element.name === person.mother)
+      && !onlyWithSon))
+      ? person.born - (women.filter(mom => mom.name === person.mother)[0].born)
+      : null).filter(age => age);
+
+  const motherAverage = calculateAverage(agesMother);
+
+  return motherAverage;
 }
 
 module.exports = {
