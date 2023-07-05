@@ -23,21 +23,22 @@ function calculateMenAverageAge(people, century) {
       Math.ceil(person.died / 100) === century);
 
     if (filteredMenCentury.length > 0) {
-      const totalAgeCentury = filteredMenCentury.reduce((sum, person) =>
-        sum + (person.died - person.born), 0);
-
-      return totalAgeCentury / filteredMenCentury.length;
+      return calculateAverageAge(filteredMenCentury);
     }
   } else {
     if (filteredMen.length > 0) {
-      const totalAge = filteredMen.reduce((sum, person) =>
-        sum + (person.died - person.born), 0);
-
-      return totalAge / filteredMen.length;
+      return calculateAverageAge(filteredMen);
     }
   }
 
   return 0;
+}
+
+function calculateAverageAge(people) {
+  const totalAge = people.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+
+  return totalAge / people.length;
 }
 
 /**
@@ -107,13 +108,16 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     people.some(p => p.name === person.mother)
   );
 
-  const filteredSons = people.filter(person =>
-    people.some(p => p.name === person.mother) && person.sex === 'm'
-  );
+  let filteredSons = filteredChildren; // Initialize with filteredChildren
 
-  const averageAgeDiff = onlyWithSon
-    ? calculateAverageAgeDifference(filteredSons, filteredMothers)
-    : calculateAverageAgeDifference(filteredChildren, filteredMothers);
+  if (onlyWithSon) {
+    filteredSons = people.filter(person =>
+      people.some(p => p.name === person.mother) && person.sex === 'm'
+    );
+  }
+
+  const averageAgeDiff = calculateAverageAgeDifference(filteredSons,
+    filteredMothers);
 
   return averageAgeDiff;
 }
