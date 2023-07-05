@@ -14,12 +14,28 @@
  *
  * @return {number}
  */
+function calculateAverage(arr) {
+  if (arr.length === 0) {
+    return 0;
+  }
+
+  const sum = arr.reduce((total, value) => total + value, 0);
+
+  return sum / arr.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter(person => {
+    return person.sex === 'm';
+  });
+
+  men = century
+    ? men.filter((elem) => Math.ceil(elem.died / 100) === century)
+    : men;
+
+  const ages = men.map((man) => man.died - man.born);
+
+  return calculateAverage(ages);
 }
 
 /**
@@ -37,7 +53,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(person => person.sex === 'f');
+
+  women = withChildren
+    ? women.filter(woman => people.some(person => person.mother === woman.name))
+    : women;
+
+  const ages = women.map(woman => woman.died - woman.born);
+  const averageAge = calculateAverage(ages);
+
+  return averageAge;
 }
 
 /**
@@ -55,10 +80,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const marr = people.filter(person => {
+    return people.some(elem => elem.name === person.mother);
+  });
+
+  const aged = marr.map(mother => {
+    const child = people.find(person => person.name === mother.mother);
+
+    return child.born - mother.born;
+  });
+
+  const son = people.filter(person => person.sex === 'm');
+
+  return onlyWithSon
+    ? Math.abs(calculateAverage(aged.filter((_, i) => son.includes(marr[i]))))
+    : Math.abs(calculateAverage(aged));
 }
 
 module.exports = {
