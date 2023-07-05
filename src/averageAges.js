@@ -14,17 +14,13 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century = 0) {
-  const age = century !== 0
-    ? people
-      .filter((person) => Math.ceil(person.died / 100) === century)
+function calculateMenAverageAge(people, century) {
+  const age = people
+      .filter((person) => century ? Math.ceil(person.died / 100) === century : person)
       .filter((person) => person.sex === 'm')
-      .map((person) => +`${person.died - person.born}`)
-    : people
-      .filter((person) => person.sex === 'm')
-      .map((person) => +`${person.died - person.born}`);
+      .map((person) => person.died - person.born)
 
-  return +(age.reduce((all, now) => all + now) / age.length).toFixed(2);
+  return finish(age);
 }
 
 /**
@@ -41,16 +37,15 @@ function calculateMenAverageAge(people, century = 0) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren = false) {
+function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter((person) => person.sex === 'f');
-  const withChidrenOrNo = withChildren
-    ? women.filter((person) => people
-      .find((human) => human.mother === person.name))
-    : women;
+  const withChidrenOrNo = women.filter((person) => withChildren 
+    ? people.find((human) => human.mother === person.name)
+    : women);
 
   const age = withChidrenOrNo.map((person) => person.died - person.born);
 
-  return +(age.reduce((all, now) => all + now) / age.length).toFixed(2);
+  return finish(age);
 }
 
 /**
@@ -80,12 +75,16 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
   // 2. calculate the difference child.born - mother.born
   const ageDifference = children.map(function(person) {
     return person.born
-    - people[people.findIndex((human) => human.name === person.mother)].born;
+    - people.find((human) => human.name === person.mother).born;
   });
 
   // 3. return the average value
-  return +(ageDifference
-    .reduce((all, now) => all + now) / ageDifference.length)
+  return finish(ageDifference);
+}
+
+function finish(array) {
+  return +(array
+    .reduce((all, now) => all + now) / array.length)
     .toFixed(2);
 }
 
