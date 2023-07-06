@@ -20,12 +20,16 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const sexMale = 'm';
+  const calculateYearCentury = 100;
+
   const sortedPeople = century
     ? people.filter((person) =>
-      person.sex === 'm' && Math.ceil(person.died / 100) === century
+      checkSex(person.sex, sexMale)
+      && Math.ceil(person.died / calculateYearCentury) === century
     )
     : people.filter((person) =>
-      person.sex === 'm'
+      checkSex(person.sex, sexMale)
     );
 
   const averageAge = getAverageAge(sortedPeople);
@@ -49,13 +53,15 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const sexFemale = 'f';
+
   const sortedPeople = withChildren
     ? people.filter((person) =>
-      person.sex === 'f'
+      checkSex(person.sex, sexFemale)
       && people.find(({ mother }) => mother === person.name)
     )
     : people.filter((person) =>
-      person.sex === 'f'
+      checkSex(person.sex, sexFemale)
     );
 
   const averageAge = getAverageAge(sortedPeople);
@@ -82,16 +88,19 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+  const sexMale = 'm';
+  const sexFemale = 'f';
+
   const peopleWithMother = onlyWithSon
     ? people.filter((person) =>
-      person.mother !== null && person.sex === 'm'
+      person.mother !== null && checkSex(person.sex, sexMale)
     )
     : people.filter((person) =>
       person.mother !== null
     );
 
   const women = people
-    .filter((person) => person.sex === 'f')
+    .filter((person) => checkSex(person.sex, sexFemale))
     .map(person => person.name);
 
   const peopleWithExistMother = peopleWithMother
@@ -113,6 +122,10 @@ function getAverageAge(sortedPeople) {
     .reduce((prev, { born, died }) => {
       return prev + died - born;
     }, 0) / sortedPeople.length;
+}
+
+function checkSex(personSex, checkedSex) {
+  return personSex === checkedSex;
 }
 
 module.exports = {
