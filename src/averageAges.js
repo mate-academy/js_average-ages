@@ -20,20 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let sortedPeople;
-
-  century
-    ? sortedPeople = people.filter((person) =>
+  const sortedPeople = century
+    ? people.filter((person) =>
       person.sex === 'm' && Math.ceil(person.died / 100) === century
     )
-    : sortedPeople = people.filter((person) =>
+    : people.filter((person) =>
       person.sex === 'm'
     );
 
-  const averageAge = sortedPeople
-    .reduce((prev, { born, died }) => {
-      return prev + died - born;
-    }, 0) / sortedPeople.length;
+  const averageAge = getAverageAge(sortedPeople);
 
   return averageAge;
 }
@@ -54,21 +49,16 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  let sortedPeople;
-
-  withChildren
-    ? sortedPeople = people.filter((person) =>
+  const sortedPeople = withChildren
+    ? people.filter((person) =>
       person.sex === 'f'
       && people.find(({ mother }) => mother === person.name)
     )
-    : sortedPeople = people.filter((person) =>
+    : people.filter((person) =>
       person.sex === 'f'
     );
 
-  const averageAge = sortedPeople
-    .reduce((prev, { born, died }) => {
-      return prev + died - born;
-    }, 0) / sortedPeople.length;
+  const averageAge = getAverageAge(sortedPeople);
 
   return averageAge;
 }
@@ -92,13 +82,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
-  let peopleWithMother;
-
-  onlyWithSon
-    ? peopleWithMother = people.filter((person) =>
+  const peopleWithMother = onlyWithSon
+    ? people.filter((person) =>
       person.mother !== null && person.sex === 'm'
     )
-    : peopleWithMother = people.filter((person) =>
+    : people.filter((person) =>
       person.mother !== null
     );
 
@@ -118,6 +106,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }, 0) / peopleWithExistMother.length;
 
   return averageAge;
+}
+
+function getAverageAge(sortedPeople) {
+  return sortedPeople
+    .reduce((prev, { born, died }) => {
+      return prev + died - born;
+    }, 0) / sortedPeople.length;
 }
 
 module.exports = {
