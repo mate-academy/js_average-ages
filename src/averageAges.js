@@ -14,12 +14,16 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(isAMan)
+    .filter(person => getCentury(person) === century || !century);
+
+  const totalAge = men.reduce(
+    (sum, person) => sum + (person.died - person.born), 0
+  );
+
+  return totalAge / men.length;
 }
 
 /**
@@ -36,8 +40,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter(isAWoman)
+    .filter(woman => !withChildren || getMothers(people, woman).length > 0);
+
+  const totalAge = women.reduce(
+    (sum, woman) => sum + (woman.died - woman.born), 0
+  );
+
+  return totalAge / women.length;
 }
 
 /**
@@ -54,11 +66,52 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const mothers = onlyWithSon
+    ? people.filter(
+      person => isAMan(person)
+        && people.some(child => person.mother === child.name)
+    )
+    : people.filter(
+      person => people.some(child => person.mother === child.name)
+    );
+
+  const ageDifference = mothers.map(child => {
+    const mother = people.find(person => person.name === child.mother);
+
+    return child.born - mother.born;
+  });
+
+  const totalAge = ageDifference.reduce((sum, diff) => sum + diff, 0);
+
+  return totalAge / mothers.length;
+}
+
+// Additional functions
+
+function getCentury(person) {
+  const centuryFromYear = Math.ceil(person.died / 100);
+
+  return centuryFromYear;
+}
+
+function isAMan(person) {
+  const man = 'm';
+
+  return person.sex === man;
+}
+
+function isAWoman(person) {
+  const wooman = 'f';
+
+  return person.sex === wooman;
+}
+
+function getMothers(people, person) {
+  const isAMother = people.filter(child => child.mother === person.name);
+
+  return isAMother;
 }
 
 module.exports = {
