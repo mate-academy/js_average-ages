@@ -1,23 +1,11 @@
 'use strict';
 
-/**
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
 function calculateMenAverageAge(people, century) {
   return calculateAverageAge(people, (person) =>
     person.sex === 'm' && (century ? Math.ceil(person.died / 100) === century
       : true));
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withChildren) {
   return calculateAverageAge(people, (person) =>
     person.sex === 'f'
@@ -25,12 +13,6 @@ function calculateWomenAverageAge(people, withChildren) {
       : true));
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const motherWithChild = filterPeopleByCriteria(people, (child) => onlyWithSon
     ? people.find(women => child.mother === women.name && child.sex === 'm')
