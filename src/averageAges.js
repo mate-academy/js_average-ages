@@ -15,24 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let menAverageAges = 0;
-  let menAverageAges18 = 0;
+  const menAverageAges = (arguments.length > 1)
+    ? people
+      .filter((p) => p.sex === 'm' && Math.ceil(p.died / 100) === century)
+      .map((p) => p.died - p.born)
+    : people
+      .filter((p) => p.sex === 'm')
+      .map((p) => p.died - p.born);
 
-  menAverageAges18 = people
-    .filter((p) => p.sex === 'm' && Math.ceil(p.died / 100) === century)
-    .map((p) => p.died - p.born);
-
-  menAverageAges = people
-    .filter((p) => p.sex === 'm')
-    .map((p) => p.died - p.born);
-
-  return (century === 18)
-    ? +(menAverageAges18.reduce(
-      (prev, item) => prev + item
-    ) / menAverageAges18.length).toFixed(2)
-    : +(menAverageAges.reduce(
-      (prev, item) => prev + item
-    ) / menAverageAges.length).toFixed(2);
+  return +(menAverageAges.reduce(
+    (prev, item) => prev + item
+  ) / menAverageAges.length).toFixed(2);
 }
 
 /**
@@ -50,24 +43,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let womenAverageAgeWithChildren = 0;
-  let womenAverageAgeWithoutChildren = 0;
+  const womenAverageAgeWithChildren = (arguments.length > 1)
+    ? people
+      .filter((p) => p.sex === 'f' && people.find((w) => p.name === w.mother))
+      .map((p) => p.died - p.born)
+    : people
+      .filter((p) => p.sex === 'f')
+      .map((p) => p.died - p.born);
 
-  womenAverageAgeWithoutChildren = people
-    .filter((p) => p.sex === 'f')
-    .map((p) => p.died - p.born);
-
-  womenAverageAgeWithChildren = people
-    .filter((p) => p.sex === 'f' && people.find((w) => p.name === w.mother))
-    .map((p) => p.died - p.born);
-
-  return (withChildren)
-    ? +(womenAverageAgeWithChildren.reduce(
-      (prev, item) => prev + item
-    ) / womenAverageAgeWithChildren.length).toFixed(2)
-    : +(womenAverageAgeWithoutChildren.reduce(
-      (prev, item) => prev + item
-    ) / womenAverageAgeWithoutChildren.length).toFixed(2);
+  return +(womenAverageAgeWithChildren.reduce(
+    (prev, item) => prev + item
+  ) / womenAverageAgeWithChildren.length).toFixed(2);
 }
 
 /**
