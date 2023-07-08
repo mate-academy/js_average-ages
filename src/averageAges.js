@@ -14,12 +14,16 @@
  *
  * @return {number}
  */
+const MAN_SEX = 'm';
+const CENTURY = 100;
+const isMan = person => person.sex === MAN_SEX;
+
 function calculateMenAverageAge(people, century) {
   const peopleOfNeededCentury = century
-    ? people.filter(person => Math.ceil(person.died / 100) === century)
+    ? people.filter(person => Math.ceil(person.died / CENTURY) === century)
     : people;
 
-  const men = peopleOfNeededCentury.filter(person => person.sex === 'm');
+  const men = peopleOfNeededCentury.filter(isMan);
 
   const sumOfAges = men.reduce((sum, man) => sum + (man.died - man.born), 0);
   const averageAge = sumOfAges / men.length;
@@ -70,33 +74,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const peopleWeNeed = onlyWithSon
-    ? people.filter(person =>
-      person.sex === 'm' && people.some(child => child.name === person.mother))
-    : people.filter(person =>
-      people.some(child => child.name === person.mother));
+  const peopleWithMothers = people.filter(currentChild =>
+    onlyWithSon
+      ? people.some((person) => (currentChild.mother === person.name)
+          && isMan(currentChild))
+      : people.some((person) => (currentChild.mother === person.name)));
 
-  const sumOfAgeDiffs = peopleWeNeed.reduce((sum, child) => {
+  const sumOfAgeDiffs = peopleWithMothers.reduce((sum, child) => {
     const mother = people.find(person => person.name === child.mother);
+    const ageDiff = child.born - mother.born;
 
-    if (mother) {
-      const ageDiff = child.born - mother.born;
-
-      return sum + ageDiff;
-    }
-
-    return sum;
+    return sum + ageDiff;
   }, 0);
 
-  const averageAgeDiff = sumOfAgeDiffs / peopleWeNeed.length;
-
-  return averageAgeDiff;
+  return sumOfAgeDiffs / peopleWithMothers.length;
 }
-
-// 1. find a mother of each person (or only for men)
-// 2. keep people who have mothers in the array
-// 3. calculate the difference child.born - mother.born
-// 4. return the average value
 
 module.exports = {
   calculateMenAverageAge,
