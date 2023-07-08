@@ -15,11 +15,17 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people
+    .filter(
+      human =>
+        century
+          ? (human.sex === 'm' && Math.ceil(human.died / 100) === century)
+          : human.sex === 'm'
+    );
+
+  const menAverageAge = averageAge(men, man => man.died - man.born);
+
+  return menAverageAge;
 }
 
 /**
@@ -37,7 +43,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people
+    .filter(
+      human =>
+        withChildren
+          ? human.sex === 'f'
+            && people.some(person => (person.mother === human.name))
+          : human.sex === 'f'
+    );
+
+  const womenAverageAge = averageAge(women, woman => woman.died - woman.born);
+
+  return womenAverageAge;
 }
 
 /**
@@ -55,10 +72,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const children = people
+    .filter(
+      human =>
+        onlyWithSon
+          ? people.find(person => (human.mother === person.name
+          && human.sex === 'm'))
+          : people.find(person => (human.mother === person.name))
+    );
+
+  const childrenAverageBirthYear = averageAge(children, child => child.born);
+
+  const mothersAverageBornYear = averageAge(children,
+    child => people.find(human => human.name === child.mother).born);
+
+  return childrenAverageBirthYear - mothersAverageBornYear;
+}
+
+function averageAge(arr, callback) {
+  return arr.map(callback).reduce((sum, x) => sum + x, 0) / arr.length;
 }
 
 module.exports = {
