@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century
+    ? people.filter(person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+  const ageOfMen = men
+    .map(({ born, died }) => died - born);
+
+  return findAverage(ageOfMen);
 }
 
 /**
@@ -37,7 +40,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter(woman => woman.sex === 'f' && people
+      .some(person => person.mother === woman.name))
+    : people.filter(woman => woman.sex === 'f');
+  const ageOfWomen = women.map(({ born, died }) => died - born);
+
+  return findAverage(ageOfWomen);
 }
 
 /**
@@ -55,10 +64,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const childrenByGenderWithMothers = onlyWithSon
+    ? people
+      .filter(person => people
+        .some(parent => parent
+          .name === person.mother)
+        && person.sex === 'm')
+    : people
+      .filter(person => people
+        .some(parent => parent
+          .name === person.mother));
+  const diffWithMothersAge = childrenByGenderWithMothers
+    .map(child => child.born
+    - (people.find(parent => parent.name === child.mother)).born);
+
+  return findAverage(diffWithMothersAge);
+}
+
+function findAverage(arr) {
+  return arr
+    .reduce((previousValue, current) => previousValue + current, 0)
+    / arr.length;
 }
 
 module.exports = {
