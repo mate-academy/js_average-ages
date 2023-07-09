@@ -26,14 +26,9 @@ function calculateAverage(list) {
 }
 
 function calculateMenAverageAge(people, century) {
-  const men = people.filter((person) => person.sex === 'm');
-
-  if (century) {
-    const menInCentury = men
-      .filter((person) => Math.ceil(person.died / 100) === century);
-
-    return calculateAverage(menInCentury);
-  }
+  const men = century ? people.filter((person) =>
+    Math.ceil(person.died / 100) === century && person.sex === 'm')
+    : people.filter((person) => person.sex === 'm');
 
   return calculateAverage(men);
 }
@@ -53,14 +48,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter((person) => person.sex === 'f');
-
-  if (withChildren) {
-    const womenWithChildren = women
-      .filter((woman) => people.some((person) => person.mother === woman.name));
-
-    return calculateAverage(womenWithChildren);
-  }
+  const women = withChildren
+    ? people.filter((person) => person.sex === 'f'
+    && people.some((otherPerson) => otherPerson.mother === person.name))
+    : people.filter((person) => person.sex === 'f');
 
   return calculateAverage(women);
 }
@@ -80,16 +71,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  let peopleWithMother = [];
-
-  if (onlyWithSon) {
-    peopleWithMother = people.filter(person => person.mother
+  const peopleWithMother = onlyWithSon
+    ? people.filter(person => person.mother
       && person.sex === 'm'
+      && people.some(woman => woman.name === person.mother))
+    : people.filter(person => person.mother
       && people.some(woman => woman.name === person.mother));
-  } else {
-    peopleWithMother = people.filter(person => person.mother
-      && people.some(woman => woman.name === person.mother));
-  }
 
   const agesDiffListt = peopleWithMother.map(child => {
     const mother = people.find(person => person.name === child.mother);
