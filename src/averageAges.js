@@ -14,12 +14,25 @@
  *
  * @return {number}
  */
+const calcAge = (total, next) => {
+  return total + (next.died - next.born);
+};
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  let menOfPeople = people.filter(x => x.sex === 'm');
+
+  menOfPeople = century !== undefined ? menOfPeople.filter(x => {
+    return Math.ceil(x.died / 100) === century;
+  }) : menOfPeople;
+
+  const ageSum = menOfPeople.reduce(calcAge, 0);
+
+  return ageSum / menOfPeople.length;
 }
 
 /**
@@ -38,6 +51,18 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+
+  let womenOfPeople = people.filter(x => x.sex === 'f');
+
+  womenOfPeople = withChildren === true ? womenOfPeople.filter(x => {
+    const mother = x.name;
+
+    return people.some(y => y.mother === mother);
+  }) : womenOfPeople;
+
+  const ageSum = womenOfPeople.reduce(calcAge, 0);
+
+  return ageSum / womenOfPeople.length;
 }
 
 /**
@@ -59,6 +84,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+  const calcDifference = (total, next) => {
+    const position = people.findIndex(x => x.name === next.mother);
+
+    return total + (next.born - people[position].born);
+  };
+
+  let personWithMother = people.filter(x => {
+    const mother = x.mother;
+
+    return people.some(y => y.name === mother);
+  });
+
+  personWithMother = onlyWithSon === true ? people.filter(x => {
+    const mother = x.mother;
+
+    return people.some(y => y.name === mother) && x.sex === 'm';
+  }) : personWithMother;
+
+  const differenceMotherChildren = personWithMother.reduce(calcDifference, 0);
+
+  return differenceMotherChildren / personWithMother.length;
 }
 
 module.exports = {
