@@ -14,14 +14,22 @@
  *
  * @return {number}
  */
+
+function peopleAgesFunc(people, isGender) {
+  return people.filter((p) => isGender(p)).map((p) => p.died - p.born);
+}
+
 function calculateMenAverageAge(people, century) {
+  const MAN = 'm';
+  const YEARS_IN_CENTURY = 100;
+  const isMan = (p) => p.sex === MAN;
   const menAverageAges = (arguments.length > 1)
     ? people
-      .filter((p) => p.sex === 'm' && Math.ceil(p.died / 100) === century)
+      .filter(
+        (p) => isMan(p) && Math.ceil(p.died / YEARS_IN_CENTURY) === century
+      )
       .map((p) => p.died - p.born)
-    : people
-      .filter((p) => p.sex === 'm')
-      .map((p) => p.died - p.born);
+    : peopleAgesFunc(people, isMan);
 
   return +(menAverageAges.reduce(
     (prev, item) => prev + item
@@ -43,13 +51,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  const WOMAN = 'f';
+  const isWoman = (p) => p.sex === WOMAN;
   const womenAverageAgeWithChildren = (arguments.length > 1)
     ? people
-      .filter((p) => p.sex === 'f' && people.find((w) => p.name === w.mother))
+      .filter((p) => isWoman(p) && people.find((w) => p.name === w.mother))
       .map((p) => p.died - p.born)
-    : people
-      .filter((p) => p.sex === 'f')
-      .map((p) => p.died - p.born);
+    : peopleAgesFunc(people, isWoman);
 
   return +(womenAverageAgeWithChildren.reduce(
     (prev, item) => prev + item
@@ -73,14 +81,16 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   let averageDiff = 0;
   let averageDiffOnlyWithSon = 0;
+  const isWoman = (p) => p.sex === 'f';
+  const isMan = (p) => p.sex === 'm';
 
   const women = people
-    .filter((p) => p.sex === 'f')
+    .filter(isWoman)
     .filter((p) => people.find((w) => p.name === w.mother));
 
   averageDiffOnlyWithSon = people
     .filter((p) => women.find((ch) => p.mother === ch.name))
-    .filter((p) => p.sex === 'm')
+    .filter(isMan)
     .map((ch) => ch.born - women.find(
       (m) => m.name === ch.mother
     ).born);
