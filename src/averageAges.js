@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredMen = century
+    ? people.filter(person => person.sex === 'm'
+    && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
+
+  const totalAge = filteredMen.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+  const averageAge = totalAge / filteredMen.length;
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +42,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomen = withChildren
+    ? people.filter(person => person.sex === 'f'
+    && people.some(child => child.mother === person.name))
+    : people.filter(person => person.sex === 'f');
+
+  const totalAge = filteredWomen.reduce((sum, person) =>
+    sum + (person.died - person.born), 0);
+  const averageAge = totalAge / filteredWomen.length;
+
+  return averageAge;
 }
 
 /**
@@ -54,11 +68,25 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const ageDiffs = people.reduce((acc, person) => {
+    if (person.mother !== null && (!onlyWithSon || person.sex === 'm')) {
+      const mother = people.find(m => m.name === person.mother);
+
+      if (mother) {
+        const ageDiff = person.born - mother.born;
+
+        acc.push(ageDiff);
+      }
+    }
+
+    return acc;
+  }, []);
+
+  const averageAgeDiff = ageDiffs.reduce((sum, ageDiff) =>
+    sum + ageDiff, 0) / ageDiffs.length;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
