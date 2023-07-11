@@ -14,12 +14,23 @@
  *
  * @return {number}
  */
+
+function calculateAverage(list) {
+  const sum = list.reduce((sumPrev, person) => {
+    const PERSON_AGE = person.died - person.born;
+
+    return sumPrev + PERSON_AGE;
+  }, 0);
+
+  return sum / list.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = century ? people.filter((person) =>
+    Math.ceil(person.died / 100) === century && isMan(person))
+    : people.filter((person) => isMan(person));
+
+  return calculateAverage(men);
 }
 
 /**
@@ -37,7 +48,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = withChildren
+    ? people.filter((person) => isWoman(person)
+    && people.some((otherPerson) => otherPerson.mother === person.name))
+    : people.filter((person) => isWoman(person));
+
+  return calculateAverage(women);
 }
 
 /**
@@ -55,10 +71,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const peopleWithMother = onlyWithSon
+    ? people.filter(person => haveMother(person)
+      && isMan(person)
+      && isMotherInArray(people, person))
+    : people.filter(person => haveMother(person)
+      && isMotherInArray(people, person));
+
+  const agesDiffListt = peopleWithMother.map(child => {
+    const mother = people.find(person => person.name === child.mother);
+
+    return child.born - mother.born;
+  });
+
+  return agesDiffListt.reduce((sumPrev, number) =>
+    sumPrev + number, 0) / agesDiffListt.length;
+}
+
+function isWoman(person) {
+  return person.sex === 'f';
+}
+
+function isMan(person) {
+  return person.sex === 'm';
+}
+
+function haveMother(person) {
+  return person.mother;
+}
+
+function isMotherInArray(people, person) {
+  return people.some(woman => woman.name === person.mother);
 }
 
 module.exports = {
