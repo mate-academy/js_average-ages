@@ -27,8 +27,8 @@ function calculateAverage(list) {
 
 function calculateMenAverageAge(people, century) {
   const men = century ? people.filter((person) =>
-    Math.ceil(person.died / 100) === century && person.sex === 'm')
-    : people.filter((person) => person.sex === 'm');
+    Math.ceil(person.died / 100) === century && isMan(person))
+    : people.filter((person) => isMan(person));
 
   return calculateAverage(men);
 }
@@ -49,9 +49,9 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   const women = withChildren
-    ? people.filter((person) => person.sex === 'f'
+    ? people.filter((person) => isWoman(person)
     && people.some((otherPerson) => otherPerson.mother === person.name))
-    : people.filter((person) => person.sex === 'f');
+    : people.filter((person) => isWoman(person));
 
   return calculateAverage(women);
 }
@@ -72,11 +72,11 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const peopleWithMother = onlyWithSon
-    ? people.filter(person => person.mother
-      && person.sex === 'm'
-      && people.some(woman => woman.name === person.mother))
-    : people.filter(person => person.mother
-      && people.some(woman => woman.name === person.mother));
+    ? people.filter(person => haveMother(person)
+      && isMan(person)
+      && isMotherInArray(people, person))
+    : people.filter(person => haveMother(person)
+      && isMotherInArray(people, person));
 
   const agesDiffListt = peopleWithMother.map(child => {
     const mother = people.find(person => person.name === child.mother);
@@ -86,6 +86,22 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   return agesDiffListt.reduce((sumPrev, number) =>
     sumPrev + number, 0) / agesDiffListt.length;
+}
+
+function isWoman(person) {
+  return person.sex === 'f';
+}
+
+function isMan(person) {
+  return person.sex === 'm';
+}
+
+function haveMother(person) {
+  return person.mother;
+}
+
+function isMotherInArray(people, person) {
+  return people.some(woman => woman.name === person.mother);
 }
 
 module.exports = {
