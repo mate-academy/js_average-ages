@@ -1,10 +1,14 @@
 'use strict';
 
 function calculateMenAverageAge(people, century) {
-  const filterMan = people.filter(el => el.sex === 'm');
+  const MAN_SEX = 'm';
+  const isMan = (el) => el.sex === MAN_SEX;
+  const HUNDRED = 100;
+  const isDiedEquelCenture = (el) => Math.ceil(el.died / HUNDRED) === century;
+
+  const filterMan = people.filter(el => isMan(el));
   const filterManWithCentureArg
-    = people.filter(el => Math.ceil(el.died / 100) === century
-    && el.sex === 'm');
+    = people.filter(el => isDiedEquelCenture(el) && isMan(el));
 
   const averageAgesForAllMan
     = filterMan.map(el => el.died - el.born)
@@ -22,11 +26,13 @@ function calculateMenAverageAge(people, century) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
+  const SEX_WOMAN = 'f';
+  const isWoman = (el) => el.sex === SEX_WOMAN;
+  const isMother = (woman) => people.some(el => el.mother === woman.name);
   const filterWomanWithChild
-    = people.filter(woman => woman.sex === 'f'
-      && people.some(el => el.mother === woman.name));
+    = people.filter(woman => isWoman(woman) && isMother(woman));
 
-  const filterWoman = people.filter(woman => woman.sex === 'f');
+  const filterWoman = people.filter(woman => isWoman(woman));
 
   const averageAgesForWomanWithChild
     = filterWomanWithChild.map(el => el.died - el.born)
@@ -44,10 +50,13 @@ function calculateWomenAverageAge(people, withChildren) {
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filterAllChilds = people.filter(child =>
-    people.some(mother => child.mother === mother.name
-    ));
-  const filterChildsOnlySon = filterAllChilds.filter(el => el.sex === 'm');
+  const SEX_MAN = 'm';
+  const isMan = (el) => el.sex === SEX_MAN;
+  const isChildHasMother = (child) =>
+    people.some(mother => child.mother === mother.name);
+
+  const filterAllChilds = people.filter(child => isChildHasMother(child));
+  const filterChildsOnlySon = filterAllChilds.filter(el => isMan(el));
 
   const averageAgesChildAndMother
     = filterAllChilds.map(el =>
