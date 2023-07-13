@@ -14,12 +14,18 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const centuriedMen = people
+    .filter(person => person.sex === 'm')
+    .filter(man => !century || Math.ceil(man.died / 100) === century);
+
+  return centuriedMen
+    .filter(person => person.sex === 'm')
+    .reduce((acc, person) => (
+      acc + person.died - person.born
+    ), 0)
+  / centuriedMen.length;
 }
 
 /**
@@ -36,8 +42,23 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(person => person.sex === 'f');
+
+  if (withChildren) {
+    const mothersList = new Set(people.map(person => person.mother));
+
+    mothersList.delete(null);
+
+    women = women.filter(woman => mothersList.has(woman.name));
+  }
+
+  return women
+    .reduce((acc, person) => (
+      acc + person.died - person.born
+    ), 0)
+  / women.length;
 }
 
 /**
@@ -54,7 +75,29 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const peopleWithMother = people
+    .filter(person => person.mother !== null)
+    .filter(person => !onlyWithSon || person.sex === 'm');
+  const mothersList = new Set(people.map(person => person.mother));
+  const motherBirthdays = people
+    .reduce((mothers, person) => ({
+      ...mothers, [person.name]: person.born,
+    }), {});
+  const accountedMothersList = [...mothersList]
+    .filter(mother => motherBirthdays[mother]);
+
+  const peopleWithAccountedMother
+    = peopleWithMother
+      .filter(person => accountedMothersList.includes(person.mother));
+
+  return peopleWithAccountedMother
+    .reduce(
+      (acc, person) => (
+        acc + person.born - motherBirthdays[person.mother]
+      ), 0)
+  / peopleWithAccountedMother.length;
   // 1. find a mother of each person (or only for men)
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
