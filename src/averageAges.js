@@ -15,17 +15,18 @@
  * @return {number}
  */
 
-function calculateMenAverageAge(people, century) {
-  const centuriedMen = people
-    .filter(person => person.sex === 'm')
-    .filter(man => !century || Math.ceil(man.died / 100) === century);
+function calculateAverageAge(sourseArr) {
+  return sourseArr.reduce((avg, person, i, arr) => (
+    avg + (person.died - person.born) / arr.length
+  ), 0);
+}
 
-  return centuriedMen
-    .filter(person => person.sex === 'm')
-    .reduce((acc, person) => (
-      acc + person.died - person.born
-    ), 0)
-  / centuriedMen.length;
+function calculateMenAverageAge(people, century) {
+  const menOfCentury = people
+    .filter(person => person.sex === 'm'
+      && (!century || Math.ceil(person.died / 100) === century));
+
+  return calculateAverageAge(menOfCentury);
 }
 
 /**
@@ -44,21 +45,16 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
+  const mothersList = withChildren
+    ? new Set(people.map(person => person.mother))
+    : undefined;
 
-  if (withChildren) {
-    const mothersList = new Set(people.map(person => person.mother));
+  const womenWithChildren = people
+    .filter(person => (
+      person.sex === 'f' && (!withChildren || mothersList.has(person.name))
+    ));
 
-    mothersList.delete(null);
-
-    women = women.filter(woman => mothersList.has(woman.name));
-  }
-
-  return women
-    .reduce((acc, person) => (
-      acc + person.died - person.born
-    ), 0)
-  / women.length;
+  return calculateAverageAge(womenWithChildren);
 }
 
 /**
@@ -77,27 +73,24 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const peopleWithMother = people
-    .filter(person => person.mother !== null)
-    .filter(person => !onlyWithSon || person.sex === 'm');
-  const mothersList = new Set(people.map(person => person.mother));
   const motherBirthdays = people
     .reduce((mothers, person) => ({
       ...mothers, [person.name]: person.born,
     }), {});
+  const mothersList = new Set(people.map(person => person.mother));
   const accountedMothersList = [...mothersList]
     .filter(mother => motherBirthdays[mother]);
 
-  const peopleWithAccountedMother
-    = peopleWithMother
-      .filter(person => accountedMothersList.includes(person.mother));
-
-  return peopleWithAccountedMother
+  return people
+    .filter(person => (
+      (!onlyWithSon || person.sex === 'm')
+      && person.mother !== null
+      && accountedMothersList.includes(person.mother)
+    ))
     .reduce(
-      (acc, person) => (
-        acc + person.born - motherBirthdays[person.mother]
-      ), 0)
-  / peopleWithAccountedMother.length;
+      (acc, person, i, arr) => (
+        acc + (person.born - motherBirthdays[person.mother]) / arr.length
+      ), 0);
   // 1. find a mother of each person (or only for men)
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
