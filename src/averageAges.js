@@ -14,12 +14,19 @@
  *
  * @return {number}
  */
+
+function calculateAverageAge(sourseArr) {
+  return sourseArr.reduce((avg, person, i, arr) => (
+    avg + (person.died - person.born) / arr.length
+  ), 0);
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const menOfCentury = people
+    .filter(person => person.sex === 'm'
+      && (!century || Math.ceil(person.died / 100) === century));
+
+  return calculateAverageAge(menOfCentury);
 }
 
 /**
@@ -36,8 +43,18 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothersList = withChildren
+    ? new Set(people.map(person => person.mother))
+    : undefined;
+
+  const womenWithChildren = people
+    .filter(person => (
+      person.sex === 'f' && (!withChildren || mothersList.has(person.name))
+    ));
+
+  return calculateAverageAge(womenWithChildren);
 }
 
 /**
@@ -54,7 +71,26 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  const motherBirthdays = people
+    .reduce((mothers, person) => ({
+      ...mothers, [person.name]: person.born,
+    }), {});
+  const mothersList = new Set(people.map(person => person.mother));
+  const accountedMothersList = [...mothersList]
+    .filter(mother => motherBirthdays[mother]);
+
+  return people
+    .filter(person => (
+      (!onlyWithSon || person.sex === 'm')
+      && person.mother !== null
+      && accountedMothersList.includes(person.mother)
+    ))
+    .reduce(
+      (acc, person, i, arr) => (
+        acc + (person.born - motherBirthdays[person.mother]) / arr.length
+      ), 0);
   // 1. find a mother of each person (or only for men)
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
