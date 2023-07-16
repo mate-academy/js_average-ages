@@ -25,7 +25,7 @@ function calculateMenAverageAge(people, century) {
     (sum, person) => sum + (person.died - person.born), 0
   ) / filteredMen.length : 0;
 
-  return isNaN(averageAge) ? 0 : averageAge;
+  return averageAge;
 }
 
 /**
@@ -69,25 +69,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filteredPeople = onlyWithSon
-    ? people.filter(person => person.sex === 'm'
-      && person.mother !== null)
-    : people.filter(person => person.mother !== null);
+  const filteredPeople = people.filter(person => onlyWithSon
+    ? person.sex === 'm'
+    && person.mother !== null : person.mother !== null);
 
-  const ageDiffs = filteredPeople.map(person => {
+  const totalAgeDiff = filteredPeople.reduce((sum, person) => {
     const mother = people.find(p => p.name === person.mother);
 
     if (mother && mother.born) {
-      return person.born - mother.born;
+      return sum + (person.born - mother.born);
     }
 
-    return null;
-  });
+    return sum;
+  }, 0);
 
-  const validAgeDiffs = ageDiffs.filter(ageDiff => ageDiff !== null);
-  const totalAgeDiff = validAgeDiffs.reduce((sum, ageDiff) => sum + ageDiff, 0);
+  const validPeopleCount = filteredPeople.reduce((count, person) => {
+    const mother = people.find(p => p.name === person.mother);
 
-  return totalAgeDiff / validAgeDiffs.length || 0;
+    return count + (mother && mother.born ? 1 : 0);
+  }, 0);
+
+  return validPeopleCount > 0 ? totalAgeDiff / validPeopleCount : 0;
 }
 
 module.exports = {
