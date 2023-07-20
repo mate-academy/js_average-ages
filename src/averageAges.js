@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people
+    .filter((person) => (
+      century === undefined
+      || Math.ceil(person.died / 100) === century
+    ))
+    .filter((person) => person.sex === 'm');
+
+  return men.reduce((sum, person) => (
+    sum + (person.died - person.born)
+  ), 0) / men.length;
 }
 
 /**
@@ -37,7 +42,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people
+    .filter((person) => person.sex === 'f')
+    .filter((person) => (
+      withChildren === undefined
+      || people.find((child) => person.name === child.mother)
+    ));
+
+  return women.reduce((sum, person) => (
+    sum + (person.died - person.born)
+  ), 0) / women.length;
 }
 
 /**
@@ -55,10 +69,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const children = people
+    .filter((person) => (
+      person.mother !== null
+      && people.find((mother) => mother.name === person.mother)
+    ))
+    .filter((person) => (
+      onlyWithSon === undefined
+      || person.sex === 'm'
+    ));
+
+  const mothers = people
+    .filter((person) => person.sex === 'f')
+    .filter((person) => (
+      children.find((child) => person.name === child.mother)
+    ));
+
+  const ageDifferences = children
+    .map((person) => (
+      person.born - mothers.find((mother) => mother.name === person.mother).born
+    ));
+
+  return ageDifferences.reduce((sum, difference) => (
+    sum + difference
+  ), 0) / ageDifferences.length;
 }
 
 module.exports = {
