@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredArrayOfMen = people.filter((person) =>
+    century
+      ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+      : person.sex === 'm'
+  );
+
+  const totalAge = getAverageAge(filteredArrayOfMen);
+
+  return totalAge / filteredArrayOfMen.length;
 }
 
 /**
@@ -37,7 +41,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredArrOfWomen = people.filter((human) => {
+    return withChildren
+      ? human.sex === 'f'
+            && people.some(person => (person.mother === human.name))
+      : human.sex === 'f';
+  });
+
+  const totalAge = getAverageAge(filteredArrOfWomen);
+
+  return totalAge / filteredArrOfWomen.length;
 }
 
 /**
@@ -55,10 +68,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const ageDiff = people
+    .filter((person) => (onlyWithSon ? person.sex === 'm' : person))
+    .map((person) => {
+      const motherOfPerson = people.find(
+        (mother) => mother.name === person.mother
+      );
+
+      return motherOfPerson ? person.born - motherOfPerson.born : 0;
+    })
+    .filter((age) => age > 0);
+
+  const totalAge = ageDiff.reduce((prev, next) => prev + next, 0);
+
+  return +(totalAge / ageDiff.length).toFixed(2);
+}
+
+function getAverageAge(arr) {
+  return arr.reduce((total, person) => {
+    return total + (person.died - person.born);
+  }, 0);
 }
 
 module.exports = {
