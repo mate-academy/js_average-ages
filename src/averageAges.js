@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people
+    .filter(item => century === undefined
+      ? item.sex === 'm'
+      : item.sex === 'm' && Math.ceil(item.died / 100) === century);
+
+  const ageSum = men
+    .map(item => item.died - item.born)
+    .reduce((sum, age) => sum + age, 0);
+
+  const averageAge = ageSum / men.length;
+
+  return +averageAge.toFixed(2);
 }
 
 /**
@@ -37,7 +44,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people
+    .filter(item => withChildren === undefined
+      ? item.sex === 'f'
+      : people.some(obj => item.name === obj.mother));
+
+  const ageSum = women
+    .map(item => item.died - item.born)
+    .reduce((sum, age) => sum + age, 0);
+
+  const averageAge = ageSum / women.length;
+
+  return +averageAge.toFixed(2);
 }
 
 /**
@@ -59,6 +77,26 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+  const mothers = people
+    .filter(item => onlyWithSon === undefined
+      ? people.some(obj => item.name === obj.mother)
+      : people.some(obj => item.name === obj.mother && obj.sex === 'm'));
+
+  const ages = people
+    .map(child => {
+      const mother = mothers
+        .find(person => onlyWithSon === undefined
+          ? child.mother === person.name
+          : child.sex === 'm' && child.mother === person.name);
+
+      return mother ? child.born - mother.born : 0;
+    })
+    .filter(value => value !== 0);
+
+  const sumOfAge = ages.reduce((sum, age) => sum + age, 0);
+  const averageAge = sumOfAge / ages.length;
+
+  return parseFloat(averageAge.toFixed(2));
 }
 
 module.exports = {
