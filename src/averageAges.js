@@ -23,10 +23,11 @@ function calculateMenAverageAge(people, century) {
   const ages = [];
   let averageAge = 0;
   let eteration = 0;
+  const isMan = human => human.sex === 'm';
 
   century
     ? people.map((human) => {
-      if (human.sex === 'm' && Math.ceil(human.died / 100) === century) {
+      if (isMan(human) && Math.ceil(human.died / 100) === century) {
         const age = human.died - human.born;
 
         ages.push(age);
@@ -34,7 +35,7 @@ function calculateMenAverageAge(people, century) {
       }
     })
     : people.map((human) => {
-      if (human.sex === 'm') {
+      if (isMan(human)) {
         const age = human.died - human.born;
 
         ages.push(age);
@@ -68,10 +69,11 @@ function calculateWomenAverageAge(people, withChildren) {
   let averageAge = 0;
   let eteration = 0;
   const mothers = people.map((human) => human.mother);
+  const isWoman = human => human.sex === 'f';
 
   withChildren
     ? people.map((human) => {
-      if (human.sex === 'f' && mothers.includes(human.name)) {
+      if (isWoman(human) && mothers.includes(human.name)) {
         const age = human.died - human.born;
 
         ages.push(age);
@@ -79,7 +81,7 @@ function calculateWomenAverageAge(people, withChildren) {
       }
     })
     : people.map((human) => {
-      if (human.sex === 'f') {
+      if (isWoman(human)) {
         const age = human.died - human.born;
 
         ages.push(age);
