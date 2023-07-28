@@ -15,6 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  let man = [];
+
+  if (century === undefined) {
+    man = people.filter(person => person.sex === 'm');
+  } else {
+    man = people.filter(person =>
+      person.sex === 'm' && Math.ceil(person.died / 100) === century);
+  }
+
+  const sum = man.reduce((prev, person) =>
+    prev + (person.died - person.born), 0);
+
+  return sum / man.length;
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
@@ -37,7 +50,20 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let woman = [];
+
+  if (withChildren === true) {
+    woman = people.filter(person =>
+      person.sex === 'f' && people.some(otherPerson =>
+        otherPerson.mother === person.name));
+  } else {
+    woman = people.filter(person => person.sex === 'f');
+  }
+
+  const sum = woman.reduce((prev, person) =>
+    prev + (person.died - person.born), 0);
+
+  return sum / woman.length;
 }
 
 /**
@@ -55,6 +81,27 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  let peopleArr = [];
+
+  if (onlyWithSon === true) {
+    peopleArr = people.filter(person => person.sex === 'm');
+  } else {
+    peopleArr = people;
+  }
+
+  const mothers = people.filter(mother =>
+    mother.sex === 'f' && peopleArr.some(person =>
+      person.mother === mother.name));
+
+  const ageDifferences = mothers.flatMap(mother => {
+    const children = peopleArr.filter(child => child.mother === mother.name);
+
+    return children.map(child => child.born - mother.born);
+  });
+
+  return ageDifferences.reduce((prev, x) =>
+    prev + x, 0) / ageDifferences.length;
+
   // 1. find a mother of each person (or only for men)
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
