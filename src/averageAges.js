@@ -14,6 +14,10 @@
  *
  * @return {number}
  */
+const CENTURY = 100;
+const MAN = 'm';
+const WOMAN = 'f';
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -23,23 +27,26 @@ function calculateMenAverageAge(people, century) {
   const ages = [];
   let averageAge = 0;
   let eteration = 0;
-  const isMan = human => human.sex === 'm';
+  const isMan = human => human.sex === MAN;
+
+  function CalculatingAverages(human) {
+    // не можу винести на глобальний рівень бо скаржиться,
+    // що я змінюю значення eteration параметра функції.
+    const age = human.died - human.born;
+
+    ages.push(age);
+    eteration++;
+  }
 
   century
     ? people.map((human) => {
-      if (isMan(human) && Math.ceil(human.died / 100) === century) {
-        const age = human.died - human.born;
-
-        ages.push(age);
-        eteration++;
+      if (isMan(human) && Math.ceil(human.died / CENTURY) === century) {
+        CalculatingAverages(human);
       }
     })
     : people.map((human) => {
       if (isMan(human)) {
-        const age = human.died - human.born;
-
-        ages.push(age);
-        eteration++;
+        CalculatingAverages(human);
       }
     });
 
@@ -64,28 +71,28 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-
   const ages = [];
   let averageAge = 0;
   let eteration = 0;
   const mothers = people.map((human) => human.mother);
-  const isWoman = human => human.sex === 'f';
+  const isWoman = human => human.sex === WOMAN;
+
+  function CalculatingAverages(human) {
+    const age = human.died - human.born;
+
+    ages.push(age);
+    eteration++;
+  }
 
   withChildren
     ? people.map((human) => {
       if (isWoman(human) && mothers.includes(human.name)) {
-        const age = human.died - human.born;
-
-        ages.push(age);
-        eteration++;
+        CalculatingAverages(human);
       }
     })
     : people.map((human) => {
       if (isWoman(human)) {
-        const age = human.died - human.born;
-
-        ages.push(age);
-        eteration++;
+        CalculatingAverages(human);
       }
     });
 
@@ -116,7 +123,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   const childs = people.filter(child =>
     onlyWithSon
-      ? people.find(human => human.name === child.mother) && child.sex === 'm'
+      ? people.find(human => human.name === child.mother) && child.sex === MAN
       : people.find(human => human.name === child.mother)
   );
 
