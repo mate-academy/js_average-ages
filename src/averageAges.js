@@ -62,9 +62,8 @@ function isWoman(array) {
 
 function averageAgeComplete(array) {
   const lifeYears = array.map(arr => arr.died - arr.born);
-  const agesSum = lifeYears.reduce((sum, n) => sum + n, 0);
 
-  return agesSum / array.length;
+  return averageAgePartial(lifeYears);
 }
 
 function averageAgePartial(array) {
