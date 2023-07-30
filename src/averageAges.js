@@ -95,7 +95,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   ).map(person => ({
     ...person,
     motherObj: mothers.find(mother => (
-      mother.name === person.mother || null
+      mother.name === person.mother
     )),
   })).filter(child => child.motherObj);
 
