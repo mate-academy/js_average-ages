@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const peopleMen = people.filter(item => item.sex === 'm')
+    .filter(item => century
+      ? Math.ceil(item.died / 100) === century : true);
+
+  const peopleAge = peopleMen.reduce(
+    (acum, item) => acum + (item.died - item.born)
+    , 0);
+
+  return +(peopleAge / peopleMen.length).toFixed(2);
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const peopleWomen = people.filter(item => item.sex === 'f')
+    .filter(item => withChildren
+      ? people.some(items => item.name === items.mother) : true);
+
+  const averageAge = peopleWomen.reduce((acumulator, item) =>
+    acumulator + (item.died - item.born)
+  , 0);
+
+  return +(averageAge / peopleWomen.length).toFixed(2);
 }
 
 /**
@@ -55,10 +67,19 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const peopleAge = onlyWithSon
+    ? people.filter(item => people.some(items => items.name === item.mother)
+    && item.sex === 'm')
+    : people.filter(item => people.some(items => items.name === item.mother));
+
+  const avereAgeDiff = peopleAge.reduce(function(acum, child) {
+    const mother = people.find(person => person.name === child.mother);
+    const calculDiffer = child.born - mother.born;
+
+    return acum + calculDiffer;
+  }, 0);
+
+  return +(avereAgeDiff / peopleAge.length).toFixed(2);
 }
 
 module.exports = {
