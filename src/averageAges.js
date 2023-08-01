@@ -21,22 +21,22 @@ function calculateMenAverageAge(people, century) {
   // replace `if ()` statement with &&, || or ?:
   // without nesting
 
-  const theMan = people
+  const men = people
     .filter((person) => {
       return century
         ? Math.ceil(person.died / 100) === century && person.sex === 'm'
         : person.sex === 'm';
     });
 
-  const lifeDuration = theMan
+  const lifeDuration = men
     .map((year) => year.died - year.born)
     .reduce((prev, age) => prev + age, 0);
 
-  const everageAge = lifeDuration / theMan.length;
+  const averageAge = lifeDuration / men.length;
 
-  everageAge.toFixed(2);
+  averageAge.toFixed(2);
 
-  return +everageAge;
+  return +averageAge;
 }
 
 /**
@@ -54,7 +54,7 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const onlyMom = people
+  const women = people
     .filter((person) => {
       return !withChildren
         ? person.sex === 'f'
@@ -63,13 +63,13 @@ function calculateWomenAverageAge(people, withChildren) {
           .some((p) => p.mother === person.name);
     });
 
-  const lifeDurMom = onlyMom
+  const lifeDurationWomen = women
     .map((year) => year.died - year.born)
     .reduce((prev, age) => prev + age, 0);
 
-  const evarageAge = lifeDurMom / onlyMom.length;
+  const avarageAge = lifeDurationWomen / women.length;
 
-  return evarageAge;
+  return avarageAge;
 }
 
 /**
@@ -112,26 +112,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
           .some((p) => person.mother === p.name);
     });
 
-  const yearsOldMom = children.map(borned => {
-    const momsAges = mothers
-      .map((year) => borned.born - year.born);
-    const averageMomsAge = momsAges
-      .reduce((sum, age) => sum + age, 0) / momsAges.length;
-
-    return averageMomsAge;
-  });
-
-  const sumAgeMother = yearsOldMom
-    .reduce((prev, year) => prev + year, 0);
-
-  const ageChildren = children
-    .map((year) => year.died - year.born)
-    .reduce((prev, age) => prev + age, 0);
-
-  const resultDiffSon
-    = (ageChildren / children.length) - (sumAgeMother / mothers.length);
-
-  const ageDiff = children
+  const motherAge = children
     .map((child) => {
       const mother = mothers
         .find((person) => person.name === child.mother);
@@ -141,15 +122,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         : 0;
     });
 
-  const totalAgeDiff = ageDiff.reduce((total, age) => total + age, 0);
+  const totalAgeDiff = motherAge.reduce((total, age) => total + age, 0);
 
-  const averageAgeDiff = totalAgeDiff / mothers.length;
+  const averageAgeDiff = onlyWithSon
+    ? totalAgeDiff / children.length
+    : totalAgeDiff / mothers.length;
 
-  const resultDif = onlyWithSon
-    ? resultDiffSon
-    : averageAgeDiff;
-
-  return resultDif;
+  return averageAgeDiff;
 }
 
 module.exports = {
