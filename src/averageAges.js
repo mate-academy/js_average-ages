@@ -1,3 +1,5 @@
+/* eslint-disable padding-line-between-statements */
+/* eslint-disable max-len */
 'use strict';
 
 /**
@@ -15,11 +17,11 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const man = people.filter(person => person.sex === 'm' && (!century || Math.ceil(person.died / 100) === century));
+
+  const sumOfAge = man.reduce((sum, person) => sum + (person.died - person.born), 0);
+
+  return sumOfAge / man.length;
 }
 
 /**
@@ -36,8 +38,12 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+function calculateWomenAverageAge(people, withChildren = false) {
+  const women = people.filter(person => person.sex === 'f' && (!withChildren || people.some(child => child.mother === person.name)));
+
+  const totalAge = women.reduce((sum, woman) => sum + (woman.died - woman.born), 0);
+
+  return totalAge / women.length;
 }
 
 /**
@@ -54,11 +60,25 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const peopleWithMothers = people.filter(person => person.mother && (!onlyWithSon || person.sex === 'm'));
+
+  const { totalAgeDiff, validCount } = peopleWithMothers
+    .reduce(
+      (acc, person) => {
+        const mother = people.find(mothers => mothers.name === person.mother);
+        return {
+          totalAgeDiff: acc.totalAgeDiff + (mother ? person.born - mother.born : 0),
+          validCount: acc.validCount + (mother ? 1 : 0),
+        };
+      },
+      {
+        totalAgeDiff: 0,
+        validCount: 0,
+      }
+    );
+
+  return totalAgeDiff / validCount;
 }
 
 module.exports = {
