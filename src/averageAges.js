@@ -14,14 +14,18 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const peopleMen = people.filter(item => item.sex === 'm')
-    .filter(item => century
-      ? Math.ceil(item.died / 100) === century : true);
+function calculetAge(age) {
+  return age.reduce((acum, item) =>
+    acum + (item.died - item.born)
+  , 0);
+}
 
-  const peopleAge = peopleMen.reduce(
-    (acum, item) => acum + (item.died - item.born)
-    , 0);
+function calculateMenAverageAge(people, century) {
+  const peopleMen = people.filter(item => century
+    ? Math.ceil(item.died / 100) === century && item.sex === 'm'
+    : item.sex === 'm');
+
+  const peopleAge = calculetAge(peopleMen);
 
   return +(peopleAge / peopleMen.length).toFixed(2);
 }
@@ -40,14 +44,13 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
-  const peopleWomen = people.filter(item => item.sex === 'f')
-    .filter(item => withChildren
-      ? people.some(items => item.name === items.mother) : true);
 
-  const averageAge = peopleWomen.reduce((acumulator, item) =>
-    acumulator + (item.died - item.born)
-  , 0);
+function calculateWomenAverageAge(people, withChildren) {
+  const peopleWomen = people.filter(item => withChildren
+    ? people.some(items => item.name === items.mother) && item.sex === 'f'
+    : item.sex === 'f');
+
+  const averageAge = calculetAge(peopleWomen);
 
   return +(averageAge / peopleWomen.length).toFixed(2);
 }
@@ -66,11 +69,12 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
+
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const peopleAge = onlyWithSon
-    ? people.filter(item => people.some(items => items.name === item.mother)
-    && item.sex === 'm')
-    : people.filter(item => people.some(items => items.name === item.mother));
+  const peopleAge = people.filter(item => onlyWithSon
+    ? people.some(items => items.name === item.mother)
+    && item.sex === 'm'
+    : people.some(items => items.name === item.mother));
 
   const avereAgeDiff = peopleAge.reduce(function(acum, child) {
     const mother = people.find(person => person.name === child.mother);
