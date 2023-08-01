@@ -15,11 +15,23 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let onlyMan;
+
+  !century
+    ? onlyMan = people.filter(function(person) {
+      return person.sex === 'm';
+    })
+    : onlyMan = people.filter(function(person) {
+      return (Math.ceil(person.died / 100) === century) && person.sex === 'm';
+    });
+
+  const arrayOfAges = onlyMan.map(function(man) {
+    return (man.died - man.born);
+  });
+
+  return arrayOfAges.reduce(function(a, b) {
+    return a + b;
+  }) / arrayOfAges.length;
 }
 
 /**
@@ -37,7 +49,27 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let onlyWomen;
+
+  !withChildren
+    ? onlyWomen = people.filter(function(person) {
+      return person.sex === 'f';
+    })
+    : onlyWomen = people.filter(function(person) {
+      const arrayOfChildren = people.map(function(child) {
+        return child.mother;
+      });
+
+      return arrayOfChildren.includes(person.name) && person.sex === 'f';
+    });
+
+  const arrayOfAges = onlyWomen.map(function(woman) {
+    return woman.died - woman.born;
+  });
+
+  return arrayOfAges.reduce(function(a, b) {
+    return a + b;
+  }) / arrayOfAges.length;
 }
 
 /**
@@ -55,6 +87,38 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  let arrayOfChildren;
+
+  !onlyWithSon
+    ? arrayOfChildren = people.filter(function(person) {
+      return person.mother !== null;
+    })
+    : arrayOfChildren = people.filter(function(person) {
+      return person.mother !== null && person.sex === 'm';
+    });
+
+  const arrayOfMothers = people.filter(function(person) {
+    const children = people.map(function(child) {
+      return child.mother;
+    });
+
+    return children.includes(person.name) && person.sex === 'f';
+  });
+  const result = arrayOfChildren.map(function(element) {
+    const mother = arrayOfMothers.find(function(mom) {
+      return element.mother === mom.name;
+    });
+
+    if (mother !== undefined) {
+      return element.born - mother.born;
+    }
+  }).filter(function(value) {
+    return value !== undefined;
+  });
+
+  return result.reduce(function(a, b) {
+    return a + b;
+  }) / result.length;
   // 1. find a mother of each person (or only for men)
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
