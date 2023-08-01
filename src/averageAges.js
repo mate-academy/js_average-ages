@@ -18,6 +18,10 @@ const CENTURY = 100;
 const MAN = 'm';
 const WOMAN = 'f';
 
+function average(ages) {
+  return ages.reduce((sum, value) => sum + value, 0);
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -30,8 +34,6 @@ function calculateMenAverageAge(people, century) {
   const isMan = human => human.sex === MAN;
 
   function CalculatingAverages(human) {
-    // не можу винести на глобальний рівень бо скаржиться,
-    // що я змінюю значення eteration параметра функції.
     const age = human.died - human.born;
 
     ages.push(age);
@@ -50,7 +52,7 @@ function calculateMenAverageAge(people, century) {
       }
     });
 
-  averageAge = ages.reduce((sum, value) => sum + value, 0);
+  averageAge = average(ages);
 
   return averageAge / eteration;
 }
@@ -96,7 +98,7 @@ function calculateWomenAverageAge(people, withChildren) {
       }
     });
 
-  averageAge = ages.reduce((sum, value) => sum + value, 0);
+  averageAge = average(ages);
 
   return averageAge / eteration;
 }
@@ -131,7 +133,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     mother => mother.born
     - people.find(human => human.name === mother.mother).born);
 
-  const sumDif = difference.reduce((sum, value) => sum + value, 0);
+  const sumDif = average(difference);
 
   return sumDif / difference.length;
 }
