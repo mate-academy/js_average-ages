@@ -18,20 +18,20 @@ function calculateMenAverageAge(people, century) {
   let onlyMan;
 
   !century
-    ? onlyMan = people.filter(function(person) {
-      return person.sex === 'm';
-    })
-    : onlyMan = people.filter(function(person) {
-      return (Math.ceil(person.died / 100) === century) && person.sex === 'm';
-    });
+    ? onlyMan = people.filter((person) =>
+      person.sex === 'm'
+    )
+    : onlyMan = people.filter((person) =>
+      (Math.ceil(person.died / 100) === century) && person.sex === 'm'
+    );
 
-  const arrayOfAges = onlyMan.map(function(man) {
-    return (man.died - man.born);
-  });
+  const arrayOfAges = onlyMan.map((man) =>
+    man.died - man.born
+  );
 
-  return arrayOfAges.reduce(function(a, b) {
-    return a + b;
-  }) / arrayOfAges.length;
+  return arrayOfAges.reduce((a, b) =>
+    a + b
+  ) / arrayOfAges.length;
 }
 
 /**
