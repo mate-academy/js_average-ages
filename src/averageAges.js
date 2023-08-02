@@ -10,16 +10,24 @@
  * Divide year of person's death by 100: Math.ceil(person.died / 100)
  *
  * @param {object[]} people
- * @param {number} century - optional
+ * @param {number} century
  *
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let avarageAge = 0;
+
+  century
+    ? avarageAge = people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+      .reduce((a, b) => a + b.died - b.born, 0) / people
+      .filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century).length
+    : avarageAge = people.filter(person => person.sex === 'm')
+      .reduce((a, b) => a + b.died - b.born, 0) / people
+      .filter(person => person.sex === 'm').length;
+
+  return avarageAge;
 }
 
 /**
@@ -37,7 +45,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let avarageAge = 0;
+
+  withChildren
+    ? avarageAge = people.filter(personEl => people
+      .some(person => person.mother === personEl.name))
+      .reduce((a, b) => a + b.died - b.born, 0) / people
+      .filter(personEl => people
+        .some(person => person.mother === personEl.name)).length
+    : avarageAge = people.filter(person => person.sex === 'f')
+      .reduce((a, b) => a + b.died - b.born, 0) / people
+      .filter(person => person.sex === 'f').length;
+
+  return avarageAge;
 }
 
 /**
@@ -55,10 +75,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  let allAge = people.filter(a => people.find(b => a.mother === b.name));
+
+  allAge.map(el => {
+    el.childMother = people.find(b => el.mother === b.name);
+  });
+
+  allAge = allAge.reduce((a, b) => a + b.born - b.childMother.born, 0)
+  / allAge.length;
+
+  let withSon = people.filter(a => people
+    .find(b => a.mother === b.name && a.sex === 'm'));
+
+  withSon.map(el => {
+    el.childMother = people.find(b => el.mother === b.name);
+  });
+
+  withSon = withSon.reduce((a, b) => a + b.born - b.childMother.born, 0)
+  / withSon.length;
+
+  return onlyWithSon ? withSon : allAge;
 }
 
 module.exports = {
