@@ -25,15 +25,21 @@ function calculateMenAverageAge(people, century) {
   // ? if century is given find all male person died in this century
   // : if century is not given, find all male person
   const men = century
-    ? people.filter(person => Math.ceil(person.died / 100)
-    === century && person.sex === 'm')
-    : people.filter(person => person.sex === 'm');
+    ? people.filter((person) => {
+      return person.sex === 'm' && Math.ceil(person.died / 100) === century;
+    })
+    : people.filter((person) => {
+      return person.sex === 'm';
+    });
+
   // sum given men age
-  const totalAge = men.reduce((acc, person) => acc
-   + (person.died - person.born), 0);
+  const sumAges = men.reduce((acc, person) => {
+    return (person.died - person.born) + acc;
+  }, 0);
+
   // return average age if array is not empty
 
-  return men.length > 0 ? totalAge / men.length : 0;
+  return men.length > 0 ? sumAges / men.length : 0;
 }
 
 /**
@@ -57,13 +63,19 @@ function calculateWomenAverageAge(people, withChildren) {
   // given women is withchildren
   // : if not specified withchildren , we need all women
   const women = withChildren
-    ? people.filter(person => person.sex === 'f' && people.some(p =>
-      p.mother === person.name))
-    : people.filter(person => person.sex === 'f');
-    // sum total womens age
-  const totalAge = women.reduce((acc, person) => acc
-   + (person.died - person.born), 0);
-    // if women array is not empty return average age
+    ? people.filter((person) => {
+      return person.sex === 'f' && people.some((element) => {
+        return element.mother === person.name;
+      });
+    })
+    : people.filter((person) => {
+      return person.sex === 'f';
+    });
+  // sum total womens age
+  const totalAge = women.reduce((acc, female) => {
+    return (female.died - female.born) + acc;
+  }, 0);
+  // if women array is not empty return average age
 
   return women.length > 0 ? totalAge / women.length : 0;
 }
@@ -93,23 +105,36 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // : if parameter not specified children is an array
   // male and female people, with some mother
   const children = onlyWithSon
-    ? people.filter(person => person.sex === 'm'
-    && people.some(mother => mother.name === person.mother))
-    : people.filter(person => people
-      .some(mother => mother.name === person.mother));
+    ? people.filter((person) => {
+      return person.sex === 'm' && people.some((mom) => {
+        return mom.name === person.mother;
+      });
+    })
+    : people.filter((person) => {
+      return people
+        .some((mom) => {
+          return mom.name === person.mother;
+        });
+    });
+
   // find all person they are mother for somebody from array children
   // if mother exist for child, return age difference
   // if mother not exist return 0;
-  const sumOfTheAgeDifferences = children.reduce((acc, child) => {
-    const mother = people.find(person => person.name === child.mother);
-    const ageDifference = mother ? child.born - mother.born : 0;
+
+  const sumOfTheDifferences = children.reduce((acc, child) => {
+    const mother = people.find((person) => {
+      return person.name === child.mother;
+    });
+
+    const ageDifference = mother ? (child.born - mother.born) : 0;
     // sum age differences
 
     return acc + ageDifference;
   }, 0);
+
   // return average age difference for children
 
-  return sumOfTheAgeDifferences / children.length;
+  return sumOfTheDifferences / children.length;
 }
 
 module.exports = {
