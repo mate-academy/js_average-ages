@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const arrayWithYears = people
+    .filter((person) => {
+      return century ? person.sex === 'm'
+      && Math.ceil(person.died / 100) === century : person.sex === 'm';
+    })
+    .map((person) => {
+      return person.died - person.born;
+    });
+
+  const yearsAmount = arrayWithYears.reduce((acc, years) => acc + years, 0);
+
+  return yearsAmount / arrayWithYears.length;
 }
 
 /**
@@ -37,7 +44,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const arrayWithMothers = people
+    .filter((person) => {
+      return person.mother;
+    })
+    .map((person) => {
+      return person.mother;
+    });
+  const arrayWithYears = people
+    .filter((person) => {
+      return withChildren ? person.sex === 'f'
+      && arrayWithMothers.includes(person.name) : person.sex === 'f';
+    })
+    .map((person) => {
+      return person.died - person.born;
+    });
+
+  const yearsAmount = arrayWithYears.reduce((acc, years) => acc + years, 0);
+
+  return yearsAmount / arrayWithYears.length;
 }
 
 /**
@@ -55,10 +80,35 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const objWithYears = {};
+  const children = people
+    .filter((person) => {
+      return onlyWithSon ? person.sex === 'm' && person.mother : person.mother;
+    });
+  const mothersName = people
+    .filter((person) => {
+      return person.mother;
+    })
+    .map((person) => {
+      return person.mother;
+    });
+  const mothers = people
+    .filter((person) => {
+      return mothersName.includes(person.name);
+    });
+
+  mothers.forEach((mother) => {
+    objWithYears[mother.name] = mother.born;
+  });
+
+  const result = children
+    .map((child) => {
+      return objWithYears[child.mother]
+      && child.born - objWithYears[child.mother];
+    })
+    .filter((years) => years);
+
+  return result.reduce((acc, years) => acc + years, 0) / result.length;
 }
 
 module.exports = {
