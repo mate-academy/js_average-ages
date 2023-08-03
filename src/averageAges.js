@@ -51,9 +51,7 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const ageDifferences = [];
-
-  for (const person of people) {
+  const ageDifferencesArray = people.reduce((ageDifferences, person) => {
     const hasMother = person.mother !== undefined;
 
     if (hasMother) {
@@ -63,17 +61,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         const meetsCondition = !onlyWithSon || person.sex === 'm';
 
         if (meetsCondition) {
-          const ageDifference = Math.abs(mother.born - person.born);
-
-          ageDifferences.push(ageDifference);
+          ageDifferences.push(Math.abs(mother.born - person.born));
         }
       }
     }
-  }
 
-  const totalAgeDifference = ageDifferences.reduce((sum, difference) =>
+    return ageDifferences;
+  }, []);
+
+  const totalAgeDifference = ageDifferencesArray.reduce((sum, difference) =>
     sum + difference, 0);
-  const averageAgeDifference = totalAgeDifference / ageDifferences.length;
+  const averageAgeDifference = totalAgeDifference / ageDifferencesArray.length;
 
   return averageAgeDifference;
 }
