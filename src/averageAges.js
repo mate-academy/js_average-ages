@@ -75,7 +75,8 @@ function calculateWomenAverageAge(people, withChildren) {
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const differenceInAge = people.reduce((total, person) => {
     const findMother = people.find(m => m.name === person.mother);
-    const filterForDifference = findMother && (!onlyWithSon || person.sex === 'm');
+    const filterForDifference = findMother && (
+      !onlyWithSon || person.sex === 'm');
 
     if (filterForDifference) {
       const ageDifference = Math.abs(findMother.born - person.born);
