@@ -15,11 +15,19 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = [];
+
+  if (century) {
+    men = people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century);
+  } else {
+    men = people.filter(person => person.sex === 'm');
+  }
+
+  const totalAge = men.reduce((total, person) =>
+    total + (person.died - person.born), 0);
+
+  return totalAge / men.length;
 }
 
 /**
@@ -37,7 +45,19 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = [];
+
+  if (withChildren) {
+    women = people.filter(person => person.sex === 'f'
+      && people.some(parent => parent.mother === person.name));
+  } else {
+    women = people.filter(person => person.sex === 'f');
+  }
+
+  const totalAge = women.reduce((total, person) =>
+    total + (person.died - person.born), 0);
+
+  return totalAge / women.length;
 }
 
 /**
@@ -55,10 +75,25 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const family = onlyWithSon
+    ? people.filter(person =>
+      people.some(child => child.name === person.mother) && person.sex === 'm')
+    : people.filter(person =>
+      people.some(child => child.name === person.mother));
+
+  let avgAge = 0;
+
+  family.forEach(person => {
+    const women = people.find(mother => mother.name === person.mother);
+
+    if (women) {
+      const totalAge = person.born - women.born;
+
+      avgAge += totalAge;
+    }
+  });
+
+  return avgAge / family.length;
 }
 
 module.exports = {
