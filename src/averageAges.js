@@ -15,17 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = [];
-
-  if (century) {
-    men = people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century);
-  } else {
-    men = people.filter(person => person.sex === 'm');
-  }
+  const men = century
+    ? people.filter(person => person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
+    : people.filter(person => person.sex === 'm');
 
   const totalAge = men.reduce((total, person) =>
-    total + (person.died - person.born), 0);
+    total + (person.died - person.born)
+  , 0);
 
   return totalAge / men.length;
 }
@@ -45,14 +42,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = [];
-
-  if (withChildren) {
-    women = people.filter(person => person.sex === 'f'
-      && people.some(parent => parent.mother === person.name));
-  } else {
-    women = people.filter(person => person.sex === 'f');
-  }
+  const women = withChildren
+    ? people.filter(person => person.sex === 'f'
+      && people.some(parent => parent.mother === person.name))
+    : people.filter(person => person.sex === 'f');
 
   const totalAge = women.reduce((total, person) =>
     total + (person.died - person.born), 0);
@@ -81,19 +74,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : people.filter(person =>
       people.some(child => child.name === person.mother));
 
-  let avgAge = 0;
+  const filterFamily = family.reduce((result, person) => {
+    const mother = people.find(woman => woman.name === person.mother);
 
-  family.forEach(person => {
-    const women = people.find(mother => mother.name === person.mother);
+    return mother ? [...result, person.born - mother.born] : result;
+  }, []);
 
-    if (women) {
-      const totalAge = person.born - women.born;
-
-      avgAge += totalAge;
-    }
-  });
-
-  return avgAge / family.length;
+  return filterFamily.reduce(
+    (a, b) => a + b) / filterFamily.length;
 }
 
 module.exports = {
