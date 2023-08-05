@@ -67,8 +67,6 @@ function calculateWomenAverageAge(people, withChildren) {
     return withChildren !== undefined ? mother : women;
   });
 
-  // skopiowano z funkcji powyżej
-
   const ageOfLife = womenOfDesiredAge.map(person => {
     const ageWomen = person.died - person.born;
 
