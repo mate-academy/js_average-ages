@@ -1,45 +1,48 @@
 'use strict';
 
-function calculateMenAverageAge(people, century) {
-  const newPeoples = century ? people.filter(
-    person => person.sex === 'm' && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
-
-  const totalAge = newPeoples.reduce(
+const totalAge = (array) => {
+  return array.reduce(
     (acc, per) => acc + (per.died - per.born), 0);
+};
 
-  return totalAge / newPeoples.length;
+const conditionCheck = (firstCondition, secondCondition) => {
+  return firstCondition === secondCondition;
+};
+
+function calculateMenAverageAge(people, century) {
+  const newPeople = century ? people.filter(
+    person => conditionCheck(person.sex, 'm')
+    && Math.ceil(person.died / 100) === century)
+    : people.filter(person => conditionCheck(person.sex, 'm'));
+
+  return totalAge(newPeople) / newPeople.length;
 }
 
 function calculateWomenAverageAge(people, withChildren) {
   const woman = withChildren
-    ? people.filter(person => person.sex === 'f'
-    && people.some(mother => person.name === mother.mother))
-    : people.filter(person => person.sex === 'f');
+    ? people.filter(person => conditionCheck(person.sex, 'f')
+    && people.some(mother => conditionCheck(person.name, mother.mother)))
+    : people.filter(person => conditionCheck(person.sex, 'f'));
 
-  const totalAge = woman.reduce(
-    (acc, per) => acc + (per.died - per.born), 0);
-
-  return totalAge / woman.length;
+  return totalAge(woman) / woman.length;
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = onlyWithSon
     ? people.filter(person =>
-      people.some(child => child.name === person.mother)
-    && person.sex === 'm')
+      people.some(child => conditionCheck(child.name, person.mother))
+    && conditionCheck(person.sex, 'm'))
     : people.filter(person =>
-      people.some(child => child.name === person.mother));
+      people.some(child => conditionCheck(child.name, person.mother)));
 
   let motherAge = 0;
 
   children.forEach(person => {
-    const mothers = people.find(mother => mother.name === person.mother);
+    const mothers = people.find(
+      mother => conditionCheck(mother.name, person.mother));
 
     if (mothers) {
-      const difference = person.born - mothers.born;
-
-      motherAge += difference;
+      motherAge += person.born - mothers.born;
     }
   });
 
