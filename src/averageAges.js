@@ -1,6 +1,34 @@
 'use strict';
 
 /**
+ * create separate function
+ */
+function calculateTotalAge(people) {
+  return people.reduce((total, person) =>
+    total + (person.died - person.born), 0);
+}
+
+function filterPeople(people, condition) {
+  return people.filter(person => {
+    if (condition.sex && person.sex !== condition.sex) {
+      return false;
+    }
+
+    if (condition.century
+      && Math.ceil(person.died / 100) !== condition.century) {
+      return false;
+    }
+
+    if (condition.withChildren
+      && !people.some(parent => parent.mother === person.name)) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+/**
  * Implement calculateMenAverageAge function
  *
  * Function returns average age of men in array. If `century` is specified then
@@ -15,16 +43,10 @@
  * @return {number}
  */
 
-function calculateTotalAge(people) {
-  return people.reduce((total, person) =>
-    total + (person.died - person.born), 0);
-}
-
 function calculateMenAverageAge(people, century) {
-  const men = century
-    ? people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century)
-    : people.filter(person => person.sex === 'm');
+  const men = filterPeople(people, {
+    sex: 'm', century,
+  });
 
   const totalAge = calculateTotalAge(men);
 
@@ -32,24 +54,15 @@ function calculateMenAverageAge(people, century) {
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const women = withChildren
-    ? people.filter(person => person.sex === 'f'
-      && people.some(parent => parent.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+  const women = filterPeople(people, {
+    sex: 'f', withChildren,
+  });
 
   const totalAge = calculateTotalAge(women);
 
