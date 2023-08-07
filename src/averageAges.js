@@ -22,16 +22,19 @@
  */
 const MALE_SEX = 'm';
 const FEMALE_SEX = 'f';
+const CUNTURY_COEFFICIENT = 100;
 
 function calculateMenAverageAge(people, century) {
   const mensOfCenturyArray = people
     .filter(person => person.sex === MALE_SEX)
     .filter(person => century
-      ? century === Math.ceil(person.died / 100) : true);
+      ? century === Math.ceil(person.died / CUNTURY_COEFFICIENT) : true);
 
-  return mensOfCenturyArray
+  const MenAverageAge = mensOfCenturyArray
     .reduce((year, person) => year + person.died - person.born, 0)
     / mensOfCenturyArray.length;
+
+  return MenAverageAge;
 }
 
 /**
@@ -56,9 +59,11 @@ function calculateWomenAverageAge(people, withChildren) {
         .some(child => child.mother === person.name)
       : true);
 
-  return womensOfCenturyArray
+  const WomenAverageAge = womensOfCenturyArray
     .reduce((year, person) => year + person.died - person.born, 0)
     / womensOfCenturyArray.length;
+
+  return WomenAverageAge;
 }
 
 /**
@@ -83,10 +88,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(person => people
       .some(child => child.name === person.mother));
 
-  return peopleWithMothers
+  const AverageAgeDiff = peopleWithMothers
     .reduce((year, child) => year + child.born - people
       .find(mother => child.mother === mother.name).born, 0)
   / peopleWithMothers.length;
+
+  return AverageAgeDiff;
 }
 
 // 1. find a mother of each person (or only for men)
