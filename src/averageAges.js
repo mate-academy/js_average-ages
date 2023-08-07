@@ -14,12 +14,14 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = false) {
+  const males = people.filter((male) => {
+    return century === false
+      ? male.sex === 'm'
+      : (male.sex === 'm' && Math.ceil(male.died / 100) === century);
+  });
+
+  return calculateAverage(males);
 }
 
 /**
@@ -36,8 +38,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
+function calculateWomenAverageAge(people, withChildren = false) {
   // write code here
+  const females = people.filter((female) => {
+    return withChildren === false
+      ? female.sex === 'f'
+      : (people.find((man) => man.mother === female.name));
+  });
+
+  return calculateAverage(females);
 }
 
 /**
@@ -54,11 +63,33 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const mothers = people.filter((female) => female.sex === 'f');
+  const childs = mothers.flatMap((mother) => {
+    return people.filter((person) => {
+      return onlyWithSon === false
+        ? person.mother === mother.name
+        : (person.mother === mother.name && person.sex === 'm');
+    });
+  });
+
+  return +(mothers.reduce((accumulator, mother) => {
+    let currentMother = 0;
+
+    childs.forEach((child) => {
+      if (mother.name === child.mother) {
+        currentMother += child.born - mother.born;
+      }
+    });
+
+    return accumulator + currentMother;
+  }, 0) / childs.length).toFixed(2);
+}
+
+function calculateAverage(people) {
+  return +(people.reduce((accumulator, currentValue) => {
+    return (accumulator + (currentValue.died - currentValue.born));
+  }, 0) / people.length).toFixed(2);
 }
 
 module.exports = {
