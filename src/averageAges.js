@@ -23,9 +23,10 @@ function calculateMenAverageAge(people, century) {
     || (century === undefined && person.sex === 'm')
   );
 
-  const totalAge = filteredPeople.reduce((sum, person) =>
-    sum + (person.died - person.born), 0);
-  const averageAge = totalAge / filteredPeople.length;
+  const averageAge = filteredPeople.length > 0
+    ? filteredPeople.reduce((sum, person) =>
+      sum + (person.died - person.born), 0) / filteredPeople.length
+    : 0;
 
   return averageAge;
 }
