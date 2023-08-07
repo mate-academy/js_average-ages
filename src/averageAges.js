@@ -32,7 +32,7 @@ function calculateMenAverageAge(people, century) {
 
   const MenAverageAge = mensOfCenturyArray
     .reduce((year, person) => year + person.died - person.born, 0)
-    / mensOfCenturyArray.length;
+  / mensOfCenturyArray.length;
 
   return MenAverageAge;
 }
@@ -61,7 +61,7 @@ function calculateWomenAverageAge(people, withChildren) {
 
   const WomenAverageAge = womensOfCenturyArray
     .reduce((year, person) => year + person.died - person.born, 0)
-    / womensOfCenturyArray.length;
+  / womensOfCenturyArray.length;
 
   return WomenAverageAge;
 }
