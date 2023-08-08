@@ -14,12 +14,15 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+function calculateMenAverageAge(people, century = false) {
+  const males
+    = filterPeople(
+      people,
+      century,
+      male => male.sex === 'm' && Math.ceil(male.died / 100) === century,
+      male => male.sex === 'm');
+
+  return calculateAverage(males);
 }
 
 /**
@@ -36,8 +39,16 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
-function calculateWomenAverageAge(people, withChildren) {
+function calculateWomenAverageAge(people, withChildren = false) {
   // write code here
+  const females
+    = filterPeople(
+      people,
+      withChildren,
+      female => people.find(man => man.mother === female.name),
+      female => female.sex === 'f');
+
+  return calculateAverage(females);
 }
 
 /**
@@ -54,11 +65,33 @@ function calculateWomenAverageAge(people, withChildren) {
  *
  * @return {number}
  */
-function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+function calculateAverageAgeDiff(people, onlyWithSon = false) {
+  const children
+    = filterPeople(
+      people,
+      onlyWithSon,
+      child => people.some(person => person.name === child.mother)
+      && child.sex === 'm',
+      child => people.some(person => person.name === child.mother));
+
+  return children.reduce((accumulator, current) =>
+    accumulator + current.born
+      - (people.find((mother) => mother.name === current.mother)).born
+  , 0) / children.length;
+}
+
+function filterPeople(people, flag, flagIsTrue, flagIsfalse) {
+  return people.filter(person =>
+    flag
+      ? flagIsTrue(person)
+      : flagIsfalse(person)
+  );
+}
+
+function calculateAverage(people) {
+  return people.reduce((accumulator, currentValue) =>
+    (accumulator + (currentValue.died - currentValue.born))
+  , 0) / people.length;
 }
 
 module.exports = {
