@@ -14,6 +14,14 @@
  *
  * @return {number}
  */
+function summAgeFunction(humans) {
+  return humans.reduce(
+    function(accumulatorAge, person) {
+      return accumulatorAge + person.died - person.born;
+    },
+    0);
+};
+
 function calculateMenAverageAge(people, century = 0) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
@@ -34,11 +42,7 @@ function calculateMenAverageAge(people, century = 0) {
 
   const amountMen = men.length;
 
-  const summAge = men.reduce(
-    function(accumulatorAge, person) {
-      return accumulatorAge + person.died - person.born;
-    },
-    0);
+  const summAge = summAgeFunction(men);
 
   return +(summAge / amountMen).toFixed(2);
 }
@@ -76,11 +80,7 @@ function calculateWomenAverageAge(people, withChildren = false) {
 
   const amountMen = women.length;
 
-  const summAge = women.reduce(
-    function(accumulatorAge, person) {
-      return accumulatorAge + person.died - person.born;
-    },
-    0);
+  const summAge = summAgeFunction(women);
 
   return +(summAge / amountMen).toFixed(2);
   // write code here
