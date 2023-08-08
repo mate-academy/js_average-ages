@@ -22,8 +22,6 @@ function calculateMenAverageAge(people, century) {
     sumManAge = manOnly.reduce((sumAge, person) =>
       sumAge + (person.died - person.born), 0);
 
-    // console.log(+(sumManAge / manOnly.length).toFixed(2));
-
     return +(sumManAge / manOnly.length).toFixed(2);
   }
 
@@ -32,9 +30,6 @@ function calculateMenAverageAge(people, century) {
 
   sumManAge = menInCentury.reduce((sumAge, person) =>
     sumAge + (person.died - person.born), 0);
-
-  // eslint-disable-next-line no-console
-  console.log(sumManAge, menInCentury.length, sumManAge / menInCentury.length);
 
   return sumManAge / menInCentury.length;
 }
