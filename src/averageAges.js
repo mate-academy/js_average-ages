@@ -17,7 +17,8 @@
 function calculateMenAverageAge(people, century) {
   const men = century
     ? people.filter(person =>
-      person.sex === 'm' && Math.ceil(person.died / 100) === century)
+      person.sex === 'm'
+      && Math.ceil(person.died / 100) === century)
     : people.filter(person => person.sex === 'm');
 
   if (men.length === 0) {
@@ -77,30 +78,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const mothers = people.reduce((acc, person) => {
-    if (person.mother !== null && !acc.includes(person.mother)) {
-      acc.push(person.mother);
-    }
+  const mothers = people.filter(mother =>
+    people.some(child => mother.name === child.mother)
+  );
 
-    return acc;
-  }, []);
+  const children = people.filter(child =>
+    mothers.find(mother => mother.name === child.mother)
+      && (onlyWithSon ? child.sex === 'm' : true)
+  );
 
-  const mothersWithSons = people.filter(person =>
-    mothers.includes(person.name));
+  const agesDiff = children.map(child => {
+    const mother = mothers.find(mum => mum.name === child.mother);
 
-  const children = onlyWithSon
-    ? people.filter(person =>
-      person.sex === 'm' && mothers.includes(person.mother))
-    : people;
-
-  const ageDifferences = children.map(child => {
-    const motherData = mothersWithSons.find(mother =>
-      mother.name === child.mother);
-
-    return motherData ? child.born - motherData.born : NaN;
+    return child.born - mother.born;
   });
 
-  const validAgeDifferences = ageDifferences.filter(diff => !isNaN(diff));
+  const validAgeDifferences = agesDiff.filter(diff => !isNaN(diff));
   const sumAgeDifference = validAgeDifferences.reduce((acc, diff) =>
     acc + diff, 0);
 
