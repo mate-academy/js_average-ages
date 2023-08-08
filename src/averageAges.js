@@ -17,8 +17,8 @@
 function calculateMenAverageAge(people, century) {
   const men = people
     .filter(person => century === undefined
-      ? person.sex === 'm'
-      : person.sex === 'm' && Math.ceil(person.died / 100) === century);
+      ? isMan(person)
+      : isMan(person) && Math.ceil(person.died / 100) === century);
 
   const ageSum = men
     .map(person => person.died - person.born)
@@ -46,7 +46,7 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const women = people
     .filter(person => withChildren === undefined
-      ? person.sex === 'f'
+      ? isWoman(person)
       : people.some(child => person.name === child.mother));
 
   const ageSum = women
@@ -81,14 +81,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     .filter(person => onlyWithSon === undefined
       ? people.some(child => person.name === child.mother)
       : people.some(child => person.name === child.mother
-        && child.sex === 'm'));
+        && isMan(child)));
 
   const ages = people
     .map(child => {
       const mother = mothers
         .find(person => onlyWithSon === undefined
           ? child.mother === person.name
-          : child.sex === 'm' && child.mother === person.name);
+          : isMan(child) && child.mother === person.name);
 
       return mother ? child.born - mother.born : 0;
     })
@@ -106,6 +106,20 @@ function getAverageAge(sum, arr) {
   const averageAge = sum / arr.length;
 
   return +averageAge.toFixed(2);
+};
+
+// helper function to check the sex of the person
+
+function isMan(person) {
+  const MAN = 'm';
+
+  return person.sex === MAN;
+};
+
+function isWoman(person) {
+  const WOMAN = 'f';
+
+  return person.sex === WOMAN;
 };
 
 module.exports = {
