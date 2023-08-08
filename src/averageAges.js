@@ -15,11 +15,12 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century = false) {
-  const males = people.filter(male =>
-    century
-      ? (male.sex === 'm' && Math.ceil(male.died / 100) === century)
-      : male.sex === 'm'
-  );
+  const males
+    = filterPeople(
+      people,
+      century,
+      male => male.sex === 'm' && Math.ceil(male.died / 100) === century,
+      male => male.sex === 'm');
 
   return calculateAverage(males);
 }
@@ -40,11 +41,12 @@ function calculateMenAverageAge(people, century = false) {
  */
 function calculateWomenAverageAge(people, withChildren = false) {
   // write code here
-  const females = people.filter(female =>
-    withChildren
-      ? (people.find(man => man.mother === female.name))
-      : female.sex === 'f'
-  );
+  const females
+    = filterPeople(
+      people,
+      withChildren,
+      female => people.find(man => man.mother === female.name),
+      female => female.sex === 'f');
 
   return calculateAverage(females);
 }
@@ -64,17 +66,26 @@ function calculateWomenAverageAge(people, withChildren = false) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon = false) {
-  const children = people.filter(
-    onlyWithSon
-      ? child => people.some(person => person.name === child.mother)
-          && child.sex === 'm'
-      : child => people.some(person => person.name === child.mother)
-  );
+  const children
+    = filterPeople(
+      people,
+      onlyWithSon,
+      child => people.some(person => person.name === child.mother)
+      && child.sex === 'm',
+      child => people.some(person => person.name === child.mother));
 
   return children.reduce((accumulator, current) =>
     accumulator + current.born
       - (people.find((mother) => mother.name === current.mother)).born
   , 0) / children.length;
+}
+
+function filterPeople(people, flag, flagIsTrue, flagIsfalse) {
+  return people.filter(person =>
+    flag
+      ? flagIsTrue(person)
+      : flagIsfalse(person)
+  );
 }
 
 function calculateAverage(people) {
