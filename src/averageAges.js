@@ -86,11 +86,11 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
   const getArrayOfMothers = getArrayOfChildren.map(children =>
     people.filter(mother => children.mother === mother.name)).flat();
 
-  let sumDiff = 0;
+  const sumDiff = getArrayOfMothers.reduce((total, currentMother, index) => {
+    const currentChild = getArrayOfChildren[index];
 
-  for (let i = 0; i < getArrayOfMothers.length; i++) {
-    sumDiff += getArrayOfChildren[i].born - getArrayOfMothers[i].born;
-  }
+    return total + (currentChild.born - currentMother.born);
+  }, 0);
 
   return +(sumDiff / getArrayOfChildren.length).toFixed(2);
 }
