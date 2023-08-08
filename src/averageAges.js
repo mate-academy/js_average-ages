@@ -15,11 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredMen = people
+    .filter(person => person.sex === 'm'
+    && (century === undefined || century === Math.ceil(person.died / 100)));
+
+  const averageAgesMen = filteredMen
+    .map(men => (men.died - men.born))
+    .reduce((prev, age) => prev + age, 0) / filteredMen.length;
+
+  return averageAgesMen * 100 / 100;
 }
 
 /**
@@ -37,7 +41,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomen = people
+    .filter(person => person.sex === 'f'
+    && (withChildren === undefined
+    || (withChildren && people.some(child => child.mother === person.name))));
+
+  const averageAgesWomen = filteredWomen.reduce((prev, age) =>
+    prev + (age.died - age.born), 0) / filteredWomen.length;
+
+  return averageAgesWomen;
 }
 
 /**
@@ -55,10 +67,24 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const differenceAge = people.reduce((total, person) => {
+    const findedMother = people.find(p => p.name === person.mother);
+    const filteredDifference = findedMother
+      && (!onlyWithSon || person.sex === 'm');
+
+    if (filteredDifference) {
+      const difference = Math.abs(findedMother.born - person.born);
+
+      total.push(difference);
+    }
+
+    return total;
+  }, []);
+
+  const avarageAgeDifference = differenceAge
+    .reduce((sum, diff) => sum + diff, 0) / differenceAge.length;
+
+  return avarageAgeDifference;
 }
 
 module.exports = {
