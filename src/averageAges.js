@@ -15,6 +15,8 @@
  * @return {number}
  */
 const CENTURY = 100;
+const SEX_MALE = 'm';
+const SEX_FEMALE = 'f';
 
 function calculateMenAverageAge(people, century) {
   // write code here
@@ -24,9 +26,9 @@ function calculateMenAverageAge(people, century) {
   // without nesting
 
   const men = century
-    ? people.filter(person => person.sex === 'm'
+    ? people.filter(person => person.sex === SEX_MALE
       && Math.ceil(person.died / CENTURY) === century)
-    : people.filter(person => person.sex === 'm');
+    : people.filter(person => person.sex === SEX_MALE);
 
   const menAges = calculateTotalAge(men);
 
@@ -54,10 +56,10 @@ function calculateWomenAverageAge(people, withChildren) {
   // write code here
   const wemen = withChildren
     ? people
-      .filter((person) => person.sex === 'f'
+      .filter((person) => person.sex === SEX_FEMALE
         && people
           .some(p => p.mother === person.name))
-    : people.filter(person => person.sex === 'f');
+    : people.filter(person => person.sex === SEX_FEMALE);
 
   const wemenAges = calculateTotalAge(wemen);
 
