@@ -1,5 +1,15 @@
 'use strict';
 
+const INITIAL_VALUE = 0;
+
+const getAverageAge = people => {
+  return people.reduce((a, b) => a + b, INITIAL_VALUE) / people.length;
+};
+
+const toFixedValue = (result, toValue) => {
+  return +result.toFixed(toValue);
+};
+
 /**
  * Implement calculateMenAverageAge function
  *
@@ -15,11 +25,13 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const ageOfMen = people
+    .filter(({ died, sex }) => !century
+      ? sex === 'm'
+      : sex === 'm' && Math.ceil(died / 100) === century)
+    .map(({ born, died }) => died - born);
+
+  return toFixedValue(getAverageAge(ageOfMen), 2);
 }
 
 /**
@@ -37,7 +49,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const ageOfWomen = people
+    .filter(({ name, sex }) => !withChildren
+      ? sex === 'f'
+      : sex === 'f' && people.some(({ mother }) => mother === name))
+    .map(({ born, died }) => died - born);
+
+  return toFixedValue(getAverageAge(ageOfWomen), 2);
 }
 
 /**
@@ -55,10 +73,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const children = people
+    .filter(({ sex, mother }) => !onlyWithSon
+      ? people.some(({ name }) => name === mother)
+      : people.some(({ name }) => name === mother) && sex === 'm'
+    );
+
+  const average = children
+    .reduce((acc, { born, mother }) =>
+      acc + born - people.find(({ name }) => name === mother).born, 0)
+      / children.length;
+
+  return toFixedValue(average, 2);
 }
 
 module.exports = {
