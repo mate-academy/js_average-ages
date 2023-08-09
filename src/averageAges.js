@@ -14,28 +14,25 @@
  *
  * @return {number}
  */
+const CENTURY = 100;
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  // const MEN = people.filter(person => century
-  //   ? person.sex === 'm' && Math.ceil(person.died / 100) === century
-  //   : person.sex === 'm'
-  // );
 
-  const MEN = century
+  const men = century
     ? people.filter(person => person.sex === 'm'
-      && Math.ceil(person.died / 100) === century)
+      && Math.ceil(person.died / CENTURY) === century)
     : people.filter(person => person.sex === 'm');
 
-  const MEN_AGES = MEN
-    .reduce((total, person) => total + person.died - person.born, 0);
+  const menAges = calculateTotalAge(men);
 
-  const AVARAGE_AGE = MEN_AGES / MEN.length.toFixed(2);
+  const avarageAge = calculateAvarageAge(menAges, men);
 
-  return AVARAGE_AGE;
+  return avarageAge;
 }
 
 /**
@@ -52,20 +49,21 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
-  const WEMEN = withChildren
+  const wemen = withChildren
     ? people
-      .filter((person, i, persons) => person.sex === 'f'
-        && persons
+      .filter((person) => person.sex === 'f'
+        && people
           .some(p => p.mother === person.name))
     : people.filter(person => person.sex === 'f');
 
-  const WEMEN_AGES = WEMEN
-    .reduce((total, ages) => total + ages.died - ages.born, 0);
-  const AVARAGE_AGE = WEMEN_AGES / WEMEN.length.toFixed(2);
+  const wemenAges = calculateTotalAge(wemen);
 
-  return AVARAGE_AGE;
+  const avarageAge = calculateAvarageAge(wemenAges, wemen);
+
+  return avarageAge;
 }
 
 /**
@@ -84,21 +82,36 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   // write code here
-  const CHILDREN = onlyWithSon
+  const children = onlyWithSon
     ? people
-      .filter((person, i, persons) => persons
+      .filter((person) => people
         .some(item => item.name === person.mother
           && person.sex === 'm'))
     : people
-      .filter((person, i, persons) => persons
+      .filter((person) => people
         .some(item => item.name === person.mother));
-  const CHILDREN_AGE = CHILDREN
-    .reduce((total, child) => total + child.born
-      - people[people.findIndex(item => item.name === child.mother)].born,
-    0);
-  const AVARAGE = CHILDREN_AGE / CHILDREN.length.toFixed(2);
 
-  return AVARAGE;
+  const childrenAge = children
+    .reduce((total, child) => total + child.born
+      - people[people.findIndex(item => item.name === child.mother)]
+        .born, 0);
+
+  const avarageAge = calculateAvarageAge(childrenAge, children);
+
+  return avarageAge;
+}
+
+function calculateTotalAge(persons) {
+  const totalAge = persons
+    .reduce((total, person) => total + person.died - person.born, 0);
+
+  return totalAge;
+}
+
+function calculateAvarageAge(totalAge, persons) {
+  const quantityOfPersons = persons.length.toFixed(2);
+
+  return totalAge / quantityOfPersons;
 }
 
 module.exports = {
