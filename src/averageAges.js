@@ -51,7 +51,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   );
 
   const totalAgeDiff = peopleWithMothers.reduce(
-    (acc, person) => acc + (person.born - (getMother(person, people)).born),
+    (acc, person) =>
+      acc + getChildAndMotherAgeDiff(person, getMother(person, people)),
     0
   );
 
@@ -156,6 +157,16 @@ function hasMother(child, parents) {
  */
 function getMother(child, parents) {
   return parents.find((parent) => isMother(parent, child));
+}
+
+/**
+ * @param {object} child
+ * @param {object} mother
+ *
+ * @return {number}
+ */
+function getChildAndMotherAgeDiff(child, mother) {
+  return child.born - mother.born;
 }
 
 module.exports = {
