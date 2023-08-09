@@ -14,12 +14,27 @@
  *
  * @return {number}
  */
+const CENTURY = 100;
+const SEX_MALE = 'm';
+const SEX_FEMALE = 'f';
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+
+  const men = century
+    ? people.filter(person => person.sex === SEX_MALE
+      && Math.ceil(person.died / CENTURY) === century)
+    : people.filter(person => person.sex === SEX_MALE);
+
+  const menAges = calculateTotalAge(men);
+
+  const avarageAge = calculateAvarageAge(menAges, men);
+
+  return avarageAge;
 }
 
 /**
@@ -36,8 +51,21 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   // write code here
+  const wemen = withChildren
+    ? people
+      .filter((person) => person.sex === SEX_FEMALE
+        && people
+          .some(p => p.mother === person.name))
+    : people.filter(person => person.sex === SEX_FEMALE);
+
+  const wemenAges = calculateTotalAge(wemen);
+
+  const avarageAge = calculateAvarageAge(wemenAges, wemen);
+
+  return avarageAge;
 }
 
 /**
@@ -55,10 +83,37 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  // write code here
+  const children = onlyWithSon
+    ? people
+      .filter((person) => people
+        .some(item => item.name === person.mother
+          && person.sex === 'm'))
+    : people
+      .filter((person) => people
+        .some(item => item.name === person.mother));
+
+  const childrenAge = children
+    .reduce((total, child) => total + child.born
+      - people[people.findIndex(item => item.name === child.mother)]
+        .born, 0);
+
+  const avarageAge = calculateAvarageAge(childrenAge, children);
+
+  return avarageAge;
+}
+
+function calculateTotalAge(persons) {
+  const totalAge = persons
+    .reduce((total, person) => total + person.died - person.born, 0);
+
+  return totalAge;
+}
+
+function calculateAvarageAge(totalAge, persons) {
+  const quantityOfPersons = persons.length.toFixed(2);
+
+  return totalAge / quantityOfPersons;
 }
 
 module.exports = {
