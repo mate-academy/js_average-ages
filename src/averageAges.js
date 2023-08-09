@@ -50,7 +50,6 @@ function calculateMenAverageAge(people, century = 0) {
   return average(summAge, amountMen);
 }
 
-// done
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -86,10 +85,7 @@ function calculateWomenAverageAge(people, withChildren = false) {
   const summAge = summAgeFunction(women);
 
   return average(summAge, amountWomen);
-  // write code here
 }
-
-// done
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -119,7 +115,7 @@ function calculateAverageAgeDiff(people, onlyWithSon = false) {
     function(accumulatorAge, kid) {
       const mothers = people.find(mother => mother.name === kid.mother);
 
-      return accumulatorAge + (+kid.born) - (+mothers.born);
+      return accumulatorAge + Number(kid.born) - Number(mothers.born);
     },
     0);
 
