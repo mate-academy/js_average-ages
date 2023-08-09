@@ -14,12 +14,22 @@
  *
  * @return {number}
  */
+const MALE_SEX = 'm';
+const FEMALE_SEX = 'f';
+const CUNTURY_COEFFICIENT = 100;
+
+const calculateAverageAge = (arrayOfPeople) =>
+  arrayOfPeople.reduce((year, person) =>
+    year + person.died - person.born, 0) / arrayOfPeople.length || 0;
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const mensOfCenturyArray = people.filter(person => (
+    person.sex === MALE_SEX && (century
+      ? Math.ceil(person.died / CUNTURY_COEFFICIENT) === century
+      : true)
+  ));
+
+  return calculateAverageAge(mensOfCenturyArray);
 }
 
 /**
@@ -37,7 +47,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const womensOfCenturyArray = people.filter(person =>
+    (person.sex === FEMALE_SEX && (withChildren
+      ? people.some(child => child.mother === person.name)
+      : true)
+    ));
+
+  return calculateAverageAge(womensOfCenturyArray);
 }
 
 /**
@@ -55,10 +71,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const peopleWithMothers = people
+    .filter(person => (onlyWithSon
+      ? person.sex === MALE_SEX
+      : true) && (people.some(child => child.name === person.mother)
+    ));
+
+  const arrayOfChildMotherYears = peopleWithMothers.map(person =>
+    ({
+      died: person.born,
+      born: people.find(mother => person.mother === mother.name).born,
+    })
+  );
+
+  return calculateAverageAge(arrayOfChildMotherYears);
 }
 
 module.exports = {
