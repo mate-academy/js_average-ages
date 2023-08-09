@@ -15,11 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const male = 'm';
+  const men = people.filter(({ sex }) => sex === male);
+
+  const menDiedInCentury = century
+    ? men.filter(({ died }) => Math.ceil(died / 100) === century)
+    : men;
+
+  const avgAgeMen = menDiedInCentury
+    .map(({ born, died }) => died - born)
+    .reduce((sum, age) => sum + age, 0) / menDiedInCentury.length;
+
+  return avgAgeMen;
 }
 
 /**
@@ -37,7 +44,18 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const female = 'f';
+  const women = people.filter(({ sex }) => sex === female);
+
+  const womenWithChild = withChildren
+    ? women.filter(woman => people.some(x => x.mother === woman.name))
+    : women;
+
+  const avgAgeWomen = womenWithChild
+    .map(({ born, died }) => died - born)
+    .reduce((sum, age) => sum + age, 0) / womenWithChild.length;
+
+  return avgAgeWomen;
 }
 
 /**
@@ -55,10 +73,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const male = 'm';
+  const children = onlyWithSon
+    ? people.filter(({ sex }) => sex === male) : people;
+
+  const peopleWithMother = children
+    .map(person => {
+      person.momObject = people.find(x => x.name === person.mother);
+
+      return person;
+    }).filter(person => person.momObject);
+
+  const avgAgeDiff = peopleWithMother
+    .reduce((prev, person) => prev + person.born - person.momObject.born, 0)
+    / peopleWithMother.length;
+
+  return avgAgeDiff;
 }
 
 module.exports = {
