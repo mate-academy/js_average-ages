@@ -5,10 +5,10 @@ const FEMALE_SEX = 'f';
 const MALE_SEX = 'm';
 const CENTURY_CHANGE = 100;
 
-const getAverageAge = people => {
-  const ageAmount = people.reduce((a, b) => a + b, INITIAL_VALUE);
+const getAverageAge = ageValues => {
+  const ageAmount = ageValues.reduce((a, b) => a + b, INITIAL_VALUE);
 
-  return +(ageAmount / people.length).toFixed(2);
+  return +(ageAmount / ageValues.length).toFixed(2);
 };
 
 /**
