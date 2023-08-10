@@ -15,19 +15,15 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let filteredMen = people.filter(person => person.sex === 'm');
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm');
 
-  if (century) {
-    filteredMen = filteredMen.filter(
-      person => Math.ceil(person.died / 100) === century
-    );
-  }
-
-  const sum = filteredMen.reduce(
+  const sum = men.reduce(
     (total, person) => total + (person.died - person.born), 0
   );
 
-  return sum / filteredMen.length;
+  return sum / men.length;
 }
 
 /**
@@ -45,13 +41,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let filteredWomen = people.filter(person => person.sex === 'f');
-
-  if (withChildren) {
-    filteredWomen = filteredWomen.filter(person =>
-      people.some(child => person.name === child.mother)
-    );
-  }
+  const filteredWomen = people.filter(person => withChildren
+    ? person.sex === 'f' && people.some(child => person.name === child.mother)
+    : person.sex === 'f'
+  );
 
   const sum = filteredWomen.reduce(
     (total, person) => total + (person.died - person.born), 0
@@ -84,14 +77,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const sum = filteredWomen.reduce(
     (total, mother) => {
       // looking for all the children of the mother
-      let allChildren = people.filter(child => child.mother === mother.name);
-
-      if (onlyWithSon) {
-        allChildren = allChildren.filter(child => child.sex === 'm');
-      }
+      const children = people.filter(child => onlyWithSon
+        ? child.mother === mother.name && child.sex === 'm'
+        : child.mother === mother.name
+      );
 
       // calculate the sum of all age differences for each child
-      return total + allChildren.reduce((totalOfMother, childOfMother) => {
+      return total + children.reduce((totalOfMother, childOfMother) => {
         countOfChildren++;
 
         return totalOfMother
