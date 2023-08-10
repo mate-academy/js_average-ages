@@ -14,12 +14,27 @@
  *
  * @return {number}
  */
+
+const SEX_MALE = 'm';
+const SEX_FEMALE = 'f';
+const CENTURY_CHANGE = 100;
+const INITIAL_VALUE = 0;
+
+function getAverageAge(people) {
+  const totalAge = people.reduce((sum, person) =>
+    sum + (person.died - person.born), INITIAL_VALUE);
+
+  return totalAge / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredMen = people.filter(person =>
+    century
+      ? person.sex === SEX_MALE
+        && Math.ceil(person.died / CENTURY_CHANGE) === century
+      : person.sex === SEX_MALE);
+
+  return getAverageAge(filteredMen);
 }
 
 /**
@@ -37,7 +52,13 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomen = people.filter(person =>
+    withChildren
+      ? person.sex === SEX_FEMALE
+        && people.some(child => child.mother === person.name)
+      : person.sex === SEX_FEMALE);
+
+  return getAverageAge(filteredWomen);
 }
 
 /**
@@ -55,10 +76,26 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const filteredPeople = people.filter(person =>
+    onlyWithSon
+      ? person.sex === SEX_MALE && (person.mother)
+      : person.mother
+  );
+
+  const ageDifferences = filteredPeople
+    .map(child => {
+      const mother = people.find(person => person.name === child.mother);
+
+      return (mother) ? child.born - mother.born : 0;
+    })
+    .filter(difference => difference > 0);
+
+  const totalAgeDifference = ageDifferences
+    .reduce((sum, age) => sum + age, 0);
+
+  const averageAgeDifference = totalAgeDifference / ageDifferences.length;
+
+  return averageAgeDifference;
 }
 
 module.exports = {
