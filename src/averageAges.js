@@ -2,7 +2,7 @@
 
 const SEX_MALE = 'm';
 const SEX_FEMALE = 'f';
-const YEARS_IN_CENTURY = 100;
+const CENTURY_VALUE = 100;
 const OPTION_NOT_ACTIVE = true;
 
 /**
@@ -88,7 +88,7 @@ function getAge(person) {
  * @return {number}
  */
 function getCentury(year) {
-  return Math.ceil(year / YEARS_IN_CENTURY);
+  return Math.ceil(year / CENTURY_VALUE);
 }
 
 /**
