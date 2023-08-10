@@ -3,6 +3,7 @@
 const INITIAL_VALUE = 0;
 const FEMALE_SEX = 'f';
 const MALE_SEX = 'm';
+const CENTURY_CHANGE = 100;
 
 const getAverageAge = people => {
   const ageAmount = people.reduce((a, b) => a + b, INITIAL_VALUE);
@@ -26,7 +27,7 @@ const getAverageAge = people => {
  */
 function calculateMenAverageAge(people, century) {
   const filteredMen = people.filter(({ died, sex }) => sex === MALE_SEX
-      && (century ? Math.ceil(died / 100) === century : true));
+      && (century ? Math.ceil(died / CENTURY_CHANGE) === century : true));
 
   const ageOfMen = filteredMen.map(({ born, died }) => died - born);
 
