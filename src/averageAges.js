@@ -52,8 +52,8 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 
-function agesSumPerson(arr) {
-  return arr.reduce((sumAges, person) =>
+function agesSumPerson(avaregeAgesPeople) {
+  return avaregeAgesPeople.reduce((sumAges, person) =>
     sumAges + (person.died - person.born), 0);
 }
 
