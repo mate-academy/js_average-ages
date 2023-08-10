@@ -1,64 +1,172 @@
 'use strict';
 
+const SEX_MALE = 'm';
+const SEX_FEMALE = 'f';
+const CENTURY_VALUE = 100;
+const OPTION_NOT_ACTIVE = true;
+
 /**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
  * @param {object[]} people
  * @param {number} century - optional
  *
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const malePeople = people.filter(
+    (person) =>
+      isMale(person)
+      && (century ? isDiedInCentury(person, century) : OPTION_NOT_ACTIVE)
+  );
+
+  return calculateAverageAge(malePeople);
 }
 
 /**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
  * @param {object[]} people
  * @param {boolean} withChildren - optional
  *
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const femalePeople = people.filter(
+    (person) =>
+      isFemale(person)
+      && (withChildren ? hasChildren(person, people) : OPTION_NOT_ACTIVE)
+  );
+
+  return calculateAverageAge(femalePeople);
 }
 
 /**
- * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for sons and their mothers.
- *
  * @param {object[]} people
  * @param {boolean} onlyWithSon - optional
  *
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const peopleWithMothers = people.filter(
+    (person) =>
+      (onlyWithSon ? isMale(person) : OPTION_NOT_ACTIVE)
+      && hasMother(person, people)
+  );
+
+  const totalAgeDiff = peopleWithMothers.reduce(
+    (acc, person) =>
+      acc + getChildAndMotherAgeDiff(person, getMother(person, people)),
+    0
+  );
+
+  return totalAgeDiff / peopleWithMothers.length;
+}
+
+/**
+ * @param {object[]} people
+ *
+ * @return {number}
+ */
+function calculateAverageAge(people) {
+  const totalAge = people.reduce(
+    (acc, person) => acc + getAge(person),
+    0
+  );
+
+  return totalAge / people.length;
+}
+
+/**
+ * @param {object} person
+ *
+ * @return {number}
+ */
+function getAge(person) {
+  return person.died - person.born;
+}
+
+/**
+ * @param {number} year
+ *
+ * @return {number}
+ */
+function getCentury(year) {
+  return Math.ceil(year / CENTURY_VALUE);
+}
+
+/**
+ * @param {object} person
+ * @param {number} century
+ *
+ * @return {boolean}
+ */
+function isDiedInCentury(person, century) {
+  return getCentury(person.died) === century;
+}
+
+/**
+ * @param {object} person
+ *
+ * @return {boolean}
+ */
+function isMale(person) {
+  return person.sex === SEX_MALE;
+}
+
+/**
+ * @param {object} person
+ *
+ * @return {boolean}
+ */
+function isFemale(person) {
+  return person.sex === SEX_FEMALE;
+}
+
+/**
+ * @param {object} parent
+ * @param {object} child
+ *
+ * @return {boolean}
+ */
+function isMother(parent, child) {
+  return parent.name === child.mother;
+}
+
+/**
+ * @param {object} mother
+ * @param {object[]} children
+ *
+ * @return {boolean}
+ */
+function hasChildren(mother, children) {
+  return children.some((child) => isMother(mother, child));
+}
+
+/**
+ * @param {object} child
+ * @param {object[]} parents
+ *
+ * @return {boolean}
+ */
+function hasMother(child, parents) {
+  return parents.some((parent) => isMother(parent, child));
+}
+
+/**
+ * @param {object} child
+ * @param {object[]} parents
+ *
+ * @return {object}
+ */
+function getMother(child, parents) {
+  return parents.find((parent) => isMother(parent, child));
+}
+
+/**
+ * @param {object} child
+ * @param {object} mother
+ *
+ * @return {number}
+ */
+function getChildAndMotherAgeDiff(child, mother) {
+  return child.born - mother.born;
 }
 
 module.exports = {
