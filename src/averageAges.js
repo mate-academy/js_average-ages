@@ -1,11 +1,5 @@
 'use strict';
 
-/**
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
 function calculateMenAverageAge(people, century) {
   const onlyMen = genderFilter(people, 'm');
 
@@ -13,17 +7,9 @@ function calculateMenAverageAge(people, century) {
     ? onlyMen.filter(person => Math.ceil(person.died / 100) === century)
     : onlyMen;
 
-  const sumOfOnlyMenAge = sumAge(filteredMen);
-
-  return sumOfOnlyMenAge / filteredMen.length;
+  return calculateAvgAge(filteredMen);
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withChildren) {
   const onlyWomen = genderFilter(people, 'f');
 
@@ -31,27 +17,26 @@ function calculateWomenAverageAge(people, withChildren) {
     ? onlyWomen.filter(woman => people.some(p => p.mother === woman.name))
     : onlyWomen;
 
-  const sumOfAllWomenAge = sumAge(filteredWomen);
-
-  return sumOfAllWomenAge / filteredWomen.length;
+  return calculateAvgAge(filteredWomen);
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const filteredChildren = people.filter(person => (onlyWithSon)
+    ? people.find(mother => mother.name === person.mother
+      && person.sex === 'm')
+    : people.find(mother => mother.name === person.mother)
+  );
+
+  const ageDiff = filteredChildren.map(child =>
+    child.born - people.find(mother => mother.name === child.mother).born);
+
+  return ageDiff.reduce((acc, age) => acc + age) / ageDiff.length;
 }
 
-function sumAge(people) {
+function calculateAvgAge(people) {
   return people
-    .reduce((acc, person) => acc + (person.died - person.born), 0);
+    .reduce((acc, person) =>
+      acc + (person.died - person.born), 0) / people.length;
 }
 
 function genderFilter(people, gender) {
@@ -63,5 +48,3 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
-
-// I added some custom functions, since we use some calculations/checks twice;
