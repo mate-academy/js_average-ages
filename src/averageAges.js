@@ -1,64 +1,57 @@
 'use strict';
 
-/**
- * Implement calculateMenAverageAge function
- *
- * Function returns average age of men in array. If `century` is specified then
- * function calculates average age only for men who died in this century
- *
- * To calculate century:
- * Divide year of person's death by 100: Math.ceil(person.died / 100)
- *
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
+const FEMALE = 'f';
+const MALE = 'm';
+
+function sumAges(whos) {
+  return whos.reduce((accum, person) =>
+    (accum + (person['died'] - person['born'])), 0);
+};
+
+function getAgeDiff(whosChildren, whos) {
+  return ((whosChildren.reduce((accum, child) =>
+    accum + child['born'] - whos.find(mom => child['mother']
+      === mom['name'])['born'], 0)) / whosChildren.length).toFixed(2);
+};
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const allMen = people.filter(person => person['sex'] === MALE);
+
+  const centuryCadaversMen = century
+    ? allMen.filter(cadaver => Math.ceil(cadaver['died'] / 100) === century)
+    : false;
+
+  return centuryCadaversMen
+    ? sumAges(centuryCadaversMen) / centuryCadaversMen.length
+    : sumAges(allMen) / allMen.length;
 }
 
-/**
- * Implement calculateWomenAverageAge function
- *
- * Function returns average age of women in array. If `withChildren` is
- * specified then function calculates average age only for women with children
- *
- * Hint: To check if a woman has children you should find someone who mention
- * her as mother.
- *
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const allWomen = people.filter(person => person['sex'] === FEMALE);
+
+  const moms = withChildren
+    ? allWomen.filter(woman => {
+      return people.some(person => woman['name'] === person['mother']);
+    })
+    : false;
+
+  return moms
+    ? sumAges(moms) / moms.length
+    : sumAges(allWomen) / allWomen.length;
 }
 
-/**
- * Implement calculateAverageAgeDiff function.
- *
- * The function returns an average age difference between a child and his or her
- * mother in the array. (A mother's age at child birth)
- *
- * If `onlyWithSon` is specified then function calculates age difference only
- * for sons and their mothers.
- *
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const children = people.filter(child => {
+    return people.some((mother) => {
+      return child['mother'] === mother['name'];
+    });
+  });
+
+  const sons = children.filter(child => child['sex'] === MALE);
+
+  return onlyWithSon
+    ? +getAgeDiff(sons, people)
+    : +getAgeDiff(children, people);
 }
 
 module.exports = {
