@@ -18,19 +18,20 @@ const SEX_MALE = 'm';
 const SEX_FEMALE = 'f';
 const CENTURY_VALUE = 100;
 
-const getAverageAge = (acc, person, personIndex, currentArray) => {
-  const { born, died } = person;
-  const age = died - born;
+const getAverageAge = (peopleArray) =>
+  peopleArray.reduce((acc, person, personIndex) => {
+    const { born, died } = person;
+    const age = died - born;
 
-  if (personIndex === currentArray.length - 1) {
-    return (acc + age) / currentArray.length;
-  }
+    if (personIndex === peopleArray.length - 1) {
+      return (acc + age) / peopleArray.length;
+    }
 
-  return acc + age;
-};
+    return acc + age;
+  }, 0);
 
 function calculateMenAverageAge(people, century) {
-  return people
+  const filteredPeopleBySex = people
     .filter(({ sex, died }) => {
       const deathCentury = Math.ceil(died / CENTURY_VALUE);
       const isCenturyRequired = century
@@ -38,8 +39,9 @@ function calculateMenAverageAge(people, century) {
         : sex === SEX_MALE;
 
       return isCenturyRequired;
-    })
-    .reduce(getAverageAge, 0);
+    });
+
+  return getAverageAge(filteredPeopleBySex);
 }
 
 /**
@@ -64,7 +66,7 @@ function calculateWomenAverageAge(people, withChildren) {
       people.some(({ mother }) => mother === name))
     : womenArray;
 
-  return filteredWomenByChildren.reduce(getAverageAge, 0);
+  return getAverageAge(filteredWomenByChildren);
 }
 
 /**
