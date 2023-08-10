@@ -18,18 +18,20 @@ const MALE = 'm';
 const FEMALE = 'f';
 const ONE_CENTURY = 100;
 
+function sumPeopleAges(people) {
+  return people
+    .reduce((sumAges, person) => sumAges + (person.died - person.born), 0);
+}
+
 function calculateMenAverageAge(people, century) {
   const menInCentury = people
-    .filter(person => person.sex === FEMALE ? false
-      : !century ? true
-        : Math.ceil(person.died / ONE_CENTURY) === century);
+    .filter(person => person.sex === MALE && (century
+      ? Math.ceil(person.died / ONE_CENTURY) === century
+      : true));
 
-  const sumAgesMenInCentury = menInCentury
-    .reduce((sumAges, person) => sumAges + (person.died - person.born), 0);
+  const sumAgesMenInCentury = sumPeopleAges(menInCentury);
 
-  const amountMenInCentury = menInCentury.length;
-
-  const menAverageAge = +(sumAgesMenInCentury / amountMenInCentury).toFixed(2);
+  const menAverageAge = +(sumAgesMenInCentury / menInCentury.length).toFixed(2);
 
   return menAverageAge;
 }
@@ -49,20 +51,17 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const mothers = people
+  const mothersNames = people
     .filter(person => person.mother !== null)
     .map(person => person.mother);
 
   const women = people
     .filter(person => person.sex === FEMALE)
-    .filter(person => withChildren ? mothers.includes(person.name) : true);
+    .filter(person => withChildren ? mothersNames.includes(person.name) : true);
 
-  const sumAgesWomen = women
-    .reduce((sumAges, person) => sumAges + (person.died - person.born), 0);
+  const sumAgesWomen = sumPeopleAges(women);
 
-  const amountWomen = women.length;
-
-  const womenAverageAge = +(sumAgesWomen / amountWomen).toFixed(2);
+  const womenAverageAge = +(sumAgesWomen / women.length).toFixed(2);
 
   return womenAverageAge;
 }
@@ -104,9 +103,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       return sumAge + (person.born - mother.born);
     }, 0);
 
-  const amountPeopleWithMother = peopleWithMother.length;
-
-  const averageAgeDiff = +(sumAgesDiff / amountPeopleWithMother).toFixed(2);
+  const averageAgeDiff = +(sumAgesDiff / peopleWithMother.length).toFixed(2);
 
   return averageAgeDiff;
 }
