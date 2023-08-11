@@ -6,9 +6,12 @@
  *
  * @return {number}
  */
+const MALE = 'm';
+const FEMALE = 'f';
+
 function calculateMenAverageAge(people, century) {
   const selectedMenGroup = people
-    .filter(person => person.sex === 'm'
+    .filter(person => person.sex === MALE
       && (century === undefined || century === Math.ceil(person.died / 100)));
   const menAverageAge = selectedMenGroup
     .reduce((ageSum, person) => ageSum + person.died - person.born, 0);
@@ -24,7 +27,7 @@ function calculateMenAverageAge(people, century) {
  */
 function calculateWomenAverageAge(people, withChildren) {
   let selectedWomenGroup = people
-    .filter(person => person.sex === 'f');
+    .filter(person => person.sex === FEMALE);
 
   if (withChildren) {
     selectedWomenGroup = selectedWomenGroup
@@ -52,7 +55,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   if (onlyWithSon) {
     selectedChildrenGroup = selectedChildrenGroup
-      .filter(child => child.sex === 'm');
+      .filter(child => child.sex === MALE);
 
     // BY UNCOMMENTING THE FOLLOWING LINES,
     // WE CAN NARROW THE SEARCH FOR FURTHER CODE
