@@ -21,10 +21,9 @@ const CENTURY_CHANGE = 100;
 const INITIAL_VALUE = 0;
 
 function getAverageAge(people) {
-  const totalAge = people.reduce((sum, person) =>
-    sum + (person.died - person.born), INITIAL_VALUE);
-
-  return totalAge / people.length;
+  return people
+    .reduce((sum, person) => sum + (person.died - person.born), INITIAL_VALUE)
+    / people.length;
 }
 
 function calculateMenAverageAge(people, century) {
@@ -90,12 +89,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     })
     .filter(difference => difference > 0);
 
-  const totalAgeDifference = ageDifferences
-    .reduce((sum, age) => sum + age, 0);
-
-  const averageAgeDifference = totalAgeDifference / ageDifferences.length;
-
-  return averageAgeDifference;
+  return ageDifferences
+    .reduce((sum, age) => sum + age, INITIAL_VALUE) / ageDifferences.length;
 }
 
 module.exports = {
