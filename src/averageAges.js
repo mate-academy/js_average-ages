@@ -88,14 +88,12 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       && (onlyWithSon ? son.sex === SEX_MALE : true)
     );
 
-  const diffMotherAndChild = peopleWithMother.reduce((acc, person) => {
+  return peopleWithMother.reduce((acc, person) => {
     const mother = people.find((human) => human.name === person.mother);
     const ageDiff = person.born - mother.born;
 
     return acc + ageDiff;
-  }, 0);
-
-  return diffMotherAndChild / peopleWithMother.length;
+  }, 0) / peopleWithMother.length;
 }
 
 module.exports = {
