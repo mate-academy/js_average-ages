@@ -3,41 +3,47 @@
 const FEMALE = 'f';
 const MALE = 'm';
 
-function sumAges(whos) {
-  return whos.reduce((accum, person) =>
-    (accum + (person['died'] - person['born'])), 0);
+function sumAges(cadaver) {
+  return cadaver.reduce((accum, person) =>
+    (accum + (person['died'] - person['born'])), 0) / cadaver.length;
 };
 
-function getAgeDiff(whosChildren, whos) {
-  return ((whosChildren.reduce((accum, child) =>
-    accum + child['born'] - whos.find(mom => child['mother']
-      === mom['name'])['born'], 0)) / whosChildren.length).toFixed(2);
+function getAgeDiff(cadaverChildren, cadaver) {
+  return ((cadaverChildren.reduce((accum, child) =>
+    accum + child['born'] - cadaver.find(mom => child['mother']
+      === mom['name'])['born'], 0)) / cadaverChildren.length).toFixed(2);
 };
 
 function calculateMenAverageAge(people, century) {
   const allMen = people.filter(person => person['sex'] === MALE);
 
-  const centuryCadaversMen = century
+  const cadaversMen = century
     ? allMen.filter(cadaver => Math.ceil(cadaver['died'] / 100) === century)
-    : false;
+    : allMen;
 
-  return centuryCadaversMen
-    ? sumAges(centuryCadaversMen) / centuryCadaversMen.length
-    : sumAges(allMen) / allMen.length;
+  return sumAges(cadaversMen);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
   const allWomen = people.filter(person => person['sex'] === FEMALE);
 
-  const moms = withChildren
+  const cadaversWomen = withChildren
     ? allWomen.filter(woman => {
       return people.some(person => woman['name'] === person['mother']);
     })
-    : false;
+    : allWomen;
 
-  return moms
-    ? sumAges(moms) / moms.length
-    : sumAges(allWomen) / allWomen.length;
+  // moms = withChildren
+  //   ? allWomen.filter(woman => {
+  //     return people.some(person => woman['name'] === person['mother']);
+  //   })
+  //   : false;
+
+  // return moms
+  //   ? sumAges(moms) / moms.length
+  //   : sumAges(allWomen) / allWomen.length;
+
+  return sumAges(cadaversWomen);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
