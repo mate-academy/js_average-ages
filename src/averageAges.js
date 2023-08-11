@@ -12,7 +12,7 @@ const CENTURY_DIVIDER = 100;
 /* eslint-disable no-console */
 
 function calculateMenAverageAge(people, century) {
-  const mens = people.filter(
+  const men = people.filter(
     person =>
       isMale(person)
         && (century
@@ -20,7 +20,7 @@ function calculateMenAverageAge(people, century) {
           : true)
   );
 
-  return +getAverageAge(mens).toFixed(2);
+  return getAverageAge(men);
 };
 
 /**
@@ -30,15 +30,15 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const womens = people.filter(
-    women =>
-      isFemale(women)
+  const women = people.filter(
+    person =>
+      isFemale(person)
         && (withChildren
-          ? people.some(child => child.mother === women.name)
+          ? people.some(child => child.mother === person.name)
           : true)
   );
 
-  return +getAverageAge(womens).toFixed(2);
+  return getAverageAge(women);
 }
 
 /**
@@ -49,31 +49,31 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const childrens = people.filter(
-    child =>
-      people.some(mother => mother.name === child.mother)
+    person =>
+      people.some(mother => mother.name === person.mother)
         && (onlyWithSon
-          ? isMale(child)
+          ? isMale(person)
           : true)
   );
 
   return childrens.reduce((sum, child) => {
     const mother = people.find(
-      possibleMother =>
-        child.mother === possibleMother.name
+      person =>
+        child.mother === person.name
     );
 
     return sum + (child.born - mother.born);
   }, 0) / childrens.length;
 }
 
-function getAverageAge(arrayOfPersons) {
-  return arrayOfPersons.reduce(
+function getAverageAge(people) {
+  return +(people.reduce(
     (sum, person) =>
       sum + getAge(person)
-    , 0) / arrayOfPersons.length;
+    , 0) / people.length).toFixed(2);
 }
 
-function checkIfCorrespondingSex(sex) {
+function checkSex(sex) {
   return (person) => person.sex === sex;
 };
 
@@ -81,8 +81,8 @@ function getAge(person) {
   return person.died - person.born;
 };
 
-const isMale = checkIfCorrespondingSex(MALE_SEX);
-const isFemale = checkIfCorrespondingSex(FEMALE_SEX);
+const isMale = checkSex(MALE_SEX);
+const isFemale = checkSex(FEMALE_SEX);
 
 module.exports = {
   calculateMenAverageAge,
