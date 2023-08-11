@@ -14,16 +14,21 @@
  *
  * @return {number}
  */
+
+function averageReturn(arrayOfPeople) {
+  const sum = arrayOfPeople.reduce(
+    (total, person) => total + (person.died - person.born), 0
+  );
+
+  return sum / arrayOfPeople.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter(person => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
 
-  const sum = men.reduce(
-    (total, person) => total + (person.died - person.born), 0
-  );
-
-  return sum / men.length;
+  return averageReturn(men);
 }
 
 /**
@@ -40,17 +45,14 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
   const filteredWomen = people.filter(person => withChildren
     ? person.sex === 'f' && people.some(child => person.name === child.mother)
     : person.sex === 'f'
   );
 
-  const sum = filteredWomen.reduce(
-    (total, person) => total + (person.died - person.born), 0
-  );
-
-  return sum / filteredWomen.length;
+  return averageReturn(filteredWomen);
 }
 
 /**
@@ -72,7 +74,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     person.sex === 'f' && people.some(child => person.name === child.mother)
   );
 
-  let countOfChildren = 0;
+  let countOfOperations = 0;
 
   const sum = filteredWomen.reduce(
     (total, mother) => {
@@ -82,9 +84,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
         : child.mother === mother.name
       );
 
-      // calculate the sum of all age differences for each child
+      // calculate sum of age difference between mother and each of her child
       return total + children.reduce((totalOfMother, childOfMother) => {
-        countOfChildren++;
+        countOfOperations++;
 
         return totalOfMother
           + childOfMother.born
@@ -94,7 +96,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     }, 0
   );
 
-  return sum / countOfChildren;
+  return sum / countOfOperations;
 }
 
 module.exports = {
