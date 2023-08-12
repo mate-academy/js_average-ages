@@ -14,12 +14,21 @@
  *
  * @return {number}
  */
+
+function averageReturn(arrayOfPeople) {
+  const sum = arrayOfPeople.reduce(
+    (total, person) => total + (person.died - person.born), 0
+  );
+
+  return sum / arrayOfPeople.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm');
+
+  return averageReturn(men);
 }
 
 /**
@@ -36,8 +45,14 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredWomen = people.filter(person => withChildren
+    ? person.sex === 'f' && people.some(child => person.name === child.mother)
+    : person.sex === 'f'
+  );
+
+  return averageReturn(filteredWomen);
 }
 
 /**
@@ -55,10 +70,33 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const filteredWomen = people.filter(person =>
+    person.sex === 'f' && people.some(child => person.name === child.mother)
+  );
+
+  let countOfOperations = 0;
+
+  const sum = filteredWomen.reduce(
+    (total, mother) => {
+      // looking for all the children of the mother
+      const children = people.filter(child => onlyWithSon
+        ? child.mother === mother.name && child.sex === 'm'
+        : child.mother === mother.name
+      );
+
+      // calculate sum of age difference between mother and each of her child
+      return total + children.reduce((totalOfMother, childOfMother) => {
+        countOfOperations++;
+
+        return totalOfMother
+          + childOfMother.born
+          - mother.born;
+      }, 0
+      );
+    }, 0
+  );
+
+  return sum / countOfOperations;
 }
 
 module.exports = {
