@@ -92,9 +92,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
   const mothers = people
-    .filter(mom =>
-      people
-        .some(child => child.mother === mom.name));
+    .filter(mom => people
+      .some(child => child.mother === mom.name));
 
   const childrenWithMother = people
     .filter(child =>
