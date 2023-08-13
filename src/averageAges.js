@@ -14,10 +14,11 @@
  *
  * @return {number}
  */
-function calculateMenAverageAge(people, century) {
-  const MALE_SEX = 'm';
-  const YEARS_IN_CENTURY = 100;
+const MALE_SEX = 'm';
+const FEMALE_SEX = 'f';
+const YEARS_IN_CENTURY = 100;
 
+function calculateMenAverageAge(people, century) {
   const menList = people.filter((person) => {
     return century
       ? person.sex === MALE_SEX
@@ -46,8 +47,6 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const FEMALE_SEX = 'f';
-
   const womenList = people.filter((person) => {
     return withChildren
       ? person.sex === FEMALE_SEX
@@ -77,8 +76,6 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const MALE_SEX = 'm';
-
   const childrenWithMother = people.filter((child) => {
     return (onlyWithSon && child.sex !== MALE_SEX)
       ? false
