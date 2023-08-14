@@ -14,12 +14,31 @@
  *
  * @return {number}
  */
+const MALE_SEX_VALUE = 'm';
+const FEMALE_SEX_VALUE = 'f';
+
+function getAverageAge(array) {
+  const averageAge = Math.round(array.reduce(
+    (prev, { died, born }) =>
+      prev + died - born, 0) * 100 / array.length) / 100;
+
+  return averageAge;
+}
+
 function calculateMenAverageAge(people, century) {
   // write code here
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const filteredPeople = people.filter(({ sex, died }) =>
+    sex === MALE_SEX_VALUE && (century
+      ? Math.ceil(died / 100) === century
+      : true));
+
+  const averageAge = getAverageAge(filteredPeople);
+
+  return averageAge;
 }
 
 /**
@@ -37,7 +56,14 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeople = people.filter(({ sex, name: personName }) =>
+    sex === FEMALE_SEX_VALUE && (withChildren
+      ? people.some(({ mother }) => personName === mother)
+      : true));
+
+  const averageAge = getAverageAge(filteredPeople);
+
+  return averageAge;
 }
 
 /**
@@ -59,6 +85,27 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+
+  let peopleWithMothers = people.filter(({ mother }) =>
+    people.find(({ name }) => mother === name));
+
+  if (onlyWithSon) {
+    peopleWithMothers = peopleWithMothers.filter(
+      ({ sex }) => sex === MALE_SEX_VALUE);
+  }
+
+  const totalAgeDiff = peopleWithMothers.reduce(
+    (prev, { born: personBorn, mother }) => {
+      const motherBorn = people.find(({ name }) => mother === name).born;
+      const ageDiff = personBorn - motherBorn;
+
+      return prev + ageDiff;
+    }, 0);
+
+  const averageAgeDiff
+    = Math.round(totalAgeDiff * 100 / peopleWithMothers.length) / 100;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
