@@ -7,6 +7,10 @@
  *
  * @return {number}
  */
+
+const FEMALE_GENDER = 'f';
+const MALE_GENDER = 'm';
+
 function calculateMenAverageAge(people, century) {
   const men = people.filter((person) => isMan(person)
     && (century
@@ -14,7 +18,7 @@ function calculateMenAverageAge(people, century) {
       : true)
   );
 
-  return averageAge(men);
+  return getAverageAge(men);
 }
 
 /**
@@ -31,7 +35,7 @@ function calculateWomenAverageAge(people, withChildren) {
       ? people.some((child) => child.mother === person.name)
       : true));
 
-  return averageAge(women);
+  return getAverageAge(women);
 }
 
 /**
@@ -42,13 +46,12 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter((child) => {
-    return people
-      .some(mother => mother.name === child.mother)
+  const children = people.filter((child) => (
+    people.some(mother => mother.name === child.mother)
           && (onlyWithSon
             ? isMan(child)
-            : true);
-  });
+            : true)
+  ));
 
   const sumOfDifference = children.reduce((sum, child) => {
     const mother = people.find((woman) => child.mother === woman.name);
@@ -64,28 +67,23 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   return averageDifference;
 }
 
-function centuryFromYear(value) {
-  return Math.ceil(value / 100);
+function centuryFromYear(year) {
+  return Math.ceil(year / 100);
 }
 
-function isMan(value) {
-  const MALE_GENDER = 'm';
-
-  return value.sex === MALE_GENDER;
+function isMan(people) {
+  return people.sex === MALE_GENDER;
 }
 
-function isWoman(value) {
-  const FEMALE_GENDER = 'f';
-
-  return value.sex === FEMALE_GENDER;
+function isWoman(people) {
+  return people.sex === FEMALE_GENDER;
 }
 
-function averageAge(value) {
-  const sumOfAges = value
-    .map((person) => person.died - person.born)
-    .reduce((sum, age) => sum + age, 0);
+function getAverageAge(people) {
+  const sumOfAges = people
+    .reduce((sum, person) => sum + (person.died - person.born), 0);
 
-  const average = sumOfAges / value.length;
+  const average = sumOfAges / people.length;
 
   return Math.round(average * 100) / 100;
 }
