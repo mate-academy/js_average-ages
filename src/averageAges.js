@@ -14,12 +14,24 @@
  *
  * @return {number}
  */
+const CENTURY = 100;
+const MALE = 'm';
+const FEMALE = 'f';
+
+function calculateAverageAges(people) {
+  return people.reduce((total, { born, died }) =>
+    total + (died - born
+    ), 0) / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const filteredPeopleByMan = people.filter(({ sex, died }) => {
+    return century
+      ? sex === MALE && Math.ceil(died / CENTURY) === century
+      : sex === MALE;
+  });
+
+  return calculateAverageAges(filteredPeopleByMan);
 }
 
 /**
@@ -36,8 +48,15 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const filteredPeopleByWoman = people.filter(({ sex, name }) => {
+    return withChildren
+      ? sex === FEMALE && people.some(({ mother }) => name === mother)
+      : sex === FEMALE;
+  });
+
+  return calculateAverageAges(filteredPeopleByWoman);
 }
 
 /**
@@ -55,10 +74,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const filteredPeopleByMother = people.filter(
+    ({ sex, mother: motherName }) => {
+      const mother = people.find(({ name }) => motherName === name);
+
+      return onlyWithSon ? mother && sex === MALE : mother;
+    });
+
+  const averageAgeDiff = filteredPeopleByMother.reduce(
+    (total, { born, mother }) => {
+      const motherBorn = people.find(({ name }) => name === mother).born;
+
+      return total + (born - motherBorn);
+    }, 0) / filteredPeopleByMother.length;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
