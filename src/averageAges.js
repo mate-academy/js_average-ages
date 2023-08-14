@@ -8,13 +8,19 @@
  */
 const MALE = 'm';
 const FEMALE = 'f';
+const CENTURY_DIVISOR = 100;
+
+function countAverageAge(selectedGroup) {
+  return selectedGroup
+    .reduce((ageSum, person) => ageSum + person.died - person.born, 0);
+}
 
 function calculateMenAverageAge(people, century) {
   const selectedMenGroup = people
     .filter(person => person.sex === MALE
-      && (century === undefined || century === Math.ceil(person.died / 100)));
-  const menAverageAge = selectedMenGroup
-    .reduce((ageSum, person) => ageSum + person.died - person.born, 0);
+      && (century === undefined
+      || century === Math.ceil(person.died / CENTURY_DIVISOR)));
+  const menAverageAge = countAverageAge(selectedMenGroup);
 
   return menAverageAge / selectedMenGroup.length;
 }
@@ -34,8 +40,7 @@ function calculateWomenAverageAge(people, withChildren) {
       .filter(mom => people.some(child => child.mother === mom.name));
   }
 
-  const womenAverageAge = selectedWomenGroup
-    .reduce((ageSum, person) => ageSum + person.died - person.born, 0);
+  const womenAverageAge = countAverageAge(selectedWomenGroup);
 
   return womenAverageAge / selectedWomenGroup.length;
 }
@@ -56,12 +61,6 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   if (onlyWithSon) {
     selectedChildrenGroup = selectedChildrenGroup
       .filter(child => child.sex === MALE);
-
-    // BY UNCOMMENTING THE FOLLOWING LINES,
-    // WE CAN NARROW THE SEARCH FOR FURTHER CODE
-    // selectedMothersGroup = selectedMothersGroup
-    //   .filter(mom => selectedChildrenGroup
-    //     .some(child => child.mother === mom.name));
   }
 
   const ageDifferenceSum = selectedChildrenGroup
