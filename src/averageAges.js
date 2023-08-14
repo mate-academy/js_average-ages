@@ -20,6 +20,19 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
+  const filteredMen = (century
+    ? people.filter(({ died, sex }) =>
+      Math.ceil(died / 100) === century
+      && sex === 'm')
+    : people.filter(({ sex }) => sex === 'm'));
+
+  const sumOfMenAges = filteredMen.reduce((acc, { died, born }) => {
+    const age = died - born;
+
+    return acc + age;
+  }, 0);
+
+  return sumOfMenAges / filteredMen.length;
 }
 
 /**
@@ -37,7 +50,25 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothersNames = people
+    .filter(({ mother }) => mother)
+    .reduce((acc, person) => {
+      return acc.concat(person.mother);
+    }, []);
+
+  const filteredWomen = withChildren
+    ? people.filter(person =>
+      mothersNames.includes(person.name)
+      && person.sex === 'f')
+    : people.filter(({ sex }) => sex === 'f');
+
+  const sumOfAges = filteredWomen.reduce((acc, { died, born }) => {
+    const age = died - born;
+
+    return acc + age;
+  }, 0);
+
+  return sumOfAges / filteredWomen.length;
 }
 
 /**
@@ -59,6 +90,33 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
+  const mothersNames = people
+    .filter(({ mother }) => mother)
+    .reduce((acc, person) => {
+      return acc.concat(person.mother);
+    }, []);
+
+  const children = people.filter(person =>
+    mothersNames.includes(person.mother));
+
+  const filteredChildren = onlyWithSon
+    ? children.filter(person => person.sex === 'm'
+      && mothersNames.includes(person.mother))
+    : children;
+
+  const ageDiffs = filteredChildren.map(child => {
+    const mother = people.find(person => person.name === child.mother);
+
+    return mother ? child.born - mother.born : 0;
+  });
+
+  const nonZeroAgeDiffs = ageDiffs.filter(diff => diff !== 0);
+
+  const totalAgeDiff = nonZeroAgeDiffs.reduce((acc, diff) => acc + diff, 0);
+
+  const averageAgeDiff = totalAgeDiff / nonZeroAgeDiffs.length;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
