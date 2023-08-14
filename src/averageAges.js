@@ -3,7 +3,7 @@
 function calculateMenAverageAge(people, century) {
   const onlyMen = genderFilter(people, 'm');
 
-  const filteredMen = (century)
+  const filteredMen = century
     ? onlyMen.filter(person => Math.ceil(person.died / 100) === century)
     : onlyMen;
 
