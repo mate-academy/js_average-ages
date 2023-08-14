@@ -17,8 +17,8 @@ function calculateWomenAverageAge(people, withChildren) {
   const onlyWomen = genderFilter(people, FEMALE_GENDER);
 
   const filteredWomen = withChildren
-  // eslint-disable-next-line
-    ? onlyWomen.filter(({ name }) => people.some(({ mother }) => mother === name))
+    ? onlyWomen.filter(({ name }) =>
+      people.some(({ mother }) => mother === name))
     : onlyWomen;
 
   return calculateAvgAge(filteredWomen);
