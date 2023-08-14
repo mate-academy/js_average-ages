@@ -34,9 +34,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 }
 
 function calculateAvgAge(people) {
-  return people
-    .reduce((acc, person) =>
-      acc + (person.died - person.born), 0) / people.length;
+  return people.reduce((acc, { died, born }) => (
+    acc + (died - born)
+  ), 0)/ people.length;
 }
 
 function genderFilter(people, gender) {
