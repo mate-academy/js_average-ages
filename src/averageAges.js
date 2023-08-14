@@ -14,22 +14,24 @@
  *
  * @return {number}
  */
+const CENTURY = 100;
+const MALE = 'm';
+const FEMALE = 'f';
 
-function averageAges(people) {
-  return people.reduce(
-    (total, { born, died }) => total + (died - born), 0)
-    / people.length;
+function calculateAverageAges(people) {
+  return people.reduce((total, { born, died }) =>
+    total + (died - born
+    ), 0) / people.length;
 }
 
 function calculateMenAverageAge(people, century) {
-  const CENTURY = 100;
   const filteredPeopleByMan = people.filter(({ sex, died }) => {
     return century
-      ? sex === 'm' && Math.ceil(died / CENTURY) === century
-      : sex === 'm';
+      ? sex === MALE && Math.ceil(died / CENTURY) === century
+      : sex === MALE;
   });
 
-  return averageAges(filteredPeopleByMan);
+  return calculateAverageAges(filteredPeopleByMan);
 }
 
 /**
@@ -50,11 +52,11 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   const filteredPeopleByWoman = people.filter(({ sex, name }) => {
     return withChildren
-      ? sex === 'f' && people.some(({ mother }) => name === mother)
-      : sex === 'f';
+      ? sex === FEMALE && people.some(({ mother }) => name === mother)
+      : sex === FEMALE;
   });
 
-  return averageAges(filteredPeopleByWoman);
+  return calculateAverageAges(filteredPeopleByWoman);
 }
 
 /**
@@ -76,13 +78,17 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     ({ sex, mother: motherName }) => {
       const mother = people.find(({ name }) => motherName === name);
 
-      return onlyWithSon ? mother && sex === 'm' : mother;
+      return onlyWithSon ? mother && sex === MALE : mother;
     });
 
-  return filteredPeopleByMother.reduce(
-    (total, { born, mother }) =>
-      total + (born - people.find(({ name }) => name === mother).born), 0)
-    / filteredPeopleByMother.length;
+  const averageAgeDiff = filteredPeopleByMother.reduce(
+    (total, { born, mother }) => {
+      const motherBorn = people.find(({ name }) => name === mother).born;
+
+      return total + (born - motherBorn);
+    }, 0) / filteredPeopleByMother.length;
+
+  return averageAgeDiff;
 }
 
 module.exports = {
