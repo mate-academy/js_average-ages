@@ -15,9 +15,12 @@
  * @return {number}
  */
 
+const MAN_GENDER = 'm';
+const WOMAN_GENDER = 'f';
+
 function calculateMenAverageAge(people, century) {
-  const mens = people.filter((men) => men.sex === 'm'
-    && (!century || Math.ceil(men.died / 100) === century));
+  const mens = people.filter((man) => man.sex === MAN_GENDER
+    && (!century || Math.ceil(man.died / 100) === century));
 
   return getAverageAge(mens);
 }
@@ -38,17 +41,24 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const women = people.filter((woman) => woman.sex === 'f'
-    && (withChildren === undefined
+  const women = people.filter((woman) => woman.sex === WOMAN_GENDER
+    && (!withChildren
     || people.find((motherName) => motherName.mother === woman.name)));
 
   return getAverageAge(women);
 }
 
 function getAverageAge(genderList) {
-  return Math.round(genderList.reduce((sum, currentPerson) => sum
-    + currentPerson.died - currentPerson.born, 0)
-    / genderList.length * 100) / 100;
+  // return Math.round(genderList.reduce((sum, currentPerson) => sum
+  //   + currentPerson.died - currentPerson.born, 0)
+  //   / genderList.length * 100) / 100;
+
+  const totalAge = genderList.reduce((sum, currentPerson) => sum
+    + currentPerson.died - currentPerson.born, 0);
+
+  const averageAge = totalAge / genderList.length;
+
+  return Math.round(averageAge * 100) / 100;
 }
 
 /**
@@ -67,17 +77,20 @@ function getAverageAge(genderList) {
  */
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.map((person) => (
-    {
-      ...person,
-      motherInfo: people
-        .find((motherName) => motherName.name === person.mother),
-    }))
-    .filter(person => person.motherInfo && (onlyWithSon === undefined
-  || person.sex === 'm'));
+  let children = people
+    .filter(person => people
+      .find((motherName) => motherName.name === person.mother));
 
-  return Math.round(children.reduce((sum, person) => sum
-  + (person.born - person.motherInfo.born), 0)
+  if (onlyWithSon) {
+    children = children.filter(person => person.sex === MAN_GENDER);
+  }
+
+  return Math.round(children.reduce((sum, person) => {
+    const mother = people
+      .find((motherName) => motherName.name === person.mother);
+
+    return sum + (person.born - mother.born);
+  }, 0)
     / children.length * 100) / 100;
 }
 
