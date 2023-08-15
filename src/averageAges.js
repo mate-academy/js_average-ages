@@ -2,24 +2,28 @@
 
 const FEMALE = 'f';
 const MALE = 'm';
-const HUNDRED = 100;
+const CENTURY_VALUE = 100;
 
 function getAverageAge(people) {
   return people.reduce((accum, { died, born }) =>
     (accum + (died - born)), 0) / people.length;
 };
 
-function getAgeDiff(people1, people2) {
-  return ((people1.reduce((accum, { born, mother }) =>
-    accum + born - people2.find(({ name }) => mother
-      === name).born, 0)) / people1.length).toFixed(2);
+function getAgeDiff(children, people) {
+  const ageDiff = children.reduce((acc, { born, mother: motherName }) => {
+    const motherBirthYear = people.find(({ name }) => motherName === name).born;
+
+    return acc + born - motherBirthYear;
+  }, 0);
+
+  return +(ageDiff / children.length).toFixed(2);
 };
 
 function calculateMenAverageAge(people, century) {
   const allMen = people.filter(({ sex }) => sex === MALE);
 
   const men = century
-    ? allMen.filter(({ died }) => Math.ceil(died / HUNDRED) === century)
+    ? allMen.filter(({ died }) => Math.ceil(died / CENTURY_VALUE) === century)
     : allMen;
 
   return getAverageAge(men);
@@ -40,11 +44,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const children = people.filter(({ mother }) => people.some(({ name }) =>
     mother === name));
 
-  const sons = children.filter(({ sex }) => sex === MALE);
-
-  return onlyWithSon
-    ? +getAgeDiff(sons, people)
-    : +getAgeDiff(children, people);
+  return !onlyWithSon
+    ? getAgeDiff(children, people)
+    : getAgeDiff(children.filter(({ sex }) => sex === MALE), people);
 }
 
 module.exports = {
