@@ -74,7 +74,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     return mother ? person.born - mother.born : 0;
   });
 
-  const validAgeDiffs = ageDiffs.filter(diff => diff !== 0);
+  const validAgeDiffs = ageDiffs.filter(diff => diff);
 
   const totalAgeDiff = validAgeDiffs.reduce((sum, ageDiff) => sum + ageDiff, 0);
 
