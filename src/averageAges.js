@@ -14,21 +14,23 @@
  *
  * @return {number}
  */
+const MALE = 'm';
+const FEMALE = 'f';
+
 function calculateMenAverageAge(people, century) {
-  const MALE = 'm';
   const YEARS_IN_CENTURY = 100;
-  const men = people
-    .filter(({ sex, died }) =>
-      (!century || Math.ceil(died / YEARS_IN_CENTURY) === century)
-      && sex === MALE);
+  const men = people.filter(({ sex, died }) => (
+    (!century || Math.ceil(died / YEARS_IN_CENTURY) === century)
+      && sex === MALE
+  ));
 
   return men.length && getAverageAge(men);
 }
 
 function getAverageAge(people) {
-  return people
-    .reduce((totalAge, { born, died }) =>
-      totalAge + (died - born), 0) / people.length;
+  return people.reduce((totalAge, { born, died }) => (
+    totalAge + (died - born)
+  ), 0) / people.length;
 }
 
 /**
@@ -51,11 +53,10 @@ function womenWithChildren(people, motherName) {
 }
 
 function calculateWomenAverageAge(people, withChildren) {
-  const FEMALE = 'f';
-  const women = people
-    .filter(({ sex, name }) =>
-      (!withChildren || womenWithChildren(people, name))
-      && sex === FEMALE);
+  const women = people.filter(({ sex, name }) => (
+    (!withChildren || womenWithChildren(people, name))
+      && sex === FEMALE
+  ));
 
   return women.length && getAverageAge(women);
 }
@@ -75,13 +76,11 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const MALE = 'm';
-  const FEMALE = 'f';
   const women = people.filter(({ sex }) => sex === FEMALE);
 
-  const children = people
-    .filter(({ sex, mother }) =>
-      mother !== null && (!onlyWithSon || sex === MALE));
+  const children = people.filter(({ sex, mother }) => (
+    mother && (!onlyWithSon || sex === MALE)
+  ));
 
   const ageDifferences = children
     .map(child => {
@@ -91,8 +90,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     })
     .filter(diff => diff);
 
-  const avAgeDiff = ageDifferences
-    .reduce((sum, age) => sum + age) / ageDifferences.length;
+  const avAgeDiff = ageDifferences.reduce((sum, age) => (
+    sum + age
+  )) / ageDifferences.length;
 
   return avAgeDiff;
 }
