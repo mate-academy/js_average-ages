@@ -19,20 +19,20 @@ const PERSON_SEX_FEMALE = 'f';
 const CENTURY_SEPARATOR = 100;
 
 function calculateAverageAge(filteredPeople) {
-  return filteredPeople.reduce(
-    (sum, { died, born }) => sum + (died - born),
-    0) / filteredPeople.length;
+  return filteredPeople.reduce((sum, { died, born }) => (
+    sum + (died - born)
+  ), 0) / filteredPeople.length;
 }
 
 function calculateMenAverageAge(people, century) {
   const filteredPeople = century
-    ? people.filter(({ died }) =>
-      Math.ceil(died / CENTURY_SEPARATOR) === century)
+    ? people.filter(({ died }) => (
+      Math.ceil(died / CENTURY_SEPARATOR) === century))
     : people;
-  const filteredMan = filteredPeople.filter(({ sex }) =>
-    sex === PERSON_SEX_MALE);
+  const malePeople = filteredPeople.filter(({ sex }) =>
+    (sex === PERSON_SEX_MALE));
 
-  return calculateAverageAge(filteredMan);
+  return calculateAverageAge(malePeople);
 }
 
 /**
@@ -50,12 +50,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = withChildren
-    ? people.filter(({ sex, name }) =>
-      sex === PERSON_SEX_FEMALE && people.some((child) =>
-        child.mother === name)
-    )
-    : people.filter(({ sex }) => sex === PERSON_SEX_FEMALE);
+  const filteredWomen = people.filter(({ sex, name }) => (
+    sex === PERSON_SEX_FEMALE
+    && (!withChildren || people.some((child) => child.mother === name))
+  ));
 
   return calculateAverageAge(filteredWomen);
 }
@@ -75,12 +73,11 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const filtredChildren = people.filter(child => {
-    return onlyWithSon
-      ? people.find(person =>
-        child.sex === PERSON_SEX_MALE && child.mother === person.name)
-      : people.some(person => child.mother === person.name);
-  });
+  const filtredChildren = people
+    .filter(child => (onlyWithSon
+      ? child.sex === PERSON_SEX_MALE : true)
+      && people.some(person => child.mother === person.name)
+    );
 
   return filtredChildren.reduce((sum, child) => {
     const mother = people.find(peson => peson.name === child.mother);
