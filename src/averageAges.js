@@ -18,15 +18,20 @@ const MALE = 'm';
 const FEMALE = 'f';
 const AGE_DIVIDER = 100;
 
-function calculateMenAverageAge(people, century) {
-  const manOnly = people.filter((person) => {
-    return !century
-      ? person.sex === MALE
-      : century === Math.ceil(person.died / AGE_DIVIDER) && person.sex === MALE;
-  });
-
-  const sumManAge = manOnly.reduce((sumAge, person) =>
+function sumAges(persons) {
+  return persons.reduce((sumAge, person) =>
     sumAge + (person.died - person.born), 0);
+}
+
+function calculateMenAverageAge(people, century) {
+  const manOnly = people.filter((person) => (
+    !century
+      ? (person.sex === MALE)
+      : (century
+        === Math.ceil(person.died / AGE_DIVIDER) && person.sex === MALE)
+  ));
+
+  const sumManAge = sumAges(manOnly);
 
   return +(sumManAge / manOnly.length).toFixed(2);
 }
@@ -52,8 +57,7 @@ function calculateWomenAverageAge(people, withChildren) {
       : sex === FEMALE && people.some(person => person.mother === name);
   });
 
-  const sumWomenAge = womenOnly.reduce((sumAge, person) =>
-    sumAge + (person.died - person.born), 0);
+  const sumWomenAge = sumAges(womenOnly);
 
   return +(sumWomenAge / womenOnly.length).toFixed(2);
 }
@@ -74,16 +78,17 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const peopleWithMothers = people.filter((person) => {
-    return (onlyWithSon
-      ? (person.sex === MALE)
-      : true
-    ) && people.some((mom) => mom.name === person.mother);
+    return ((!onlyWithSon || person.sex === MALE)
+      && people.some((mom) => mom.name === person.mother)
+    );
   });
 
-  return peopleWithMothers
-    .reduce((acc, person) => acc + person.born - people
-      .find((mom) => mom.name === person.mother).born, 0)
-    / peopleWithMothers.length;
+  return peopleWithMothers.reduce((acc, person) => {
+    const mother = people.find((mom) => mom.name === person.mother);
+    const ageDifference = person.born - mother.born;
+
+    return acc + ageDifference;
+  }, 0) / peopleWithMothers.length;
 }
 
 module.exports = {
