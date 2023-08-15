@@ -31,8 +31,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     : people.find(({ name }) => name === mother)
   ));
 
-  const ageDiff = filteredChildren.map(({ born, mother }) =>
-    born - people.find(({ name }) => name === mother).born);
+  const ageDiff = filteredChildren.map(({ born, mother }) => (
+    born - people.find(({ name }) => name === mother).born
+  ));
 
   return ageDiff.reduce((acc, age) => acc + age) / ageDiff.length;
 }
