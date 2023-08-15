@@ -14,12 +14,25 @@
  *
  * @return {number}
  */
+const MALE = 'm';
+const FEMALE = 'f';
+
+function averageAgePeople(people) {
+  return people
+    .map(({ born, died }) => died - born)
+    .reduce((sum, age) => sum + age, 0) / people.length;
+}
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  let men = people.filter(({ sex }) => sex === MALE);
+
+  if (century) {
+    men = men.filter(({ died }) => Math.ceil(died / 100) === century);
+  }
+
+  const averageAgeMen = averageAgePeople(men);
+
+  return averageAgeMen;
 }
 
 /**
@@ -37,7 +50,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let women = people.filter(({ sex }) => sex === FEMALE);
+
+  if (withChildren) {
+    women = women
+      .filter(woman => people.some(child => child.mother === woman.name));
+  }
+
+  const averageAgeWomen = averageAgePeople(women);
+
+  return averageAgeWomen;
 }
 
 /**
@@ -55,10 +77,21 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const childrens = onlyWithSon
+    ? people.filter(({ sex }) => sex === MALE) : people;
+
+  const childrensHasMother = childrens
+    .filter(child => people.find(mother => mother.name === child.mother));
+
+  const differenceAge = childrensHasMother.map(child => (
+    child.born - people.find(mother => mother.name === child.mother).born
+  ));
+
+  const averageAge = differenceAge
+    .reduce((total, age) => total + age, 0)
+    / differenceAge.length;
+
+  return averageAge;
 }
 
 module.exports = {
