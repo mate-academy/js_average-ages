@@ -1,57 +1,46 @@
 'use strict';
 
-/**
- * @param {object[]} people
- * @param {number} century - optional
- *
- * @return {number}
- */
+function checkIsMale(person) {
+  return person.sex === 'm';
+}
+
+function checkIsFemale(person) {
+  return person.sex === 'f';
+}
+
+function calculateAge(person) {
+  return person.died - person.born;
+}
 
 function calculateMenAverageAge(people, century) {
-  const isMale = person => person.sex === 'm';
-
-  const man = people.filter((person) =>
-    isMale(person) && (!century
+  const men = people.filter((person) =>
+    checkIsMale(person) && (!century
     || Math.ceil(person.died / 100) === century)
   );
 
-  const totalMenAge = man.reduce((sum, person) =>
-    sum + (person.died - person.born), 0
+  const totalMenAge = men.reduce((sum, person) =>
+    sum + calculateAge(person), 0
   );
 
-  return man.length ? totalMenAge / man.length : 0;
+  return men.length ? totalMenAge / men.length : 0;
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} withChildren - optional
- *
- * @return {number}
- */
 function calculateWomenAverageAge(people, withChildren) {
   const women = people.filter((person) =>
-    person.sex === 'f' && (!withChildren
+    checkIsFemale(person) && (!withChildren
     || people.some((child) => child.mother === person.name))
   );
 
   const totalWomenAge = women.reduce((sum, person) =>
-    sum + (person.died - person.born), 0
+    sum + calculateAge(person), 0
   );
 
   return women.length ? totalWomenAge / women.length : 0;
 }
 
-/**
- * @param {object[]} people
- * @param {boolean} onlyWithSon - optional
- *
- * @return {number}
- */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const isMale = person => person.sex === 'm';
-
   const relevantPeople = onlyWithSon
-    ? people.filter(person => isMale(person))
+    ? people.filter(person => checkIsMale(person))
     : people;
 
   const ageDifferences = relevantPeople.map(person => {
@@ -61,8 +50,8 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return mother
       ? person.born - mother.born
-      : null;
-  }).filter(ageDiff => ageDiff !== null);
+      : mother;
+  }).filter(ageDiff => ageDiff);
 
   const totalAgeDifference = ageDifferences
     .reduce((sum, ageDiff) => sum + ageDiff, 0);
