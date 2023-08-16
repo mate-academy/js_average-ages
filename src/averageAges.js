@@ -14,22 +14,27 @@
  *
  * @return {number}
  */
-const DIVIDE_NUM = 100;
+const CENTURY_YEARS = 100;
+const MALE_SEX = 'm';
+const FEMALE_SEX = 'f';
+
+function calculateTotalAge(filtredPeople) {
+  return filtredPeople
+    .reduce((sum, person) => sum + (person.died - person.born), 0);
+}
 
 function calculateMenAverageAge(people, century) {
-  let filtredMen = people.filter(person => person.sex === 'm');
+  let filtredMen = people.filter(person => person.sex === MALE_SEX);
 
   if (century !== undefined) {
     filtredMen = filtredMen
-      .filter(person => Math.ceil(person.died / DIVIDE_NUM) === century);
+      .filter(person => Math.ceil(person.died / CENTURY_YEARS) === century);
   }
 
-  const calculateTotalAge = filtredMen
-    .reduce((sum, person) => sum + (person.died - person.born), 0);
+  const totalAge = calculateTotalAge(filtredMen);
 
-  const calculateAverageAge = calculateTotalAge / filtredMen.length;
+  return totalAge / filtredMen.length;
 
-  return calculateAverageAge;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -51,19 +56,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let filtredWomen = people.filter(person => person.sex === 'f');
+  let filtredWomen = people.filter(person => person.sex === FEMALE_SEX);
 
   if (withChildren) {
     filtredWomen = filtredWomen
       .filter(women => people.some(person => person.mother === women.name));
   }
 
-  const calculateTotalAge = filtredWomen
-    .reduce((sum, person) => sum + (person.died - person.born), 0);
+  const totalAge = calculateTotalAge(filtredWomen);
 
-  const calculateAverageAge = calculateTotalAge / filtredWomen.length;
-
-  return calculateAverageAge;
+  return totalAge / filtredWomen.length;
 }
 
 /**
@@ -82,7 +84,7 @@ function calculateWomenAverageAge(people, withChildren) {
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const peopleWithMothers = people.filter((person) => {
-    return ((!onlyWithSon || person.sex === 'm')
+    return ((!onlyWithSon || person.sex === MALE_SEX)
       && people.some((mom) => mom.name === person.mother)
     );
   });
