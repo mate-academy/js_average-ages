@@ -19,11 +19,12 @@ const SEX_FEMALE = 'f';
 const CENTURY_VALUE = 100;
 
 function calculateMenAverageAge(people, century) {
-  const filteredPeopleByMan = people.filter(person => person.sex === SEX_MALE
-    && (century
-      ? Math.ceil(person.died / CENTURY_VALUE) === century
-      : true
-    ));
+  let filteredPeopleByMan = people.filter(person => person.sex === SEX_MALE);
+
+  if (century) {
+    filteredPeopleByMan = filteredPeopleByMan
+      .filter(person => Math.ceil(person.died / CENTURY_VALUE) === century);
+  }
 
   const avgAgeOfMan = calculateAverageAge(filteredPeopleByMan);
 
@@ -46,12 +47,12 @@ function calculateMenAverageAge(people, century) {
  */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people
-    .filter(person => person.sex === SEX_FEMALE
-      && (withChildren
-        ? people.some((child) => child.mother === person.name)
-        : true
-      ));
+  let filteredWomen = people.filter(person => person.sex === SEX_FEMALE);
+
+  if (withChildren) {
+    filteredWomen = filteredWomen
+      .filter(person => people.some((child) => child.mother === person.name));
+  }
 
   const avgAgeOfWomen = calculateAverageAge(filteredWomen);
 
@@ -73,17 +74,17 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const childrens = people.filter(person => person.mother !== null
-    && (onlyWithSon
-      ? person.sex === SEX_MALE
-      : true
-    ));
+  let childrens = people.filter(person => person.mother !== null);
+
+  if (onlyWithSon) {
+    childrens = childrens.filter(person => person.sex === SEX_MALE);
+  }
 
   const ageDifferences = childrens.map(({ mother: motherName, born }) => {
     const mother = people.find(({ name }) => name === motherName);
 
     return mother ? born - mother.born : null;
-  }).filter(element => element !== null);
+  }).filter(element => element);
 
   const averageAgeDifference = ageDifferences
     .reduce((acc, value) => acc + value) / ageDifferences.length;
