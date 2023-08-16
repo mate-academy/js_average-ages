@@ -21,18 +21,19 @@ const SEX_FEMALE = 'f';
 const ONE_CENTURY = 100;
 
 function getAverageAge(people) {
-  const totalAge = people.reduce((total, { died, born }) =>
-    total + (died - born), 0);
+  const totalAge = people.reduce((total, { died, born }) => (
+    total + (died - born)
+  ), 0);
 
   return totalAge / people.length;
 }
 
 function calculateMenAverageAge(people, century) {
-  const filteredMen = people.filter(person => {
-    return person.sex === SEX_MALE && (century
+  const filteredMen = people.filter(person => person.sex === SEX_MALE
+    && (century
       ? Math.ceil(person.died / ONE_CENTURY) === century
-      : true);
-  });
+      : true)
+  );
 
   return getAverageAge(filteredMen);
 }
@@ -53,11 +54,11 @@ function calculateMenAverageAge(people, century) {
    */
 
 function calculateWomenAverageAge(people, withChildren) {
-  const filteredWomen = people.filter(person => {
-    return person.sex === SEX_FEMALE && (withChildren
+  const filteredWomen = people.filter(person => person.sex === SEX_FEMALE
+    && (withChildren
       ? people.some(({ mother }) => mother === person.name)
-      : true);
-  });
+      : true)
+  );
 
   return getAverageAge(filteredWomen);
 }
@@ -77,16 +78,18 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  const children = people.filter(child => {
-    return people.find(person => (child.mother === person.name)
-      && (onlyWithSon ? child.sex === SEX_MALE : people.some((mother) => {
-        return child.mother === mother.name;
-      })));
-  });
+  const children = people.filter(child => people
+    .find(person => child.mother === person.name
+      && (onlyWithSon
+        ? child.sex === SEX_MALE
+        : people.some((mother) => child.mother === mother.name))
+    )
+  );
 
   return children.reduce((acc, child) => {
-    const motherBirthYear = people.find(person =>
-      child.mother === person.name).born;
+    const motherBirthYear = people.find(person => (
+      child.mother === person.name
+    )).born;
 
     return acc + child.born - motherBirthYear;
   }, 0) / children.length;
