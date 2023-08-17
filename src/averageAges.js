@@ -15,11 +15,14 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  let men = people.filter(person => person.sex === 'm');
+  const SEX = 'm';
+  const CENTURY_DIVIDE = 100;
+
+  let men = people.filter(person => person.sex === SEX);
 
   if (century) {
     men = men.filter(man => {
-      return Math.ceil(man.died / 100) === century;
+      return Math.ceil(man.died / CENTURY_DIVIDE) === century;
     });
   };
 
@@ -27,7 +30,7 @@ function calculateMenAverageAge(people, century) {
     return acc + (man.died - man.born);
   }, 0);
 
-  return +(sumAge / men.length).toFixed(2);
+  return countAverageAge(sumAge, men.length);
 }
 
 /**
@@ -45,10 +48,12 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  let women = people.filter(person => person.sex === 'f');
+  const SEX = 'f';
   const personsWithMother = [];
 
-  if (withChildren === true) {
+  let women = people.filter(person => person.sex === SEX);
+
+  if (withChildren) {
     people.forEach(person => {
       if (person.mother && !personsWithMother.includes(person.mother)) {
         personsWithMother.push(person.mother);
@@ -66,7 +71,7 @@ function calculateWomenAverageAge(people, withChildren) {
     return acc + (woman.died - woman.born);
   }, 0);
 
-  return +(sumAge / women.length).toFixed(2);
+  return countAverageAge(sumAge, women.length);
 }
 
 /**
@@ -91,9 +96,10 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   let persons = people;
   const personsWithMother = [];
   let sumAgeDifference = 0;
+  const SEX = 'm';
 
   if (onlyWithSon === true) {
-    persons = persons.filter(person => person.sex === 'm');
+    persons = persons.filter(person => person.sex === SEX);
   }
 
   persons.forEach(person => {
@@ -115,7 +121,11 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
     sumAgeDifference += family.child.born - family.mother.born;
   });
 
-  return +(sumAgeDifference / personsWithMother.length).toFixed(2);
+  return countAverageAge(sumAgeDifference, personsWithMother.length);
+}
+
+function countAverageAge(sumAges, itemsLength) {
+  return +(sumAges / itemsLength).toFixed(2);
 }
 
 module.exports = {
