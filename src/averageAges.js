@@ -19,10 +19,14 @@ const CENTURY_SIZE = 100;
  * @return {number}
  */
 
-function averageOfArray(array) {
-  const arraySum = array.reduce((accumulator, el) => accumulator + el, 0);
+function getAverageAge(ages) {
+  const totalAge = ages.reduce((accumulator, el) => accumulator + el, 0);
 
-  return arraySum / array.length;
+  return totalAge / ages.length;
+}
+
+function getAge(people) {
+  return people.map(({ born, died }) => died - born);
 }
 
 function calculateMenAverageAge(people, century) {
@@ -34,9 +38,9 @@ function calculateMenAverageAge(people, century) {
     });
   }
 
-  const ages = males.map(({ born, died }) => died - born);
+  const ages = getAge(males);
 
-  return averageOfArray(ages);
+  return getAverageAge(ages);
 }
 
 /**
@@ -62,9 +66,9 @@ function calculateWomenAverageAge(people, withChildren) {
     });
   }
 
-  const ages = females.map(({ born, died }) => died - born);
+  const ages = getAge(females);
 
-  return averageOfArray(ages);
+  return getAverageAge(ages);
 }
 
 /**
@@ -91,14 +95,14 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   }
 
   const ageDiff = children.map(({ born, mother }) => {
-    const motherBorn = people.find(({ name }) => {
+    const motherBirthYear = people.find(({ name }) => {
       return mother === name;
     }).born;
 
-    return born - motherBorn;
+    return born - motherBirthYear;
   });
 
-  return averageOfArray(ageDiff);
+  return getAverageAge(ageDiff);
 }
 
 module.exports = {
