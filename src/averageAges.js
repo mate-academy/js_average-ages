@@ -1,13 +1,17 @@
 'use strict';
 
+function calculateAverageAge(averageAge) {
+  return (averageAge.reduce((accumulator, currentValue) =>
+    (accumulator + (currentValue.died - currentValue.born)), 0))
+    / averageAge.length;
+}
+
 function calculateMenAverageAge(people, century) {
   const peopleFiltered = people.filter((person) => century
     ? person.sex === 'm' && Math.ceil(person.died / 100) === century
     : person.sex === 'm');
 
-  return (peopleFiltered.reduce((accumulator, currentValue) =>
-    (accumulator + (currentValue.died - currentValue.born)), 0))
-    / peopleFiltered.length;
+  return calculateAverageAge(peopleFiltered);
 }
 
 function calculateWomenAverageAge(people, withChildren) {
@@ -15,30 +19,32 @@ function calculateWomenAverageAge(people, withChildren) {
     ? people.some((child) => child.mother === person.name)
     : person.sex === 'f');
 
-  return (peopleFiltered.reduce((accumulator, currentValue) =>
-    (accumulator + (currentValue.died - currentValue.born)), 0))
-    / peopleFiltered.length;
+  return calculateAverageAge(peopleFiltered);
 }
 
 function calculateAverageAgeDiff(people, onlyWithSon) {
   const ageDifference = [];
 
   const peopleFiltered = people.filter((person) => onlyWithSon
-    ? person.sex === 'm' && person.mother !== null
-    : person.mother !== null);
+    ? person.sex === 'm' && people.some(child => child.name === person.mother)
+    : people.some(child => child.name === person.mother));
 
-  const motherFiltered = people.filter((person) =>
-    people.some((mother) => mother.mother === person.name));
+  peopleFiltered.forEach((person) => {
+    const foundMother = people.find((mother) =>
+      (mother.name === person.mother));
 
-  peopleFiltered.forEach((person) =>
-    motherFiltered.find((mother) => {
-      if (mother.name === person.mother) {
-        ageDifference.push(person.born - mother.born);
-      }
-    }));
+    if (foundMother) {
+      ageDifference.push({
+        'died': person.died - foundMother.died,
+        'born': person.born - foundMother.born,
+      });
+      // console.log(ageDifference);
+    }
+  });
 
-  return ageDifference.reduce((accumulator, currentValue) =>
-    (accumulator + currentValue), 0) / ageDifference.length;
+  // console.log(calculateAverageAge(ageDifference));
+
+  return calculateAverageAge(ageDifference);
 }
 
 module.exports = {
@@ -46,3 +52,7 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+// const people = require('./people');
+
+// calculateAverageAgeDiff(people);
