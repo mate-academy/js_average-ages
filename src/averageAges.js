@@ -34,17 +34,13 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
       (mother.name === person.mother));
 
     if (foundMother) {
-      ageDifference.push({
-        'died': person.died - foundMother.died,
-        'born': person.born - foundMother.born,
-      });
-      // console.log(ageDifference);
+      ageDifference.push(person.born - foundMother.born);
     }
   });
 
-  // console.log(calculateAverageAge(ageDifference));
-
-  return calculateAverageAge(ageDifference);
+  return (ageDifference.reduce((accumulator, currentValue) =>
+    (accumulator + currentValue), 0))
+    / ageDifference.length;
 }
 
 module.exports = {
@@ -52,7 +48,3 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
-
-// const people = require('./people');
-
-// calculateAverageAgeDiff(people);
