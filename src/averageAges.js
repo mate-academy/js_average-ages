@@ -18,8 +18,7 @@ function countAverageAge(selectedGroup) {
 function calculateMenAverageAge(people, century) {
   const selectedMenGroup = people
     .filter(person => person.sex === MALE
-      && (century === undefined
-      || century === Math.ceil(person.died / CENTURY_DIVISOR)));
+      && (!century || century === Math.ceil(person.died / CENTURY_DIVISOR)));
   const menAverageAge = countAverageAge(selectedMenGroup);
 
   return menAverageAge / selectedMenGroup.length;
