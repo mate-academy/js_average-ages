@@ -28,8 +28,6 @@ function calculateMenAverageAge(people, century) {
   return averageAge;
 }
 
-// console.log(calculateMenAverageAge(people, 17));
-
 /**
  * Implement calculateWomenAverageAge function
  *
@@ -47,7 +45,7 @@ function calculateMenAverageAge(people, century) {
 function calculateWomenAverageAge(people, withChildren) {
   let womens = people.filter(person => person.sex === 'f');
 
-  if (withChildren === true) {
+  if (withChildren) {
     womens = womens.filter(woman => people.some(person =>
       person.mother === woman.name));
   }
@@ -59,8 +57,6 @@ function calculateWomenAverageAge(people, withChildren) {
 
   return averageAge;
 }
-
-// console.log(calculateWomenAverageAge(people, true));
 
 /**
  * Implement calculateAverageAgeDiff function.
@@ -82,7 +78,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
   let kids = people.filter(mummy => mummy.mother != null);
 
-  if (onlyWithSon === true) {
+  if (onlyWithSon) {
     kids = people.filter(son => son.mother != null && son.sex === 'm');
   }
 
@@ -105,7 +101,7 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
 
     return parseFloat(averageAgeDiff.toFixed(2));
   } else {
-    return 0; // Zabezpieczenie przed dzieleniem przez zero
+    return 0;
   }
 }
 
