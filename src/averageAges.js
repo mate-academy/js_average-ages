@@ -14,20 +14,21 @@
  *
  * @return {number}
  */
+
+const ONE_HUNDRED_YEARS = 100;
+const MALE_SEX = 'm';
+const FEMALE_SEX = 'f';
+
 function calculateMenAverageAge(people, century = null) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
-  const MEN = people.filter(person => person.sex === 'm');
+  const MEN = people.filter(person => person.sex === MALE_SEX);
   const FILTERED_MEN = century !== null
-    ? MEN.filter(person => Math.ceil(person.died / 100) === century) : MEN;
-  const TOTAL_MEN = FILTERED_MEN;
-  const SUM_AGE = TOTAL_MEN.reduce((sum, person) =>
+    ? MEN.filter(person => Math.ceil(person.died
+      / ONE_HUNDRED_YEARS) === century)
+    : MEN;
+  const SUM_AGE = FILTERED_MEN.reduce((sum, person) =>
     sum + (person.died - person.born), 0);
 
-  const AVERAGE_MEN_AGE = SUM_AGE / TOTAL_MEN.length;
+  const AVERAGE_MEN_AGE = SUM_AGE / FILTERED_MEN.length;
 
   return AVERAGE_MEN_AGE;
 }
@@ -47,16 +48,17 @@ function calculateMenAverageAge(people, century = null) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren = false) {
-  // write code here
-  const WOOMEN = people.filter(person => person.sex === 'f');
-  const FILTERED_WOOMEN = WOOMEN.filter(woman =>
-    withChildren ? people.some(person => person.mother === woman.name) : true
-  );
-  const TOTAL_WOOMEN = FILTERED_WOOMEN;
-  const SUM_AGE = TOTAL_WOOMEN.reduce((sum, person) =>
+  const WOOMEN = people.filter(person => person.sex === FEMALE_SEX);
+  const FILTERED_WOOMEN = withChildren !== false ? WOOMEN.filter(woman =>
+    withChildren
+      ? people.some(person =>
+        person.mother === woman.name)
+      : true)
+    : WOOMEN;
+  const SUM_AGE = FILTERED_WOOMEN.reduce((sum, person) =>
     sum + (person.died - person.born), 0);
 
-  const AVERAGE_WOOMAN_AGE = SUM_AGE / TOTAL_WOOMEN.length;
+  const AVERAGE_WOOMAN_AGE = SUM_AGE / FILTERED_WOOMEN.length;
 
   return AVERAGE_WOOMAN_AGE;
 }
@@ -76,16 +78,12 @@ function calculateWomenAverageAge(people, withChildren = false) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
   const MOTHERS = people.filter(mom =>
     people.some(child => child.mother === mom.name));
 
   const CHILDREN_WITH_MOTHERS = people.filter(child =>
     (!onlyWithSon && MOTHERS.some(mom => mom.name === child.mother))
-    || (onlyWithSon && child.sex === 'm'
+    || (onlyWithSon && child.sex === MALE_SEX
     && MOTHERS.some(mom => mom.name === child.mother))
   );
 
