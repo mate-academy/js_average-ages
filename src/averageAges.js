@@ -20,17 +20,15 @@ function calculateMenAverageAge(people, century) {
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
   // without nesting
-  let men = people.filter(person => person.sex === 'm');
-
-  if (century) {
-    men = men.filter(person => Math.ceil(person.died / 100) === century);
-  }
+  const men = century
+    ? people.filter(person => Math.ceil(person.died / 100)
+    === century && person.sex === 'm')
+    : people.filter(person => person.sex === 'm');
 
   const totalAge = men.reduce((sum, person) =>
     sum + (person.died - person.born), 0);
-  const averageAge = totalAge / men.length;
 
-  return averageAge;
+  return totalAge / men.length;
 }
 
 /**
@@ -66,9 +64,7 @@ function calculateWomenAverageAge(people, withChildren) {
   const totalAge = women.reduce((sum, person) =>
     sum + (person.died - person.born), 0);
 
-  const averageAge = totalAge / women.length;
-
-  return averageAge;
+  return totalAge / women.length;
 }
 
 /**
@@ -90,13 +86,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   // 2. keep people who have mothers in the array
   // 3. calculate the difference child.born - mother.born
   // 4. return the average value
-  let peopleWithMothers = people.filter(person =>
-    people.some(i => i.name === person.mother));
-
-  if (onlyWithSon) {
-    peopleWithMothers = peopleWithMothers.filter(person =>
-      person.sex === 'm' && peopleWithMothers);
-  };
+  const peopleWithMothers = people.filter(child => people.find(
+    mother => mother.name === child.mother)
+    && (onlyWithSon ? child.sex === 'm' : true));
 
   const ageDifferences = peopleWithMothers.map((child) => {
     const mother = people.find((person) => person.name === child.mother);
@@ -107,9 +99,9 @@ function calculateAverageAgeDiff(people, onlyWithSon) {
   const totalAgeDiffrence = ageDifferences.reduce(
     (sum, diffrence) => sum + diffrence, 0);
 
-  const averagediff = totalAgeDiffrence / ageDifferences.length;
+  const averageDiff = totalAgeDiffrence / ageDifferences.length;
 
-  return averagediff;
+  return averageDiff;
 }
 
 module.exports = {
