@@ -55,10 +55,7 @@ function calculateWomenAverageAge(people, withChildren) {
     const totalAgeWithChildren = womenWithChildren.reduce((sum, person) =>
       sum + (person.died - person.born), 0);
 
-    const averageAgeWithChildren
-    = totalAgeWithChildren / womenWithChildren.length;
-
-    return averageAgeWithChildren;
+    return totalAgeWithChildren / womenWithChildren.length;
   }
 
   const totalAge = women.reduce((sum, person) =>
