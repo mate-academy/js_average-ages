@@ -14,20 +14,31 @@
  *
  * @return {number}
  */
+
+function getAverageAge(people) {
+  if (people.length === 0) {
+    return 0;
+  }
+
+  const totalAge = people.reduce((sum, person) => sum + person.age, 0);
+
+  const averageAge = totalAge / people.length;
+
+  return averageAge;
+}
+
 function calculateMenAverageAge(people, century) {
   const filteredMen = century
     ? people.filter(person => person.sex === 'm'
     && Math.ceil(person.died / 100) === century)
     : people.filter(person => person.sex === 'm');
 
-  const totalAge = filteredMen.reduce((accumulator, person) => {
-    const age = person.died - person.born;
+  const averageAge = getAverageAge(filteredMen);
 
-    return accumulator + age;
-  }, 0);
-
-  return filteredMen.length > 0 ? totalAge / filteredMen.length : 0;
+  return averageAge;
 }
+
+// Use the getAverageAge function to calculate the average age of filtered men
 
 /**
  * Implement calculateWomenAverageAge function
