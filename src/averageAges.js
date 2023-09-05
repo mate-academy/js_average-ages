@@ -20,7 +20,8 @@ function getAverageAge(people) {
     return 0;
   }
 
-  const totalAge = people.reduce((sum, person) => sum + person.age, 0);
+  const totalAge = people.reduce((sum, person) =>
+    sum + person.died - person.born, 0);
 
   const averageAge = totalAge / people.length;
 
@@ -59,13 +60,7 @@ function calculateWomenAverageAge(people, withChildren) {
     .filter(person => !withChildren
       || people.some(child => child.mother === person.name));
 
-  const totalAge = filteredWomen.reduce((accumulator, person) => {
-    const ages = person.died - person.born;
-
-    return accumulator + ages;
-  }, 0);
-
-  return totalAge / filteredWomen.length;
+  return getAverageAge(filteredWomen);
 }
 
 /**
