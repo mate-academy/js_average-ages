@@ -15,12 +15,20 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const maleFiltered = people.filter((person) => person.sex === 'm'
+    && (century ? Math.ceil(person.died / 100) === century : true));
+
+  const maleAge = maleFiltered.map((person) => person.died - person.born);
+
+  return countAverageAge(maleAge);
 }
+
+// function countAverageAge(ages) {
+//   const avarageAge = ages.reduce((totalAge, age) =>
+//     totalAge + age, 0) / ages.length;
+
+//   return avarageAge;
+// }
 
 /**
  * Implement calculateWomenAverageAge function
@@ -37,7 +45,16 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const averageAgeWoman = people
+    .filter(({ sex, name }) => withChildren
+      ? isFemale(sex) && people.some(child => child.mother === name)
+      : isFemale(sex)
+    )
+    .map((getAge) => getAge.died - getAge.born);
+
+  const averagAge = countAverageAge(averageAgeWoman);
+
+  return averagAge;
 }
 
 /**
@@ -55,10 +72,20 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const ageDifference = people
+    .filter(({ mother, sex }) => onlyWithSon
+      ? people.some(child => child.name === mother && isMale(sex))
+      : people.some(child => child.name === mother)
+    )
+    .map((child) => {
+      const mother = people.find((mothers) => mothers.name === child.mother);
+
+      return child.born - mother.born;
+    });
+
+  const averagAge = countAverageAge(ageDifference);
+
+  return averagAge;
 }
 
 module.exports = {
@@ -66,3 +93,20 @@ module.exports = {
   calculateWomenAverageAge,
   calculateAverageAgeDiff,
 };
+
+function countAverageAge(averageValue) {
+  const average = averageValue
+    .reduce((sum, age) => sum + age, 0);
+
+  const result = average / averageValue.length;
+
+  return +result.toFixed(2);
+}
+
+function isFemale(female) {
+  return female === 'f';
+}
+
+function isMale(male) {
+  return male === 'm';
+}
