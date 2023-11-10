@@ -15,11 +15,16 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter((person) =>
+    person.sex === 'm' && (!century || Math.ceil(person.died / 100) === century)
+  );
+
+  const sum = men.reduce((totalAge, person) =>
+    totalAge + (person.died - person.born), 0);
+
+  const averageMan = sum / men.length;
+
+  return averageMan;
 }
 
 /**
@@ -37,7 +42,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const women = people.filter((person) =>
+    person.sex === 'f' && (!withChildren || people.some((child) =>
+      child.mother === person.name))
+  );
+
+  if (women.length === 0) {
+    return 0;
+  }
+
+  const sum = women.reduce((totalAge, person) =>
+    totalAge + (person.died - person.born), 0);
+
+  const averageWoman = sum / women.length;
+
+  return averageWoman;
 }
 
 /**
@@ -55,10 +74,30 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const mothers = people.filter((person) => people.some((mother) =>
+    mother.name === person.mother));
+
+  const children = onlyWithSon ? mothers.filter((person) =>
+    person.sex === 'm') : mothers;
+
+  if (children.length === 0) {
+    return 0;
+  }
+
+  const differenceGap = children.map((child) => {
+    const mother = people.find((person) => person.name === child.mother);
+
+    if (mother && 'born' in child && 'born' in mother) {
+      return child.born - mother.born;
+    } else {
+      return 0;
+    }
+  });
+
+  const sum = differenceGap.reduce((total, gap) => total + gap, 0);
+  const differenceGapAverage = sum / differenceGap.length;
+
+  return differenceGapAverage;
 }
 
 module.exports = {
