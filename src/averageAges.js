@@ -15,7 +15,18 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
-  // write code here
+  let totalAge = 0;
+  let count = 0;
+
+  people.forEach(person => {
+    if (person.sex === 'm' && (!century
+      || Math.ceil(person.died / 100) === century)) {
+      totalAge += person.died - person.born;
+      count++;
+    }
+  });
+
+  return count === 0 ? 0 : totalAge / count;
   // learn how to use array methods like .filter .map .some .every .find .reduce
   // avoid using loop and forEach
   // replace `if ()` statement with &&, || or ?:
@@ -37,7 +48,21 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  let totalAge = 0;
+  let count = 0;
+
+  people.forEach(person => {
+    if (person.sex === 'f' && (!withChildren || hasChildren(person, people))) {
+      totalAge += person.died - person.born;
+      count++;
+    }
+  });
+
+  return count === 0 ? 0 : totalAge / count;
+}
+
+function hasChildren(woman, people) {
+  return people.some(person => person.mother === woman.name);
 }
 
 /**
@@ -55,7 +80,44 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // write code here
+  let totalAgeDiff = 0;
+  let count = 0;
+
+  if (onlyWithSon) {
+    people.forEach(person => {
+      if (person.sex === 'm' && (!onlyWithSon || hasMother(person, people))) {
+        const mother = findMother(person, people);
+
+        if (mother) {
+          totalAgeDiff += person.born - mother.born;
+          count++;
+        }
+      }
+    });
+  } else {
+    people.forEach(person => {
+      if (!onlyWithSon || hasMother(person, people)) {
+        const mother = findMother(person, people);
+
+        if (mother) {
+          totalAgeDiff += person.born - mother.born;
+          count++;
+        }
+      }
+    });
+  }
+
+  const tot = totalAgeDiff / count;
+
+  return count === 0 ? 0 : tot;
+}
+
+function hasMother(son, people) {
+  return people.some(person => person.name === son.mother);
+}
+
+function findMother(son, people) {
+  return people.find(person => person.name === son.mother);
 }
 
 module.exports = {
