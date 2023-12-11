@@ -15,23 +15,27 @@
  * @return {number}
  */
 function calculateMenAverageAge(people, century) {
+  if (people.length === 0) {
+    return 0;
+  }
+
   let totalAge = 0;
   let count = 0;
 
   people.forEach(person => {
-    if (person.sex === 'm' && (!century
-      || Math.ceil(person.died / 100) === century)) {
+    if (person.sex === 'm'
+    && (!century || Math.ceil(person.died / 100) === century)) {
       totalAge += person.died - person.born;
       count++;
     }
   });
 
-  return count === 0 ? 0 : totalAge / count;
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  return totalAge === 0 ? 0 : totalAge / count;
 }
+// learn how to use array methods like .filter .map .some .every .find .reduce
+// avoid using loop and forEach
+// replace `if ()` statement with &&, || or ?:
+// without nesting
 
 /**
  * Implement calculateWomenAverageAge function
@@ -48,6 +52,10 @@ function calculateMenAverageAge(people, century) {
  * @return {number}
  */
 function calculateWomenAverageAge(people, withChildren) {
+  if (people.length === 0) {
+    return 0;
+  }
+
   let totalAge = 0;
   let count = 0;
 
@@ -80,6 +88,10 @@ function hasChildren(woman, people) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
+  if (people.length === 0) {
+    return 0;
+  }
+
   let totalAgeDiff = 0;
   let count = 0;
 
