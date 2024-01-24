@@ -14,12 +14,17 @@
  *
  * @return {number}
  */
+
 function calculateMenAverageAge(people, century) {
-  // write code here
-  // learn how to use array methods like .filter .map .some .every .find .reduce
-  // avoid using loop and forEach
-  // replace `if ()` statement with &&, || or ?:
-  // without nesting
+  const men = people.filter(person => century
+    ? person.sex === 'm' && Math.ceil(person.died / 100) === century
+    : person.sex === 'm');
+
+  const menAgeSum = men
+    .map(man => man.died - man.born)
+    .reduce((prev, age) => prev + age, 0);
+
+  return menAgeSum / men.length;
 }
 
 /**
@@ -36,8 +41,18 @@ function calculateMenAverageAge(people, century) {
  *
  * @return {number}
  */
+
 function calculateWomenAverageAge(people, withChildren) {
-  // write code here
+  const mothers = people.map(person => person.mother);
+  const women = people.filter(person => withChildren
+    ? person.sex === 'f' && mothers.includes(person.name)
+    : person.sex === 'f');
+
+  const womenAgeSum = women
+    .map(woman => woman.died - woman.born)
+    .reduce((prev, age) => prev + age, 0);
+
+  return womenAgeSum / women.length;
 }
 
 /**
@@ -55,10 +70,22 @@ function calculateWomenAverageAge(people, withChildren) {
  * @return {number}
  */
 function calculateAverageAgeDiff(people, onlyWithSon) {
-  // 1. find a mother of each person (or only for men)
-  // 2. keep people who have mothers in the array
-  // 3. calculate the difference child.born - mother.born
-  // 4. return the average value
+  const allWomen = people.filter(person => person.sex === 'f');
+  const allWomenNames = allWomen.map(woman => woman.name);
+
+  const peopleWithMothers = people.filter(person => onlyWithSon
+    ? allWomenNames.includes(person.mother) && person.sex === 'm'
+    : allWomenNames.includes(person.mother));
+
+  const ageDifferences = peopleWithMothers.map(person => {
+    const mother = allWomen.find(woman => person.mother === woman.name);
+
+    return person.born - mother.born;
+  });
+
+  const ageDifferencesSum = ageDifferences.reduce((prev, age) => prev + age, 0);
+
+  return ageDifferencesSum / ageDifferences.length;
 }
 
 module.exports = {
